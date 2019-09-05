@@ -67,6 +67,7 @@
     <Compile Include="Assets\_scripts\EffectTools.cs" />
     <Compile Include="Assets\_scripts\EnemyMover.cs" />
     <Compile Include="Assets\_scripts\ForwardMover.cs" />
+    <Compile Include="Assets\_scripts\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\RestStaticVariables.cs" />
     <Compile Include="Assets\_scripts\StatBlock.cs" />
     <Reference Include="Unity.Timeline.Editor">
