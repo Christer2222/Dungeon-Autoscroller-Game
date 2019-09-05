@@ -1,6 +1,6 @@
 /target:library
 /nowarn:0169
-/out:Temp/Unity.TextMeshPro.dll
+/out:Temp/Assembly-CSharp.dll
 /debug:portable
 /optimize-
 /nostdlib+
@@ -66,21 +66,17 @@
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll"
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/Managed/UnityEditor.dll"
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/Managed/Unity.Locator.dll"
+/reference:Library/ScriptAssemblies/Unity.Timeline.Editor.dll
+/reference:Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
+/reference:Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll
+/reference:Library/ScriptAssemblies/Unity.Timeline.dll
+/reference:Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll
+/reference:Library/ScriptAssemblies/Unity.TextMeshPro.dll
+/reference:Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/UnityExtensions/Unity/TestRunner/Editor/UnityEditor.TestRunner.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/Managed/UnityEditor.Graphs.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll"
-/reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll"
-/reference:"C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll"
-/reference:D:/UnityProjects/DC/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll
-/reference:D:/UnityProjects/DC/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll
-/reference:D:/UnityProjects/DC/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.StandardEvents.dll
-/reference:D:/UnityProjects/DC/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll
-/reference:D:/UnityProjects/DC/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll
+/reference:D:/GitRepos/DC/DC/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll
+/reference:D:/GitRepos/DC/DC/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.StandardEvents.dll
+/reference:D:/GitRepos/DC/DC/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll"
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/NetStandard/compat/2.0.0/shims/netstandard/Microsoft.Win32.Primitives.dll"
 /reference:"C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/NetStandard/compat/2.0.0/shims/netstandard/System.AppContext.dll"
@@ -300,58 +296,11 @@
 /define:UNITY_PRO_LICENSE
 /define:CSHARP_7_OR_LATER
 /define:CSHARP_7_3_OR_NEWER
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\AssemblyInfo.cs.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\FastAction.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\MaterialReferenceManager.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TextContainer.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TextMeshPro.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TextMeshProUGUI.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_Asset.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_Character.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_CharacterInfo.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_ColorGradient.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_CoroutineTween.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_DefaultControls.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_Dropdown.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_FontAsset.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_FontAssetCommon.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_FontAssetUtilities.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_FontFeaturesCommon.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_FontFeatureTable.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_InputField.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_InputValidator.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_LineInfo.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_ListPool.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_MaterialManager.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_MeshInfo.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_ObjectPool.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_PackageResourceImporter.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_RichTextTagsCommon.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_RichTextTagStack.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_ScrollbarEventHandler.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SelectionCaret.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_Settings.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_ShaderUtilities.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_Sprite.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SpriteAnimator.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SpriteAsset.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SpriteAssetImportFormats.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SpriteCharacter.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SpriteGlyph.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_Style.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_StyleSheet.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SubMesh.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_SubMeshUI.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_Text.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_TextElement.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_TextElement_Legacy.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_TextInfo.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_TextParsingUtilities.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_TextUtilities.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_UpdateManager.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMP_UpdateRegistery.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMPro_EventManager.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMPro_ExtensionMethods.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMPro_MeshUtilities.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMPro_Private.cs
-D:\UnityProjects\DC\Library\PackageCache\com.unity.textmeshpro@2.0.0\Scripts\Runtime\TMPro_UGUI_Private.cs
+Assets\_scripts\AbilityScript.cs
+Assets\_scripts\CombatController.cs
+Assets\_scripts\EffectTools.cs
+Assets\_scripts\EnemyMover.cs
+Assets\_scripts\ForwardMover.cs
+Assets\_scripts\LevelUpScreen.cs
+Assets\_scripts\RestStaticVariables.cs
+Assets\_scripts\StatBlock.cs

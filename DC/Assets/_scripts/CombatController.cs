@@ -434,8 +434,11 @@ public class CombatController : AbilityScript
 	{
 		myStats.xp += _amount;
 		xpSlider.value = myStats.xp;
-		if (myStats.xp >= xpSlider.maxValue)
+		while (myStats.xp >= xpSlider.maxValue)
 		{
+			LevelUpScreen.traitPointsToSpend += 2;
+			LevelUpScreen.abilityPointsToSpend += (myStats.level + 1) % 2;
+
 			myStats.level++;
 			myStats.xp -= (int)xpSlider.maxValue;
 			print(myStats.xp);

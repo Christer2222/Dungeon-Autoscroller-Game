@@ -10,7 +10,7 @@ public class LevelUpScreen : MonoBehaviour
 	private CombatController playerCombatController;
 
 	private int strengthChange, dexterityChange, intelligenceChange, luckChange;
-	private int traitPointsToSpend = 5, abilityPointsToSpend;
+	public static int traitPointsToSpend = 5, abilityPointsToSpend;
 
 	private Text strengthText, dexterityText, intelligenceText, luckText;
 	private Text traitPointToSpendText, availableAbilitiesText;
@@ -122,16 +122,38 @@ public class LevelUpScreen : MonoBehaviour
 					cancelButton = _t.GetComponent<Button>();
 					cancelButton.onClick.AddListener(delegate
 					{
-						traitPointsToSpend = strengthChange + dexterityChange + intelligenceChange + luckChange;
+						traitPointsToSpend = strengthChange + dexterityChange + intelligenceChange + luckChange + traitPointsToSpend;
 						strengthChange = dexterityChange = intelligenceChange = luckChange = 0;
+
+						ToggleLevelUpScreen();
 					});
 
 					break;
 				case "$ConfirmButton":
 					confirmButton = _t.GetComponent<Button>();
+					confirmButton.onClick.AddListener(delegate {
+						playerCombatController.myStats.baseStrength += strengthChange;
+						playerCombatController.myStats.baseDexterity += dexterityChange;
+						playerCombatController.myStats.baseIntelligence += intelligenceChange;
+						playerCombatController.myStats.baseLuck += luckChange;
+
+						strengthChange = dexterityChange = intelligenceChange = luckChange = 0;
+
+						print("# " + playerCombatController.myStats.baseStrength);
+
+						strengthText.text = playerCombatController.myStats.baseStrength.ToString();
+						dexterityText.text = playerCombatController.myStats.baseDexterity.ToString();
+						intelligenceText.text = playerCombatController.myStats.baseIntelligence.ToString();
+						luckText.text = playerCombatController.myStats.baseLuck.ToString();
+
+
+						ToggleArrowButtons();
+					});
 					break;
 			}
 		}
+
+		print(confirmButton);
 	}
 
 	public void UpdateTraitText(ref int _change, int _difference, int _traitScore, ref Text _textToChange, ref Button _minusButton)
@@ -156,7 +178,7 @@ public class LevelUpScreen : MonoBehaviour
 	}
 
 
-	public void ToggleLevelUpScreen()
+	void ToggleLevelUpScreen()
 	{
 		levelUpScreen.SetActive(!levelUpScreen.activeSelf);
 
@@ -167,17 +189,21 @@ public class LevelUpScreen : MonoBehaviour
 			intelligenceText.text = playerCombatController.myStats.baseIntelligence.ToString();
 			luckText.text = playerCombatController.myStats.baseLuck.ToString();
 
-			bool _hasTraitPoints = (traitPointsToSpend > 0);
-			strengthPlusButton.gameObject.SetActive(_hasTraitPoints);
-			dexterityPlusButton.gameObject.SetActive(_hasTraitPoints);
-			intelligencePlusButton.gameObject.SetActive(_hasTraitPoints);
-			luckPlusButton.gameObject.SetActive(_hasTraitPoints);
-
-			strengthMinusButton.gameObject.SetActive(false);
-			dexterityMinusButton.gameObject.SetActive(false);
-			intelligenceMinusButton.gameObject.SetActive(false);
-			luckMinusButton.gameObject.SetActive(false);
-
+			ToggleArrowButtons();
 		}
+	}
+
+	void ToggleArrowButtons()
+	{
+		bool _hasTraitPoints = (traitPointsToSpend > 0);
+		strengthPlusButton.gameObject.SetActive(_hasTraitPoints);
+		dexterityPlusButton.gameObject.SetActive(_hasTraitPoints);
+		intelligencePlusButton.gameObject.SetActive(_hasTraitPoints);
+		luckPlusButton.gameObject.SetActive(_hasTraitPoints);
+
+		strengthMinusButton.gameObject.SetActive(strengthChange > 0);
+		dexterityMinusButton.gameObject.SetActive(dexterityChange > 0);
+		intelligenceMinusButton.gameObject.SetActive(intelligenceChange > 0);
+		luckMinusButton.gameObject.SetActive(luckChange > 0);
 	}
 }
