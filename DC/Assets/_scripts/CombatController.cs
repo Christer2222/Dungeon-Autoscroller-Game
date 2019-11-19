@@ -38,9 +38,9 @@ public class CombatController : AbilityScript
 	private GameObject gameOverHolder;
 
 	//Variables for targeting, and using abilities
-	private string activeAbility;
+	public string activeAbility;
 	private CombatController targetCombatController;
-	private static CombatController playerCombatController;
+    public static CombatController playerCombatController;
 	private Vector3 hitPosition;
 	private bool isCritted;
 	private Color activeColor = new Color(0,0,0.35f), deactiveColor = Color.gray;
@@ -49,12 +49,18 @@ public class CombatController : AbilityScript
 	private Slider fleeSlider;
 	private int fleeThreshold = 5;
 
+    public bool actedLastTick;
+
 	private static Camera mainCamera;
 
 	//variables for player ability toggeling
 	private GameObject buttonMenuScrollView, buttonMenuContent;
 	private static GameObject entryPrefab;
 	private Text abilityButtonText;
+
+    private bool debugAbilities = true;
+    private List<string> debugAbilityList = new List<string>() {"time warp", "bulk up", "mana drain", "divine luck", "regeneration", "spot weakness", "smite unlife", "siphon soul", "heal",
+					"life tap", "mass heal","fireball","focus","mass explosion" , "punch", "keen sight", "spook"};
 
 	public static void ClearAllValues()
 	{
@@ -66,22 +72,25 @@ public class CombatController : AbilityScript
 
 	private void Start()
 	{
-		if(playerCombatController == null) playerCombatController = GameObject.Find("$Player").GetComponent<CombatController>();
+        if (playerCombatController == null)
+        {
+            playerCombatController = GameObject.Find("$PlayerPortrait").GetComponent<CombatController>();
+            playerCombatController.playerOwned = true;
+        }
 
 		if(mainCamera == null) mainCamera = Camera.main;
 
 		//Set stats for enemies and the player + ui for player
-		if(gameObject.name == "$Player")
+		if(gameObject.name == "$PlayerPortrait")
 		{
-			myStats = new StatBlock(
-				StatBlock.Race.Human, 
-				10,15, //hp, mp
-				1,0, //lv, xp
-				1,1,1,1, //str, dex. int, luck
-				new List<string>() {"time warp", "bulk up", "mana drain", "divine luck", "regeneration", "spot weakness", "smite unlife", "siphon soul", "heal",
-					"life tap", "mass heal","fireball","focus","mass explosion" , "punch", "keen sight", "spook"});
+            myStats = new StatBlock(
+                StatBlock.Race.Human,
+                10, 15, //hp, mp
+                1, 0, //lv, xp
+                1, 1, 1, 1, //str, dex. int, luck
+                (debugAbilities) ? debugAbilityList : new List<string> { "punch" });
 
-			playerOwned = true;
+			//playerOwned = true;
 
 			entryPrefab = Resources.Load<GameObject>("Prefabs/$Entry");
 			
@@ -271,6 +280,12 @@ public class CombatController : AbilityScript
 
 	void Update()
 	{
+        if (Input.GetMouseButtonUp(0))
+        {
+            actedLastTick = false;
+            if (actedLastTick) print("update: " + Time.timeSinceLevelLoad);
+        }
+
 		if (turnOrder.Count != 0) //if there are combatants
 		{
 			if (turnOrder[0] == this) //if it is this actors turn
@@ -307,8 +322,6 @@ public class CombatController : AbilityScript
 	{
 		targetCombatController = this;
 		var _prevActiveAbility = activeAbility;
-
-		print(transform.name + ": " + myStats.buffs.Count);
 
 		for(int i = 0; i < myStats.buffs.Count; i++)
 		{
@@ -628,11 +641,14 @@ public class CombatController : AbilityScript
 	/// </summary>
 	IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
 	{
-		print("invoke: " + activeAbility);
 		if(!_byUser)
 			lastClick = targetCombatController.transform.position;
 
-		switch(activeAbility)
+        actedLastTick = true;
+        if (actedLastTick) print("start ability: " + Time.timeSinceLevelLoad);
+
+
+        switch (activeAbility)
 		{
 			case "time warp":
 				yield return StartCoroutine(TimeWarp(this));
@@ -690,7 +706,10 @@ public class CombatController : AbilityScript
 				break;
 		}
 
-		if (_byUser)
+        if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
+
+
+        if (_byUser)
 		{
 			AdjustMana(activeAbility);
 

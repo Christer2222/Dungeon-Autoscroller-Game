@@ -172,6 +172,7 @@ public class AbilityScript : MonoBehaviour
 
 	protected IEnumerator LifeTap(CombatController _self)
 	{
+        EffectTools.SpawnEffect("blue blast", _self.transform.position, 1);
 		int _tapped = _self.AdjustHealth(-Mathf.Clamp(5,0,_self.currentHealth -1),Elementals.Void);
 		_self.AdjustMana(_tapped);
 		yield return null;
@@ -299,10 +300,10 @@ public class AbilityScript : MonoBehaviour
 
 	protected IEnumerator Regeneration(CombatController _target, int _constant)
 	{
+		EffectTools.SpawnEffect("plusses",lastClick + Vector3.forward,1);
 
 		if(_target != null)
 		{
-			EffectTools.SpawnEffect("plusses",lastClick + Vector3.forward,1);
 			//EffectTools.SpawnEffect("heal_circle",lastClick,1);
 
 			var _buff = new Buff("regeneration","heal",3,StatBlock.StackType.Pick_Most_Potential, _constant);

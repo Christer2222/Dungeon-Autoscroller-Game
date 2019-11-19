@@ -20,6 +20,8 @@ public class ForwardMover : MonoBehaviour
 
 	public static float speedBoost;
 
+	private float aspectFloat;
+
 	private Dictionary<string,int> monsterDifficulty = new Dictionary<string,int>
 	{
 		{"ghost", 1},
@@ -36,7 +38,7 @@ public class ForwardMover : MonoBehaviour
 
 	};
 
-	private CombatController playerCombatController;
+	//private CombatController playerCombatController;
 
 	private Vector3[][] offsetTable = new Vector3[][]
 	{
@@ -47,15 +49,63 @@ public class ForwardMover : MonoBehaviour
 		new Vector3[] { new Vector3(-1,-1,0)/2,new Vector3(0,-1,0)/2,new Vector3(1,-1,0)/2,new Vector3(-0.66f,1,0)/2,new Vector3(0.66f,1,0)/2}
 	};
 
+	void SetApectUI(RectTransform _recTrans, int _index)
+	{
+		var _baseOffset = new Vector2(30, 30);
+		var _buttonRect = new Vector2(_recTrans.rect.width, _recTrans.rect.height);
+
+		_recTrans.anchorMax = Vector2.zero;
+		_recTrans.anchorMin = Vector2.zero;
+		_recTrans.offsetMin = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x)  * _index, _baseOffset.y);//(_buttonRect) * ((_index)); // new Vector2(-(120 + _recTrans.rect.width / 2) * (_index + 1), 130);
+		_recTrans.offsetMax = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x) * (_index + 1), _baseOffset.y + _buttonRect.y);//new Vector2(230, 230);
+	}
+
     // Start is called before the first frame update
     void Start()
     {
+		aspectFloat = Camera.main.GetComponent<Camera>().aspect;//(float)( Screen.currentResolution.width * 10/ Screen.currentResolution.height)/10;
+		print(aspectFloat);
+		if (aspectFloat >= 1)// && aspectFloat <= 2f)
+		{
+			//print("aspect float: " + aspectFloat);
+			RectTransform _abRec = GameObject.Find("$AbilityButton").GetComponent<RectTransform>();
+			SetApectUI(_abRec, 0);
+
+			RectTransform _itRec = GameObject.Find("$ItemsButton").GetComponent<RectTransform>();
+			SetApectUI(_itRec, 1);
+
+			RectTransform _flRec = GameObject.Find("$FleeButton").GetComponent<RectTransform>();
+			SetApectUI(_flRec, 2);
+
+			RectTransform _opRec = GameObject.Find("$OptionsButton").GetComponent<RectTransform>();
+			SetApectUI(_opRec, 3);
+
+			RectTransform _plRec = GameObject.Find("$PlayerPortrait").GetComponent<RectTransform>();
+			_plRec.anchorMax = new Vector2(1, 0);
+			_plRec.anchorMin = new Vector2(1, 0);
+			_plRec.offsetMin = new Vector2(-256,0);
+			_plRec.offsetMax = new Vector2(0, 256);
+
+			RectTransform _hpRec = GameObject.Find("$HealthSlider").GetComponent<RectTransform>();
+			_hpRec.anchorMin = new Vector2(1, 0);
+			_hpRec.anchorMax = new Vector2(1, 0);
+			_hpRec.offsetMin = new Vector2(_opRec.localPosition.x - _hpRec.localPosition.x, 128);
+			_hpRec.offsetMax = new Vector2(-256, 256);
+
+			RectTransform _mpRec = GameObject.Find("$ManaSlider").GetComponent<RectTransform>();
+			_mpRec.anchorMin = _hpRec.anchorMin;
+			_mpRec.anchorMax = _hpRec.anchorMax;
+			_mpRec.offsetMin = new Vector2(_opRec.localPosition.x - _mpRec.localPosition.x, 0);
+			_mpRec.offsetMax = new Vector2(-256, 128);
+		}
+
+
 		segmentPrefab = (GameObject)Resources.Load("Prefabs/Segment");
 		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
 		enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
 		print(enemySprites.Length);
-		playerCombatController = gameObject.GetComponent<CombatController>();
-		
+		//playerCombatController = gameObject.GetComponent<CombatController>();
+
 	}
 
 	// Update is called once per frame
@@ -72,16 +122,16 @@ public class ForwardMover : MonoBehaviour
 			if (buffTimer <= 0)
 			{
 				buffTimer = 1;
-				playerCombatController.TickBuffs();
+				CombatController.playerCombatController.TickBuffs();
 			}
 		}
 		else
 		{
 			if (CombatController.turnOrder.Count == 0)
 			{
-				CombatController.turnOrder.Add(playerCombatController);
+				CombatController.turnOrder.Add(CombatController.playerCombatController);
 
-				int _difficulty = Mathf.Clamp(playerCombatController.myStats.level * 2 + Random.Range(-2,2),1,playerCombatController.myStats.level * 3);
+				int _difficulty = Mathf.Clamp(CombatController.playerCombatController.myStats.level * 2 + Random.Range(-2,2),1, CombatController.playerCombatController.myStats.level * 3);
 
 				int _ghosts = 3;//Random.Range(2,4);
 				for(int i = 0; i < _ghosts; i++)

@@ -65,14 +65,15 @@ public class EffectTools : MonoBehaviour
 
 	public static SpriteRenderer SpawnEffect(string _name, Vector3 _worldPos, float _destroyTime = 0, int _layerIndex = 10)
 	{
-		if(!initialized)
+        if (!initialized)
 			Initialize();
 
-		print(_name + " is in dictio: " + effectDictionary.ContainsKey(_name));
+        //print("wp: " + _worldPos + " pccp: " + CombatController.playerCombatController.transform.position.z);
+        //if (_worldPos.z < CombatController.playerCombatController.transform.position.z + 1)
+        //    _worldPos = CombatController.playe
+
 		if(effectDictionary.ContainsKey(_name))
 		{
-			print("is here");
-
 			var _go = new GameObject();
 			var _sr = _go.AddComponent<SpriteRenderer>();
 			_go.transform.position = _worldPos;
