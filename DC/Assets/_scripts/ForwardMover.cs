@@ -15,8 +15,8 @@ public class ForwardMover : MonoBehaviour
 
 	private List<GameObject> segmentList = new List<GameObject>();
 
-	private static float encounterTimer = 2;
-	private float buffTimer = 1;
+	public static float encounterTimer = 2;
+	public static float buffTimer = 1;
 
 	public static float speedBoost;
 

@@ -188,6 +188,7 @@ public class LevelUpScreen : MonoBehaviour
 	void ToggleLevelUpScreen()
 	{
         if (CombatController.playerCombatController.actedLastTick) return;
+		//if (CombatController.playerCombatController.selectedAbility != string.Empty) return;
 
 		levelUpScreen.SetActive(!levelUpScreen.activeSelf);
 

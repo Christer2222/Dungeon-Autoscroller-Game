@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ResetStaticVariablesManager : MonoBehaviour
 {
@@ -7,5 +8,9 @@ public class ResetStaticVariablesManager : MonoBehaviour
     {
 		LevelUpScreen.abilityPointsToSpend = LevelUpScreen.traitPointsToSpend = 0;
 		CombatController.ClearAllValues();
-    }
+		ForwardMover.encounterTimer = 2;
+		ForwardMover.buffTimer = 1;
+
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
 }

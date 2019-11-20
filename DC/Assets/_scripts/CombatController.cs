@@ -15,6 +15,7 @@ public class CombatController : AbilityScript
 	private GameObject UICanvas;
 	private Slider healthSlider, manaSlider, xpSlider;
 	private Text currentHealthText, currentManaText, maxManaText, maxHealthText;
+	private Text damageText;
 	//private static Button abilityButton1, abilityButton2, abilityButton3, abilityButton4;
 
 	//game stats that change often
@@ -26,11 +27,11 @@ public class CombatController : AbilityScript
 	public static StatBlock ghostBlock				= new StatBlock(StatBlock.Race.Undead, "Ghost"				,2,2,1,0,1,3,1,1,new List<string> { "spook" },_weaknesses: Elementals.Light,_absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock nosemanBlock			= new StatBlock(StatBlock.Race.Demon, "Noseman"				,2,0,1,0,1,1,1,1,new List<string> { "punch" }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock eyeballBlock			= new StatBlock(StatBlock.Race.Demon, "Eyeball"				,7,7,2,1,1,2,1,2,new List<string> { "punch", "mana drain" },_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock lightElementalBlock	= new StatBlock(StatBlock.Race.Elemental, "Light Elemental"		,10,2,2,0,1,2,1,2,new List<string> { "punch", "heal" },_absorbs: Elementals.Light, _weaknesses: Elementals.Void,_aiType: StatBlock.AIType.Coward);
+	public static StatBlock lightElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Light Elemental"	,10,2,2,0,1,2,1,2,new List<string> { "punch", "heal" },_absorbs: Elementals.Light, _weaknesses: Elementals.Void,_aiType: StatBlock.AIType.Coward);
 	public static StatBlock airElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Air Elemental"	,7,5,2,1,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Air, _weaknesses:  Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock earthElementalBlock	= new StatBlock(StatBlock.Race.Elemental, "Earth Elemental"		,15,5,2,1,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock earthElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Earth Elemental"	,15,5,2,1,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock fireElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Fire Elemental"	,5,5,2,1,1,2,1,2,new List<string> { "punch", "fireball" },_absorbs: Elementals.Fire, _weaknesses: Elementals.Water,_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock waterElementalBlock	= new StatBlock(StatBlock.Race.Elemental, "Water Elemental"		,12,5,2,0,1,2,1,2,new List<string> { "punch", "regeneration" },_absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock waterElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Water Elemental"	,12,5,2,0,1,2,1,2,new List<string> { "punch", "regeneration" },_absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock harpyBlock				= new StatBlock(StatBlock.Race.Demon, "Harpy"				,10,5,2,0,1,2,1,2,new List<string> { "punch", "bulk up" },_aiType: StatBlock.AIType.Dumb);
 	public static StatBlock druidBlock				= new StatBlock(StatBlock.Race.Elf, "Druid"					,5,10,2,0,1,2,1,2,new List<string> { "punch", "heal", "regeneration" },_resistances: Elementals.Earth,_aiType: StatBlock.AIType.Coward);
 
@@ -80,6 +81,8 @@ public class CombatController : AbilityScript
 
 		if(mainCamera == null) mainCamera = Camera.main;
 
+		damageText = transform.Find("$DamageTextHolder").Find("$DamageText").GetComponent<Text>();
+
 		//Set stats for enemies and the player + ui for player
 		if(gameObject.name == "$PlayerPortrait")
 		{
@@ -100,23 +103,7 @@ public class CombatController : AbilityScript
 			foreach(Transform _t in UICanvas.GetComponentsInChildren<Transform>(true))
 			{
 				switch(_t.name)
-				{/*
-					case "$AbilityButton1":
-						abilityButton1 = _t.GetComponent<Button>();
-
-						break;
-					case "$AbilityButton2":
-						abilityButton2 = _t.GetComponent<Button>();
-
-						break;
-					case "$AbilityButton3":
-						abilityButton3 = _t.GetComponent<Button>();
-
-						break;
-					case "$AbilityButton4":
-						abilityButton4 = _t.GetComponent<Button>();
-						break;
-						*/
+				{
 					case "$FleeButton":
 						fleeButton = _t.GetComponent<Button>();
 						fleeButton.onClick.AddListener(delegate {
@@ -167,7 +154,6 @@ public class CombatController : AbilityScript
 					case "$ButtonMenuScrollView":
 						buttonMenuScrollView = _t.gameObject;
 						buttonMenuScrollView.transform.SetParent(UICanvas.transform);
-						//buttonMenuScrollView.transform.position = new Vector3(0,0,buttonMenuScrollView.transform.position.z);//Vector3.zero;
 						break;
 					case "$Content":
 						buttonMenuContent = _t.gameObject;
@@ -178,7 +164,7 @@ public class CombatController : AbilityScript
 						{
 							if (_childGameOver.name == "$RestartButton")
 							{
-								_childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>(); UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);});
+								_childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>();});
 							}
 						}
 						break;
@@ -210,47 +196,6 @@ public class CombatController : AbilityScript
 		{
 			currentHealth = myStats.maxHealth;
 			currentMana = myStats.maxMana;
-			/*
-				#region enemy stat set
-				var _regName = Regex.Match(gameObject.name.ToLower(),".+(?=[ ])").Value;
-				switch(_regName)
-				{
-					case "ghost":
-						myStats = ghostBlock.Clone();
-						break;
-					case "noseman":
-						myStats = nosemanBlock.Clone();
-						break;
-					case "light elemental":
-						myStats = lightElementalBlock.Clone();
-						break;
-					case "eyeball":
-						myStats = eyeballBlock.Clone();
-						break;
-					case "air elemental":
-						myStats = airElementalBlock.Clone();
-						break;
-					case "fire elemental":
-						myStats = fireElementalBlock.Clone();
-						break;
-					case "earth elemental":
-						myStats = earthElementalBlock.Clone();
-						break;
-					case "water elemental":
-						myStats = waterElementalBlock.Clone();
-						break;
-					case "harpy":
-						myStats = harpyBlock.Clone();
-						break;
-					case "druid":
-						myStats = druidBlock.Clone();
-						break;
-					default:
-						Debug.LogError("No enemy with name: " + _regName);
-						break;
-				}
-				#endregion
-			*/
 		}
 
 	}
@@ -500,8 +445,13 @@ public class CombatController : AbilityScript
 		//print("amount multiplier: " + _amountMultiplier);
 		int _totalDamage = currentHealth;
 
-		currentHealth = Mathf.Clamp(currentHealth + Mathf.CeilToInt(_amount * _amountMultiplier) * ((isCritted)? 2 : 1), 0, myStats.maxHealth);
+		var _damageCalc = currentHealth + Mathf.CeilToInt(_amount * _amountMultiplier) * ((isCritted) ? 2 : 1);
+
+		damageText.text = ((_damageCalc > 0)? "+":"-") + _damageCalc.ToString();
+
+		currentHealth = Mathf.Clamp(_damageCalc, 0, myStats.maxHealth);
 		_totalDamage -= currentHealth;
+
 
 		if(playerOwned)
 		{
@@ -664,8 +614,8 @@ public class CombatController : AbilityScript
 			lastClick = playerCombatController.transform.position;
 
         actedLastTick = true;
-        //if (actedLastTick) print("start ability: " + Time.timeSinceLevelLoad);
-
+		//yield return new WaitForEndOfFrame();
+		//actedLastTick = false;
 
         switch (_tempActiveAbility)
 		{
@@ -725,7 +675,7 @@ public class CombatController : AbilityScript
 				break;
 		}
 
-       // if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
+        if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
 
 
         if (_byUser)
