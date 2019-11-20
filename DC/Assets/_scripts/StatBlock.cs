@@ -33,15 +33,17 @@ public class StatBlock
 	}
 
 	public StatBlock(Race _race,
+		string _name,
 		int _maxHealth,int _maxMana,
 		int _level,int _xp,
 		int _strenght,int _dexterity,int _intelligence,int _luck,
 		List<string> _abilities, //should be List<Ienumerator> to have less human errors
-		AbilityScript.Elementals _weaknesses = AbilityScript.Elementals.None, AbilityScript.Elementals _resistances = AbilityScript.Elementals.None, AbilityScript.Elementals _immunities = AbilityScript.Elementals.None, AbilityScript.Elementals _absorbs = AbilityScript.Elementals.None,
-		AIType _aiType = AIType.None,
-		List<AbilityScript.Buff> _buffs = null)
+		AbilityScript.Elementals _weaknesses = default, AbilityScript.Elementals _resistances = default, AbilityScript.Elementals _immunities = default, AbilityScript.Elementals _absorbs = default,
+		AIType _aiType = default,
+		List<AbilityScript.Buff> _buffs = default)
 	{
 		race = _race;
+		name = _name;
 		weaknesses = _weaknesses;
 		resistances = _resistances;
 		immunities = _immunities;
@@ -66,6 +68,7 @@ public class StatBlock
 	}
 
 	public Race race;
+	public string name;
 	public AbilityScript.Elementals resistances, weaknesses, immunities, absorbs;
 	public int maxHealth,
 		maxMana;

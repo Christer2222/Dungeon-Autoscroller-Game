@@ -23,22 +23,22 @@ public class CombatController : AbilityScript
 	public int currentMana;
 
 
-	private static StatBlock ghostBlock				= new StatBlock(StatBlock.Race.Undead	,2,2,1,0,1,3,1,1,new List<string> { "spook" },_weaknesses: Elementals.Light,_absorbs: Elementals.Unlife,_aiType: StatBlock.AIType.Dumb);
-	private static StatBlock nosemanBlock			= new StatBlock(StatBlock.Race.Demon	,1,0,1,0,3,1,1,1,new List<string> { "punch" }, _aiType: StatBlock.AIType.Dumb);
-	private static StatBlock lightElementalBlock	= new StatBlock(StatBlock.Race.Elemental,10,2,1,0,1,2,1,2,new List<string> { "punch", "heal" },_absorbs: Elementals.Light, _weaknesses: Elementals.Void,_aiType: StatBlock.AIType.Coward);
-	private static StatBlock eyeballBlock			= new StatBlock(StatBlock.Race.Demon	,7,7,2,0,1,2,1,2,new List<string> { "punch", "mana drain" },_aiType: StatBlock.AIType.Dumb);
-	private static StatBlock airElementalBlock		= new StatBlock(StatBlock.Race.Elemental,7,5,2,0,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Air, _weaknesses:  Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
-	private static StatBlock earthElementalBlock	= new StatBlock(StatBlock.Race.Elemental,15,5,2,0,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
-	private static StatBlock fireElementalBlock		= new StatBlock(StatBlock.Race.Elemental,5,5,2,0,1,2,1,2,new List<string> { "punch", "fireball" },_absorbs: Elementals.Fire, _weaknesses: Elementals.Water,_aiType: StatBlock.AIType.Dumb);
-	private static StatBlock waterElementalBlock	= new StatBlock(StatBlock.Race.Elemental,12,5,2,0,1,2,1,2,new List<string> { "punch", "regeneration" },_absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
-	private static StatBlock harpyBlock				= new StatBlock(StatBlock.Race.Demon	,10,5,2,0,1,2,1,2,new List<string> { "punch", "bulk up" },_aiType: StatBlock.AIType.Dumb);
-	private static StatBlock druidBlock				= new StatBlock(StatBlock.Race.Elf		,5,10,2,0,1,2,1,2,new List<string> { "punch", "heal", "regeneration" },_resistances: Elementals.Earth,_aiType: StatBlock.AIType.Coward);
+	public static StatBlock ghostBlock				= new StatBlock(StatBlock.Race.Undead, "Ghost"				,2,2,1,0,1,3,1,1,new List<string> { "spook" },_weaknesses: Elementals.Light,_absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock nosemanBlock			= new StatBlock(StatBlock.Race.Demon, "Noseman"				,2,0,1,0,1,1,1,1,new List<string> { "punch" }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock eyeballBlock			= new StatBlock(StatBlock.Race.Demon, "Eyeball"				,7,7,2,1,1,2,1,2,new List<string> { "punch", "mana drain" },_aiType: StatBlock.AIType.Dumb);
+	public static StatBlock lightElementalBlock	= new StatBlock(StatBlock.Race.Elemental, "Light Elemental"		,10,2,2,0,1,2,1,2,new List<string> { "punch", "heal" },_absorbs: Elementals.Light, _weaknesses: Elementals.Void,_aiType: StatBlock.AIType.Coward);
+	public static StatBlock airElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Air Elemental"	,7,5,2,1,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Air, _weaknesses:  Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock earthElementalBlock	= new StatBlock(StatBlock.Race.Elemental, "Earth Elemental"		,15,5,2,1,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock fireElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Fire Elemental"	,5,5,2,1,1,2,1,2,new List<string> { "punch", "fireball" },_absorbs: Elementals.Fire, _weaknesses: Elementals.Water,_aiType: StatBlock.AIType.Dumb);
+	public static StatBlock waterElementalBlock	= new StatBlock(StatBlock.Race.Elemental, "Water Elemental"		,12,5,2,0,1,2,1,2,new List<string> { "punch", "regeneration" },_absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock harpyBlock				= new StatBlock(StatBlock.Race.Demon, "Harpy"				,10,5,2,0,1,2,1,2,new List<string> { "punch", "bulk up" },_aiType: StatBlock.AIType.Dumb);
+	public static StatBlock druidBlock				= new StatBlock(StatBlock.Race.Elf, "Druid"					,5,10,2,0,1,2,1,2,new List<string> { "punch", "heal", "regeneration" },_resistances: Elementals.Earth,_aiType: StatBlock.AIType.Coward);
 
 	//Gameover variables
 	private GameObject gameOverHolder;
 
 	//Variables for targeting, and using abilities
-	public string activeAbility;
+	public string selectedAbility;
 	private CombatController targetCombatController;
     public static CombatController playerCombatController;
 	private Vector3 hitPosition;
@@ -85,6 +85,7 @@ public class CombatController : AbilityScript
 		{
             myStats = new StatBlock(
                 StatBlock.Race.Human,
+				"Player",
                 10, 15, //hp, mp
                 1, 0, //lv, xp
                 1, 1, 1, 1, //str, dex. int, luck
@@ -122,6 +123,8 @@ public class CombatController : AbilityScript
 							if (turnOrder.Count != 0)
 								if (turnOrder[0] == this)
 								{
+									ResetAbilityPick();
+
 									buttonMenuScrollView.SetActive(false);
 
 									fleeSlider.gameObject.SetActive(!fleeSlider.gameObject.activeSelf);
@@ -148,6 +151,7 @@ public class CombatController : AbilityScript
 						_t.GetComponent<Button>().onClick.AddListener(delegate {
 							buttonMenuScrollView.SetActive(!buttonMenuScrollView.activeSelf);
 							fleeSlider.gameObject.SetActive(false);
+							ResetAbilityPick();
 						});
 						abilityButtonText = _t.Find("$Text").GetComponent<Text>();
 						break;
@@ -162,6 +166,8 @@ public class CombatController : AbilityScript
 						break;
 					case "$ButtonMenuScrollView":
 						buttonMenuScrollView = _t.gameObject;
+						buttonMenuScrollView.transform.SetParent(UICanvas.transform);
+						//buttonMenuScrollView.transform.position = new Vector3(0,0,buttonMenuScrollView.transform.position.z);//Vector3.zero;
 						break;
 					case "$Content":
 						buttonMenuContent = _t.gameObject;
@@ -172,7 +178,7 @@ public class CombatController : AbilityScript
 						{
 							if (_childGameOver.name == "$RestartButton")
 							{
-								_childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<RestStaticVariables>(); UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);});
+								_childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>(); UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);});
 							}
 						}
 						break;
@@ -202,50 +208,51 @@ public class CombatController : AbilityScript
 		}
 		else
 		{
-			#region enemy stat set
-			var _regName = Regex.Match(gameObject.name.ToLower(),".+(?=[ ])").Value;
-			switch(_regName)
-			{
-				case "ghost":
-					myStats = ghostBlock.Clone();
-					break;
-				case "noseman":
-					myStats = nosemanBlock.Clone();
-					break;
-				case "light elemental":
-					myStats = lightElementalBlock.Clone();
-					break;
-				case "eyeball":
-					myStats = eyeballBlock.Clone();
-					break;
-				case "air elemental":
-					myStats = airElementalBlock.Clone();
-					break;
-				case "fire elemental":
-					myStats = fireElementalBlock.Clone();
-					break;
-				case "earth elemental":
-					myStats = earthElementalBlock.Clone();
-					break;
-				case "water elemental":
-					myStats = waterElementalBlock.Clone();
-					break;
-				case "harpy":
-					myStats = harpyBlock.Clone();
-					break;
-				case "druid":
-					myStats = druidBlock.Clone();
-					break;
-				default:
-					Debug.LogError("No enemy with name: " + _regName);
-					break;
-			}
-
-
 			currentHealth = myStats.maxHealth;
 			currentMana = myStats.maxMana;
-			#endregion
+			/*
+				#region enemy stat set
+				var _regName = Regex.Match(gameObject.name.ToLower(),".+(?=[ ])").Value;
+				switch(_regName)
+				{
+					case "ghost":
+						myStats = ghostBlock.Clone();
+						break;
+					case "noseman":
+						myStats = nosemanBlock.Clone();
+						break;
+					case "light elemental":
+						myStats = lightElementalBlock.Clone();
+						break;
+					case "eyeball":
+						myStats = eyeballBlock.Clone();
+						break;
+					case "air elemental":
+						myStats = airElementalBlock.Clone();
+						break;
+					case "fire elemental":
+						myStats = fireElementalBlock.Clone();
+						break;
+					case "earth elemental":
+						myStats = earthElementalBlock.Clone();
+						break;
+					case "water elemental":
+						myStats = waterElementalBlock.Clone();
+						break;
+					case "harpy":
+						myStats = harpyBlock.Clone();
+						break;
+					case "druid":
+						myStats = druidBlock.Clone();
+						break;
+					default:
+						Debug.LogError("No enemy with name: " + _regName);
+						break;
+				}
+				#endregion
+			*/
 		}
+
 	}
 
 	void RefreshAbilityList()
@@ -270,7 +277,7 @@ public class CombatController : AbilityScript
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
 				buttonMenuScrollView.SetActive(false);
 				abilityButtonText.text = _s;
-				activeAbility = _s;
+				selectedAbility = _s;
 			});
 
 		}
@@ -321,19 +328,19 @@ public class CombatController : AbilityScript
 	public void TickBuffs()
 	{
 		targetCombatController = this;
-		var _prevActiveAbility = activeAbility;
+		var _prevActiveAbility = selectedAbility;
 
 		for(int i = 0; i < myStats.buffs.Count; i++)
 		{
 			var _buff = myStats.buffs[i];
-			activeAbility = _buff.function;
+			selectedAbility = _buff.function;
 			StartCoroutine(InvokeActiveAbility(false,_buff.constant));
 			_buff.turns--;
 		}
 
 		myStats.buffs.RemoveAll(x => x.turns <= 0);
 
-		activeAbility = _prevActiveAbility;//null;
+		selectedAbility = _prevActiveAbility;//null;
 		targetCombatController = null;
 	}
 
@@ -388,26 +395,26 @@ public class CombatController : AbilityScript
 		switch(myStats.aiType)
 		{
 			case StatBlock.AIType.None:
-				activeAbility = "";
+				selectedAbility = "";
 				break;
 			case StatBlock.AIType.Dumb:
-				activeAbility = myStats.abilities[Random.Range(0,myStats.abilities.Count)];
+				selectedAbility = myStats.abilities[Random.Range(0,myStats.abilities.Count)];
 				activeType = AbilityType.offensive;
 				break;
 			case StatBlock.AIType.Smart:
 				if(currentHealth <= myStats.maxHealth / 3)
 				{
-					activeAbility = _recoveries[Random.Range(0,_recoveries.Count)];
+					selectedAbility = _recoveries[Random.Range(0,_recoveries.Count)];
 					activeType = AbilityType.recovery;
 				}
 				else if (myStats.buffs.Count == 0)
 				{
-					activeAbility = _buffs[Random.Range(0,_offensive.Count)];
+					selectedAbility = _buffs[Random.Range(0,_offensive.Count)];
 					activeType = AbilityType.buff;
 				}
 				else
 				{
-					activeAbility = _offensive[Random.Range(0,myStats.abilities.Count)];
+					selectedAbility = _offensive[Random.Range(0,myStats.abilities.Count)];
 					activeType = AbilityType.offensive;
 				}
 
@@ -416,12 +423,12 @@ public class CombatController : AbilityScript
 
 				if (currentHealth <= myStats.maxHealth / 2)
 				{
-					activeAbility = _recoveries[Random.Range(0,_recoveries.Count)];
+					selectedAbility = _recoveries[Random.Range(0,_recoveries.Count)];
 					activeType = AbilityType.recovery;
 				}
 				else
 				{
-					activeAbility = _nonRecover[Random.Range(0,_nonRecover.Count)];
+					selectedAbility = _nonRecover[Random.Range(0,_nonRecover.Count)];
 					activeType = AbilityType.offensive;
 				}
 				break;
@@ -439,7 +446,7 @@ public class CombatController : AbilityScript
 
 
 
-		print(transform.name + "(+" + myStats.aiType + "+)" + " is doing " + activeAbility);
+		print(transform.name + "(+" + myStats.aiType + "+)" + " is doing " + selectedAbility);
 		yield return StartCoroutine(InvokeActiveAbility());		
 	}
 
@@ -562,73 +569,78 @@ public class CombatController : AbilityScript
 
 	public void Click()
 	{
-		hitPosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE));
-		RaycastHit2D _hit = CheckIfHit(hitPosition);
+		hitPosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE)); //store where to click
+		RaycastHit2D _hit = CheckIfHit(hitPosition); //get click info
 
-		bool _hitSomething = (_hit.collider != null);
+		bool _hitSomething = (_hit.collider != null); //store if something was hit
 
-		if(_hitSomething)
+		if(_hitSomething) //what was hit
 		{
-
+			print("tag;: " + _hit.transform.tag);
 			if(_hit.transform.CompareTag("AbilityButton"))
 			{
-				activeAbility = _hit.transform.Find("$Text").GetComponent<Text>().text;
+				selectedAbility = _hit.transform.Find("$Text").GetComponent<Text>().text;
 				return;
 			}
 			else if(_hit.transform.CompareTag("UI"))
 			{
+
 				//activeAbility = string.Empty;
 				return;
 			}
 		}
 
-		bool _fleeing = fleeSlider != null;
-		if(_fleeing) _fleeing = fleeSlider.gameObject.activeSelf;
+		#region Flee Logic
+		bool _fleeing = fleeSlider != null; //is the fleeslider there
+		if(_fleeing) _fleeing = fleeSlider.gameObject.activeSelf; //is the player fleeing
 
-		if (_fleeing)
+		if (_fleeing) //if fleeing
 		{
-			if(Mathf.Abs((fleeSlider.maxValue / 2) - (fleeSlider.value)) <= fleeThreshold + myStats.dexterity)
+			if(Mathf.Abs((fleeSlider.maxValue / 2) - (fleeSlider.value)) <= fleeThreshold + myStats.dexterity) //if the pointer is withing the flee zone, succeed
 			{
-				var _dt = new CombatController[turnOrder.Count];
-				turnOrder.CopyTo(_dt);
-				foreach (CombatController _cc in _dt)
+				var _tempTurnorder = new CombatController[turnOrder.Count];
+				turnOrder.CopyTo(_tempTurnorder);
+				foreach (CombatController _cc in _tempTurnorder) //for all entries in the temp turn order
 				{
 					if (_cc != this)
-						StartCoroutine(RemoveFromTurnOrder(0,_cc));
+						StartCoroutine(RemoveFromTurnOrder(0,_cc)); //destroy and remove items from the turn order
 				}
 
-				//turnOrder.ForEach(x => x);// StartCoroutine(RemoveFromTurnOrder(1,x)));
-				ForwardMover.speedBoost = 3;
+				ForwardMover.speedBoost = 3; //run after fleeing
 			}
 			else
 			{
-				EndTurn();
+				EndTurn(); //if failed fleeing, end the turn as an action
+				
 			}
 			StartCoroutine(DeactivateGameObject(fleeSlider.gameObject,0.2f));
 		}
-		else if(!string.IsNullOrEmpty(activeAbility))
+		#endregion
+		else if (!string.IsNullOrEmpty(selectedAbility)) //if not fleeing, but has an ability selected
 		{
-			if(_hit.transform != null)
+			if(_hit.transform != null) //if something was hit
 			{
-				if(_hit.transform.CompareTag("CritArea"))
+				if(_hit.transform.CompareTag("CritArea")) //if it was a crit area
 				{
 					targetCombatController = _hit.transform.GetComponentInParent<CombatController>();
 					targetCombatController.isCritted = true;
 				}
-				else if (_hit.transform.name == "$PlayerPortrait")
+				else if (_hit.transform.name == "$PlayerPortrait") //if it was the player itself
 				{
-					print(activeAbility + " self!");
+					print(selectedAbility + " self!");
 					targetCombatController = playerCombatController;
 				}
-				else
+				else //if just the normal enemy body was hit
 					targetCombatController = _hit.transform.GetComponent<CombatController>();
 			}
-			else
+			else //if an ability is selected, but the player missed
 			{
 				targetCombatController = null;
 			}
 
-			StartCoroutine(InvokeActiveAbility());
+			
+
+			StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
 
 			if (targetCombatController != null) targetCombatController.isCritted = false;
 			targetCombatController = null;
@@ -641,14 +653,21 @@ public class CombatController : AbilityScript
 	/// </summary>
 	IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
 	{
-		if(!_byUser)
+		var _tempActiveAbility = selectedAbility;
+		if (!_byUser)
+		{
 			lastClick = targetCombatController.transform.position;
+		}
+		else if (playerOwned)
+			ResetAbilityPick();
+		else
+			lastClick = playerCombatController.transform.position;
 
         actedLastTick = true;
-        if (actedLastTick) print("start ability: " + Time.timeSinceLevelLoad);
+        //if (actedLastTick) print("start ability: " + Time.timeSinceLevelLoad);
 
 
-        switch (activeAbility)
+        switch (_tempActiveAbility)
 		{
 			case "time warp":
 				yield return StartCoroutine(TimeWarp(this));
@@ -702,16 +721,16 @@ public class CombatController : AbilityScript
 				yield return StartCoroutine(LifeTap(this));
 				break;
 			default:
-				Debug.LogError("No move set for \"" + activeAbility + "\"");
+				Debug.LogError("No move set for \"" + selectedAbility + "\"");
 				break;
 		}
 
-        if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
+       // if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
 
 
         if (_byUser)
 		{
-			AdjustMana(activeAbility);
+			AdjustMana(_tempActiveAbility);
 
 			EndTurn();
 		}
@@ -727,9 +746,8 @@ public class CombatController : AbilityScript
 	{
 		if(playerOwned)
 		{
-			abilityButtonText.text = "Abilities";
+			ResetAbilityPick();
 			CheckMana();
-			activeAbility = string.Empty;
 		}
 
 		if(turnOrder.Count > 1 && (myStats.buffs.Find(x => x.function == "extra turn") == null))
@@ -745,5 +763,11 @@ public class CombatController : AbilityScript
 		}
 
 		startedTurn = false;
+	}
+
+	void ResetAbilityPick()
+	{
+		abilityButtonText.text = "Abilities";
+		selectedAbility = string.Empty;
 	}
 }

@@ -15,7 +15,7 @@ public class AbilityScript : MonoBehaviour
 		{"heal",-2 },
 		{"mass heal", -5 },
 		{"keen sight", -1 },
-		{"smite", -1 },
+		{"smite unlife", -1 },
 		{"siphon soul", -3 },
 		{"spot weakness", -1 },
 		{"regeneration", -1 },
@@ -200,13 +200,16 @@ public class AbilityScript : MonoBehaviour
 	{
 		EffectTools.SpawnEffect("light cloud",lastClick,1);
 
-		//_self.AdjustMana(-manaCostDictionary["smite unlife"]);
-		//EffectTools.SpawnEffect("punch",lastClick,1);
-		int _bonusDamage = (_target.myStats.race.HasFlag(_targetRace)) ? 1 : 0;
+		if (_target != null)
+		{
 
-		print(_constant + _bonusDamage);
+			//_self.AdjustMana(-manaCostDictionary["smite unlife"]);
+			//EffectTools.SpawnEffect("punch",lastClick,1);
+			int _bonusDamage = (_target.myStats.race.HasFlag(_targetRace)) ? 1 : 0;
 
-		if(_target != null) _target.AdjustHealth(-(_constant + _bonusDamage),Elementals.Physical);
+
+			_target.AdjustHealth(-(_constant + _bonusDamage),Elementals.Physical);
+		}
 		yield return null;
 	}
 

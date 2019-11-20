@@ -14,7 +14,7 @@ public class LevelUpScreen : MonoBehaviour
 
 	private Text strengthText, dexterityText, intelligenceText, luckText;
 	private Text traitPointToSpendText, abilityPointsToSpendText;
-    private string TRAIT_POINTS_DEFAULT_STRING = "Trait points: ", ABILITY_POINTS_DEFAULT_STRING = "Ability points: ";
+    private const string TRAIT_POINTS_DEFAULT_STRING = "Trait points: ", ABILITY_POINTS_DEFAULT_STRING = "Ability points: ";
 	private Text classText;
 
 	private Button strengthPlusButton, dexterityPlusButton, intelligencePlusButton, luckPlusButton;
@@ -187,10 +187,6 @@ public class LevelUpScreen : MonoBehaviour
 
 	void ToggleLevelUpScreen()
 	{
-        print("lev press: " + Time.timeSinceLevelLoad);
-
-        print("toggle " + CombatController.playerCombatController.activeAbility);
-        print(CombatController.playerCombatController.actedLastTick);
         if (CombatController.playerCombatController.actedLastTick) return;
 
 		levelUpScreen.SetActive(!levelUpScreen.activeSelf);

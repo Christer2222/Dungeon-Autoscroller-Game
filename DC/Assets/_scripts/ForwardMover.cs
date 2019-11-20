@@ -7,7 +7,7 @@ public class ForwardMover : MonoBehaviour
 {
 	private GameObject segmentPrefab;
 	private GameObject enemyPrefab;
-	private Sprite[] enemySprites;
+	private Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
 	private const float SEGMENT_DISTANCE = 8;
 
@@ -22,32 +22,6 @@ public class ForwardMover : MonoBehaviour
 
 	private float aspectFloat;
 
-	private Dictionary<string,int> monsterDifficulty = new Dictionary<string,int>
-	{
-		{"ghost", 1},
-		{"noseman", 1},
-		{"light elemental", 1},
-		{"eyeball", 1},
-		{"air elemental", 2},
-		{"fire elemental", 2},
-		{"earth elemental", 2},
-		{"water elemental", 2},
-		{"harpy", 2},
-		{"druid", 2},
-
-
-	};
-
-	//private CombatController playerCombatController;
-
-	private Vector3[][] offsetTable = new Vector3[][]
-	{
-		new Vector3[] { new Vector3(0,0,0)/2 },
-		new Vector3[] { new Vector3(-0.66f,0,0)/2,new Vector3(0.66f,0,0)/2},
-		new Vector3[] { new Vector3(-0.66f,0,0)/2,new Vector3(0,1,0)/2,new Vector3(0.66f,0,0)/2 },
-		new Vector3[] { new Vector3(-1,-1,0)/2,new Vector3(1,-1,0)/2,new Vector3(-1,1,0)/2,new Vector3(1,1,0)/2},
-		new Vector3[] { new Vector3(-1,-1,0)/2,new Vector3(0,-1,0)/2,new Vector3(1,-1,0)/2,new Vector3(-0.66f,1,0)/2,new Vector3(0.66f,1,0)/2}
-	};
 
 	void SetApectUI(RectTransform _recTrans, int _index)
 	{
@@ -56,18 +30,16 @@ public class ForwardMover : MonoBehaviour
 
 		_recTrans.anchorMax = Vector2.zero;
 		_recTrans.anchorMin = Vector2.zero;
-		_recTrans.offsetMin = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x)  * _index, _baseOffset.y);//(_buttonRect) * ((_index)); // new Vector2(-(120 + _recTrans.rect.width / 2) * (_index + 1), 130);
-		_recTrans.offsetMax = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x) * (_index + 1), _baseOffset.y + _buttonRect.y);//new Vector2(230, 230);
+		_recTrans.offsetMin = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x)  * _index, _baseOffset.y);
+		_recTrans.offsetMax = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x) * (_index + 1), _baseOffset.y + _buttonRect.y);
 	}
 
     // Start is called before the first frame update
     void Start()
     {
-		aspectFloat = Camera.main.GetComponent<Camera>().aspect;//(float)( Screen.currentResolution.width * 10/ Screen.currentResolution.height)/10;
-		print(aspectFloat);
-		if (aspectFloat >= 1)// && aspectFloat <= 2f)
+		aspectFloat = Camera.main.aspect;
+		if (aspectFloat >= 1)
 		{
-			//print("aspect float: " + aspectFloat);
 			RectTransform _abRec = GameObject.Find("$AbilityButton").GetComponent<RectTransform>();
 			SetApectUI(_abRec, 0);
 
@@ -102,8 +74,11 @@ public class ForwardMover : MonoBehaviour
 
 		segmentPrefab = (GameObject)Resources.Load("Prefabs/Segment");
 		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
-		enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
-		print(enemySprites.Length);
+		var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
+		for (int i = 0; i < enemySprites.Length; i++)
+		{
+			enemySpriteDictionary.Add(enemySprites[i].name.ToLower().Replace(" ", "_"), enemySprites[i]);
+		}
 		//playerCombatController = gameObject.GetComponent<CombatController>();
 
 	}
@@ -115,7 +90,6 @@ public class ForwardMover : MonoBehaviour
 		{
 			encounterTimer -= Time.deltaTime;
 			transform.position += Vector3.forward * Time.deltaTime * (5 + speedBoost * 10);
-			print(speedBoost);
 
 			speedBoost = Mathf.Clamp(speedBoost - Time.deltaTime,0,float.MaxValue);
 			buffTimer -= Time.deltaTime;
@@ -131,20 +105,32 @@ public class ForwardMover : MonoBehaviour
 			{
 				CombatController.turnOrder.Add(CombatController.playerCombatController);
 
-				int _difficulty = Mathf.Clamp(CombatController.playerCombatController.myStats.level * 2 + Random.Range(-2,2),1, CombatController.playerCombatController.myStats.level * 3);
+				var _playerStats = CombatController.playerCombatController.myStats;
 
-				int _ghosts = 3;//Random.Range(2,4);
-				for(int i = 0; i < _ghosts; i++)
+				var _possibles = EncounterData.encounterTable.Where(x => x.level == _playerStats.level + 1).ToArray(); //find encounter of equal level
+				int _lower = _playerStats.level; //store level
+				while (_possibles.Length == 0) //if no encounters
 				{
-					/*
-					float _rightOffset = (((float)(i + 1) / _ghosts) - ((float)(_ghosts + 1) / 2) / (float)_ghosts) * _ghosts * 2;
-					Vector3 _spawnPos = transform.position + Vector3.forward * 10 + Vector3.right * _rightOffset;
-					*/
-
-					var _go = Instantiate(enemyPrefab, transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE + offsetTable[_ghosts - 1][i] * 2f,Quaternion.identity);
-					_go.name = (Random.Range(0,2) == 0) ? "ghost " + i : "ghost " + i;// "light elemental " + i;
-					CombatController.turnOrder.Add(_go.GetComponent<CombatController>());
+					_lower--; //lower level check by 1
+					_possibles = EncounterData.encounterTable.Where(x => x.level == _lower).ToArray(); //find encounters
+					if (_lower <= 0) //if checking below 0, end search
+					{
+						encounterTimer = 5;
+						return;
+					}
 				}
+
+				if (_playerStats.level == 1 && _playerStats.xp == 0) //if this is the first battle
+					_possibles = EncounterData.encounterTable.Where(x => x.level == 0).ToArray(); //overwrite encounter check for the easiest
+
+				EncounterData.Encounter _selectedEncounter = _possibles[Random.Range(0,_possibles.Length)];
+
+				SpawnEnemy(_selectedEncounter.monsterBL, 0);
+				SpawnEnemy(_selectedEncounter.monsterBM, 1);
+				SpawnEnemy(_selectedEncounter.monsterBR, 2);
+				SpawnEnemy(_selectedEncounter.monsterTL, 3);
+				SpawnEnemy(_selectedEncounter.monsterTM, 4);
+				SpawnEnemy(_selectedEncounter.monsterTR, 5);
 
 				CombatController.turnOrder.OrderBy(x => (x.myStats.level * 2 + x.myStats.luck));
 
@@ -154,6 +140,21 @@ public class ForwardMover : MonoBehaviour
 			//DoneWithCombat();
 		}
     }
+
+	void SpawnEnemy(StatBlock _monstarStat, int _pos)
+	{
+		if (_monstarStat == null) return;
+
+		var _go = Instantiate(enemyPrefab, transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE + EncounterData.offsetTable[_pos], Quaternion.identity);
+		var _cc = _go.GetComponent<CombatController>();
+
+		_cc.myStats = _monstarStat;
+		_go.name = _monstarStat.name + " " + _pos;
+		var _sprite = _monstarStat.name.ToLower().Replace(" ", "_");
+		_go.GetComponent<SpriteRenderer>().sprite = enemySpriteDictionary.TryGetValue(_sprite, out Sprite _out) ? _out: enemySpriteDictionary["unknown_sprite"];
+		CombatController.turnOrder.Add(_cc);
+	}
+
 
 	public static void DoneWithCombat()
 	{
