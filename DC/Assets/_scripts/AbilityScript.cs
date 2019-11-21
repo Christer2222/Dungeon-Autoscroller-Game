@@ -6,23 +6,44 @@ using System.Reflection;
 
 public class AbilityScript : MonoBehaviour
 {
+	protected const string
+		NONE = "none",
+		EAT = "eat",
+		SPOOK = "spook",
+		PUNCH = "punch",
+		FOCUS = "focus",
+		FIREBALL = "fireball",
+		MASS_EXPLOSION = "mass explosion",
+		HEAL = "heal",
+		MASS_HEAL = "mass heal",
+		KEEN_SIGHT = "keen sight",
+		SMITE_UNLIFE = "smite unlife",
+		SIPHON_SOUL = "siphon soul",
+		SPOT_WEAKNESS = "spot weakness",
+		REGENERATION = "regeneration",
+		TIME_WARP = "time warp",
+		DIVINE_LUCK = "divine luck",
+		BULK_UP = "bulk up",
+		MANA_DRAIN = "mana drain",
+		LIFE_TAP = "life tap";
+
 	protected static Vector3 lastClick;
 	protected static Dictionary<string,int> manaCostDictionary = new Dictionary<string,int>()
 	{
-		{"none",-0 },
-		{"fireball",-2 },
-		{"mass explosion", -4 },
-		{"heal",-2 },
-		{"mass heal", -5 },
-		{"keen sight", -1 },
-		{"smite unlife", -1 },
-		{"siphon soul", -3 },
-		{"spot weakness", -1 },
-		{"regeneration", -1 },
-		{"time warp", -10 },
-		{"divine luck", -3 },
-		{"bulk up", -1 },
-		{"mana drain", -3 },
+		{NONE,-0 },
+		{FIREBALL,-2 },
+		{MASS_EXPLOSION, -4 },
+		{HEAL,-2 },
+		{MASS_HEAL, -5 },
+		{KEEN_SIGHT, -1 },
+		{SMITE_UNLIFE, -1 },
+		{SIPHON_SOUL, -3 },
+		{SPOT_WEAKNESS, -1 },
+		{REGENERATION, -1 },
+		{TIME_WARP, -10 },
+		{DIVINE_LUCK, -3 },
+		{BULK_UP, -1 },
+		{MANA_DRAIN, -3 },
 
 
 	};
@@ -40,29 +61,29 @@ public class AbilityScript : MonoBehaviour
 
 	protected static Dictionary<string,AbilityType> abilityTypeDictionary = new Dictionary<string,AbilityType>()
 	{
-		{"punch", AbilityType.attack},
-		{"fireball", AbilityType.attack},
-		{"mass explosion", AbilityType.attack},
-		{"spook", AbilityType.attack},
-		{"smite", AbilityType.attack},
+		{PUNCH, AbilityType.attack},
+		{FIREBALL, AbilityType.attack},
+		{MASS_EXPLOSION, AbilityType.attack},
+		{SPOOK, AbilityType.attack},
+		{SMITE_UNLIFE, AbilityType.attack},
 
-		{"siphon soul", AbilityType.recovery | AbilityType.attack},
+		{SIPHON_SOUL, AbilityType.recovery | AbilityType.attack},
 
-		{"bulk up", AbilityType.buff },
-		{"divine luck", AbilityType.buff },
+		{BULK_UP, AbilityType.buff },
+		{DIVINE_LUCK, AbilityType.buff },
 
-		{"heal", AbilityType.recovery},
-		{"mass heal", AbilityType.recovery},
-		{"focus", AbilityType.recovery},
-		{"eat", AbilityType.recovery},
-		{"regeneration", AbilityType.recovery},
-		{"mana drain", AbilityType.recovery},
+		{HEAL, AbilityType.recovery},
+		{MASS_HEAL, AbilityType.recovery},
+		{FOCUS, AbilityType.recovery},
+		{EAT, AbilityType.recovery},
+		{REGENERATION, AbilityType.recovery},
+		{MANA_DRAIN, AbilityType.recovery},
 
 
-		{"life tap", AbilityType.misc},
-		{"spot weakness", AbilityType.misc },
-		{"keen sight", AbilityType.misc},
-		{"time warp", AbilityType.misc },
+		{LIFE_TAP, AbilityType.misc},
+		{SPOT_WEAKNESS, AbilityType.misc },
+		{KEEN_SIGHT, AbilityType.misc},
+		{TIME_WARP, AbilityType.misc },
 	};
 
 
@@ -165,7 +186,7 @@ public class AbilityScript : MonoBehaviour
 
 	protected IEnumerator Punch(CombatController _target,CombatController _self)
 	{
-		EffectTools.SpawnEffect("punch", lastClick,1);
+		EffectTools.SpawnEffect(PUNCH, lastClick,1);
 		if(_target != null) _target.AdjustHealth(-_self.myStats.strength, Elementals.Physical);
 		yield return null;
 	}
@@ -213,10 +234,10 @@ public class AbilityScript : MonoBehaviour
 		yield return null;
 	}
 
-	protected IEnumerator Fireball(Vector3 _centerPos,CombatController _self,string _costName = "fireball")
+	protected IEnumerator Fireball(Vector3 _centerPos,CombatController _self)
 	{
 		//_self.AdjustMana(-manaCostDictionary[_costName]);
-		var _sprite = EffectTools.SpawnEffect("fireball",_centerPos,0.6f);
+		var _sprite = EffectTools.SpawnEffect(FIREBALL,_centerPos,0.6f);
 		float _blastDiameter = 1;// Mathf.Ceil((float)_self.myStats.intelligence / 5);
 		StartCoroutine(EffectTools.PingPongSize(_sprite.transform,Vector3.zero,Vector3.one * _blastDiameter,0.5f,1));
 
@@ -242,11 +263,11 @@ public class AbilityScript : MonoBehaviour
 	{
 		//_self.AdjustMana(-manaCostDictionary["mass explosion"]);
 
-		StartCoroutine(Fireball(lastClick + Vector3.left,_self,"mass explosion"));
+		StartCoroutine(Fireball(lastClick + Vector3.left,_self));
 		yield return new WaitForSeconds(0.1f);
-		StartCoroutine(Fireball(lastClick,_self,"mass explosion"));
+		StartCoroutine(Fireball(lastClick,_self));
 		yield return new WaitForSeconds(0.1f);
-		StartCoroutine(Fireball(lastClick + Vector3.right,_self,"mass explosion"));
+		StartCoroutine(Fireball(lastClick + Vector3.right,_self));
 
 		yield return null;
 	}
@@ -285,7 +306,7 @@ public class AbilityScript : MonoBehaviour
 		EffectTools.SpawnEffect("fist up",lastClick,1);
 
 
-		var _buff = new Buff("bulk up","strength",1,StatBlock.StackType.Build_Up,1);
+		var _buff = new Buff(BULK_UP,"strength",1,StatBlock.StackType.Build_Up,1);
 		AddBuff(_buff, _self);
 
 		yield return null;
@@ -296,7 +317,7 @@ public class AbilityScript : MonoBehaviour
 		EffectTools.SpawnEffect("luck up",lastClick,1);
 
 
-		var _buff = new Buff("divine luck","luck",3,StatBlock.StackType.Pick_Most_Potential,2);
+		var _buff = new Buff(DIVINE_LUCK,"luck",3,StatBlock.StackType.Pick_Most_Potential,2);
 		AddBuff(_buff,_self);
 		yield return null;
 	}
@@ -309,7 +330,7 @@ public class AbilityScript : MonoBehaviour
 		{
 			//EffectTools.SpawnEffect("heal_circle",lastClick,1);
 
-			var _buff = new Buff("regeneration","heal",3,StatBlock.StackType.Pick_Most_Potential, _constant);
+			var _buff = new Buff(REGENERATION,HEAL,3,StatBlock.StackType.Pick_Most_Potential, _constant);
 			AddBuff(_buff,_target);
 		}
 		yield return null;
@@ -369,8 +390,8 @@ public class AbilityScript : MonoBehaviour
 
 	protected IEnumerator TimeWarp(CombatController _self)
 	{
-		EffectTools.SpawnEffect("time warp",lastClick,1);
-		var _buff = new Buff("time warped","extra turn",2,StatBlock.StackType.Stack_Self,1);
+		EffectTools.SpawnEffect(TIME_WARP,lastClick,1);
+		var _buff = new Buff(TIME_WARP,"extra turn",2,StatBlock.StackType.Stack_Self,1);
 		AddBuff(_buff,_self);
 		yield return null;
 	}

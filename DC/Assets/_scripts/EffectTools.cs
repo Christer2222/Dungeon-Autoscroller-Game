@@ -7,11 +7,19 @@ public class EffectTools : MonoBehaviour
 {
 	private static bool initialized;
 	private static Dictionary<string,Sprite> effectDictionary;
-
+	private static WaitForEndOfFrame waitForEndOfFrame;
+	private static GameObject textHolder;
 
 	private static void Initialize()
 	{
 		initialized = true;
+
+		if (waitForEndOfFrame == null)
+			waitForEndOfFrame = new WaitForEndOfFrame();
+
+		if (textHolder == null)
+			textHolder = Resources.Load<GameObject>("Prefabs/$TextHolder");
+
 		if (effectDictionary == null)
 		{
 			effectDictionary = new Dictionary<string,Sprite>();
@@ -88,5 +96,26 @@ public class EffectTools : MonoBehaviour
 			Debug.LogError("No effect in dictionary with name: " + _name);
 
 		return null;
+	}
+
+	public static Text SpawnText(Vector3 _pos, Transform _parent, Color _color, string _text)
+	{
+		if (!initialized)
+			Initialize();
+
+		var _go = Instantiate(textHolder, null);
+		var _goText = _go.GetComponentInChildren<Text>();
+
+		_go.transform.position = _pos + Vector3.back * 0.01f;
+		_go.transform.localScale = Vector3.one * 0.005f;
+		_go.transform.SetParent(_parent);
+		_goText.text = _text;
+		_goText.color = _color;
+		return _goText;
+	}
+
+	IEnumerator CurveMove()
+	{
+		yield return new WaitForEndOfFrame();
 	}
 }

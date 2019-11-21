@@ -15,7 +15,7 @@ public class CombatController : AbilityScript
 	private GameObject UICanvas;
 	private Slider healthSlider, manaSlider, xpSlider;
 	private Text currentHealthText, currentManaText, maxManaText, maxHealthText;
-	private Text damageText;
+	//private Text damageText;
 	//private static Button abilityButton1, abilityButton2, abilityButton3, abilityButton4;
 
 	//game stats that change often
@@ -24,16 +24,16 @@ public class CombatController : AbilityScript
 	public int currentMana;
 
 
-	public static StatBlock ghostBlock				= new StatBlock(StatBlock.Race.Undead, "Ghost"				,2,2,1,0,1,3,1,1,new List<string> { "spook" },_weaknesses: Elementals.Light,_absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock nosemanBlock			= new StatBlock(StatBlock.Race.Demon, "Noseman"				,2,0,1,0,1,1,1,1,new List<string> { "punch" }, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock eyeballBlock			= new StatBlock(StatBlock.Race.Demon, "Eyeball"				,7,7,2,1,1,2,1,2,new List<string> { "punch", "mana drain" },_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock lightElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Light Elemental"	,10,2,2,0,1,2,1,2,new List<string> { "punch", "heal" },_absorbs: Elementals.Light, _weaknesses: Elementals.Void,_aiType: StatBlock.AIType.Coward);
-	public static StatBlock airElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Air Elemental"	,7,5,2,1,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Air, _weaknesses:  Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock earthElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Earth Elemental"	,15,5,2,1,1,2,1,2,new List<string> { "punch" },_absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock fireElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Fire Elemental"	,5,5,2,1,1,2,1,2,new List<string> { "punch", "fireball" },_absorbs: Elementals.Fire, _weaknesses: Elementals.Water,_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock waterElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Water Elemental"	,12,5,2,0,1,2,1,2,new List<string> { "punch", "regeneration" },_absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock harpyBlock				= new StatBlock(StatBlock.Race.Demon, "Harpy"				,10,5,2,0,1,2,1,2,new List<string> { "punch", "bulk up" },_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock druidBlock				= new StatBlock(StatBlock.Race.Elf, "Druid"					,5,10,2,0,1,2,1,2,new List<string> { "punch", "heal", "regeneration" },_resistances: Elementals.Earth,_aiType: StatBlock.AIType.Coward);
+	public static StatBlock ghostBlock				= new StatBlock(StatBlock.Race.Undead, "Ghost"				,2,2,1,0,1,3,1,1,new List<string> { SPOOK },_weaknesses: Elementals.Light,_absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock nosemanBlock			= new StatBlock(StatBlock.Race.Demon, "Noseman"				,2,0,1,0,1,1,1,1,new List<string> { PUNCH }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock eyeballBlock			= new StatBlock(StatBlock.Race.Demon, "Eyeball"				,7,7,2,1,1,2,1,2,new List<string> { PUNCH, MANA_DRAIN },_aiType: StatBlock.AIType.Dumb);
+	public static StatBlock lightElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Light Elemental"	,10,2,2,0,1,2,1,2,new List<string> { PUNCH, HEAL},_absorbs: Elementals.Light, _weaknesses: Elementals.Void,_aiType: StatBlock.AIType.Coward);
+	public static StatBlock airElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Air Elemental"	,7,5,2,1,1,2,1,2,new List<string> { PUNCH },_absorbs: Elementals.Air, _weaknesses:  Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock earthElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Earth Elemental"	,15,5,2,1,1,2,1,2,new List<string> { PUNCH },_absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock fireElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Fire Elemental"	,5,5,2,1,1,2,1,2,new List<string> { PUNCH, FIREBALL },_absorbs: Elementals.Fire, _weaknesses: Elementals.Water,_aiType: StatBlock.AIType.Dumb);
+	public static StatBlock waterElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Water Elemental"	,12,5,2,0,1,2,1,2,new List<string> { PUNCH, REGENERATION },_absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock harpyBlock				= new StatBlock(StatBlock.Race.Demon, "Harpy"				,10,5,2,0,1,2,1,2,new List<string> { PUNCH, BULK_UP },_aiType: StatBlock.AIType.Dumb);
+	public static StatBlock druidBlock				= new StatBlock(StatBlock.Race.Elf, "Druid"					,5,10,2,0,1,2,1,2,new List<string> { PUNCH, HEAL, REGENERATION },_resistances: Elementals.Earth,_aiType: StatBlock.AIType.Coward);
 
 	//Gameover variables
 	private GameObject gameOverHolder;
@@ -60,8 +60,8 @@ public class CombatController : AbilityScript
 	private Text abilityButtonText;
 
     private bool debugAbilities = true;
-    private List<string> debugAbilityList = new List<string>() {"time warp", "bulk up", "mana drain", "divine luck", "regeneration", "spot weakness", "smite unlife", "siphon soul", "heal",
-					"life tap", "mass heal","fireball","focus","mass explosion" , "punch", "keen sight", "spook"};
+    private List<string> debugAbilityList = new List<string>() {TIME_WARP, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
+					LIFE_TAP, MASS_HEAL,FIREBALL, FOCUS, MASS_EXPLOSION, PUNCH, KEEN_SIGHT, SPOOK};
 
 	public static void ClearAllValues()
 	{
@@ -81,7 +81,7 @@ public class CombatController : AbilityScript
 
 		if(mainCamera == null) mainCamera = Camera.main;
 
-		damageText = transform.Find("$DamageTextHolder").Find("$DamageText").GetComponent<Text>();
+		//damageText = transform.Find("$DamageTextHolder").Find("$DamageText").GetComponent<Text>();
 
 		//Set stats for enemies and the player + ui for player
 		if(gameObject.name == "$PlayerPortrait")
@@ -92,7 +92,7 @@ public class CombatController : AbilityScript
                 10, 15, //hp, mp
                 1, 0, //lv, xp
                 1, 1, 1, 1, //str, dex. int, luck
-                (debugAbilities) ? debugAbilityList : new List<string> { "punch" });
+                (debugAbilities) ? debugAbilityList : new List<string> { PUNCH });
 
 			//playerOwned = true;
 
@@ -447,7 +447,10 @@ public class CombatController : AbilityScript
 
 		var _damageCalc = Mathf.CeilToInt(_amount * _amountMultiplier) * ((isCritted) ? 2 : 1);
 
-		damageText.text = ((_damageCalc > 0)? "+":"") + _damageCalc.ToString();
+		string _textToWrite = ((_damageCalc > 0)? "+":"") + _damageCalc.ToString();
+
+		GameObject _spawnedText = EffectTools.SpawnText(transform.position, transform, (_damageCalc > 0)? Color.green: Color.red , _textToWrite).transform.parent.gameObject;
+		Destroy(_spawnedText,5);
 
 		currentHealth = Mathf.Clamp(currentHealth + _damageCalc, 0, myStats.maxHealth);
 		_totalDamage -= currentHealth;
@@ -469,9 +472,11 @@ public class CombatController : AbilityScript
 			}
 			else
 			{
+				
 				foreach(CombatController _cc in turnOrder)
 				{
-					Destroy(_cc);
+					RemoveFromTurnOrder(0,_cc);//Destroy(_cc);
+					Destroy(_cc.gameObject);
 				}
 
 				gameOverHolder.transform.GetChild(0).gameObject.SetActive(true);
@@ -619,55 +624,55 @@ public class CombatController : AbilityScript
 
         switch (_tempActiveAbility)
 		{
-			case "time warp":
+			case TIME_WARP:
 				yield return StartCoroutine(TimeWarp(this));
 				break;
-			case "bulk up":
+			case BULK_UP:
 				yield return StartCoroutine(BulkUp(this));
 				break;
-			case "mana drain":
+			case MANA_DRAIN:
 				yield return StartCoroutine(ManaDrain(targetCombatController,this));
 				break;
-			case "divine luck":
+			case DIVINE_LUCK:
 				yield return StartCoroutine(DivineLuck(this));
 				break;
-			case "regeneration":
+			case REGENERATION:
 				yield return StartCoroutine(Regeneration(targetCombatController, myStats.luck + 1));
 				break;
-			case "punch":
+			case PUNCH:
 				yield return StartCoroutine(Punch(targetCombatController,this));
 				break;
-			case "fireball":
+			case FIREBALL:
 				yield return StartCoroutine(Fireball(hitPosition,this));
 				break;
-			case "mass explosion":
+			case MASS_EXPLOSION:
 				yield return StartCoroutine(MassExplosion(hitPosition,this));
 				break;
-			case "focus":
+			case FOCUS:
 				yield return StartCoroutine(Focus(this));
 				break;
-			case "keen sight":
+			case KEEN_SIGHT:
 				yield return StartCoroutine(DisplayCritAreas(this));
 				break;
-			case "spot weakness":
+			case SPOT_WEAKNESS:
 				yield return StartCoroutine(SpotWeakness(targetCombatController, this));
 				break;
-			case "spook":
+			case SPOOK:
 				yield return StartCoroutine(Spook(targetCombatController,this));
 				break;
-			case "heal":
+			case HEAL:
 				yield return StartCoroutine(Heal(targetCombatController,(_value == null)? myStats.luck + 2: (int)_value));
 				break;
-			case "mass heal":
+			case MASS_HEAL:
 				yield return StartCoroutine(MassHeal(this));
 				break;
-			case "smite unlife":
+			case SMITE_UNLIFE:
 				yield return StartCoroutine(Smite(targetCombatController, StatBlock.Race.Undead,myStats.strength));
 				break;
-			case "siphon soul":
+			case SIPHON_SOUL:
 				yield return StartCoroutine(SiphonSoul(targetCombatController,this));
 				break;
-			case "life tap":
+			case LIFE_TAP:
 				yield return StartCoroutine(LifeTap(this));
 				break;
 			default:
