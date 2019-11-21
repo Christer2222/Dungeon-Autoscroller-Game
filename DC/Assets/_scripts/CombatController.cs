@@ -445,11 +445,11 @@ public class CombatController : AbilityScript
 		//print("amount multiplier: " + _amountMultiplier);
 		int _totalDamage = currentHealth;
 
-		var _damageCalc = currentHealth + Mathf.CeilToInt(_amount * _amountMultiplier) * ((isCritted) ? 2 : 1);
+		var _damageCalc = Mathf.CeilToInt(_amount * _amountMultiplier) * ((isCritted) ? 2 : 1);
 
-		damageText.text = ((_damageCalc > 0)? "+":"-") + _damageCalc.ToString();
+		damageText.text = ((_damageCalc > 0)? "+":"") + _damageCalc.ToString();
 
-		currentHealth = Mathf.Clamp(_damageCalc, 0, myStats.maxHealth);
+		currentHealth = Mathf.Clamp(currentHealth + _damageCalc, 0, myStats.maxHealth);
 		_totalDamage -= currentHealth;
 
 
