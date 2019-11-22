@@ -77,7 +77,7 @@ public class ForwardMover : MonoBehaviour
 		var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
 		for (int i = 0; i < enemySprites.Length; i++)
 		{
-			enemySpriteDictionary.Add(enemySprites[i].name.ToLower().Replace(" ", "_"), enemySprites[i]);
+			enemySpriteDictionary.Add(enemySprites[i].name.Replace(" ", "_"), enemySprites[i]);
 		}
 		//playerCombatController = gameObject.GetComponent<CombatController>();
 
@@ -150,7 +150,7 @@ public class ForwardMover : MonoBehaviour
 
 		_cc.myStats = _monstarStat;
 		_go.name = _monstarStat.name + " " + _pos;
-		var _sprite = _monstarStat.name.ToLower().Replace(" ", "_");
+		var _sprite = _monstarStat.name.Replace(" ", "_").ToLower();
 		_go.GetComponent<SpriteRenderer>().sprite = enemySpriteDictionary.TryGetValue(_sprite, out Sprite _out) ? _out: enemySpriteDictionary["unknown_sprite"];
 		CombatController.turnOrder.Add(_cc);
 	}

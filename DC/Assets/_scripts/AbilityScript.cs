@@ -7,27 +7,26 @@ using System.Reflection;
 public class AbilityScript : MonoBehaviour
 {
 	protected const string
-		NONE = "none",
-		EAT = "eat",
-		SPOOK = "spook",
-		PUNCH = "punch",
-		FOCUS = "focus",
-		FIREBALL = "fireball",
-		MASS_EXPLOSION = "mass explosion",
-		HEAL = "heal",
-		MASS_HEAL = "mass heal",
-		KEEN_SIGHT = "keen sight",
-		SMITE_UNLIFE = "smite unlife",
-		SIPHON_SOUL = "siphon soul",
-		SPOT_WEAKNESS = "spot weakness",
-		REGENERATION = "regeneration",
-		TIME_WARP = "time warp",
-		DIVINE_LUCK = "divine luck",
-		BULK_UP = "bulk up",
-		MANA_DRAIN = "mana drain",
-		LIFE_TAP = "life tap";
+		NONE = "None",
+		EAT = "Eat",
+		SPOOK = "Spook",
+		PUNCH = "Punch",
+		FOCUS = "Focus",
+		FIREBALL = "Fireball",
+		MASS_EXPLOSION = "Mass Explosion",
+		HEAL = "Heal",
+		MASS_HEAL = "Mass Heal",
+		KEEN_SIGHT = "Keen Sight",
+		SMITE_UNLIFE = "Smite Unlife",
+		SIPHON_SOUL = "Siphon Soul",
+		SPOT_WEAKNESS = "Spot Weakness",
+		REGENERATION = "Regeneration",
+		TIME_WARP = "Time warp",
+		DIVINE_LUCK = "Divine luck",
+		BULK_UP = "Bulk up",
+		MANA_DRAIN = "Mana drain",
+		LIFE_TAP = "Life tap";
 
-	protected static Vector3 lastClick;
 	protected static Dictionary<string,int> manaCostDictionary = new Dictionary<string,int>()
 	{
 		{NONE,-0 },
@@ -105,6 +104,8 @@ public class AbilityScript : MonoBehaviour
 		Unlife = 2048,
 		Void = 4096,
 	}
+
+	protected static Vector3 lastClick;
 
 	public class Buff
 	{
@@ -229,7 +230,7 @@ public class AbilityScript : MonoBehaviour
 			int _bonusDamage = (_target.myStats.race.HasFlag(_targetRace)) ? 1 : 0;
 
 
-			_target.AdjustHealth(-(_constant + _bonusDamage),Elementals.Physical);
+			_target.AdjustHealth(-(_constant + _bonusDamage),Elementals.None);
 		}
 		yield return null;
 	}

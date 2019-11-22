@@ -157,8 +157,6 @@ public class LevelUpScreen : MonoBehaviour
 					break;
 			}
 		}
-
-		print(confirmButton);
 	}
 
 	public void UpdateTraitText(ref int _change, int _difference, int _traitScore, ref Text _textToChange, ref Button _minusButton)
@@ -205,6 +203,7 @@ public class LevelUpScreen : MonoBehaviour
             abilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + abilityPointsToSpend;
 
 			ToggleArrowButtons();
+			CombatController.playerCombatController.CloseAllCombatUI();
 		}
 	}
 

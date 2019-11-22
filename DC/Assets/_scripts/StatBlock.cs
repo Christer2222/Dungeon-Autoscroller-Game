@@ -62,7 +62,7 @@ public class StatBlock
 		abilities = new List<string>();
 		for(int i = 0; i < _abilities.Count; i++)
 		{
-			abilities.Add(_abilities[i].ToLower());
+			abilities.Add(_abilities[i]);//.ToLower());
 		}
 		aiType = _aiType;
 	}

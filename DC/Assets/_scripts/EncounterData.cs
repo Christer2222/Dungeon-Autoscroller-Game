@@ -66,11 +66,11 @@ public class EncounterData
 
 	public static readonly Vector3[] offsetTable = new Vector3[]
 	{
-		new Vector3(1,0,0),
+		new Vector3(0.66f,0,0),
 		new Vector3(0,0,0),
-		new Vector3(-1,0,0),
+		new Vector3(-0.66f,0,0),
 		new Vector3(1,1,0),
-		new Vector3(0,1,0),
-		new Vector3(-1,1,0),
+		new Vector3(0.33f,1,0),
+		new Vector3(-0.33f,1,0),
 	};
 }
