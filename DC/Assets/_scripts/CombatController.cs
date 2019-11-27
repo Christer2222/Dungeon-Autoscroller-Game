@@ -69,7 +69,7 @@ public class CombatController : AbilityScript
 	private Text abilityButtonText;
 
     private bool debugAbilities = true;
-    private List<string> debugAbilityList = new List<string>() {TIME_WARP, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
+    private List<string> debugAbilityList = new List<string>() {TIME_WARP, DIVINE_FISTS, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
 					LIFE_TAP, MASS_HEAL,FIREBALL, FOCUS, MASS_EXPLOSION, PUNCH, KEEN_SIGHT, SPOOK};
 
 	public static void ClearAllValues()
@@ -287,6 +287,7 @@ public class CombatController : AbilityScript
            // if (actedLastTick) print("update: " + Time.timeSinceLevelLoad);
         }
 
+
 		if (turnOrder.Count != 0) //if there are combatants
 		{
 			if (turnOrder[0] == this) //if it is this actors turn
@@ -327,6 +328,7 @@ public class CombatController : AbilityScript
 		for(int i = 0; i < myStats.buffs.Count; i++)
 		{
 			var _buff = myStats.buffs[i];
+			print(_buff.name + " t: "  + _buff.turns);
 			selectedAbility = _buff.function;
 			StartCoroutine(InvokeActiveAbility(false,_buff.constant));
 			_buff.turns--;
@@ -340,28 +342,21 @@ public class CombatController : AbilityScript
 
 	void CheckIfBuffIconsAreCorrect()
 	{
-		//var _tempBuffList = myStats.buffs.Count;
+		var _tempBuffList = myStats.buffs.Select(y => y.name).ToList();
 		List<string> _needsToBeAdded = new List<string>();
-		List<string> _tempIconListNames = new List<string>();
-		_tempIconListNames.AddRange(buffContent.GetComponentsInChildren<Text>(true).Select(x => x.text).ToList());
-
-		print("til: " + _tempIconListNames.Count);
-		foreach(var v in _tempIconListNames)
-		{ print(v); }
+		List<string> _tempIconListNames = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();//.Select(grp => grp.ToList());
+		List<Text> _turnTexts = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
+		//_tempIconListNames.AddRange(buffContent.GetComponentsInChildren<Text>(true).Select(x => x.text && x.transform.name == "$BuffName").ToList());
 
 		for (int i = 0; i < myStats.buffs.Count; i++)
 		{
-			//if (_tempIconListNames.Count >= i)
-			//	print(_tempIconListNames[i]);
-
-			string _current = myStats.buffs[i].buffIcon.name;
-			if (_tempIconListNames.Contains(_current))
+			string _current = myStats.buffs[i].name;
+			print(myStats.buffs[i].turns);
+			int _indexOfCurrent = _tempIconListNames.IndexOf(_current);
+			if (_indexOfCurrent != -1)
 			{
+				_turnTexts[_indexOfCurrent].text = "Turns: " + myStats.buffs[i].turns + " on tick";
 				_tempIconListNames.Remove(_current);
-				if (myStats.buffs[i].turns <= 0)
-				{
-					//destroy icon
-				}
 			}
 			else if (myStats.buffs[i].turns > 0)
 			{
@@ -378,7 +373,7 @@ public class CombatController : AbilityScript
 							_children[j].text = myStats.buffs[i].name;
 							break;
 						case "$BuffTurns":
-							_children[j].text = "Turns: " + myStats.buffs[i].turns;
+							_children[j].text = "Turns: " + myStats.buffs[j].turns + " on add";
 							break;
 						case "$BuffDescription":
 							_children[j].text = myStats.buffs[i].function;
@@ -386,10 +381,22 @@ public class CombatController : AbilityScript
 					}
 
 				}
-				
-				//spawn icon
 			}
 		}
+
+		//var _tempIcons = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").ToList();
+		_tempIconListNames = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();//.Select(grp => grp.ToList());
+		for (int i = 0; i < _tempIconListNames.Count; i++)
+		{
+			int _indexOfBuff = _tempBuffList.IndexOf(_tempIconListNames[i]);
+			if (_indexOfBuff != -1)
+			{
+				_tempBuffList.Remove(_tempIconListNames[i]);
+			}
+			else
+				Destroy(buffContent.GetChild(i).gameObject);
+		}
+		
 	}
 
 	/// <summary>
@@ -402,13 +409,6 @@ public class CombatController : AbilityScript
 		{
 			ToggleButtonOnMana(_children[i]);
 		}
-
-		/*
-		ToggleButtonOnMana(abilityButton1);
-		ToggleButtonOnMana(abilityButton2);
-		ToggleButtonOnMana(abilityButton3);
-		ToggleButtonOnMana(abilityButton4);
-		*/
 	}
 
 	void ToggleButtonOnMana(Button _button)
@@ -824,6 +824,9 @@ public class CombatController : AbilityScript
 				break;
 			case LIFE_TAP:
 				yield return StartCoroutine(LifeTap(this));
+				break;
+			case DIVINE_FISTS:
+				yield return StartCoroutine(DivineFists(this));
 				break;
 			default:
 				Debug.LogError("No move set for \"" + _tempActiveAbility + "\"");

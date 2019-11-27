@@ -21,11 +21,12 @@ public class AbilityScript : MonoBehaviour
 		SIPHON_SOUL = "Siphon Soul",
 		SPOT_WEAKNESS = "Spot Weakness",
 		REGENERATION = "Regeneration",
-		TIME_WARP = "Time warp",
-		DIVINE_LUCK = "Divine luck",
-		BULK_UP = "Bulk up",
-		MANA_DRAIN = "Mana drain",
-		LIFE_TAP = "Life tap";
+		TIME_WARP = "Time Warp",
+		DIVINE_LUCK = "Divine Luck",
+		BULK_UP = "Bulk Up",
+		MANA_DRAIN = "Mana Drain",
+		LIFE_TAP = "Life Tap",
+		DIVINE_FISTS = "Divine Fists";
 
 	protected static Dictionary<string,int> manaCostDictionary = new Dictionary<string,int>()
 	{
@@ -43,8 +44,7 @@ public class AbilityScript : MonoBehaviour
 		{DIVINE_LUCK, -3 },
 		{BULK_UP, -1 },
 		{MANA_DRAIN, -3 },
-
-
+		{DIVINE_FISTS, -6 },
 	};
 
 	public enum AbilityType
@@ -70,6 +70,8 @@ public class AbilityScript : MonoBehaviour
 
 		{BULK_UP, AbilityType.buff },
 		{DIVINE_LUCK, AbilityType.buff },
+		{DIVINE_FISTS, AbilityType.buff },
+
 
 		{HEAL, AbilityType.recovery},
 		{MASS_HEAL, AbilityType.recovery},
@@ -175,6 +177,11 @@ public class AbilityScript : MonoBehaviour
 					_same.turns++;
 					_same.constant += _buff.constant;
 				}
+				else
+					_target.myStats.buffs.Add(_buff);
+				break;
+			default:
+				Debug.LogError("ERROR when adding buff: " + _buff.name + " to: " + _target.transform.name);
 				break;
 
 		}
@@ -192,7 +199,11 @@ public class AbilityScript : MonoBehaviour
 	}
 
 
-
+	protected IEnumerator DivineFists(CombatController _target)
+	{
+		yield return StartCoroutine(DivineLuck(_target));
+		yield return StartCoroutine(BulkUp(_target));
+	}
 
 	protected IEnumerator Punch(CombatController _target,CombatController _self)
 	{
@@ -304,10 +315,11 @@ public class AbilityScript : MonoBehaviour
 			int _manaRecover = _target.AdjustMana(Mathf.Clamp(-(_self.myStats.luck),int.MinValue,0));
 
 			_self.AdjustMana(Mathf.Clamp(_manaRecover,0,int.MaxValue));
+
+			yield return null;
+			_target.AdjustMana(-2);
 		}
 
-		yield return null;
-		_target.AdjustMana(-2);
 		yield return null;
 	}
 
