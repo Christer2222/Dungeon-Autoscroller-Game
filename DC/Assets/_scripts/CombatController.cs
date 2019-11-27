@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Text.RegularExpressions;
+using System.Linq;
 
 public class CombatController : AbilityScript
 {
@@ -17,6 +17,10 @@ public class CombatController : AbilityScript
 	private Slider healthSliderSlow, manaSliderSlow;
 	private Text currentHealthText, currentManaText, maxManaText, maxHealthText;
 	private Coroutine healthMove, manaMove;
+	private const float SLOW_SLIDER_RATIO_TO_NORMAL = 100;
+	private Transform buffContent;
+	private static GameObject buffEntryPrefab;
+
 	//private Text damageText;
 	//private static Button abilityButton1, abilityButton2, abilityButton3, abilityButton4;
 
@@ -102,7 +106,8 @@ public class CombatController : AbilityScript
 			//playerOwned = true;
 
 			entryPrefab = Resources.Load<GameObject>("Prefabs/$Entry");
-			
+			buffEntryPrefab = Resources.Load<GameObject>("Prefabs/$BuffEntry");
+
 			#region UI Assignment
 			UICanvas = GameObject.Find("$UICanvas");
 			foreach(Transform _t in UICanvas.GetComponentsInChildren<Transform>(true))
@@ -166,8 +171,11 @@ public class CombatController : AbilityScript
 						buttonMenuScrollView = _t.gameObject;
 						buttonMenuScrollView.transform.SetParent(UICanvas.transform);
 						break;
-					case "$Content":
+					case "$AbilityContent":
 						buttonMenuContent = _t.gameObject;
+						break;
+					case "$BuffContent":
+						buffContent = _t;
 						break;
 					case "$InventoryScreen":
 						inventoryScreen = _t.gameObject;
@@ -202,9 +210,9 @@ public class CombatController : AbilityScript
 
 			healthSlider.maxValue = myStats.maxHealth;
 			manaSlider.maxValue = myStats.maxMana;
-			healthSliderSlow.maxValue = healthSlider.maxValue * 100;
+			healthSliderSlow.maxValue = healthSlider.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
 			healthSliderSlow.value = healthSliderSlow.maxValue;
-			manaSliderSlow.maxValue = manaSlider.maxValue * 100;
+			manaSliderSlow.maxValue = manaSlider.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
 			manaSliderSlow.value = manaSliderSlow.maxValue;
 
 
@@ -214,6 +222,16 @@ public class CombatController : AbilityScript
 			AdjustMana(0);
 			AdjustPlayerXP(0);
 			#endregion
+
+			if (buffIconDictionary == null)
+			{
+				buffIconDictionary = new Dictionary<string, Sprite>();
+				Sprite[] _buffIcons = Resources.LoadAll<Sprite>("Sprites/UI/StatusSpriteSheet");
+				for (int i = 0; i < _buffIcons.Length; i++)
+				{
+					buffIconDictionary.Add(_buffIcons[i].name, _buffIcons[i]);
+				}
+			}
 		}
 		else
 		{
@@ -318,6 +336,60 @@ public class CombatController : AbilityScript
 
 		selectedAbility = _prevActiveAbility;//null;
 		targetCombatController = null;
+	}
+
+	void CheckIfBuffIconsAreCorrect()
+	{
+		//var _tempBuffList = myStats.buffs.Count;
+		List<string> _needsToBeAdded = new List<string>();
+		List<string> _tempIconListNames = new List<string>();
+		_tempIconListNames.AddRange(buffContent.GetComponentsInChildren<Text>(true).Select(x => x.text).ToList());
+
+		print("til: " + _tempIconListNames.Count);
+		foreach(var v in _tempIconListNames)
+		{ print(v); }
+
+		for (int i = 0; i < myStats.buffs.Count; i++)
+		{
+			//if (_tempIconListNames.Count >= i)
+			//	print(_tempIconListNames[i]);
+
+			string _current = myStats.buffs[i].buffIcon.name;
+			if (_tempIconListNames.Contains(_current))
+			{
+				_tempIconListNames.Remove(_current);
+				if (myStats.buffs[i].turns <= 0)
+				{
+					//destroy icon
+				}
+			}
+			else if (myStats.buffs[i].turns > 0)
+			{
+				_needsToBeAdded.Add(_current);
+				var _go = Instantiate(buffEntryPrefab, buffContent);
+				var _children = _go.GetComponentsInChildren<Text>(true);
+				var _info = _go.transform.GetChild(0).GetChild(0).gameObject;
+				_go.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(delegate { _info.SetActive(!_info.activeSelf); });
+				for (int j = 0; j < _children.Length; j++)
+				{
+					switch (_children[j].transform.name)
+					{
+						case "$BuffName":
+							_children[j].text = myStats.buffs[i].name;
+							break;
+						case "$BuffTurns":
+							_children[j].text = "Turns: " + myStats.buffs[i].turns;
+							break;
+						case "$BuffDescription":
+							_children[j].text = myStats.buffs[i].function;
+							break;
+					}
+
+				}
+				
+				//spawn icon
+			}
+		}
 	}
 
 	/// <summary>
@@ -505,17 +577,26 @@ public class CombatController : AbilityScript
 
 		if(playerOwned)
 		{
-			healthSlider.value = currentHealth;
 			currentHealthText.text = currentHealth.ToString();
 
 			if (healthMove != null)
 			{
 				StopCoroutine(healthMove);
 			}
-			healthMove = StartCoroutine(EffectTools.ApproachSlider(healthSliderSlow, healthSlider, 3, 100));
+
+			if (_damageCalc < 0)
+			{
+				healthSlider.value = currentHealth;
+				healthMove = StartCoroutine(EffectTools.ApproachSlider(healthSliderSlow, healthSlider, 3, SLOW_SLIDER_RATIO_TO_NORMAL));
+			}
+			else
+			{
+				healthSliderSlow.value = currentHealth * SLOW_SLIDER_RATIO_TO_NORMAL;
+				healthMove = StartCoroutine(EffectTools.ApproachSlider(healthSlider, healthSliderSlow, 1, 1/SLOW_SLIDER_RATIO_TO_NORMAL));
+			}
 		}
 
-		if(currentHealth <= 0)
+		if (currentHealth <= 0)
 		{
 			if (!playerOwned)
 			{
@@ -563,17 +644,28 @@ public class CombatController : AbilityScript
 
 	public int AdjustMana(int _amount)
 	{
-		var _prevMan = currentMana;
+		var _manaLost = currentMana;
 		currentMana = Mathf.Clamp(currentMana + _amount,0,myStats.maxMana);
-		_prevMan -= currentMana;
+		_manaLost -= currentMana;
 
 		if(playerOwned)
 		{
-			manaSlider.value = currentMana;
 			currentManaText.text = currentMana.ToString();
+
+			if (_manaLost > 0)
+			{
+				manaSlider.value = currentMana;
+				manaMove = StartCoroutine(EffectTools.ApproachSlider(manaSliderSlow, manaSlider, 1, SLOW_SLIDER_RATIO_TO_NORMAL));
+			}
+			else
+			{
+				manaSliderSlow.value = currentMana * SLOW_SLIDER_RATIO_TO_NORMAL;
+				manaMove = StartCoroutine(EffectTools.ApproachSlider(manaSlider, manaSliderSlow, 0.3f, 1 / SLOW_SLIDER_RATIO_TO_NORMAL));
+			}
+
 		}
 
-		return _prevMan;
+		return _manaLost;
 	}
 
 	public void Click()
@@ -585,7 +677,7 @@ public class CombatController : AbilityScript
 
 		if(_hitSomething) //what was hit
 		{
-			print("name: " + _hit.transform.name + " actedLastTick: " + actedLastTick + " selectedAb: " + selectedAbility);
+			//print("name: " + _hit.transform.name + " actedLastTick: " + actedLastTick + " selectedAb: " + selectedAbility);
 			
 			if(_hit.transform.CompareTag("AbilityButton"))
 			{
@@ -673,7 +765,6 @@ public class CombatController : AbilityScript
 		{
 			lastClick = targetCombatController.transform.position;
 		}
-		
 		else if (playerOwned)
 			ResetAbilityPick();
 
@@ -739,8 +830,12 @@ public class CombatController : AbilityScript
 				break;
 		}
 
-        //if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
-
+		//if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
+		if (_byUser)
+		{
+			print(transform.name + " called check buff");
+			playerCombatController.CheckIfBuffIconsAreCorrect();
+		}
 
         if (_byUser)
 		{

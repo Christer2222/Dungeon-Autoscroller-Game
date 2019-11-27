@@ -139,7 +139,7 @@ public class StatBlock
 		_clone.buffs = new List<AbilityScript.Buff>();
 		_clone.abilities = new List<string>();
 		_clone.abilities.AddRange(abilities);
-		Debug.Log(_clone.abilities.Count);
+		//Debug.Log(_clone.abilities.Count);
 		return _clone;// MemberwiseClone();
 	}
 }

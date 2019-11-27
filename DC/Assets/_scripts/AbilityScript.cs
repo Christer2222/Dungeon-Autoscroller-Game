@@ -107,9 +107,16 @@ public class AbilityScript : MonoBehaviour
 
 	protected static Vector3 lastClick;
 
+	protected static Dictionary<string, Sprite> buffIconDictionary;
+
+	Sprite GetBuffIcon(string _name)
+	{
+		return buffIconDictionary.TryGetValue("pluss_strength", out var y) ? buffIconDictionary["pluss_strength"] : buffIconDictionary["default"];
+	}
+
 	public class Buff
 	{
-		public Buff(string _name, string _function, int _turns, StatBlock.StackType _stackType, float _constant, CombatController _target = null)
+		public Buff(string _name, string _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null)
 		{
 			name = _name;
 			function = _function;
@@ -117,6 +124,7 @@ public class AbilityScript : MonoBehaviour
 			constant = _constant;
 			target = _target;
 			stackType = _stackType;
+			buffIcon = _buffIcon;
 		}
 
 		public string name;
@@ -125,6 +133,7 @@ public class AbilityScript : MonoBehaviour
 		public float constant;
 		public int turns;
 		public StatBlock.StackType stackType;
+		public Sprite buffIcon;
 	}
 
 	void AddBuff(Buff _buff, CombatController _target)
@@ -306,8 +315,7 @@ public class AbilityScript : MonoBehaviour
 	{
 		EffectTools.SpawnEffect("fist up",lastClick,1);
 
-
-		var _buff = new Buff(BULK_UP,"strength",1,StatBlock.StackType.Build_Up,1);
+		var _buff = new Buff(BULK_UP,"strength",1, GetBuffIcon("strenght_up"), StatBlock.StackType.Build_Up,1);
 		AddBuff(_buff, _self);
 
 		yield return null;
@@ -318,7 +326,7 @@ public class AbilityScript : MonoBehaviour
 		EffectTools.SpawnEffect("luck up",lastClick,1);
 
 
-		var _buff = new Buff(DIVINE_LUCK,"luck",3,StatBlock.StackType.Pick_Most_Potential,2);
+		var _buff = new Buff(DIVINE_LUCK,"luck", 3, GetBuffIcon("divine_luck"), StatBlock.StackType.Pick_Most_Potential,2);
 		AddBuff(_buff,_self);
 		yield return null;
 	}
@@ -331,7 +339,7 @@ public class AbilityScript : MonoBehaviour
 		{
 			//EffectTools.SpawnEffect("heal_circle",lastClick,1);
 
-			var _buff = new Buff(REGENERATION,HEAL,3,StatBlock.StackType.Pick_Most_Potential, _constant);
+			var _buff = new Buff(REGENERATION,HEAL,3, GetBuffIcon("yellow_pluss"), StatBlock.StackType.Pick_Most_Potential, _constant);
 			AddBuff(_buff,_target);
 		}
 		yield return null;
@@ -392,7 +400,7 @@ public class AbilityScript : MonoBehaviour
 	protected IEnumerator TimeWarp(CombatController _self)
 	{
 		EffectTools.SpawnEffect(TIME_WARP,lastClick,1);
-		var _buff = new Buff(TIME_WARP,"extra turn",2,StatBlock.StackType.Stack_Self,1);
+		var _buff = new Buff(TIME_WARP,"extra turn",2, GetBuffIcon("pluss_time"),StatBlock.StackType.Stack_Self,1);
 		AddBuff(_buff,_self);
 		yield return null;
 	}
