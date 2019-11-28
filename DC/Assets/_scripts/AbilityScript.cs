@@ -1,11 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Reflection;
 
 public class AbilityScript : MonoBehaviour
 {
+	protected class AbilityTest
+	{
+		public AbilityTest(string _name, IEnumerator _function, Elementals _element = default, AbilityType _type = default, int _manaCost = 0)
+		{
+			name = _name;
+			manaCost = _manaCost;
+			element = _element;
+			type = _type;
+			function = _function;
+		}
+
+		public string name;
+		public int manaCost;
+		public Elementals element;
+		public AbilityType type;
+		public IEnumerator function;
+	}
+
+	//protected AbilityTest punch = new AbilityTest("Punch", LifeTap, Elementals.Physical, AbilityType.attack, 0);
+
 	protected const string
 		NONE = "None",
 		EAT = "Eat",
@@ -140,7 +158,7 @@ public class AbilityScript : MonoBehaviour
 
 	void AddBuff(Buff _buff, CombatController _target)
 	{
-		var _same = _target.myStats.buffs.Find(x => x.name == _buff.name);
+		var _same = _target.myStats.buffList.Find(x => x.name == _buff.name);
 		switch(_buff.stackType)
 		{
 			case StatBlock.StackType.Pick_Most_Potential:
@@ -148,12 +166,12 @@ public class AbilityScript : MonoBehaviour
 				{
 					if(_same.constant < _buff.constant || (_same.constant == _buff.constant && _same.turns < _buff.turns))
 					{
-						_target.myStats.buffs.Remove(_same);
-						_target.myStats.buffs.Add(_buff);
+						_target.myStats.buffList.Remove(_same);
+						_target.myStats.buffList.Add(_buff);
 					}
 				}
 				else
-					_target.myStats.buffs.Add(_buff);
+					_target.myStats.buffList.Add(_buff);
 
 				break;
 			case StatBlock.StackType.Pick_Most_Turns:
@@ -161,15 +179,15 @@ public class AbilityScript : MonoBehaviour
 				{
 					if(_same.turns < _buff.turns || (_same.turns == _buff.turns && _same.constant < _buff.constant))
 					{
-						_target.myStats.buffs.Remove(_same);
-						_target.myStats.buffs.Add(_buff);
+						_target.myStats.buffList.Remove(_same);
+						_target.myStats.buffList.Add(_buff);
 					}
 				}
 				else
-					_target.myStats.buffs.Add(_buff);
+					_target.myStats.buffList.Add(_buff);
 				break;
 			case StatBlock.StackType.Stack_Self:
-				_target.myStats.buffs.Add(_buff);
+				_target.myStats.buffList.Add(_buff);
 				break;
 			case StatBlock.StackType.Build_Up:
 				if(_same != null)
@@ -178,7 +196,7 @@ public class AbilityScript : MonoBehaviour
 					_same.constant += _buff.constant;
 				}
 				else
-					_target.myStats.buffs.Add(_buff);
+					_target.myStats.buffList.Add(_buff);
 				break;
 			default:
 				Debug.LogError("ERROR when adding buff: " + _buff.name + " to: " + _target.transform.name);
@@ -203,6 +221,8 @@ public class AbilityScript : MonoBehaviour
 	{
 		yield return StartCoroutine(DivineLuck(_target));
 		yield return StartCoroutine(BulkUp(_target));
+		yield return StartCoroutine(Regeneration(_target,3));
+
 	}
 
 	protected IEnumerator Punch(CombatController _target,CombatController _self)

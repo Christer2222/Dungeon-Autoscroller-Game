@@ -80,7 +80,7 @@ public class StatBlock
 		get
 		{
 			int _bs = baseStrength;
-			foreach(AbilityScript.Buff _b in buffs)
+			foreach(AbilityScript.Buff _b in buffList)
 				if(_b.function.Contains("strength")) _bs += (int)_b.constant;
 
 			return _bs;
@@ -92,7 +92,7 @@ public class StatBlock
 		get
 		{
 			int _bd = baseDexterity;
-			foreach(AbilityScript.Buff _b in buffs)
+			foreach(AbilityScript.Buff _b in buffList)
 				if(_b.function.Contains("dexterity")) _bd += (int)_b.constant;
 
 			return _bd;
@@ -104,7 +104,7 @@ public class StatBlock
 		get
 		{
 			int _bi = baseIntelligence;
-			foreach(AbilityScript.Buff _b in buffs)
+			foreach(AbilityScript.Buff _b in buffList)
 				if(_b.function.Contains("intelligence")) _bi += (int)_b.constant;
 
 			return _bi;
@@ -116,7 +116,7 @@ public class StatBlock
 		get
 		{
 			int _bl = baseLuck;
-			foreach(AbilityScript.Buff _b in buffs)
+			foreach(AbilityScript.Buff _b in buffList)
 				if(_b.function.Contains("luck")) _bl += (int)_b.constant;
 
 			return _bl;
@@ -131,12 +131,12 @@ public class StatBlock
 	public List<string> abilities;
 	public AIType aiType;
 
-	public List<AbilityScript.Buff> buffs = new List<AbilityScript.Buff>();
+	public List<AbilityScript.Buff> buffList = new List<AbilityScript.Buff>();
 
 	public StatBlock Clone()
 	{
 		var _clone = (StatBlock)MemberwiseClone();
-		_clone.buffs = new List<AbilityScript.Buff>();
+		_clone.buffList = new List<AbilityScript.Buff>();
 		_clone.abilities = new List<string>();
 		_clone.abilities.AddRange(abilities);
 		//Debug.Log(_clone.abilities.Count);

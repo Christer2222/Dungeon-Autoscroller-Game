@@ -325,16 +325,16 @@ public class CombatController : AbilityScript
 		targetCombatController = this;
 		var _prevActiveAbility = selectedAbility;
 
-		for(int i = 0; i < myStats.buffs.Count; i++)
+		for(int i = 0; i < myStats.buffList.Count; i++)
 		{
-			var _buff = myStats.buffs[i];
+			var _buff = myStats.buffList[i];
 			print(_buff.name + " t: "  + _buff.turns);
 			selectedAbility = _buff.function;
 			StartCoroutine(InvokeActiveAbility(false,_buff.constant));
 			_buff.turns--;
 		}
 
-		myStats.buffs.RemoveAll(x => x.turns <= 0);
+		myStats.buffList.RemoveAll(x => x.turns <= 0);
 
 		selectedAbility = _prevActiveAbility;//null;
 		targetCombatController = null;
@@ -342,25 +342,76 @@ public class CombatController : AbilityScript
 
 	void CheckIfBuffIconsAreCorrect()
 	{
-		var _tempBuffList = myStats.buffs.Select(y => y.name).ToList();
-		List<string> _needsToBeAdded = new List<string>();
-		List<string> _tempIconListNames = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();//.Select(grp => grp.ToList());
-		List<Text> _turnTexts = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
-		//_tempIconListNames.AddRange(buffContent.GetComponentsInChildren<Text>(true).Select(x => x.text && x.transform.name == "$BuffName").ToList());
-
-		for (int i = 0; i < myStats.buffs.Count; i++)
+		List<Text> _buffHolderTurnList = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
+		List<string> _uncheckedBuffs = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
+		for (int i = 0; i < myStats.buffList.Count; i++)
 		{
-			string _current = myStats.buffs[i].name;
-			print(myStats.buffs[i].turns);
+			int _currentIndex = _uncheckedBuffs.IndexOf(myStats.buffList[i].name);
+			if (_currentIndex != -1)
+			{
+				//update
+				_buffHolderTurnList[_currentIndex].text = "Turns: " + myStats.buffList[i].turns;
+				_buffHolderTurnList.Remove(_buffHolderTurnList[_currentIndex]);
+				_uncheckedBuffs.Remove(_uncheckedBuffs[_currentIndex]);
+			}
+			else
+			{
+				//create
+				var _go = Instantiate(buffEntryPrefab, buffContent);
+				var _children = _go.GetComponentsInChildren<Text>(true);
+				var _info = _go.transform.GetChild(0).GetChild(0).gameObject;
+				var _parent = _go.transform.GetChild(0);
+				_parent.GetComponent<Button>().onClick.AddListener(delegate { _info.SetActive(!_info.activeSelf); });
+				_parent.GetComponent<Image>().sprite = myStats.buffList[i].buffIcon;
+				for (int j = 0; j < _children.Length; j++)
+				{
+					switch (_children[j].transform.name)
+					{
+						case "$BuffName":
+							_children[j].text = myStats.buffList[i].name;
+							break;
+						case "$BuffTurns":
+							_children[j].text = "Turns: " + myStats.buffList[i].turns + " on add";
+							break;
+						case "$BuffDescription":
+							_children[j].text = myStats.buffList[i].function;
+							break;
+					}
+
+				}
+			}
+		}
+
+		for (int i = 0; i < _uncheckedBuffs.Count; i++)
+		{
+			//detroy rest
+			Destroy(_buffHolderTurnList[i].transform.parent.parent.parent.gameObject);
+		}
+
+
+
+		/*
+		var _tempBuffList = myStats.buffList.Select(y => y.name).ToList();
+		//List<string> _needsToBeAdded = new List<string>();
+		List<string> _tempIconListNames = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
+		List<Text> _turnTexts = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
+
+		print(turnOrder[0].transform.name + "___________");
+		for (int i = 0; i < myStats.buffList.Count; i++)
+		{
+			string _current = myStats.buffList[i].name;
+
 			int _indexOfCurrent = _tempIconListNames.IndexOf(_current);
 			if (_indexOfCurrent != -1)
 			{
-				_turnTexts[_indexOfCurrent].text = "Turns: " + myStats.buffs[i].turns + " on tick";
+				print("IOC " + _current + " (" + i +"): " + _indexOfCurrent + " _TOLN: " + _tempIconListNames[0]);
+				string _turnString = myStats.buffList[i].name + "- Turns: " + myStats.buffList[i].turns + " on tick";
+				_turnTexts[i].text = _turnString;
 				_tempIconListNames.Remove(_current);
 			}
-			else if (myStats.buffs[i].turns > 0)
+			else if (myStats.buffList[i].turns > 0)
 			{
-				_needsToBeAdded.Add(_current);
+				//_needsToBeAdded.Add(_current);
 				var _go = Instantiate(buffEntryPrefab, buffContent);
 				var _children = _go.GetComponentsInChildren<Text>(true);
 				var _info = _go.transform.GetChild(0).GetChild(0).gameObject;
@@ -370,13 +421,13 @@ public class CombatController : AbilityScript
 					switch (_children[j].transform.name)
 					{
 						case "$BuffName":
-							_children[j].text = myStats.buffs[i].name;
+							_children[j].text = myStats.buffList[i].name;
 							break;
 						case "$BuffTurns":
-							_children[j].text = "Turns: " + myStats.buffs[j].turns + " on add";
+							_children[j].text = "Turns: " + myStats.buffList[i].turns + " on add";
 							break;
 						case "$BuffDescription":
-							_children[j].text = myStats.buffs[i].function;
+							_children[j].text = myStats.buffList[i].function;
 							break;
 					}
 
@@ -384,8 +435,7 @@ public class CombatController : AbilityScript
 			}
 		}
 
-		//var _tempIcons = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").ToList();
-		_tempIconListNames = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();//.Select(grp => grp.ToList());
+		_tempIconListNames = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
 		for (int i = 0; i < _tempIconListNames.Count; i++)
 		{
 			int _indexOfBuff = _tempBuffList.IndexOf(_tempIconListNames[i]);
@@ -396,7 +446,7 @@ public class CombatController : AbilityScript
 			else
 				Destroy(buffContent.GetChild(i).gameObject);
 		}
-		
+		*/
 	}
 
 	/// <summary>
@@ -455,7 +505,7 @@ public class CombatController : AbilityScript
 					selectedAbility = _recoveries[Random.Range(0,_recoveries.Count)];
 					activeType = AbilityType.recovery;
 				}
-				else if (myStats.buffs.Count == 0 && _buffs.Count > 0)
+				else if (myStats.buffList.Count == 0 && _buffs.Count > 0)
 				{
 					selectedAbility = _buffs[Random.Range(0,_offensive.Count)];
 					activeType = AbilityType.buff;
@@ -829,7 +879,7 @@ public class CombatController : AbilityScript
 				yield return StartCoroutine(DivineFists(this));
 				break;
 			default:
-				Debug.LogError("No move set for \"" + _tempActiveAbility + "\"");
+				Debug.LogWarning("No move set for \"" + _tempActiveAbility + "\"");
 				break;
 		}
 
@@ -864,7 +914,7 @@ public class CombatController : AbilityScript
 
 		playerCombatController.CheckMana();
 
-		if(turnOrder.Count > 1 && (myStats.buffs.Find(x => x.function == "extra turn") == null))
+		if(turnOrder.Count > 1 && (myStats.buffList.Find(x => x.function == "extra turn") == null))
 		{
 			turnOrder.Remove(this);
 			turnOrder.Add(this);
