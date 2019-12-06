@@ -5,7 +5,7 @@ public class EncounterData : AbilityData
 {
 	#region enemy stat blocks
 	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost", 2, 2, 1, 0, 1, 3, 1, 1, new List<string> { SPOOK }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman", 2, 0, 4, 0, 1, 1, 1, 1, new List<string> { PUNCH }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman", 2, 0, 1, 0, 1, 1, 1, 1, new List<string> { PUNCH }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock eyeballBlock = new StatBlock(StatBlock.Race.Demon, "Eyeball", 7, 7, 2, 1, 1, 2, 1, 2, new List<string> { PUNCH, MANA_DRAIN }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock lightElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Light Elemental", 10, 2, 2, 0, 1, 2, 1, 2, new List<string> { PUNCH, HEAL }, _absorbs: Elementals.Light, _weaknesses: Elementals.Void, _aiType: StatBlock.AIType.Coward);
 	public static StatBlock airElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Air Elemental", 7, 5, 2, 1, 1, 2, 1, 2, new List<string> { PUNCH }, _absorbs: Elementals.Air, _weaknesses: Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
