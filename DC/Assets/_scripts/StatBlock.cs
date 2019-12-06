@@ -27,7 +27,7 @@ public class StatBlock
 	public enum StackType
 	{
 		Pick_Most_Turns,
-		Pick_Most_Potential,
+		Pick_Most_Potent,
 		Stack_Self,
 		Build_Up,
 	}

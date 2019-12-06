@@ -143,8 +143,6 @@ public class LevelUpScreen : MonoBehaviour
 
 						strengthChange = dexterityChange = intelligenceChange = luckChange = 0;
 
-						print("# " + CombatController.playerCombatController.myStats.baseStrength);
-
 						strengthText.text = CombatController.playerCombatController.myStats.baseStrength.ToString();
 						dexterityText.text = CombatController.playerCombatController.myStats.baseDexterity.ToString();
 						intelligenceText.text = CombatController.playerCombatController.myStats.baseIntelligence.ToString();

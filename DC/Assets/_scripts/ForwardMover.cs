@@ -9,69 +9,20 @@ public class ForwardMover : MonoBehaviour
 	private GameObject enemyPrefab;
 	private Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
+	private List<GameObject> segmentList = new List<GameObject>();
 	private const float SEGMENT_DISTANCE = 8;
 
+	public static float encounterTimer = 5;
 	public const float ENEMY_SPAWN_DISTANCE = 5;
 
-	private List<GameObject> segmentList = new List<GameObject>();
-
-	public static float encounterTimer = 2;
-	public static float buffTimer = 1;
+	private const float DEFAULT_BUFF_TIMER = 5;
+	public static float buffTimer = DEFAULT_BUFF_TIMER;
 
 	public static float speedBoost;
-
-	private float aspectFloat;
-
-
-	void SetApectUI(RectTransform _recTrans, int _index)
-	{
-		var _baseOffset = new Vector2(30, 30);
-		var _buttonRect = new Vector2(_recTrans.rect.width, _recTrans.rect.height);
-
-		_recTrans.anchorMax = Vector2.zero;
-		_recTrans.anchorMin = Vector2.zero;
-		_recTrans.offsetMin = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x)  * _index, _baseOffset.y);
-		_recTrans.offsetMax = new Vector2(_baseOffset.x * (_index + 1) + (_buttonRect.x) * (_index + 1), _baseOffset.y + _buttonRect.y);
-	}
 
     // Start is called before the first frame update
     void Start()
     {
-		aspectFloat = Camera.main.aspect;
-		if (aspectFloat >= 1)
-		{
-			RectTransform _abRec = GameObject.Find("$AbilityButton").GetComponent<RectTransform>();
-			SetApectUI(_abRec, 0);
-
-			RectTransform _itRec = GameObject.Find("$ItemsButton").GetComponent<RectTransform>();
-			SetApectUI(_itRec, 1);
-
-			RectTransform _flRec = GameObject.Find("$FleeButton").GetComponent<RectTransform>();
-			SetApectUI(_flRec, 2);
-
-			RectTransform _opRec = GameObject.Find("$OptionsButton").GetComponent<RectTransform>();
-			SetApectUI(_opRec, 3);
-
-			RectTransform _plRec = GameObject.Find("$PlayerPortrait").GetComponent<RectTransform>();
-			_plRec.anchorMax = new Vector2(1, 0);
-			_plRec.anchorMin = new Vector2(1, 0);
-			_plRec.offsetMin = new Vector2(-256,0);
-			_plRec.offsetMax = new Vector2(0, 256);
-
-			RectTransform _hpRec = GameObject.Find("$HealthSlider").GetComponent<RectTransform>();
-			_hpRec.anchorMin = new Vector2(1, 0);
-			_hpRec.anchorMax = new Vector2(1, 0);
-			_hpRec.offsetMin = new Vector2(_opRec.localPosition.x - _hpRec.localPosition.x, 128);
-			_hpRec.offsetMax = new Vector2(-256, 256);
-
-			RectTransform _mpRec = GameObject.Find("$ManaSlider").GetComponent<RectTransform>();
-			_mpRec.anchorMin = _hpRec.anchorMin;
-			_mpRec.anchorMax = _hpRec.anchorMax;
-			_mpRec.offsetMin = new Vector2(_opRec.localPosition.x - _mpRec.localPosition.x, 0);
-			_mpRec.offsetMax = new Vector2(-256, 128);
-		}
-
-
 		segmentPrefab = (GameObject)Resources.Load("Prefabs/Segment");
 		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
 		var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
@@ -86,6 +37,7 @@ public class ForwardMover : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+		print(encounterTimer);
 		if (encounterTimer > 0)
 		{
 			encounterTimer -= Time.deltaTime;
@@ -95,7 +47,7 @@ public class ForwardMover : MonoBehaviour
 			buffTimer -= Time.deltaTime;
 			if (buffTimer <= 0)
 			{
-				buffTimer = 1;
+				buffTimer = DEFAULT_BUFF_TIMER;
 				CombatController.playerCombatController.TickBuffs();
 			}
 		}
@@ -104,6 +56,8 @@ public class ForwardMover : MonoBehaviour
 			if (CombatController.turnOrder.Count == 0)
 			{
 				CombatController.turnOrder.Add(CombatController.playerCombatController);
+
+				CombatController.playerCombatController.RemoveAllBufsWithName("busy");
 
 				var _playerStats = CombatController.playerCombatController.myStats;
 
