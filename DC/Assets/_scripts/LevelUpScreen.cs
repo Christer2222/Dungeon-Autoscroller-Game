@@ -3,14 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelUpScreen : MonoBehaviour
+public class LevelUpScreen : AbilityData
 {
 	public GameObject levelUpScreen;
 
-	//private CombatController playerCombatController;
+	public static LevelUpScreen instance;
+
+	private struct AbilityChoices
+	{
+		public AbilityChoices(string _option1, string _option2, string _option3)
+		{
+			option1 = _option1;
+			option2 = _option2;
+			option3 = _option3;
+			used = false;
+		}
+		public string option1, option2, option3;
+		public bool used;
+	}
+
+	private List<AbilityChoices> levelUpQue = new List<AbilityChoices>();
+	private int addedAdventurerLevels;
+	private List<AbilityChoices> adventurerLevelLine = new List<AbilityChoices>()
+	{
+		new AbilityChoices(SPOT_WEAKNESS,"",""),
+		new AbilityChoices(WILD_PUNCH,DOUBLE_KICK,""),
+		new AbilityChoices(LIFE_TAP,TILT_SWING,HEAL),
+		new AbilityChoices(SIPHON_SOUL,FIREBALL,""),
+		new AbilityChoices(FORCE_PUNCH,REGENERATION,""),
+		new AbilityChoices(CHAOS_THESIS,DIVINE_LUCK,""),
+	};
 
 	private int strengthChange, dexterityChange, intelligenceChange, luckChange;
-	public static int traitPointsToSpend = 5, abilityPointsToSpend;
+	public static int traitPointsToSpend = DebugController.bonusAbilityPoints, abilityPointsToSpend;
 
 	private Text strengthText, dexterityText, intelligenceText, luckText;
 	private Text traitPointToSpendText, abilityPointsToSpendText;
@@ -21,14 +46,16 @@ public class LevelUpScreen : MonoBehaviour
 	private Button strengthMinusButton, dexterityMinusButton, intelligenceMinusButton, luckMinusButton;
 	private Button changeClassButton;
 	private Button abilityPickButton1, abilityPickButton2, abilityPickButton3;
+	private Text abilityPickText1, abilityPickText2, abilityPickText3;
 	private Button cancelButton, confirmButton;
 
 	void Start()
 	{
 		GetComponent<Button>().onClick.AddListener(delegate { ToggleLevelUpScreen(); });
 
-        //playerCombatController = CombatController.playerCombatController;//GameObject.Find("$Player").GetComponent<CombatController>();
+		instance = this;
 
+		//playerCombatController = CombatController.playerCombatController;//GameObject.Find("$Player").GetComponent<CombatController>();
 
 		var _UICanvas = GameObject.Find("$UICanvas");
 		foreach(Transform _t in _UICanvas.GetComponentsInChildren<Transform>(true))
@@ -115,12 +142,23 @@ public class LevelUpScreen : MonoBehaviour
 					break;
 				case "$AbilityButton1":
 					abilityPickButton1 = _t.GetComponent<Button>();
+					abilityPickText1 = abilityPickButton1.GetComponentInChildren<Text>();
+
+					abilityPickButton1.onClick.AddListener(delegate {
+						CombatController.playerCombatController.myStats.abilities.Add(abilityPickText1.text);
+						CombatController.playerCombatController.RefreshAbilityList();
+						levelUpQue.Remove(levelUpQue[0]);
+						RefreshAbilities();
+					});
+
 					break;
 				case "$AbilityButton2":
 					abilityPickButton2 = _t.GetComponent<Button>();
+					abilityPickText2 = abilityPickButton2.GetComponentInChildren<Text>();
 					break;
 				case "$AbilityButton3":
 					abilityPickButton3 = _t.GetComponent<Button>();
+					abilityPickText3 = abilityPickButton3.GetComponentInChildren<Text>();
 					break;
 				case "$CancelButton":
 					cancelButton = _t.GetComponent<Button>();
@@ -157,6 +195,36 @@ public class LevelUpScreen : MonoBehaviour
 		}
 	}
 
+	public void AddNextChoicesToQue()
+	{
+		if (adventurerLevelLine.Count > addedAdventurerLevels)
+		{
+			levelUpQue.Add(adventurerLevelLine[addedAdventurerLevels]);
+			addedAdventurerLevels++;
+		}
+	}
+
+	void RefreshAbilities()
+	{
+		bool _lc = (levelUpQue.Count > 0);
+		bool _hasOption1 = (_lc) ? (!string.IsNullOrEmpty(levelUpQue[0].option1)): false;
+		bool _hasOption2 = (_lc) ? (!string.IsNullOrEmpty(levelUpQue[0].option2)): false;
+		bool _hasOption3 = (_lc) ? (!string.IsNullOrEmpty(levelUpQue[0].option3)): false;
+
+		abilityPickButton1.gameObject.SetActive(_hasOption1);
+		abilityPickButton2.gameObject.SetActive(_hasOption2);
+		abilityPickButton3.gameObject.SetActive(_hasOption3);
+
+		if (_lc)
+		{
+			abilityPickText1.text = levelUpQue[0].option1;
+			abilityPickText2.text = levelUpQue[0].option2;
+			abilityPickText3.text = levelUpQue[0].option3;
+		}
+	}
+
+
+
 	public void UpdateTraitText(ref int _change, int _difference, int _traitScore, ref Text _textToChange, ref Button _minusButton)
 	{
 		_change += _difference;
@@ -190,6 +258,8 @@ public class LevelUpScreen : MonoBehaviour
 
 		if (levelUpScreen.activeSelf)
 		{
+			RefreshAbilities();
+
 			strengthText.text = CombatController.playerCombatController.myStats.baseStrength.ToString();
 			dexterityText.text = CombatController.playerCombatController.myStats.baseDexterity.ToString();
 			intelligenceText.text = CombatController.playerCombatController.myStats.baseIntelligence.ToString();

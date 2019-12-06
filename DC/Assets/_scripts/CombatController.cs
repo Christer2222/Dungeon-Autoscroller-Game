@@ -19,6 +19,8 @@ public class CombatController : AbilityScript
 	private Coroutine healthMove, manaMove;
 	private const float SLOW_SLIDER_RATIO_TO_NORMAL = 100;
 	private Transform buffContent;
+	private ScrollRect buffScrollRect;
+	private Image buffScrollImage;
 	private static GameObject buffEntryPrefab;
 
 	//private Text damageText;
@@ -28,19 +30,6 @@ public class CombatController : AbilityScript
 	public StatBlock myStats;
 	public int currentHealth;
 	public int currentMana;
-
-	#region enemy stat blocks
-	public static StatBlock ghostBlock				= new StatBlock(StatBlock.Race.Undead, "Ghost"				,2,2,1,0,1,3,1,1,new List<string> { SPOOK },_weaknesses: Elementals.Light,_absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock nosemanBlock			= new StatBlock(StatBlock.Race.Demon, "Noseman"				,2,0,1,0,1,1,1,1,new List<string> { PUNCH }, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock eyeballBlock			= new StatBlock(StatBlock.Race.Demon, "Eyeball"				,7,7,2,1,1,2,1,2,new List<string> { PUNCH, MANA_DRAIN },_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock lightElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Light Elemental"	,10,2,2,0,1,2,1,2,new List<string> { PUNCH, HEAL},_absorbs: Elementals.Light, _weaknesses: Elementals.Void,_aiType: StatBlock.AIType.Coward);
-	public static StatBlock airElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Air Elemental"	,7,5,2,1,1,2,1,2,new List<string> { PUNCH },_absorbs: Elementals.Air, _weaknesses:  Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock earthElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Earth Elemental"	,15,5,2,1,1,2,1,2,new List<string> { PUNCH },_absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock fireElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Fire Elemental"	,5,5,2,1,1,2,1,2,new List<string> { PUNCH, FIREBALL },_absorbs: Elementals.Fire, _weaknesses: Elementals.Water,_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock waterElementalBlock		= new StatBlock(StatBlock.Race.Elemental, "Water Elemental"	,12,5,2,0,1,2,1,2,new List<string> { PUNCH, REGENERATION },_absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock harpyBlock				= new StatBlock(StatBlock.Race.Demon, "Harpy"				,10,5,2,0,1,2,1,2,new List<string> { PUNCH, BULK_UP },_aiType: StatBlock.AIType.Dumb);
-	public static StatBlock druidBlock				= new StatBlock(StatBlock.Race.Elf, "Druid"					,5,10,2,0,1,2,1,2,new List<string> { PUNCH, HEAL, REGENERATION },_resistances: Elementals.Earth,_aiType: StatBlock.AIType.Coward);
-	#endregion
 
 	//Gameover variables
 	private GameObject gameOverHolder;
@@ -69,8 +58,7 @@ public class CombatController : AbilityScript
 	private static GameObject entryPrefab;
 	private Text abilityButtonText;
 
-    private bool debugAbilities = true;
-    private List<string> debugAbilityList = new List<string>() {PUNCH, DEBULK, DIVINE_FISTS, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
+	private List<string> debugAbilityList = new List<string>() {PUNCH, DOUBLE_KICK, WILD_PUNCH, FORCE_PUNCH, TILT_SWING, CHAOS_THESIS, DEBULK, DIVINE_FISTS, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
 					LIFE_TAP, MASS_HEAL,FIREBALL, FOCUS, MASS_EXPLOSION, TIME_WARP, KEEN_SIGHT, SPOOK};
 
 	public static void ClearAllValues()
@@ -102,14 +90,14 @@ public class CombatController : AbilityScript
                 10, 15, //hp, mp
                 1, 0, //lv, xp
                 1, 1, 1, 1, //str, dex. int, luck
-                (debugAbilities) ? debugAbilityList : new List<string> { PUNCH });
+                (DebugController.debugAbilities) ? debugAbilityList : new List<string> { PUNCH });
 
 			//playerOwned = true;
 
 			entryPrefab = Resources.Load<GameObject>("Prefabs/$Entry");
 			buffEntryPrefab = Resources.Load<GameObject>("Prefabs/$BuffEntry");
 
-			#region UI Assignment
+#region UI Assignment
 			UICanvas = GameObject.Find("$UICanvas");
 			foreach(Transform _t in UICanvas.GetComponentsInChildren<Transform>(true))
 			{
@@ -179,6 +167,8 @@ public class CombatController : AbilityScript
 						break;
 					case "$BuffContent":
 						buffContent = _t;
+						buffScrollRect = _t.parent.parent.GetComponent<ScrollRect>();
+						buffScrollImage = buffScrollRect.transform.Find("$BuffScrollbarVertical").GetComponent<Image>();
 						break;
 					case "$InventoryScreen":
 						inventoryScreen = _t.gameObject;
@@ -195,14 +185,16 @@ public class CombatController : AbilityScript
 						break;
 				}
 			}
-			#endregion
+#endregion
+
+			CheckIfBuffIconsAreCorrect();
 
 			//foreach(KeyValuePair<string,AbilityType> i in abilityTypeDictionary) print(i.Key);
 
 			//print(BulkUp(null).ToString());
 			//print(myStats.buffs.Count);
 
-			#region Stat Reset
+#region Stat Reset
 			currentHealth = myStats.maxHealth;
 			currentMana = myStats.maxMana;
 			maxHealthText.text = myStats.maxHealth.ToString();
@@ -226,7 +218,7 @@ public class CombatController : AbilityScript
 			//AdjustHealth(0, Elementals.None, false);
 			//AdjustMana(0);
 			AdjustPlayerXP(0);
-			#endregion
+#endregion
 
 			if (buffIconDictionary == null)
 			{
@@ -246,7 +238,7 @@ public class CombatController : AbilityScript
 
 	}
 
-	void RefreshAbilityList()
+	public void RefreshAbilityList()
 	{
 		var _children = buttonMenuContent.GetComponentsInChildren<Transform>();
 
@@ -357,6 +349,8 @@ public class CombatController : AbilityScript
 	{
 		List<Text> _buffHolderTurnList = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
 		List<string> _uncheckedBuffs = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
+		int _amount = _buffHolderTurnList.Count;
+
 		for (int i = 0; i < myStats.buffList.Count; i++)
 		{
 			int _currentIndex = _uncheckedBuffs.IndexOf(myStats.buffList[i].name);
@@ -370,6 +364,7 @@ public class CombatController : AbilityScript
 			else
 			{
 				//create
+				_amount++;
 				var _go = Instantiate(buffEntryPrefab, buffContent);
 				var _children = _go.GetComponentsInChildren<Text>(true);
 				var _info = _go.transform.GetChild(0).GetChild(0).gameObject;
@@ -384,10 +379,10 @@ public class CombatController : AbilityScript
 							_children[j].text = myStats.buffList[i].name;
 							break;
 						case "$BuffTurns":
-							_children[j].text = "Turns: " + myStats.buffList[i].turns + " on add";
+							_children[j].text = "Turns: " + myStats.buffList[i].turns;
 							break;
 						case "$BuffDescription":
-							_children[j].text = myStats.buffList[i].function;
+							_children[j].text = myStats.buffList[i].function; //TODO Add description to all buffs
 							break;
 					}
 
@@ -398,7 +393,20 @@ public class CombatController : AbilityScript
 		for (int i = 0; i < _uncheckedBuffs.Count; i++)
 		{
 			//detroy rest
+			_amount--;
 			Destroy(_buffHolderTurnList[i].transform.parent.parent.parent.gameObject);
+		}
+
+		if (_amount > 8)
+		{
+			buffScrollRect.vertical = true;
+			buffScrollImage.color = Color.white * 0.3f;
+			//EffectTools.BlinkImage(buffScrollImage,Color.white,1,0.5f);
+		}
+		else
+		{
+			buffScrollRect.vertical = false;
+			buffScrollImage.color = Color.clear;
 		}
 	}
 
@@ -492,6 +500,7 @@ public class CombatController : AbilityScript
 		{
 			LevelUpScreen.traitPointsToSpend += 1;
 			LevelUpScreen.abilityPointsToSpend += (myStats.level + 1) % 2;
+			LevelUpScreen.instance.AddNextChoicesToQue();
 
 			myStats.level++;
 			myStats.xp -= (int)xpSlider.maxValue;
@@ -666,7 +675,7 @@ public class CombatController : AbilityScript
 	{
 		hitPosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE)); //store where to click
 		RaycastHit2D _hit = CheckIfHit(hitPosition); //get click info
-		print(actedLastTick);
+		
 		bool _hitSomething = (_hit.collider != null); //store if something was hit
 
 		if (_hitSomething) //what was hit
@@ -686,7 +695,7 @@ public class CombatController : AbilityScript
 			}
 		}
 
-		#region Flee Logic
+#region Flee Logic
 		bool _fleeing = fleeSlider != null; //is the fleeslider there
 		if(_fleeing) _fleeing = fleeSlider.gameObject.activeSelf; //is the player fleeing
 
@@ -711,7 +720,7 @@ public class CombatController : AbilityScript
 			}
 			StartCoroutine(DeactivateGameObject(fleeSlider.gameObject,0.2f));
 		}
-		#endregion
+#endregion
 		else if (!string.IsNullOrEmpty(selectedAbility)) //if not fleeing, but has an ability selected
 		{
 			if(_hit.transform != null) //if something was hit
@@ -792,7 +801,22 @@ public class CombatController : AbilityScript
 				yield return StartCoroutine(Regeneration(targetCombatController, myStats.luck + 1));
 				break;
 			case PUNCH:
-				yield return StartCoroutine(Punch(targetCombatController,this));
+				yield return StartCoroutine(Punch(targetCombatController,this.myStats.strength));
+				break;
+			case DOUBLE_KICK:
+				yield return StartCoroutine(DoubleKick(lastClick, targetCombatController, this));
+				break;
+			case WILD_PUNCH:
+				yield return StartCoroutine(WildPunch(lastClick,this));
+				break;
+			case FORCE_PUNCH:
+				yield return StartCoroutine(ForcePunch(targetCombatController, this));
+				break;
+			case TILT_SWING:
+				yield return StartCoroutine(TiltSwing(targetCombatController,this));
+				break;
+			case CHAOS_THESIS:
+				yield return StartCoroutine(ChaosThesis(lastClick, this));
 				break;
 			case FIREBALL:
 				yield return StartCoroutine(Fireball(hitPosition,this));
@@ -884,8 +908,7 @@ public class CombatController : AbilityScript
 
 		if (turnOrder.Count <= 1)
 		{
-			Debug.LogWarning("need done with combat");
-			//ForwardMover.DoneWithCombat();
+			ForwardMover.DoneWithCombat();
 		}
 
 		startedTurn = false;

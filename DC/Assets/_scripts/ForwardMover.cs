@@ -37,7 +37,6 @@ public class ForwardMover : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		print(encounterTimer);
 		if (encounterTimer > 0)
 		{
 			encounterTimer -= Time.deltaTime;
@@ -61,7 +60,7 @@ public class ForwardMover : MonoBehaviour
 
 				var _playerStats = CombatController.playerCombatController.myStats;
 
-				var _possibles = EncounterData.encounterTable.Where(x => x.level == _playerStats.level + 1).ToArray(); //find encounter of equal level
+				var _possibles = EncounterData.encounterTable.Where(x => x.level == _playerStats.level).ToArray(); //find encounter of equal level
 				int _lower = _playerStats.level; //store level
 				while (_possibles.Length == 0) //if no encounters
 				{

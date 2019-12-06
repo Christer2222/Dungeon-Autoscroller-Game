@@ -2,141 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityScript : MonoBehaviour
+public class AbilityScript : AbilityData
 {
-	protected class AbilityTest
-	{
-		public AbilityTest(string _name, IEnumerator _function, Elementals _element = default, AbilityType _type = default, int _manaCost = 0)
-		{
-			name = _name;
-			manaCost = _manaCost;
-			element = _element;
-			type = _type;
-			function = _function;
-		}
-
-		public string name;
-		public int manaCost;
-		public Elementals element;
-		public AbilityType type;
-		public IEnumerator function;
-	}
-
-	//protected AbilityTest punch = new AbilityTest("Punch", LifeTap, Elementals.Physical, AbilityType.attack, 0);
-
-	protected const string
-		NONE = "None",
-		EAT = "Eat",
-		SPOOK = "Spook",
-		PUNCH = "Punch",
-		FOCUS = "Focus",
-		FIREBALL = "Fireball",
-		MASS_EXPLOSION = "Mass Explosion",
-		HEAL = "Heal",
-		MASS_HEAL = "Mass Heal",
-		KEEN_SIGHT = "Keen Sight",
-		SMITE_UNLIFE = "Smite Unlife",
-		SIPHON_SOUL = "Siphon Soul",
-		SPOT_WEAKNESS = "Spot Weakness",
-		REGENERATION = "Regeneration",
-		TIME_WARP = "Time Warp",
-		DIVINE_LUCK = "Divine Luck",
-		BULK_UP = "Bulk Up",
-		MANA_DRAIN = "Mana Drain",
-		LIFE_TAP = "Life Tap",
-		DIVINE_FISTS = "Divine Fists",
-		DEBULK = "Debulk";
-
-
-	protected static Dictionary<string,int> manaCostDictionary = new Dictionary<string,int>()
-	{
-		{NONE,-0 },
-		{FIREBALL,-2 },
-		{MASS_EXPLOSION, -4 },
-		{HEAL,-2 },
-		{MASS_HEAL, -5 },
-		{KEEN_SIGHT, -1 },
-		{SMITE_UNLIFE, -1 },
-		{SIPHON_SOUL, -3 },
-		{SPOT_WEAKNESS, -1 },
-		{REGENERATION, -1 },
-		{TIME_WARP, -10 },
-		{DIVINE_LUCK, -3 },
-		{BULK_UP, -1 },
-		{MANA_DRAIN, -3 },
-		{DIVINE_FISTS, -6 },
-		{DEBULK, -2 },
-	};
-
-	public enum AbilityType
-	{
-		none = 0,
-		misc = 1,
-		defensive = 2,
-		recovery = 4,
-		offensive = 8,
-		attack = 16,
-		buff = 32,
-	}
-
-	protected static Dictionary<string,AbilityType> abilityTypeDictionary = new Dictionary<string,AbilityType>()
-	{
-		{PUNCH, AbilityType.attack},
-		{FIREBALL, AbilityType.attack},
-		{MASS_EXPLOSION, AbilityType.attack},
-		{SPOOK, AbilityType.attack},
-		{SMITE_UNLIFE, AbilityType.attack},
-
-		{SIPHON_SOUL, AbilityType.recovery | AbilityType.attack},
-
-		{BULK_UP, AbilityType.buff },
-		{DIVINE_LUCK, AbilityType.buff },
-		{DIVINE_FISTS, AbilityType.buff },
-
-
-		{HEAL, AbilityType.recovery},
-		{MASS_HEAL, AbilityType.recovery},
-		{FOCUS, AbilityType.recovery},
-		{EAT, AbilityType.recovery},
-		{REGENERATION, AbilityType.recovery},
-		{MANA_DRAIN, AbilityType.recovery},
-
-
-		{LIFE_TAP, AbilityType.misc},
-		{SPOT_WEAKNESS, AbilityType.misc },
-		{KEEN_SIGHT, AbilityType.misc},
-		{TIME_WARP, AbilityType.misc },
-
-		{DEBULK, AbilityType.defensive }
-	};
-
-
-	//can combine elements by doing Elem | Elem and check by doing 
-	public enum Elementals
-	{
-		None = 0,
-		Physical = 1,
-		Fire = 2,
-		Water = 4,
-		Earth = 8,
-		Air = 16,
-		Plasma = 32,
-		Ice = 64,
-		Poision = 128,
-		Electricity = 256,
-		Steam = 512,
-		Light = 1024,
-		Unlife = 2048,
-		Void = 4096,
-	}
-
 	protected static Vector3 lastClick;
 
-	protected static Dictionary<string, Sprite> buffIconDictionary;
-
-	protected Sprite TryGetBuffIcon(string _name)
+	protected Vector3 randomVector3
 	{
-		return buffIconDictionary.TryGetValue(_name, out var y) ? buffIconDictionary[_name] : buffIconDictionary["default"];
+		get
+		{
+			return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+		}
 	}
 
 	public class Buff
@@ -228,14 +103,89 @@ public class AbilityScript : MonoBehaviour
 	{
 		yield return StartCoroutine(DivineLuck(_target));
 		yield return StartCoroutine(BulkUp(_target));
-		yield return StartCoroutine(Regeneration(_target,3));
-
 	}
 
-	protected IEnumerator Punch(CombatController _target,CombatController _self)
+	protected IEnumerator Punch(CombatController _target, int _damage, Elementals _element = Elementals.Physical)
+	{
+		EffectTools.SpawnEffect(PUNCH, lastClick, 1);
+		if (_target != null) _target.AdjustHealth(-Mathf.Max(_damage, 0), _element);
+		yield return null;
+	}
+
+	/*
+	protected IEnumerator Punch(CombatController _target, CombatController _self)
 	{
 		EffectTools.SpawnEffect(PUNCH, lastClick,1);
 		if(_target != null) _target.AdjustHealth(-Mathf.Max(_self.myStats.strength,0), Elementals.Physical);
+		yield return null;
+	}
+	*/
+
+	protected IEnumerator DoubleKick(Vector3 _centerPos, CombatController _target, CombatController _self)
+	{
+		yield return StartCoroutine(Punch(_target,_self.myStats.strength));
+		_target = null;
+		yield return new WaitForSeconds(2);
+		var _hit = CheckIfHit(_centerPos);
+		if (_hit.transform != null)
+		{
+			_target = _hit.transform.GetComponent<CombatController>();
+		}
+		yield return StartCoroutine(Punch(_target, _self.myStats.strength));
+	}
+
+
+	protected IEnumerator WildPunch(Vector3 _centerPos, CombatController _self)
+	{
+		CombatController _target = null;
+		var _hit = CheckIfHit(_centerPos + randomVector3);
+		if (_hit.transform != null)
+		{
+			_target = _hit.transform.GetComponent<CombatController>();
+		}
+		yield return StartCoroutine(Punch(_target, _self.myStats.strength + 2));
+		yield return null;
+	}
+
+	protected IEnumerator ForcePunch(CombatController _target, CombatController _self)
+	{
+		yield return StartCoroutine(Punch(_target, _self.myStats.strength + 2, Elementals.Air));
+		yield return null;
+	}
+
+	protected IEnumerator TiltSwing(CombatController _target, CombatController _self)
+	{
+		float _r1 = Random.Range(0, 2);
+		int _r = (int)((_r1-0.5f) * 2);
+		print("r1: " + _r1 + "r: " + _r);
+		yield return StartCoroutine(Punch(_target, _self.myStats.strength + _r));
+		yield return null;
+	}
+
+	protected IEnumerator ChaosThesis(Vector3 _centerPos, CombatController _self)
+	{
+		int _r = Random.Range(0,3);
+		CombatController _target = null;
+		var _hit = CheckIfHit(_centerPos);
+		if (_hit.transform != null)
+		{
+			_target = _hit.transform.GetComponent<CombatController>();
+		}
+
+		print("chose: " + _r);
+		if (_r == 0)
+		{
+			yield return StartCoroutine(ManaDrain(_target,_self, 2));
+		}
+		else if (_r == 1)
+		{
+			yield return StartCoroutine(Fireball(_centerPos, _self, 2));
+		}
+		else if (_r == 2)
+		{
+			yield return StartCoroutine(Heal(_target, _self.myStats.luck));
+		}
+
 		yield return null;
 	}
 
@@ -282,7 +232,7 @@ public class AbilityScript : MonoBehaviour
 		yield return null;
 	}
 
-	protected IEnumerator Fireball(Vector3 _centerPos,CombatController _self)
+	protected IEnumerator Fireball(Vector3 _centerPos, CombatController _self, int _bonus = 0)
 	{
 		//_self.AdjustMana(-manaCostDictionary[_costName]);
 		var _sprite = EffectTools.SpawnEffect(FIREBALL,_centerPos,0.6f);
@@ -300,7 +250,7 @@ public class AbilityScript : MonoBehaviour
 			var _cc = _col.GetComponent<CombatController>();
 			if (_cc != null)
 			{
-				_cc.AdjustHealth(-Mathf.Max(_self.myStats.intelligence,0), Elementals.Fire);
+				_cc.AdjustHealth(-Mathf.Max(_self.myStats.intelligence + _bonus,0), Elementals.Fire);
 			}
 		}
 		yield return null;
@@ -336,12 +286,15 @@ public class AbilityScript : MonoBehaviour
 		yield return null;
 	}
 
-	protected IEnumerator ManaDrain(CombatController _target, CombatController _self)
+	protected IEnumerator ManaDrain(CombatController _target, CombatController _self, int _bonus = 0)
 	{
 
 		if(_target != null)
 		{
-			int _manaRecover = _target.AdjustMana(-Mathf.Max(2 + (Mathf.CeilToInt((float)_self.myStats.luck/2)),0));
+			int _manaRecover = 0;
+
+			_manaRecover = _target.AdjustMana(-Mathf.Max(2 + (Mathf.CeilToInt((float)_self.myStats.luck/2) + _bonus),0));
+
 
 			_self.AdjustMana(Mathf.Max(_manaRecover,0));
 
