@@ -35,7 +35,7 @@ public class LevelUpScreen : AbilityData
 	};
 
 	private int strengthChange, dexterityChange, intelligenceChange, luckChange;
-	public static int traitPointsToSpend = DebugController.bonusAbilityPoints, abilityPointsToSpend;
+	public static int traitPointsToSpend = DebugController.bonusAbilityPoints;//, abilityPointsToSpend;
 
 	private Text strengthText, dexterityText, intelligenceText, luckText;
 	private Text traitPointToSpendText, abilityPointsToSpendText;
@@ -145,20 +145,30 @@ public class LevelUpScreen : AbilityData
 					abilityPickText1 = abilityPickButton1.GetComponentInChildren<Text>();
 
 					abilityPickButton1.onClick.AddListener(delegate {
-						CombatController.playerCombatController.myStats.abilities.Add(abilityPickText1.text);
-						CombatController.playerCombatController.RefreshAbilityList();
-						levelUpQue.Remove(levelUpQue[0]);
-						RefreshAbilities();
+						print("pick ab 1");
+						AddAbility(abilityPickText1.text);
 					});
 
 					break;
 				case "$AbilityButton2":
 					abilityPickButton2 = _t.GetComponent<Button>();
 					abilityPickText2 = abilityPickButton2.GetComponentInChildren<Text>();
+
+					abilityPickButton2.onClick.AddListener(delegate {
+						print("pick ab 2");
+
+						AddAbility(abilityPickText2.text);
+					});
 					break;
 				case "$AbilityButton3":
 					abilityPickButton3 = _t.GetComponent<Button>();
 					abilityPickText3 = abilityPickButton3.GetComponentInChildren<Text>();
+
+					abilityPickButton3.onClick.AddListener(delegate {
+						print("pick ab 3");
+
+						AddAbility(abilityPickText3.text);
+					});
 					break;
 				case "$CancelButton":
 					cancelButton = _t.GetComponent<Button>();
@@ -202,6 +212,16 @@ public class LevelUpScreen : AbilityData
 			levelUpQue.Add(adventurerLevelLine[addedAdventurerLevels]);
 			addedAdventurerLevels++;
 		}
+	}
+
+	void AddAbility(string _abilityToAdd)
+	{
+		if (levelUpQue.Count <= 0) return;
+
+		CombatController.playerCombatController.myStats.abilities.Add(_abilityToAdd);
+		CombatController.playerCombatController.RefreshAbilityList();
+		levelUpQue.Remove(levelUpQue[0]);
+		RefreshAbilities();
 	}
 
 	void RefreshAbilities()
@@ -268,7 +288,7 @@ public class LevelUpScreen : AbilityData
             confirmButton.gameObject.SetActive(false);
 
             traitPointToSpendText.text = TRAIT_POINTS_DEFAULT_STRING + traitPointsToSpend;
-            abilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + abilityPointsToSpend;
+			abilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + levelUpQue.Count;// + abilityPointsToSpend;
 
 			ToggleArrowButtons();
 			CombatController.playerCombatController.CloseAllCombatUI();

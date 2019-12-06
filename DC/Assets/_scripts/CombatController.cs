@@ -10,6 +10,7 @@ public class CombatController : AbilityScript
 	public static List<CombatController> turnOrder = new List<CombatController>();
 	private bool playerOwned;
 	private bool startedTurn;
+	private static Text turnorderText;
 
 	//Shows the player their status
 	private GameObject UICanvas;
@@ -170,6 +171,9 @@ public class CombatController : AbilityScript
 						buffScrollRect = _t.parent.parent.GetComponent<ScrollRect>();
 						buffScrollImage = buffScrollRect.transform.Find("$BuffScrollbarVertical").GetComponent<Image>();
 						break;
+					case "$TurnorderText":
+						turnorderText = _t.GetComponent<Text>();
+						break;
 					case "$InventoryScreen":
 						inventoryScreen = _t.gameObject;
 						break;
@@ -252,7 +256,8 @@ public class CombatController : AbilityScript
 			string _s = "";
 			_s = myStats.abilities[i];
 
-			buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(650,myStats.abilities.Count * 170 + 10);
+			//buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(650,myStats.abilities.Count * 170 + 10);
+			buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0,(myStats.abilities.Count - 1) * 160 + 10);
 
 			GameObject _go = Instantiate(entryPrefab,buttonMenuContent.transform);
 			_go.transform.localPosition = new Vector3(325,-10 + -(i + 0.5f) * 170,0);
@@ -297,6 +302,12 @@ public class CombatController : AbilityScript
 				if (!startedTurn)
 				{
 					TickBuffs();
+
+					turnorderText.text = string.Empty;
+					for (int i = 0; i < turnOrder.Count; i++)
+					{
+						turnorderText.text += turnOrder[i].myStats.name + " | ";
+					}
 
 					//Invoke buffs
 					startedTurn = true;
@@ -499,8 +510,12 @@ public class CombatController : AbilityScript
 		while (myStats.xp >= xpSlider.maxValue)
 		{
 			LevelUpScreen.traitPointsToSpend += 1;
-			LevelUpScreen.abilityPointsToSpend += (myStats.level + 1) % 2;
-			LevelUpScreen.instance.AddNextChoicesToQue();
+			//LevelUpScreen.abilityPointsToSpend += (myStats.level + 1) % 2;
+			print((myStats.level + 1) % 2);
+			if ((myStats.level + 1) % 2 == 0)
+			{
+				LevelUpScreen.instance.AddNextChoicesToQue();
+			}
 
 			myStats.level++;
 			myStats.xp -= (int)xpSlider.maxValue;
@@ -711,6 +726,7 @@ public class CombatController : AbilityScript
 						StartCoroutine(RemoveFromTurnOrder(0,_cc)); //destroy and remove items from the turn order
 				}
 
+				turnorderText.text = string.Empty;
 				ForwardMover.speedBoost = 3; //run after fleeing
 			}
 			else
@@ -908,6 +924,7 @@ public class CombatController : AbilityScript
 
 		if (turnOrder.Count <= 1)
 		{
+			turnorderText.text = string.Empty;
 			ForwardMover.DoneWithCombat();
 		}
 

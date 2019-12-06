@@ -6,7 +6,7 @@ public class ResetStaticVariablesManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		LevelUpScreen.abilityPointsToSpend = LevelUpScreen.traitPointsToSpend = 0;
+		LevelUpScreen.traitPointsToSpend = 0;
 		CombatController.ClearAllValues();
 		ForwardMover.encounterTimer = 2;
 		ForwardMover.buffTimer = 1;
