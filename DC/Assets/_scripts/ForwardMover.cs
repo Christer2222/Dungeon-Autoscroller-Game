@@ -77,6 +77,7 @@ public class ForwardMover : MonoBehaviour
 					_possibles = EncounterData.encounterTable.Where(x => x.level == 0).ToArray(); //overwrite encounter check for the easiest
 
 				EncounterData.Encounter _selectedEncounter = _possibles[Random.Range(0,_possibles.Length)];
+				print(_selectedEncounter.monsterBM.GetHashCode());
 
 				SpawnEnemy(_selectedEncounter.monsterBL, 0);
 				SpawnEnemy(_selectedEncounter.monsterBM, 1);
@@ -101,10 +102,10 @@ public class ForwardMover : MonoBehaviour
 		var _go = Instantiate(enemyPrefab, transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE + EncounterData.offsetTable[_pos], Quaternion.identity);
 		var _cc = _go.GetComponent<CombatController>();
 
-		_cc.myStats = _monstarStat;
+		_cc.myStats = _monstarStat.Clone();
 		_go.name = _monstarStat.name + " " + _pos;
 		var _sprite = _monstarStat.name.Replace(" ", "_").ToLower();
-		_go.GetComponent<SpriteRenderer>().sprite = enemySpriteDictionary.TryGetValue(_sprite, out Sprite _out) ? _out: enemySpriteDictionary["unknown_sprite"];
+		_go.GetComponent<SpriteRenderer>().sprite = enemySpriteDictionary.TryGetValue(_sprite, out Sprite _out) ? _out: enemySpriteDictionary["Unknown_Sprite"];
 		CombatController.turnOrder.Add(_cc);
 	}
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 public class StatBlock
 {
@@ -38,7 +37,7 @@ public class StatBlock
 		int _level,int _xp,
 		int _strenght,int _dexterity,int _intelligence,int _luck,
 		List<string> _abilities, //should be List<Ienumerator> to have less human errors
-		AbilityScript.Elementals _weaknesses = default, AbilityScript.Elementals _resistances = default, AbilityScript.Elementals _immunities = default, AbilityScript.Elementals _absorbs = default,
+		AbilityData.Elementals _weaknesses = default, AbilityData.Elementals _resistances = default, AbilityData.Elementals _immunities = default, AbilityData.Elementals _absorbs = default,
 		AIType _aiType = default,
 		List<AbilityScript.Buff> _buffs = default)
 	{
@@ -69,7 +68,7 @@ public class StatBlock
 
 	public Race race;
 	public string name;
-	public AbilityScript.Elementals resistances, weaknesses, immunities, absorbs;
+	public AbilityData.Elementals resistances, weaknesses, immunities, absorbs;
 	public int maxHealth,
 		maxMana;
 	public int level,
@@ -123,15 +122,14 @@ public class StatBlock
 		}
 	}
 
-	public int baseStrength,
-		baseDexterity,
-		baseIntelligence,
-		baseLuck;
+	public int baseStrength, baseDexterity, baseIntelligence, baseLuck;
 
 	public List<string> abilities;
 	public AIType aiType;
 
 	public List<AbilityScript.Buff> buffList = new List<AbilityScript.Buff>();
+
+
 
 	public StatBlock Clone()
 	{
@@ -140,6 +138,7 @@ public class StatBlock
 		_clone.abilities = new List<string>();
 		_clone.abilities.AddRange(abilities);
 		//Debug.Log(_clone.abilities.Count);
+		//UnityEngine.Debug.Log("name: " + _clone.name + " " + _clone.buffList.GetHashCode());
 		return _clone;// MemberwiseClone();
 	}
 }

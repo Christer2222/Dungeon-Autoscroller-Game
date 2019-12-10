@@ -502,8 +502,8 @@ public class CombatController : AbilityScript
 		if (myStats.xp >= xpSlider.maxValue)
 		{
 			var _lvText = EffectTools.SpawnText(transform.position + Vector3.left, transform, Color.yellow, "LEVEL UP!");
-			StartCoroutine(EffectTools.MoveDirection(_lvText.transform, Vector3.up, 1, 2));
-			StartCoroutine(EffectTools.BlinkText(_lvText, Color.green, 5));
+			_lvText.StartCoroutine(EffectTools.MoveDirection(_lvText.transform, Vector3.up, 1, 2));
+			_lvText.StartCoroutine(EffectTools.BlinkText(_lvText, Color.green, 5));
 			Destroy(_lvText.gameObject,5);
 		}
 
@@ -511,7 +511,6 @@ public class CombatController : AbilityScript
 		{
 			LevelUpScreen.traitPointsToSpend += 1;
 			//LevelUpScreen.abilityPointsToSpend += (myStats.level + 1) % 2;
-			print((myStats.level + 1) % 2);
 			if ((myStats.level + 1) % 2 == 0)
 			{
 				LevelUpScreen.instance.AddNextChoicesToQue();
@@ -519,7 +518,6 @@ public class CombatController : AbilityScript
 
 			myStats.level++;
 			myStats.xp -= (int)xpSlider.maxValue;
-			print(myStats.xp);
 			xpSlider.value = myStats.xp;
 			xpSlider.maxValue = myStats.level * 10;
 		}
@@ -695,7 +693,7 @@ public class CombatController : AbilityScript
 
 		if (_hitSomething) //what was hit
 		{
-			print("name: " + _hit.transform.name + " actedLastTick: " + actedLastTick + " selectedAb: " + selectedAbility);
+			//print("name: " + _hit.transform.name + " actedLastTick: " + actedLastTick + " selectedAb: " + selectedAbility);
 			
 			if(_hit.transform.CompareTag("AbilityButton"))
 			{

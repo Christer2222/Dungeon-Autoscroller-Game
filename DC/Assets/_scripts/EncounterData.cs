@@ -4,8 +4,8 @@ using System.Collections.Generic;
 public class EncounterData : AbilityData
 {
 	#region enemy stat blocks
-	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost", 2, 2, 1, 0, 1, 3, 1, 1, new List<string> { SPOOK }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman", 2, 0, 1, 0, 1, 1, 1, 1, new List<string> { PUNCH }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost", 8, 8, 6, 0, 1, 3, 1, 1, new List<string> { SPOOK }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman", 2, 0, 10, 0, 1, 1, 1, 1, new List<string> { PUNCH }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock eyeballBlock = new StatBlock(StatBlock.Race.Demon, "Eyeball", 7, 7, 2, 1, 1, 2, 1, 2, new List<string> { PUNCH, MANA_DRAIN }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock lightElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Light Elemental", 10, 2, 2, 0, 1, 2, 1, 2, new List<string> { PUNCH, HEAL }, _absorbs: Elementals.Light, _weaknesses: Elementals.Void, _aiType: StatBlock.AIType.Coward);
 	public static StatBlock airElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Air Elemental", 7, 5, 2, 1, 1, 2, 1, 2, new List<string> { PUNCH }, _absorbs: Elementals.Air, _weaknesses: Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
@@ -28,7 +28,8 @@ public class EncounterData : AbilityData
 		Hell = 64,
 	}
 
-	public struct Encounter
+
+	public class Encounter
 	{
 		public StatBlock monsterBL, monsterBM, monsterBR, monsterTL, monsterTM, monsterTR;
 		public EncounterLocation encounterLocation;
@@ -48,6 +49,12 @@ public class EncounterData : AbilityData
 			encounterLocation = _encounterLocation;
 			level = _level;
 		}
+
+		public Encounter Clone()
+		{
+			var _clone = (Encounter)MemberwiseClone();
+			return _clone;
+		}
 	}
 
 	public static readonly Encounter[] encounterTable = new Encounter[]
@@ -56,16 +63,11 @@ public class EncounterData : AbilityData
 
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock.Clone(), _monsterBR: nosemanBlock.Clone()),
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock.Clone()),
-
+		/*
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: eyeballBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTR: eyeballBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock.Clone(), _monsterTR: eyeballBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: nosemanBlock.Clone(), _monsterTL: eyeballBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: ghostBlock.Clone(), _monsterBL: nosemanBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock.Clone(), _monsterBL: nosemanBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTR: ghostBlock.Clone(), _monsterBL: nosemanBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: lightElementalBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: fireElementalBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: fireElementalBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: earthElementalBlock.Clone()),
@@ -74,7 +76,14 @@ public class EncounterData : AbilityData
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: waterElementalBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: airElementalBlock.Clone()),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: lightElementalBlock.Clone()),
+		*/
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: druidBlock.Clone()),
+
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock.Clone()),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTL: ghostBlock.Clone()),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: ghostBlock.Clone()),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTR: ghostBlock.Clone()),
 
 	};
 
