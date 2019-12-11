@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMover : MonoBehaviour
@@ -26,10 +25,10 @@ public class EnemyMover : MonoBehaviour
 		//localEnemyMovePoints.Add(new Vector3(-1,0,0));
 		//localEnemyMovePoints.Add(new Vector3(0.2f,0,0));
 
-		int _randomIndex = UnityEngine.Random.Range(0,localEnemyMovePoints.Count - 1);
+		int _randomIndex = Random.Range(0,localEnemyMovePoints.Count - 1);
 		transform.position += localEnemyMovePoints[_randomIndex];
 		positionIndex = _randomIndex;
-		moveSpeed = UnityEngine.Random.Range(0.2f,2f);
+		moveSpeed = (float)combatController.myStats.dexterity / 10; // Random.Range(0.2f,2f);
 	}
 
     // Update is called once per frame

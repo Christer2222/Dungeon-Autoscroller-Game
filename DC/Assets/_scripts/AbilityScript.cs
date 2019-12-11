@@ -19,6 +19,19 @@ public class AbilityScript : AbilityData
 		public Buff(string _name, string _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
 		{
 			name = _name;
+			function = new List<string> { _function };
+			turns = _turns;
+			constant = _constant;
+			target = _target;
+			stackType = _stackType;
+			buffIcon = _buffIcon;
+			shouldBeDisplayed = _shouldBeDisplyed;
+		}
+
+
+		public Buff(string _name, List<string> _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
+		{
+			name = _name;
 			function = _function;
 			turns = _turns;
 			constant = _constant;
@@ -29,7 +42,7 @@ public class AbilityScript : AbilityData
 		}
 
 		public string name;
-		public string function;
+		public List<string> function;
 		public CombatController target;
 		public float constant;
 		public int turns;
@@ -301,6 +314,51 @@ public class AbilityScript : AbilityData
 			yield return null;
 			//_target.AdjustMana(-2);
 		}
+
+		yield return null;
+	}
+
+	protected IEnumerator RestoreSoul(CombatController _self)
+	{
+		_self.myStats.buffList.Clear();
+		yield return null;
+	}
+
+	protected IEnumerator Clense(CombatController _self)
+	{
+		if (_self.myStats.buffList.Count > 0)
+		{
+			_self.myStats.buffList.RemoveAt(Random.Range(0, _self.myStats.buffList.Count));
+		}
+		yield return null;
+	}
+
+	protected IEnumerator SyncSoul(CombatController _target, CombatController _self)
+	{
+		if (_target != null)
+		{
+			_self.myStats.buffList.Clear();
+			_self.myStats.buffList.AddRange(_target.myStats.buffList);
+		}
+		yield return null;
+	}
+
+	protected IEnumerator Bless(CombatController _target)
+	{
+		EffectTools.SpawnEffect("bless", lastClick, 1);
+
+		var _buff = new Buff(BLESS, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("bless"), StatBlock.StackType.Pick_Most_Turns, 2);
+		AddBuff(_buff, _target);
+
+		yield return null;
+	}
+
+	protected IEnumerator Curse(CombatController _target)
+	{
+		EffectTools.SpawnEffect("bless", lastClick, 1);
+
+		var _buff = new Buff(CURSE, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("curse"), StatBlock.StackType.Pick_Most_Turns, 0.5f);
+		AddBuff(_buff, _target);
 
 		yield return null;
 	}

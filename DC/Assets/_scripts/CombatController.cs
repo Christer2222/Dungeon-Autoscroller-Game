@@ -59,7 +59,7 @@ public class CombatController : AbilityScript
 	private static GameObject entryPrefab;
 	private Text abilityButtonText;
 
-	private List<string> debugAbilityList = new List<string>() {PUNCH, DOUBLE_KICK, WILD_PUNCH, FORCE_PUNCH, TILT_SWING, CHAOS_THESIS, DEBULK, DIVINE_FISTS, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
+	private List<string> debugAbilityList = new List<string>() {RESTORE_SOUL, CLENSE, SYNC_SOUL, CURSE, BLESS, PUNCH, DOUBLE_KICK, WILD_PUNCH, FORCE_PUNCH, TILT_SWING, CHAOS_THESIS, DEBULK, DIVINE_FISTS, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
 					LIFE_TAP, MASS_HEAL,FIREBALL, FOCUS, MASS_EXPLOSION, TIME_WARP, KEEN_SIGHT, SPOOK};
 
 	public static void ClearAllValues()
@@ -332,8 +332,11 @@ public class CombatController : AbilityScript
 		for(int i = 0; i < myStats.buffList.Count; i++)
 		{
 			var _buff = myStats.buffList[i];
-			selectedAbility = _buff.function;
-			StartCoroutine(InvokeActiveAbility(false,_buff.constant));
+			for (int j = 0; j < _buff.function.Count; j++)
+			{
+				selectedAbility = _buff.function[j];
+				StartCoroutine(InvokeActiveAbility(false,_buff.constant));
+			}
 			_buff.turns--;
 		}
 
@@ -348,12 +351,12 @@ public class CombatController : AbilityScript
 
 	bool CheckIfHasBuff(string _buffName)
 	{
-		return (myStats.buffList.Find(x => x.function == _buffName) != null);
+		return (myStats.buffList.Find(x => x.function.Contains(_buffName)) != null);
 	}
 
 	public void RemoveAllBufsWithName(string _buffName)
 	{
-		myStats.buffList.RemoveAll(x => x.function == _buffName);
+		myStats.buffList.RemoveAll(x => x.function.Contains(_buffName));
 	}
 
 	void CheckIfBuffIconsAreCorrect()
@@ -393,7 +396,12 @@ public class CombatController : AbilityScript
 							_children[j].text = "Turns: " + myStats.buffList[i].turns;
 							break;
 						case "$BuffDescription":
-							_children[j].text = myStats.buffList[i].function; //TODO Add description to all buffs
+							_children[j].text = string.Empty;
+							for (int k = 0; k < myStats.buffList[i].function.Count; k++)
+							{
+								_children[j].text += myStats.buffList[i].function[k]; //TODO Add description to all buffs
+								if (k < myStats.buffList[i].function.Count) _children[j].text += "\n";
+							}
 							break;
 					}
 
@@ -525,7 +533,7 @@ public class CombatController : AbilityScript
 
 	public int AdjustHealth(int _amount, Elementals _elementals)
 	{
-		
+		print("given damage: " + _amount);
 		//print("adjust hp: " + transform.name + " amount: " + _amount);
 		//if (!playerOwned) print(playerCombatController.activeAbility + " has Light: " + elementals.HasFlag(Elementals.Light));
 		float _amountMultiplier = 1;
@@ -867,6 +875,21 @@ public class CombatController : AbilityScript
 				break;
 			case DIVINE_FISTS:
 				yield return StartCoroutine(DivineFists(this));
+				break;
+			case CURSE:
+				yield return StartCoroutine(Curse(targetCombatController));
+				break;
+			case BLESS:
+				yield return StartCoroutine(Bless(targetCombatController));
+				break;
+			case SYNC_SOUL:
+				yield return StartCoroutine(SyncSoul(targetCombatController, this));
+				break;
+			case CLENSE:
+				yield return StartCoroutine(Clense(this));
+				break;
+			case RESTORE_SOUL:
+				yield return StartCoroutine(RestoreSoul(this));
 				break;
 			default:
 				Debug.LogWarning("No move set for \"" + _tempActiveAbility + "\"");

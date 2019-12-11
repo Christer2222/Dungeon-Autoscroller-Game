@@ -77,7 +77,6 @@ public class ForwardMover : MonoBehaviour
 					_possibles = EncounterData.encounterTable.Where(x => x.level == 0).ToArray(); //overwrite encounter check for the easiest
 
 				EncounterData.Encounter _selectedEncounter = _possibles[Random.Range(0,_possibles.Length)];
-				print(_selectedEncounter.monsterBM.GetHashCode());
 
 				SpawnEnemy(_selectedEncounter.monsterBL, 0);
 				SpawnEnemy(_selectedEncounter.monsterBM, 1);

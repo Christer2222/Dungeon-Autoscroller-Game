@@ -50,7 +50,12 @@ public class AbilityData : MonoBehaviour
 		MANA_DRAIN = "Mana Drain",
 		LIFE_TAP = "Life Tap",
 		DIVINE_FISTS = "Divine Fists",
-		DEBULK = "Debulk";
+		DEBULK = "Debulk",
+		CURSE = "Curse",
+		BLESS = "Bless",
+		SYNC_SOUL = "Sync Soul",
+		RESTORE_SOUL = "Restore Soul",
+		CLENSE = "Clense";
 
 
 	protected static Dictionary<string, int> manaCostDictionary = new Dictionary<string, int>()
@@ -73,6 +78,9 @@ public class AbilityData : MonoBehaviour
 		{MANA_DRAIN, -3 },
 		{DIVINE_FISTS, -6 },
 		{DEBULK, -2 },
+		{CURSE, -5 },
+		{BLESS, -10 },
+		{SYNC_SOUL, -10 },
 	};
 
 	public enum AbilityType
@@ -99,6 +107,8 @@ public class AbilityData : MonoBehaviour
 		{BULK_UP, AbilityType.buff },
 		{DIVINE_LUCK, AbilityType.buff },
 		{DIVINE_FISTS, AbilityType.buff },
+		{BLESS, AbilityType.buff },
+		{TIME_WARP, AbilityType.buff },
 
 
 		{HEAL, AbilityType.recovery},
@@ -112,9 +122,10 @@ public class AbilityData : MonoBehaviour
 		{LIFE_TAP, AbilityType.misc},
 		{SPOT_WEAKNESS, AbilityType.misc },
 		{KEEN_SIGHT, AbilityType.misc},
-		{TIME_WARP, AbilityType.misc },
+		{SYNC_SOUL, AbilityType.misc },
 
-		{DEBULK, AbilityType.defensive }
+		{DEBULK, AbilityType.defensive },
+		{CURSE, AbilityType.defensive }
 	};
 
 

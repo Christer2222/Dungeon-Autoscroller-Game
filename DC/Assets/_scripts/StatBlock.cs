@@ -80,7 +80,14 @@ public class StatBlock
 		{
 			int _bs = baseStrength;
 			foreach(AbilityScript.Buff _b in buffList)
-				if(_b.function.Contains("strength")) _bs += (int)_b.constant;
+			{
+				if (_b.function.Contains("strength")) _bs += (int)_b.constant;
+				else if (_b.function.Contains("strenght_mutliplier"))
+				{
+					_bs = (int)(_bs * _b.constant);
+					UnityEngine.Debug.Log("base strenght: " + baseStrength + " _bs: " + _bs + " buff constant: " + _b.constant);
+				}
+			}
 
 			return _bs;
 		}
@@ -92,7 +99,11 @@ public class StatBlock
 		{
 			int _bd = baseDexterity;
 			foreach(AbilityScript.Buff _b in buffList)
+			{
 				if(_b.function.Contains("dexterity")) _bd += (int)_b.constant;
+				else if (_b.function.Contains("dexterity_multiplier")) _bd = (int)(_bd * _b.constant);
+
+			}
 
 			return _bd;
 		}
@@ -104,7 +115,11 @@ public class StatBlock
 		{
 			int _bi = baseIntelligence;
 			foreach(AbilityScript.Buff _b in buffList)
+			{
 				if(_b.function.Contains("intelligence")) _bi += (int)_b.constant;
+				else if (_b.function.Contains("intelligence_multiplier")) _bi = (int)(_bi * _b.constant);
+
+			}
 
 			return _bi;
 		}
@@ -116,7 +131,11 @@ public class StatBlock
 		{
 			int _bl = baseLuck;
 			foreach(AbilityScript.Buff _b in buffList)
+			{
 				if(_b.function.Contains("luck")) _bl += (int)_b.constant;
+				else if (_b.function.Contains("luck_multiplier")) _bl = (int)(_bl * _b.constant);
+
+			}
 
 			return _bl;
 		}

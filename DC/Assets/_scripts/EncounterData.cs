@@ -49,21 +49,15 @@ public class EncounterData : AbilityData
 			encounterLocation = _encounterLocation;
 			level = _level;
 		}
-
-		public Encounter Clone()
-		{
-			var _clone = (Encounter)MemberwiseClone();
-			return _clone;
-		}
 	}
 
 	public static readonly Encounter[] encounterTable = new Encounter[]
 	{
-		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock.Clone()),
+		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock),
 
-		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock.Clone(), _monsterBR: nosemanBlock.Clone()),
-		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock.Clone()),
-		/*
+		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock),
+		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock),
+		
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: eyeballBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTR: eyeballBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock.Clone(), _monsterTR: eyeballBlock.Clone()),
@@ -77,13 +71,12 @@ public class EncounterData : AbilityData
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: airElementalBlock.Clone()),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: lightElementalBlock.Clone()),
-		*/
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: druidBlock.Clone()),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: druidBlock),
 
-		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock.Clone()),
-		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTL: ghostBlock.Clone()),
-		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: ghostBlock.Clone()),
-		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTR: ghostBlock.Clone()),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTL: ghostBlock),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: ghostBlock),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTR: ghostBlock),
 
 	};
 
