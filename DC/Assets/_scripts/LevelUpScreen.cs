@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelUpScreen : AbilityData
+public class LevelUpScreen : AbilityScript
 {
 	public GameObject levelUpScreen;
 
@@ -11,14 +11,30 @@ public class LevelUpScreen : AbilityData
 
 	private struct AbilityChoices
 	{
-		public AbilityChoices(string _option1, string _option2, string _option3)
+		public AbilityChoices(Ability _option1)
+		{
+			option1 = _option1;
+			option2 = null;
+			option3 = null;
+			used = false;
+		}
+
+		public AbilityChoices(Ability _option1, Ability _option2)
+		{
+			option1 = _option1;
+			option2 = _option2;
+			option3 = null;
+			used = false;
+		}
+
+		public AbilityChoices(Ability _option1, Ability _option2, Ability _option3)
 		{
 			option1 = _option1;
 			option2 = _option2;
 			option3 = _option3;
 			used = false;
 		}
-		public string option1, option2, option3;
+		public Ability option1, option2, option3;
 		public bool used;
 	}
 
@@ -26,12 +42,12 @@ public class LevelUpScreen : AbilityData
 	private int addedAdventurerLevels;
 	private List<AbilityChoices> adventurerLevelLine = new List<AbilityChoices>()
 	{
-		new AbilityChoices(SPOT_WEAKNESS,"",""),
-		new AbilityChoices(WILD_PUNCH,DOUBLE_KICK,""),
-		new AbilityChoices(LIFE_TAP,TILT_SWING,HEAL),
-		new AbilityChoices(SIPHON_SOUL,FIREBALL,""),
-		new AbilityChoices(FORCE_PUNCH,REGENERATION,""),
-		new AbilityChoices(CHAOS_THESIS,DIVINE_LUCK,""),
+		new AbilityChoices(spotWeakness),
+		new AbilityChoices(wildPunch,	doubleKick),
+		new AbilityChoices(lifeTap,		tiltSwing,		heal),
+		new AbilityChoices(siphonSoul,	fireball),
+		new AbilityChoices(forcePunch,	regeneration),
+		new AbilityChoices(chaosThesis,	divineLuck),
 	};
 
 	private int strengthChange, dexterityChange, intelligenceChange, luckChange;
@@ -146,7 +162,7 @@ public class LevelUpScreen : AbilityData
 
 					abilityPickButton1.onClick.AddListener(delegate {
 						print("pick ab 1");
-						AddAbility(abilityPickText1.text);
+						AddAbility(levelUpQue[0].option1);// abilityPickText1.text);
 					});
 
 					break;
@@ -157,7 +173,7 @@ public class LevelUpScreen : AbilityData
 					abilityPickButton2.onClick.AddListener(delegate {
 						print("pick ab 2");
 
-						AddAbility(abilityPickText2.text);
+						AddAbility(levelUpQue[0].option2);
 					});
 					break;
 				case "$AbilityButton3":
@@ -167,7 +183,7 @@ public class LevelUpScreen : AbilityData
 					abilityPickButton3.onClick.AddListener(delegate {
 						print("pick ab 3");
 
-						AddAbility(abilityPickText3.text);
+						AddAbility(levelUpQue[0].option3);
 					});
 					break;
 				case "$CancelButton":
@@ -214,7 +230,7 @@ public class LevelUpScreen : AbilityData
 		}
 	}
 
-	void AddAbility(string _abilityToAdd)
+	void AddAbility(Ability _abilityToAdd)
 	{
 		if (levelUpQue.Count <= 0) return;
 
@@ -227,9 +243,9 @@ public class LevelUpScreen : AbilityData
 	void RefreshAbilities()
 	{
 		bool _lc = (levelUpQue.Count > 0);
-		bool _hasOption1 = (_lc) ? (!string.IsNullOrEmpty(levelUpQue[0].option1)): false;
-		bool _hasOption2 = (_lc) ? (!string.IsNullOrEmpty(levelUpQue[0].option2)): false;
-		bool _hasOption3 = (_lc) ? (!string.IsNullOrEmpty(levelUpQue[0].option3)): false;
+		bool _hasOption1 = (_lc) ? (levelUpQue[0].option1 != null): false;
+		bool _hasOption2 = (_lc) ? (levelUpQue[0].option2 != null): false;
+		bool _hasOption3 = (_lc) ? (levelUpQue[0].option3 != null): false;
 
 		abilityPickButton1.gameObject.SetActive(_hasOption1);
 		abilityPickButton2.gameObject.SetActive(_hasOption2);
@@ -237,9 +253,9 @@ public class LevelUpScreen : AbilityData
 
 		if (_lc)
 		{
-			abilityPickText1.text = levelUpQue[0].option1;
-			abilityPickText2.text = levelUpQue[0].option2;
-			abilityPickText3.text = levelUpQue[0].option3;
+			abilityPickText1.text = (_hasOption1)? levelUpQue[0].option1.name : string.Empty;
+			abilityPickText2.text = (_hasOption2)? levelUpQue[0].option2.name : string.Empty;
+			abilityPickText3.text = (_hasOption3)? levelUpQue[0].option3.name : string.Empty;
 		}
 	}
 

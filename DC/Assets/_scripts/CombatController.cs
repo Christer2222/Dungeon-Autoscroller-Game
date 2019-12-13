@@ -36,7 +36,7 @@ public class CombatController : AbilityScript
 	private GameObject gameOverHolder;
 
 	//Variables for targeting, and using abilities
-	public string selectedAbility;
+	public Ability selectedAbility;
 	private CombatController targetCombatController;
     public static CombatController playerCombatController;
 	private Vector3 hitPosition;
@@ -59,8 +59,15 @@ public class CombatController : AbilityScript
 	private static GameObject entryPrefab;
 	private Text abilityButtonText;
 
-	private List<string> debugAbilityList = new List<string>() {RESTORE_SOUL, CLENSE, SYNC_SOUL, CURSE, BLESS, PUNCH, DOUBLE_KICK, WILD_PUNCH, FORCE_PUNCH, TILT_SWING, CHAOS_THESIS, DEBULK, DIVINE_FISTS, BULK_UP, MANA_DRAIN, DIVINE_LUCK, REGENERATION, SPOT_WEAKNESS, SMITE_UNLIFE, SIPHON_SOUL, HEAL,
-					LIFE_TAP, MASS_HEAL,FIREBALL, FOCUS, MASS_EXPLOSION, TIME_WARP, KEEN_SIGHT, SPOOK};
+	private List<Ability> debugAbilityList = new List<Ability>()
+	{
+		chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
+		restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
+		spotWeakness, smiteUnlife, siphonSoul, heal, lifeTap, massHeal,fireball, focus, 
+		timeWarp, keenSight,
+
+		tiltSwing, massExplosion,
+	};
 
 	public static void ClearAllValues()
 	{
@@ -91,7 +98,7 @@ public class CombatController : AbilityScript
                 10, 15, //hp, mp
                 1, 0, //lv, xp
                 1, 1, 1, 1, //str, dex. int, luck
-                (DebugController.debugAbilities) ? debugAbilityList : new List<string> { PUNCH });
+                (DebugController.debugAbilities) ? debugAbilityList : new List<Ability> { punch });
 
 			//playerOwned = true;
 
@@ -251,21 +258,22 @@ public class CombatController : AbilityScript
 			Destroy(_children[i].gameObject);
 		}
 
-		for (int i = 0; i < myStats.abilities.Count; i++)
+		for (int i = 0; i < myStats.abilities.Count; i++) //for all of my abilities
 		{
 			string _s = "";
-			_s = myStats.abilities[i];
+			_s = myStats.abilities[i].name;
 
-			//buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(650,myStats.abilities.Count * 170 + 10);
-			buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0,(myStats.abilities.Count - 1) * 160 + 10);
+			buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0,(myStats.abilities.Count - 1) * 160 + 10); //set size to fit all entries
 
-			GameObject _go = Instantiate(entryPrefab,buttonMenuContent.transform);
-			_go.transform.localPosition = new Vector3(325,-10 + -(i + 0.5f) * 170,0);
-			_go.transform.Find("$Text").GetComponent<Text>().text = myStats.abilities[i];
+			GameObject _go = Instantiate(entryPrefab,buttonMenuContent.transform); //spawn a new entry for each ability
+			_go.transform.localPosition = new Vector3(325,-10 + -(i + 0.5f) * 170,0); //place it
+			_go.transform.Find("$Text").GetComponent<Text>().text = myStats.abilities[i].name; //write what ability the button selects
+
+			int _index = i;
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
 				buttonMenuScrollView.SetActive(false);
 				abilityButtonText.text = _s;
-				selectedAbility = _s;
+				selectedAbility = myStats.abilities[_index]; //set ability to this ability
 			});
 
 		}
@@ -332,9 +340,9 @@ public class CombatController : AbilityScript
 		for(int i = 0; i < myStats.buffList.Count; i++)
 		{
 			var _buff = myStats.buffList[i];
-			for (int j = 0; j < _buff.function.Count; j++)
+			for (int j = 0; j < _buff.functions.Count; j++)
 			{
-				selectedAbility = _buff.function[j];
+				selectedAbility = _buff.functions[j];
 				StartCoroutine(InvokeActiveAbility(false,_buff.constant));
 			}
 			_buff.turns--;
@@ -351,12 +359,12 @@ public class CombatController : AbilityScript
 
 	bool CheckIfHasBuff(string _buffName)
 	{
-		return (myStats.buffList.Find(x => x.function.Contains(_buffName)) != null);
+		return (myStats.buffList.Find(x => x.name.Contains(_buffName)) != null);
 	}
 
 	public void RemoveAllBufsWithName(string _buffName)
 	{
-		myStats.buffList.RemoveAll(x => x.function.Contains(_buffName));
+		myStats.buffList.RemoveAll(x => x.name.Contains(_buffName));
 	}
 
 	void CheckIfBuffIconsAreCorrect()
@@ -397,10 +405,17 @@ public class CombatController : AbilityScript
 							break;
 						case "$BuffDescription":
 							_children[j].text = string.Empty;
-							for (int k = 0; k < myStats.buffList[i].function.Count; k++)
+							for (int k = 0; k < myStats.buffList[i].functions.Count; k++)
 							{
-								_children[j].text += myStats.buffList[i].function[k]; //TODO Add description to all buffs
-								if (k < myStats.buffList[i].function.Count) _children[j].text += "\n";
+								_children[j].text += myStats.buffList[i].functions[k]; //TODO Add description to all buffs
+								if (k < myStats.buffList[i].functions.Count) _children[j].text += "\n";
+							}
+
+							for (int k = 0; k < myStats.buffList[i].traits.Count; k++)
+							{
+								_children[j].text += myStats.buffList[i].traits[k]; //TODO Add description to all buffs
+								if (k < myStats.buffList[i].traits.Count) _children[j].text += "\n";
+								//print("k: " + k + " bu " + myStats.buffList[i].traits.Count);
 							}
 							break;
 					}
@@ -432,17 +447,18 @@ public class CombatController : AbilityScript
 	IEnumerator TakeEnemyTurn()
 	{
 		yield return new WaitForSeconds(1);
-		var _recoveries = myStats.abilities.FindAll(x => abilityTypeDictionary[x] == AbilityType.recovery && (manaCostDictionary.TryGetValue(x, out int y)? y <= currentMana: true)); //find all recoveries. If it has cost, check if has more or equal mana. If no cost, act as if has mana.
-		var _nonRecover = myStats.abilities.FindAll(x => abilityTypeDictionary[x] != AbilityType.recovery && (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
-		var _offensive = myStats.abilities.FindAll(x => abilityTypeDictionary[x] == AbilityType.offensive && (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
-		var _buffs = myStats.abilities.FindAll(x => abilityTypeDictionary[x] == AbilityType.buff && (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
+		//var a = myStats.abilities.FindAll(x => x.);
+		List<Ability> _recoveries = myStats.abilities.FindAll(x => x.abilityType == AbilityType.recovery && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y)? y <= currentMana: true)); //find all recoveries. If it has cost, check if has more or equal mana. If no cost, act as if has mana.
+		List<Ability> _nonRecover = myStats.abilities.FindAll(x => x.abilityType != AbilityType.recovery && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
+		List<Ability> _offensive = myStats.abilities.FindAll(x => x.abilityType == AbilityType.offensive && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
+		List<Ability> _buffs = myStats.abilities.FindAll(x => x.abilityType == AbilityType.buff && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
 
 		AbilityType activeType = AbilityType.none;
 
 		switch(myStats.aiType)
 		{
 			case StatBlock.AIType.None:
-				selectedAbility = "";
+				selectedAbility = null;
 				break;
 			case StatBlock.AIType.Dumb:
 				selectedAbility = myStats.abilities[Random.Range(0,myStats.abilities.Count)];
@@ -625,6 +641,7 @@ public class CombatController : AbilityScript
 		return _totalDamage;
 	}
 
+	/*
 	public void AdjustMana(string _manaCost = "")
 	{
 		if(manaCostDictionary.ContainsKey(_manaCost))
@@ -634,6 +651,7 @@ public class CombatController : AbilityScript
 		else
 			AdjustMana(0);
 	}
+	*/
 
 	public int AdjustMana(int _amount)
 	{
@@ -644,6 +662,9 @@ public class CombatController : AbilityScript
 		if(playerOwned)
 		{
 			currentManaText.text = currentMana.ToString();
+
+			if (manaMove != null)
+				StopCoroutine(manaMove);
 
 			if (_manaLost > 0)
 			{
@@ -677,19 +698,11 @@ public class CombatController : AbilityScript
 	{
 		string _buttonText = _button.GetComponentInChildren<Text>().text;//.ToLower(); //text of the button, to get the ability
 
-		bool _hasManaCost = manaCostDictionary.ContainsKey(_buttonText);
+		bool _hasEnoughMana = playerCombatController.currentMana >= -myStats.abilities.Find(x => x.name == _buttonText).manaCost; //playerCombatController.selectedAbility.manaCost;
 
-		//if() //check dictionary if ti contains button text
-		{
-			bool _hasEnoughMana = (_hasManaCost)? (playerCombatController.currentMana >= -manaCostDictionary[_buttonText])  : true;
-
-			//if (_hasManaCost)
-			//	_hasEnoughMana = (playerCombatController.currentMana >= manaCostDictionary[_buttonText]);
-			
-			_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? activeColor: deactiveColor;
-			_button.GetComponent<Button>().enabled = _hasEnoughMana;
-			_button.GetComponent<Collider2D>().enabled = _hasEnoughMana;
-		}
+		_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? activeColor: deactiveColor;
+		_button.GetComponent<Button>().enabled = _hasEnoughMana;
+		_button.GetComponent<Collider2D>().enabled = _hasEnoughMana;
 	}
 
 	public void Click()
@@ -705,7 +718,7 @@ public class CombatController : AbilityScript
 			
 			if(_hit.transform.CompareTag("AbilityButton"))
 			{
-				selectedAbility = _hit.transform.Find("$Text").GetComponent<Text>().text;
+				//selectedAbility = _hit.transform.Find("$Text").GetComponent<Text>().text;
 				return;
 			}
 			else if(_hit.transform.CompareTag("UI"))
@@ -743,7 +756,7 @@ public class CombatController : AbilityScript
 			StartCoroutine(DeactivateGameObject(fleeSlider.gameObject,0.2f));
 		}
 #endregion
-		else if (!string.IsNullOrEmpty(selectedAbility)) //if not fleeing, but has an ability selected
+		else if (selectedAbility != null) //if not fleeing, but has an ability selected
 		{
 			if(_hit.transform != null) //if something was hit
 			{
@@ -801,10 +814,15 @@ public class CombatController : AbilityScript
 		//yield return new WaitForEndOfFrame();
 		//actedLastTick = false;
 
+		var _targetData = new TargetData(this, targetCombatController, 0, Elementals.None, lastClick, StatBlock.Race.Human);
+		if (_tempActiveAbility.name.ToLower().Contains("undead")) _targetData.targetRace = StatBlock.Race.Undead;
 
-        switch (_tempActiveAbility)
+		yield return StartCoroutine(_tempActiveAbility.function(_targetData));//.Invoke(this, Punch(targetCombatController, myStats.strength, Elementals.Physical));
+
+		/*
+        switch (_tempActiveAbility.name)
 		{
-			case TIME_WARP:
+			case timeWarp.name:
 				yield return StartCoroutine(TimeWarp(this));
 				break;
 			case BULK_UP:
@@ -895,7 +913,7 @@ public class CombatController : AbilityScript
 				Debug.LogWarning("No move set for \"" + _tempActiveAbility + "\"");
 				break;
 		}
-
+		*/
 		//if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
 		if (_byUser)
 		{
@@ -904,7 +922,7 @@ public class CombatController : AbilityScript
 
         if (_byUser)
 		{
-			AdjustMana(_tempActiveAbility);
+			AdjustMana(_tempActiveAbility.manaCost);
 
 			yield return new WaitForSeconds( playerOwned? 1:2);
 			EndTurn();
@@ -937,7 +955,7 @@ public class CombatController : AbilityScript
 
 		playerCombatController.CheckMana();
 
-		if(turnOrder.Count > 1 && !CheckIfHasBuff("extra turn"))
+		if(turnOrder.Count > 1 && !CheckIfHasBuff(timeWarp.name))//"extra turn"))
 		{
 			turnOrder.Remove(this);
 			turnOrder.Add(this);
@@ -955,7 +973,7 @@ public class CombatController : AbilityScript
 	void ResetAbilityPick()
 	{
 		abilityButtonText.text = "Abilities";
-		selectedAbility = string.Empty;
+		selectedAbility = null;// string.Empty;
 	}
 
 	public void CloseAllCombatUI()

@@ -36,7 +36,7 @@ public class StatBlock
 		int _maxHealth,int _maxMana,
 		int _level,int _xp,
 		int _strenght,int _dexterity,int _intelligence,int _luck,
-		List<string> _abilities, //should be List<Ienumerator> to have less human errors
+		List<AbilityData.Ability> _abilities, //should be List<Ienumerator> to have less human errors
 		AbilityData.Elementals _weaknesses = default, AbilityData.Elementals _resistances = default, AbilityData.Elementals _immunities = default, AbilityData.Elementals _absorbs = default,
 		AIType _aiType = default,
 		List<AbilityScript.Buff> _buffs = default)
@@ -58,7 +58,7 @@ public class StatBlock
 		baseDexterity = _dexterity;
 		baseIntelligence = _intelligence;
 		baseLuck = _luck;
-		abilities = new List<string>();
+		abilities = new List<AbilityData.Ability>();
 		for(int i = 0; i < _abilities.Count; i++)
 		{
 			abilities.Add(_abilities[i]);//.ToLower());
@@ -69,10 +69,15 @@ public class StatBlock
 	public Race race;
 	public string name;
 	public AbilityData.Elementals resistances, weaknesses, immunities, absorbs;
-	public int maxHealth,
-		maxMana;
-	public int level,
-		xp;
+	public int maxHealth, maxMana;
+	public int level, xp;
+
+	public int baseStrength, baseDexterity, baseIntelligence, baseLuck;
+
+	public List<AbilityData.Ability> abilities;
+	public AIType aiType;
+
+	public List<AbilityScript.Buff> buffList = new List<AbilityScript.Buff>();
 
 	public int strength
 	{
@@ -81,8 +86,8 @@ public class StatBlock
 			int _bs = baseStrength;
 			foreach(AbilityScript.Buff _b in buffList)
 			{
-				if (_b.function.Contains("strength")) _bs += (int)_b.constant;
-				else if (_b.function.Contains("strenght_mutliplier"))
+				if (_b.traits.Contains("strength_constant")) _bs += (int)_b.constant;
+				else if (_b.traits.Contains("strenght_mutliplier"))
 				{
 					_bs = (int)(_bs * _b.constant);
 					UnityEngine.Debug.Log("base strenght: " + baseStrength + " _bs: " + _bs + " buff constant: " + _b.constant);
@@ -100,8 +105,8 @@ public class StatBlock
 			int _bd = baseDexterity;
 			foreach(AbilityScript.Buff _b in buffList)
 			{
-				if(_b.function.Contains("dexterity")) _bd += (int)_b.constant;
-				else if (_b.function.Contains("dexterity_multiplier")) _bd = (int)(_bd * _b.constant);
+				if(_b.traits.Contains("dexterity_constant")) _bd += (int)_b.constant;
+				else if (_b.traits.Contains("dexterity_multiplier")) _bd = (int)(_bd * _b.constant);
 
 			}
 
@@ -116,8 +121,8 @@ public class StatBlock
 			int _bi = baseIntelligence;
 			foreach(AbilityScript.Buff _b in buffList)
 			{
-				if(_b.function.Contains("intelligence")) _bi += (int)_b.constant;
-				else if (_b.function.Contains("intelligence_multiplier")) _bi = (int)(_bi * _b.constant);
+				if(_b.traits.Contains("intelligence_constant")) _bi += (int)_b.constant;
+				else if (_b.traits.Contains("intelligence_multiplier")) _bi = (int)(_bi * _b.constant);
 
 			}
 
@@ -132,8 +137,8 @@ public class StatBlock
 			int _bl = baseLuck;
 			foreach(AbilityScript.Buff _b in buffList)
 			{
-				if(_b.function.Contains("luck")) _bl += (int)_b.constant;
-				else if (_b.function.Contains("luck_multiplier")) _bl = (int)(_bl * _b.constant);
+				if(_b.traits.Contains("luck_constant")) _bl += (int)_b.constant;
+				else if (_b.traits.Contains("luck_multiplier")) _bl = (int)(_bl * _b.constant);
 
 			}
 
@@ -141,20 +146,11 @@ public class StatBlock
 		}
 	}
 
-	public int baseStrength, baseDexterity, baseIntelligence, baseLuck;
-
-	public List<string> abilities;
-	public AIType aiType;
-
-	public List<AbilityScript.Buff> buffList = new List<AbilityScript.Buff>();
-
-
-
 	public StatBlock Clone()
 	{
 		var _clone = (StatBlock)MemberwiseClone();
 		_clone.buffList = new List<AbilityScript.Buff>();
-		_clone.abilities = new List<string>();
+		_clone.abilities = new List<AbilityData.Ability>();
 		_clone.abilities.AddRange(abilities);
 		//Debug.Log(_clone.abilities.Count);
 		//UnityEngine.Debug.Log("name: " + _clone.name + " " + _clone.buffList.GetHashCode());

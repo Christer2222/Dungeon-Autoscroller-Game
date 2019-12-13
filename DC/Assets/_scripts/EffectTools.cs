@@ -95,7 +95,7 @@ public class EffectTools : MonoBehaviour
 			yield return new WaitForEndOfFrame();//WaitForSeconds(Time.deltaTime);
 
 			float _pingPongTime = Mathf.PingPong((_counter / _sec) * (_times * 2), 1); //goes from 0 to 1 in order to average later. _counter/_sec gives a normalized time, and multiplying that by (times*2) means it will get to 1 "times" times
-			print(_targetTransform.localScale * _pingPongTime);
+			//print(_targetTransform.localScale * _pingPongTime);
 			_targetTransform.localScale = _startSize + _pongSize * _pingPongTime;
 			//_targetTransform.localScale = _targetTransform.localScale * (1 - _pingPongTime) + _targetTransform.localScale * _pingPongTime;
 		}

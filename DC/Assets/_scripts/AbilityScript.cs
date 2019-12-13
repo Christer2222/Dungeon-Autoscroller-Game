@@ -4,9 +4,46 @@ using UnityEngine;
 
 public class AbilityScript : AbilityData
 {
+	public static Ability punch				= new Ability("Punch",					Punch, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
+	public static Ability fireball			= new Ability("Fireball",				Fireball, Elementals.Fire, SkillUsed.Wizard, AbilityType.attack, -2);
+	public static Ability massExplosion		= new Ability("Mass Explosion",			MassExplosion, Elementals.Fire, SkillUsed.Wizard, AbilityType.attack, -4);
+	public static Ability smiteUnlife		= new Ability("Smite Undead",			Smite, Elementals.None, SkillUsed.Priest, AbilityType.attack, -1);
+	public static Ability doubleKick		= new Ability("Double Kick",			DoubleKick, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
+	public static Ability wildPunch			= new Ability("Wild Punch",				WildPunch, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
+	public static Ability tiltSwing			= new Ability("Tilt Swing",				TiltSwing, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
+	public static Ability forcePunch		= new Ability("Force Punch",			ForcePunch, Elementals.Air, SkillUsed.Barbarian | SkillUsed.Wizard, AbilityType.attack, -1);
+	public static Ability chaosThesis		= new Ability("Chaos Thesis",			ChaosThesis, Elementals.Void, SkillUsed.Wizard | SkillUsed.Priest, AbilityType.attack, -1);
+	public static Ability manaDrain			= new Ability("Mana Drain",				ManaDrain, Elementals.Water, SkillUsed.Priest, AbilityType.attack, -3);
+
+	public static Ability siphonSoul		= new Ability("Siphon Soul",			SiphonSoul, Elementals.Unlife, SkillUsed.Priest, AbilityType.attack | AbilityType.recovery, -1);
+
+	public static Ability focus				= new Ability("Focus",					Focus, Elementals.Water, SkillUsed.Wizard, AbilityType.recovery, 0);
+	public static Ability heal				= new Ability("Heal",					Heal, Elementals.Light, SkillUsed.Priest, AbilityType.recovery, -2);
+	public static Ability regeneration		= new Ability("Regeneration",			Regeneration, Elementals.Light, SkillUsed.Priest, AbilityType.recovery, -1);
+	public static Ability massHeal			= new Ability("Mass Heal",				MassHeal, Elementals.Light, SkillUsed.Priest, AbilityType.recovery, -5);
+	public static Ability restoreSoul		= new Ability("Restore Soul",			RestoreSoul, Elementals.Water, SkillUsed.Priest, AbilityType.recovery, 0);
+	public static Ability clense			= new Ability("Clense",					Clense, Elementals.Water, SkillUsed.Priest, AbilityType.recovery, 0);
+
+	public static Ability timeWarp			= new Ability("Time Warp",				TimeWarp, Elementals.Void, SkillUsed.Wizard, AbilityType.buff, -10);
+	public static Ability divineLuck		= new Ability("Divine Luck",			DivineLuck, Elementals.Light, SkillUsed.Priest | SkillUsed.Barbarian, AbilityType.buff, -3);
+	public static Ability bulkUp			= new Ability("Bulk Up",				BulkUp, Elementals.Physical, SkillUsed.Barbarian, AbilityType.buff, -1);
+	public static Ability divineFists		= new Ability("Divine Fists",			DivineFists, Elementals.Physical | Elementals.Light, SkillUsed.Priest, AbilityType.buff, -6);
+	public static Ability bless				= new Ability("Bless",					Bless, Elementals.Fire, SkillUsed.Priest, AbilityType.buff, -10);
+
+	public static Ability debulk			= new Ability("Debulk",					Debulk, Elementals.Unlife, SkillUsed.Priest, AbilityType.debuff, -2);
+	public static Ability curse				= new Ability("Curse",					Curse, Elementals.Unlife, SkillUsed.Priest, AbilityType.debuff, -5);
+
+	public static Ability eat				= new Ability("Eat",					Eat, Elementals.Physical, default, AbilityType.misc, 0);
+	public static Ability keenSight			= new Ability("Keen Sight",				DisplayCritAreas, Elementals.Physical, SkillUsed.Rogue, AbilityType.misc, -1);
+	public static Ability displayCritAreas	= new Ability("Display Crit Areas",		DisplayCritAreas, Elementals.Physical, SkillUsed.Rogue, AbilityType.misc, -1);
+	public static Ability spotWeakness		= new Ability("Spot Weakness",			SpotWeakness, Elementals.Physical, SkillUsed.Rogue, AbilityType.misc, -1);
+	public static Ability lifeTap			= new Ability("Life Tap",				LifeTap, Elementals.Unlife, SkillUsed.Priest, AbilityType.misc, 0);
+	public static Ability syncSoul			= new Ability("Sync Soul",				SyncSoul, Elementals.Void, SkillUsed.Priest | SkillUsed.Wizard, AbilityType.misc, -10);
+
+
 	protected static Vector3 lastClick;
 
-	protected Vector3 randomVector3
+	protected static Vector3 randomVector3
 	{
 		get
 		{
@@ -16,10 +53,13 @@ public class AbilityScript : AbilityData
 
 	public class Buff
 	{
-		public Buff(string _name, string _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
+		public Buff(string _name, string _trait, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<string> { _trait }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) {}
+		public Buff(string _name, Ability _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<Ability> { _function }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) {}
+
+		public Buff(string _name, List<string> _traits, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
 		{
 			name = _name;
-			function = new List<string> { _function };
+			traits = _traits;
 			turns = _turns;
 			constant = _constant;
 			target = _target;
@@ -28,11 +68,10 @@ public class AbilityScript : AbilityData
 			shouldBeDisplayed = _shouldBeDisplyed;
 		}
 
-
-		public Buff(string _name, List<string> _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
+		public Buff(string _name, List<Ability> _functions, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
 		{
 			name = _name;
-			function = _function;
+			functions = _functions;
 			turns = _turns;
 			constant = _constant;
 			target = _target;
@@ -42,7 +81,8 @@ public class AbilityScript : AbilityData
 		}
 
 		public string name;
-		public List<string> function;
+		public List<Ability> functions = new List<Ability>();
+		public List<string> traits = new List<string>();
 		public CombatController target;
 		public float constant;
 		public int turns;
@@ -100,7 +140,7 @@ public class AbilityScript : AbilityData
 		}
 	}
 
-	protected RaycastHit2D CheckIfHit(Vector3 _clickPos)
+	protected static RaycastHit2D CheckIfHit(Vector3 _clickPos)
 	{
 		Debug.DrawLine(_clickPos,_clickPos + Vector3.up * 0.1f,Color.red,4,false);
 		Debug.DrawLine(_clickPos,_clickPos + Vector3.right * 0.1f,Color.blue,4,false);
@@ -111,17 +151,16 @@ public class AbilityScript : AbilityData
 		return _hit;
 	}
 
-
-	protected IEnumerator DivineFists(CombatController _target)
+	protected static IEnumerator DivineFists(TargetData targetData)
 	{
-		yield return StartCoroutine(DivineLuck(_target));
-		yield return StartCoroutine(BulkUp(_target));
+		yield return targetData.self.StartCoroutine(divineLuck.function(targetData));// DivineLuck(targetData._target));
+		yield return targetData.self.StartCoroutine(bulkUp.function(targetData));//BulkUp(targetData._target));
 	}
 
-	protected IEnumerator Punch(CombatController _target, int _damage, Elementals _element = Elementals.Physical)
+	protected static IEnumerator Punch(TargetData targetData)//CombatController _target, int _damage, Elementals _element = Elementals.Physical)
 	{
-		EffectTools.SpawnEffect(PUNCH, lastClick, 1);
-		if (_target != null) _target.AdjustHealth(-Mathf.Max(_damage, 0), _element);
+		EffectTools.SpawnEffect(punch.name, lastClick, 1);
+		if (targetData.target != null) targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.strength + targetData.bonus, 0), targetData.element);
 		yield return null;
 	}
 
@@ -134,162 +173,181 @@ public class AbilityScript : AbilityData
 	}
 	*/
 
-	protected IEnumerator DoubleKick(Vector3 _centerPos, CombatController _target, CombatController _self)
+	protected static IEnumerator DoubleKick(TargetData targetData)//(Vector3 _centerPos, CombatController _target, CombatController _self)
 	{
-		yield return StartCoroutine(Punch(_target,_self.myStats.strength));
-		_target = null;
+		yield return targetData.self.StartCoroutine(punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
+		targetData.target = null;
 		yield return new WaitForSeconds(2);
-		var _hit = CheckIfHit(_centerPos);
+		var _hit = CheckIfHit(targetData.centerPos);
 		if (_hit.transform != null)
 		{
-			_target = _hit.transform.GetComponent<CombatController>();
+			targetData.target = _hit.transform.GetComponent<CombatController>();
 		}
-		yield return StartCoroutine(Punch(_target, _self.myStats.strength));
+
+		yield return targetData.self.StartCoroutine(punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
+
+
+		//yield return StartCoroutine(Punch(_target, _self.myStats.strength));
 	}
 
 
-	protected IEnumerator WildPunch(Vector3 _centerPos, CombatController _self)
+	protected static IEnumerator WildPunch(TargetData targetData)// (Vector3 _centerPos, CombatController _self)
 	{
-		CombatController _target = null;
-		var _hit = CheckIfHit(_centerPos + randomVector3);
+		targetData.target = null;
+		var _hit = CheckIfHit(targetData.centerPos + randomVector3);
 		if (_hit.transform != null)
 		{
-			_target = _hit.transform.GetComponent<CombatController>();
+			targetData.target = _hit.transform.GetComponent<CombatController>();
 		}
-		yield return StartCoroutine(Punch(_target, _self.myStats.strength + 2));
+
+		yield return targetData.self.StartCoroutine(punch.function(targetData));// (Punch(_target, targetData._self.myStats.strength + 2));
 		yield return null;
 	}
 
-	protected IEnumerator ForcePunch(CombatController _target, CombatController _self)
+	protected static IEnumerator ForcePunch(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
-		yield return StartCoroutine(Punch(_target, _self.myStats.strength + 2, Elementals.Air));
+		yield return targetData.self.StartCoroutine(punch.function(targetData));// (Punch(_target, _self.myStats.strength + 2, Elementals.Air));
 		yield return null;
 	}
 
-	protected IEnumerator TiltSwing(CombatController _target, CombatController _self)
+	protected static IEnumerator TiltSwing(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
-		float _r1 = Random.Range(0, 2);
-		int _r = (int)((_r1-0.5f) * 2);
-		print("r1: " + _r1 + "r: " + _r);
-		yield return StartCoroutine(Punch(_target, _self.myStats.strength + _r));
+		float _randomNumber = Random.Range(0, 2);
+		int _result = (int)((_randomNumber-0.5f) * 2);
+
+		targetData.bonus += _result;
+
+		yield return targetData.self.StartCoroutine(punch.function(targetData));//Punch(_target, _self.myStats.strength + _r));
 		yield return null;
 	}
 
-	protected IEnumerator ChaosThesis(Vector3 _centerPos, CombatController _self)
+	protected static IEnumerator ChaosThesis(TargetData targetData)//(Vector3 _centerPos, CombatController _self)
 	{
 		int _r = Random.Range(0,3);
-		CombatController _target = null;
-		var _hit = CheckIfHit(_centerPos);
+
+		/*
+		targetData.target = null;
+		var _hit = CheckIfHit(targetData.centerPos);
 		if (_hit.transform != null)
 		{
-			_target = _hit.transform.GetComponent<CombatController>();
+			targetData.target = _hit.transform.GetComponent<CombatController>();
 		}
-
+		*/
 		print("chose: " + _r);
 		if (_r == 0)
 		{
-			yield return StartCoroutine(ManaDrain(_target,_self, 2));
+			targetData.bonus += 2;
+			yield return targetData.self.StartCoroutine(manaDrain.function(targetData));// ManaDrain(_target,_self, 2));
 		}
 		else if (_r == 1)
 		{
-			yield return StartCoroutine(Fireball(_centerPos, _self, 2));
+			yield return targetData.self.StartCoroutine(fireball.function(targetData));//Fireball(_centerPos, _self, 2));
 		}
 		else if (_r == 2)
 		{
-			yield return StartCoroutine(Heal(_target, _self.myStats.luck));
+			yield return targetData.self.StartCoroutine(heal.function(targetData));// Heal(_target, _self.myStats.luck));
 		}
 
 		yield return null;
 	}
 
-	protected IEnumerator LifeTap(CombatController _self)
+	protected static IEnumerator LifeTap(TargetData targetData)//(CombatController _self)
 	{
-        EffectTools.SpawnEffect("blue blast", _self.transform.position, 1);
-		int _tapped = _self.AdjustHealth(-Mathf.Min(5, _self.currentHealth -1),Elementals.Void);
-		_self.AdjustMana(_tapped);
+        EffectTools.SpawnEffect("blue blast", targetData.self.transform.position, 1);
+		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.currentHealth -1),Elementals.Void);
+		targetData.self.AdjustMana(_tapped);
 		yield return null;
 	}
 
-	protected IEnumerator SiphonSoul(CombatController _target, CombatController _self)
+	protected static IEnumerator SiphonSoul(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
 		//_self.AdjustMana(-manaCostDictionary["siphon soul"]);
-		print("siphon at: " + _target);
+		print("siphon at: " + targetData.target);
 
-		if(_target != null)
+		if(targetData.target != null)
 		{
-			int _hpRecover = _target.AdjustHealth(-Mathf.Max(_self.myStats.luck,0),Elementals.Unlife);
+			int _hpRecover = targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.luck,0),Elementals.Unlife);
 			print("recover: " +_hpRecover);
 
 			//print(_self.AdjustHealth(-5,Elementals.None) + " was given");
-			_self.AdjustHealth(Mathf.Max(_hpRecover,0),Elementals.Fire);// new Elementals[] { Elementals.Light });
+			targetData.self.AdjustHealth(Mathf.Max(_hpRecover,0),Elementals.Fire);// new Elementals[] { Elementals.Light });
 
 			//StartCoroutine(Eat(_self,_hpRecover));
 		}
 		yield return null;
 	}
 
-	protected IEnumerator Smite(CombatController _target, StatBlock.Race _targetRace, int _constant)
+	protected static IEnumerator Smite(TargetData targetData)//CombatController _target, StatBlock.Race _targetRace, int _constant)
 	{
 		EffectTools.SpawnEffect("light cloud",lastClick,1);
 
-		if (_target != null)
+		if (targetData.target != null)
 		{
 
 			//_self.AdjustMana(-manaCostDictionary["smite unlife"]);
 			//EffectTools.SpawnEffect("punch",lastClick,1);
-			int _bonusDamage = (_target.myStats.race.HasFlag(_targetRace)) ? 1 : 0;
+			int _smiteDamage = (targetData.target.myStats.race.HasFlag(targetData.targetRace)) ? 2 : 0;
+			targetData.bonus += _smiteDamage;
+			if (_smiteDamage > 0)
+				targetData.element = Elementals.None;
 
-
-			_target.AdjustHealth(-Mathf.Max(_constant + _bonusDamage, 0),Elementals.None);
+			yield return targetData.self.StartCoroutine(Punch(targetData));
+			//targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.luck + targetData.bonus + _smiteDamage, 0),Elementals.None);
 		}
 		yield return null;
 	}
 
-	protected IEnumerator Fireball(Vector3 _centerPos, CombatController _self, int _bonus = 0)
+	protected static IEnumerator Fireball(TargetData targetData)//(Vector3 _centerPos, CombatController _self, int _bonus = 0)
 	{
 		//_self.AdjustMana(-manaCostDictionary[_costName]);
-		var _sprite = EffectTools.SpawnEffect(FIREBALL,_centerPos,0.6f);
+		var _sprite = EffectTools.SpawnEffect(fireball.name,targetData.centerPos,0.6f);
 		float _blastDiameter = 1;// Mathf.Ceil((float)_self.myStats.intelligence / 5);
-		StartCoroutine(EffectTools.PingPongSize(_sprite.transform,Vector3.zero,Vector3.one * _blastDiameter,0.5f,1));
+		targetData.self.StartCoroutine(EffectTools.PingPongSize(_sprite.transform,Vector3.zero,Vector3.one * _blastDiameter,0.5f,1));
 
 		Debug.DrawLine(_sprite.transform.position,_sprite.transform.position + Vector3.right * _blastDiameter * 0.5f,Color.white,5,false);
 		Debug.DrawLine(_sprite.transform.position,_sprite.transform.position + Vector3.left * _blastDiameter * 0.5f,Color.white,5,false);
 		Debug.DrawLine(_sprite.transform.position,_sprite.transform.position + Vector3.up * _blastDiameter * 0.5f,Color.white,5,false);
 		Debug.DrawLine(_sprite.transform.position,_sprite.transform.position + Vector3.down * _blastDiameter * 0.5f,Color.white,5,false);
 
-		foreach(Collider2D _col in Physics2D.OverlapCircleAll(_centerPos,_blastDiameter * 0.5f))
+		foreach(Collider2D _col in Physics2D.OverlapCircleAll(targetData.centerPos,_blastDiameter * 0.5f))
 		{
 			print(_col.transform.name + " was hit by firebazll");
 			var _cc = _col.GetComponent<CombatController>();
 			if (_cc != null)
 			{
-				_cc.AdjustHealth(-Mathf.Max(_self.myStats.intelligence + _bonus,0), Elementals.Fire);
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), Elementals.Fire);
 			}
 		}
 		yield return null;
 
 	}
 
-	protected IEnumerator MassExplosion(Vector3 _centerPos,CombatController _self)
+	protected static IEnumerator MassExplosion(TargetData targetData)//(Vector3 _centerPos,CombatController _self)
 	{
 		//_self.AdjustMana(-manaCostDictionary["mass explosion"]);
 
-		StartCoroutine(Fireball(lastClick + Vector3.left,_self));
-		yield return new WaitForSeconds(0.1f);
-		StartCoroutine(Fireball(lastClick,_self));
-		yield return new WaitForSeconds(0.1f);
-		StartCoroutine(Fireball(lastClick + Vector3.right,_self));
 
+
+		targetData.centerPos += Vector3.left; //-1
+		targetData.self.StartCoroutine(fireball.function(targetData));
+		yield return new WaitForSeconds(0.1f);
+
+		targetData.centerPos += Vector3.right; //0
+		targetData.self.StartCoroutine(fireball.function(targetData));
+		yield return new WaitForSeconds(0.1f);
+
+		targetData.centerPos += Vector3.right; //+1
+		targetData.self.StartCoroutine(fireball.function(targetData));
 		yield return null;
 	}
 
-	protected IEnumerator Heal(CombatController _target, int _baseStat)
+	protected static IEnumerator Heal(TargetData targetData)//(CombatController _target, int _baseStat)
 	{
 		//_self.AdjustMana(-manaCostDictionary[_costName]);
 
-		if(_target != null)
+		if(targetData.target != null)
 		{
-			_target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(_baseStat,0)),Elementals.Light);
+			targetData.target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(targetData.self.myStats.luck,0)),Elementals.Light);
 
 		}
 
@@ -299,17 +357,18 @@ public class AbilityScript : AbilityData
 		yield return null;
 	}
 
-	protected IEnumerator ManaDrain(CombatController _target, CombatController _self, int _bonus = 0)
+	protected static IEnumerator ManaDrain(TargetData targetData)//(CombatController _target, CombatController _self, int _bonus = 0)
 	{
-
-		if(_target != null)
+		if(targetData.target != null)
 		{
 			int _manaRecover = 0;
 
-			_manaRecover = _target.AdjustMana(-Mathf.Max(2 + (Mathf.CeilToInt((float)_self.myStats.luck/2) + _bonus),0));
+			print("bonus: " + targetData.bonus + " ceil((float)luck/2): " + (Mathf.CeilToInt((float)targetData.self.myStats.luck / 2)));
 
+			_manaRecover = targetData.target.AdjustMana(-Mathf.Max((Mathf.CeilToInt((float)targetData.self.myStats.luck/2) + targetData.bonus),0));
 
-			_self.AdjustMana(Mathf.Max(_manaRecover,0));
+			print("mana recover" + _manaRecover);
+			targetData.self.AdjustMana(Mathf.Max(_manaRecover,0));
 
 			yield return null;
 			//_target.AdjustMana(-2);
@@ -318,97 +377,97 @@ public class AbilityScript : AbilityData
 		yield return null;
 	}
 
-	protected IEnumerator RestoreSoul(CombatController _self)
+	protected static IEnumerator RestoreSoul(TargetData targetData)//(CombatController _self)
 	{
-		_self.myStats.buffList.Clear();
+		targetData.self.myStats.buffList.Clear();
 		yield return null;
 	}
 
-	protected IEnumerator Clense(CombatController _self)
+	protected static IEnumerator Clense(TargetData targetData)//(CombatController _self)
 	{
-		if (_self.myStats.buffList.Count > 0)
+		if (targetData.self.myStats.buffList.Count > 0)
 		{
-			_self.myStats.buffList.RemoveAt(Random.Range(0, _self.myStats.buffList.Count));
+			targetData.self.myStats.buffList.RemoveAt(Random.Range(0, targetData.self.myStats.buffList.Count));
 		}
 		yield return null;
 	}
 
-	protected IEnumerator SyncSoul(CombatController _target, CombatController _self)
+	protected static IEnumerator SyncSoul(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
-		if (_target != null)
+		if (targetData.target != null)
 		{
-			_self.myStats.buffList.Clear();
-			_self.myStats.buffList.AddRange(_target.myStats.buffList);
+			targetData.self.myStats.buffList.Clear();
+			targetData.self.myStats.buffList.AddRange(targetData.target.myStats.buffList);
 		}
 		yield return null;
 	}
 
-	protected IEnumerator Bless(CombatController _target)
+	protected static IEnumerator Bless(TargetData targetData)//(CombatController _target)
 	{
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
-		var _buff = new Buff(BLESS, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("bless"), StatBlock.StackType.Pick_Most_Turns, 2);
-		AddBuff(_buff, _target);
+		var _buff = new Buff(bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("bless"), StatBlock.StackType.Pick_Most_Turns, 2);
+		targetData.self.AddBuff(_buff, targetData.target);
 
 		yield return null;
 	}
 
-	protected IEnumerator Curse(CombatController _target)
+	protected static IEnumerator Curse(TargetData targetData)//(CombatController _target)
 	{
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
-		var _buff = new Buff(CURSE, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("curse"), StatBlock.StackType.Pick_Most_Turns, 0.5f);
-		AddBuff(_buff, _target);
+		var _buff = new Buff(curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("curse"), StatBlock.StackType.Pick_Most_Turns, 0.5f);
+		targetData.self.AddBuff(_buff, targetData.target);
 
 		yield return null;
 	}
 
-	protected IEnumerator BulkUp(CombatController _self)
+	protected static IEnumerator BulkUp(TargetData targetData)//(CombatController _self)
 	{
 		EffectTools.SpawnEffect("fist up",lastClick,1);
 
-		var _buff = new Buff(BULK_UP,"strength",2, TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Build_Up,1);
-		AddBuff(_buff, _self);
+		var _buff = new Buff(bulkUp.name,"strength_constant",2, TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Build_Up,1);
+		targetData.self.AddBuff(_buff, targetData.self);
 
 		yield return null;
 	}
 
-	protected IEnumerator Debulk(CombatController _target)
+	protected static IEnumerator Debulk(TargetData targetData)
 	{
-		if (_target != null)
+		if (targetData.target != null)
 		{
-			var _buff = new Buff(DEBULK, "strength", 3, TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Pick_Most_Potent, -2);
-			AddBuff(_buff, _target);
+			var _buff = new Buff(debulk.name, "strength_constant", 3, TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Pick_Most_Potent, -2);
+			targetData.self.AddBuff(_buff, targetData.target);
 		}
 
 		yield return null;
 	}
 
-	protected IEnumerator DivineLuck(CombatController _self)
+	protected static IEnumerator DivineLuck(TargetData targetData)
 	{
 		EffectTools.SpawnEffect("luck up",lastClick,1);
 
 
-		var _buff = new Buff(DIVINE_LUCK,"luck", 3, TryGetBuffIcon("divine_luck"), StatBlock.StackType.Pick_Most_Potent,2);
-		AddBuff(_buff,_self);
+		var _buff = new Buff(divineLuck.name, "luck_constant", 3, TryGetBuffIcon("divine_luck"), StatBlock.StackType.Pick_Most_Potent,2);
+		targetData.self.AddBuff(_buff, targetData.self);
 		yield return null;
 	}
 
-	protected IEnumerator Regeneration(CombatController _target, int _constant)
+	protected static IEnumerator Regeneration(TargetData targetData)//(CombatController _target, int _constant)
 	{
 		EffectTools.SpawnEffect("plusses",lastClick + Vector3.forward,1);
 
-		if(_target != null)
+		if(targetData.target != null)
 		{
 			//EffectTools.SpawnEffect("heal_circle",lastClick,1);
 
-			var _buff = new Buff(REGENERATION,HEAL,3, TryGetBuffIcon("yellow_pluss"), StatBlock.StackType.Pick_Most_Potent, Mathf.Max(_constant,0));
-			AddBuff(_buff,_target);
+			var _buff = new Buff(regeneration.name,heal.name,3, TryGetBuffIcon("yellow_pluss"), StatBlock.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.luck,0));
+			targetData.self.AddBuff(_buff,targetData.target);
 		}
 		yield return null;
 	}
 
-	protected IEnumerator MassHeal(CombatController _self)
+	protected static IEnumerator MassHeal(TargetData targetData)//(CombatController _self)
 	{
 		/*
 		var _dt = new CombatController[CombatController.turnOrder.Count];
@@ -423,7 +482,7 @@ public class AbilityScript : AbilityData
 
 		CombatController.turnOrder.ForEach(x => {
 			lastClick = x.transform.position;
-			x.StartCoroutine(Heal(x, Mathf.Max(_self.myStats.luck, 0)));
+			x.StartCoroutine(heal.function(targetData));// Heal(x, Mathf.Max(targetData._self.myStats.luck, 0)));
 		});
 		//CombatController.turnOrder.ForEach(x => EffectTools.SpawnEffect("heal_circle",x.transform.position + Vector3.forward,1));
 
@@ -438,37 +497,37 @@ public class AbilityScript : AbilityData
 		yield return null;
 	}
 
-	protected IEnumerator Eat(CombatController _target, int _amount = 0)
+	protected static IEnumerator Eat(TargetData targetData)//(CombatController _target, int _amount = 0)
 	{
-		_target.AdjustHealth(_amount, Elementals.Light);// new Elementals[] { Elementals.Light });
+		targetData.target.AdjustHealth(targetData.bonus, Elementals.Light);// new Elementals[] { Elementals.Light });
 
 		yield return null;
 	}
 
-	protected IEnumerator Focus(CombatController _self)
+	protected static IEnumerator Focus(TargetData targetData)//(CombatController _self)
 	{
-		EffectTools.SpawnEffect("blue_sparkles",_self.transform.position,1);
-		_self.AdjustMana(Mathf.Max(_self.myStats.intelligence, 0));
+		EffectTools.SpawnEffect("blue_sparkles", targetData.self.transform.position,1);
+		targetData.self.AdjustMana(Mathf.Max(targetData.self.myStats.intelligence, 0));
 		yield return null;// new WaitForSeconds(1);
 	}
 
-	protected IEnumerator SpotWeakness(CombatController _target, CombatController _self)
+	protected static IEnumerator SpotWeakness(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
-		if (_target == null)
+		if (targetData.target == null)
 		{
 			//_self.AdjustMana(-manaCostDictionary["spot weakness"]);
 			yield break;
 		}
 
-		StartCoroutine( DisplayCritAreas(_self, _target));
+		targetData.target.StartCoroutine(displayCritAreas.function(targetData)); //DisplayCritAreas(targetData._self, targetData._target));
 		yield return null;
 	}
 
-	protected IEnumerator TimeWarp(CombatController _self)
+	protected static IEnumerator TimeWarp(TargetData targetData)//(CombatController _self)
 	{
-		EffectTools.SpawnEffect(TIME_WARP,lastClick,1);
-		var _buff = new Buff(TIME_WARP,"extra turn",2, TryGetBuffIcon("pluss_time"),StatBlock.StackType.Stack_Self,1);
-		AddBuff(_buff,_self);
+		EffectTools.SpawnEffect(timeWarp.name,lastClick,1);
+		var _buff = new Buff(timeWarp.name,"extra turn",2, TryGetBuffIcon("pluss_time"),StatBlock.StackType.Stack_Self,1);
+		targetData.self.AddBuff(_buff, targetData.self);
 		yield return null;
 	}
 
@@ -476,7 +535,7 @@ public class AbilityScript : AbilityData
 	/// Displays crit areas of all enemies if no parameter is given, otherwise, display the crit area of the enemy given.
 	/// </summary>
 	/// <param name="_self"></param>
-	protected IEnumerator DisplayCritAreas(CombatController _self,CombatController _target = null)
+	protected static IEnumerator DisplayCritAreas(TargetData targetData)//(CombatController _self,CombatController _target = null)
 	{
 		/*
 		if(_manacost == 0)
@@ -485,7 +544,7 @@ public class AbilityScript : AbilityData
 			_self.AdjustMana(_manacost);
 		*/
 
-		var _checks = (_target == null)? CombatController.turnOrder: new List<CombatController>() { _target };
+		var _checks = (targetData.target == null)? CombatController.turnOrder: new List<CombatController>() { targetData.target };
 
 		foreach (CombatController _cc in _checks)
 		{
@@ -494,7 +553,8 @@ public class AbilityScript : AbilityData
 			if (_critArea != null)
 			{
 				var _critImage = _critArea.GetComponent<SpriteRenderer>();
-				StartCoroutine(EffectTools.BlinkImage(_critImage,Color.white,5.5f,10));
+				if (_critImage != null)
+					targetData.target.StartCoroutine(EffectTools.BlinkImage(_critImage,Color.white,5.5f,10));
 			}
 		}
 
@@ -502,10 +562,10 @@ public class AbilityScript : AbilityData
 
 	}
 
-	protected IEnumerator Spook(CombatController _target,CombatController _self)
+	protected static IEnumerator Spook(TargetData targetData)//(CombatController _target,CombatController _self)
 	{
-		yield return StartCoroutine(EffectTools.BlinkImage(_self.transform.GetComponent<SpriteRenderer>(),new Color(1,1,1,0),1,1));
-		_target.AdjustHealth(-_self.myStats.intelligence, Elementals.Unlife);
+		yield return targetData.self.StartCoroutine(EffectTools.BlinkImage(targetData.self.transform.GetComponent<SpriteRenderer>(),new Color(1,1,1,0),1,1));
+		targetData.target.AdjustHealth(-targetData.self.myStats.intelligence, Elementals.Unlife);
 
 	}
 }
