@@ -19,6 +19,7 @@ public class ForwardMover : MonoBehaviour
 	public static float buffTimer = DEFAULT_BUFF_TIMER;
 
 	public static float speedBoost;
+	public static bool shouldMove = true;
 
     // Start is called before the first frame update
     void Start()
@@ -39,15 +40,18 @@ public class ForwardMover : MonoBehaviour
     {
 		if (encounterTimer > 0)
 		{
-			encounterTimer -= Time.deltaTime;
-			transform.position += Vector3.forward * Time.deltaTime * (5 + speedBoost * 10);
-
-			speedBoost = Mathf.Clamp(speedBoost - Time.deltaTime,0,float.MaxValue);
-			buffTimer -= Time.deltaTime;
-			if (buffTimer <= 0)
+			if (shouldMove)
 			{
-				buffTimer = DEFAULT_BUFF_TIMER;
-				CombatController.playerCombatController.TickBuffs();
+				encounterTimer -= Time.deltaTime;
+				transform.position += Vector3.forward * Time.deltaTime * (5 + speedBoost * 10);
+
+				speedBoost = Mathf.Max(speedBoost - Time.deltaTime,0);
+				buffTimer -= Time.deltaTime;
+				if (buffTimer <= 0)
+				{
+					buffTimer = DEFAULT_BUFF_TIMER;
+					CombatController.playerCombatController.TickBuffs();
+				}
 			}
 		}
 		else

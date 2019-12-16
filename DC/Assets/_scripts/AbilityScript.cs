@@ -480,11 +480,8 @@ public class AbilityScript : AbilityData
 		{
 			int _manaRecover = 0;
 
-			print("bonus: " + targetData.bonus + " ceil((float)luck/2): " + (Mathf.CeilToInt((float)targetData.self.myStats.luck / 2)));
-
 			_manaRecover = targetData.target.AdjustMana(-Mathf.Max((Mathf.CeilToInt((float)targetData.self.myStats.luck/2) + targetData.bonus),0));
 
-			print("mana recover" + _manaRecover);
 			targetData.self.AdjustMana(Mathf.Max(_manaRecover,0));
 
 			yield return null;

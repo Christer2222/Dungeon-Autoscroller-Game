@@ -157,7 +157,7 @@ public class EffectTools : MonoBehaviour
 		}
 	}
 
-	public static IEnumerator CurveMove(Transform _t, float _life)
+	public static IEnumerator CurveDropMove(Transform _t, float _life)
 	{
 		Vector3 _direction = Vector3.up * (Random.Range(1f,2f)) + Vector3.right * (Random.Range(0f,1f) * 2 - 1);
 		while (_life > 0)

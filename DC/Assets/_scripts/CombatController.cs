@@ -23,9 +23,7 @@ public class CombatController : AbilityScript
 	private ScrollRect buffScrollRect;
 	private Image buffScrollImage;
 	private static GameObject buffEntryPrefab;
-
-	//private Text damageText;
-	//private static Button abilityButton1, abilityButton2, abilityButton3, abilityButton4;
+	private Text levelUpText;
 
 	//game stats that change often
 	public StatBlock myStats;
@@ -144,7 +142,7 @@ public class CombatController : AbilityScript
 						break;
 					case "$AbilityButton":
 						_t.GetComponent<Button>().onClick.AddListener(delegate {
-							if (CheckIfHasBuff("busy")) return;
+							if (CheckIfHasBuff("Busy")) return;
 
 							buttonMenuScrollView.SetActive(!buttonMenuScrollView.activeSelf);
 							fleeSlider.gameObject.SetActive(false);
@@ -360,7 +358,7 @@ public class CombatController : AbilityScript
 
 	bool CheckIfHasBuff(string _buffName)
 	{
-		return (myStats.buffList.Find(x => x.name.Contains(_buffName)) != null);
+		return (myStats.buffList.Exists(x => x.name == _buffName));
 	}
 
 	public void RemoveAllBufsWithName(string _buffName)
@@ -524,12 +522,12 @@ public class CombatController : AbilityScript
 	{
 		myStats.xp += _amount;
 		xpSlider.value = myStats.xp;
-		if (myStats.xp >= xpSlider.maxValue)
+		if (levelUpText == null && myStats.xp >= xpSlider.maxValue)
 		{
-			var _lvText = EffectTools.SpawnText(transform.position + Vector3.left, transform, Color.yellow, "LEVEL UP!");
-			_lvText.StartCoroutine(EffectTools.MoveDirection(_lvText.transform, Vector3.up, 1, 2));
-			_lvText.StartCoroutine(EffectTools.BlinkText(_lvText, Color.green, 5));
-			Destroy(_lvText.gameObject,5);
+			levelUpText = EffectTools.SpawnText(transform.position + Vector3.left, transform, Color.yellow, "LEVEL UP!");
+			levelUpText.StartCoroutine(EffectTools.MoveDirection(levelUpText.transform, Vector3.up, 1, 2));
+			levelUpText.StartCoroutine(EffectTools.BlinkText(levelUpText, Color.green, 5));
+			Destroy(levelUpText.gameObject,5);
 		}
 
 		while (myStats.xp >= xpSlider.maxValue)
@@ -550,60 +548,46 @@ public class CombatController : AbilityScript
 
 	public int AdjustHealth(int _amount, Elementals _elementals)
 	{
-		print("given damage: " + _amount + " element: " + _elementals);
-		//print("adjust hp: " + transform.name + " amount: " + _amount);
-		//if (!playerOwned) print(playerCombatController.activeAbility + " has Light: " + elementals.HasFlag(Elementals.Light));
+		if (currentHealth <= 0) return 0;
+
 		float _amountMultiplier = 1;
-	//	if (myStats.weaknesses.HasFlag(_elementals)) //if weakness
+
 		if ((myStats.weaknesses & _elementals) != 0) //if weakness
 		{
-				_amountMultiplier += 0.5f; // *= (_amount > 0)? -1.5f: 1.5f; //any positive adjustment is turned negative with a multiplier
+			_amountMultiplier += 0.5f; //multiplier is booseted
 		}
 
-		//if (myStats.resistances.HasFlag(_elementals)) //if resist
 		if ((myStats.resistances & _elementals) != 0) //if resist
 		{
-			_amountMultiplier -= 0.5f;// *= (_amount < 0)? 0.5f : 1; //any negative adjustment is halfed if resist
+			_amountMultiplier -= 0.5f; //multiplier is halfed
 		}
 
-		//if (myStats.immunities.HasFlag(_elementals)) //if immune
 		if ((myStats.immunities & _elementals) != 0) //if immune
 		{
-				_amountMultiplier = 0;// *= (_amount < 0) ? 0 : 1; //any negative adjustment is set to 0 if immune
+			_amountMultiplier = 0; //multiplier is set to 0
 		}
 
-		//if (myStats.absorbs.HasFlag(_elementals))
 		if ((myStats.absorbs & _elementals) != 0)
 		{
-			//if (_amountMultiplier == 0) _amountMultiplier = 1; //overrule immunity
 			_amount = Mathf.Abs(_amount); //always heal if absorb
-
-			//_amountMultiplier *= (_amount < 0) ? -1 : 1; //if negative amount, flip the multiplier to give 
-
-			/*
-
-			if (_amountMultiplier == 0) _amountMultiplier = 1;
-			else
-				_amountMultiplier *= (_amount < 0) ? -1 : 1; //any negative adjustment is turned positive
-			*/
 		}
 
-		//if (playerOwned)
-			//print(transform.name + " adjusted: " + _amount + " from: " + currentHealth + " to: " + (currentHealth+_amount));
-		//print("amount multiplier: " + _amountMultiplier);
-		int _totalDamage = currentHealth;
+		int _totalDamage = currentHealth; //store previous health for display text and return value
 
-		if (_amount < 0)
-			_amount += ((isCritted) ? -myStats.strength : 0);
+		if (_amount < 0) //if negative damage
+			_amount += ((isCritted) ? -myStats.strength : 0); //allow critting
 
-		var _damageCalc = Mathf.CeilToInt(_amount * _amountMultiplier);
+		var _damageCalc = Mathf.CeilToInt(_amount * _amountMultiplier); //round up any damage/healing
 
 		if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
 
-		string _textToWrite = ((_damageCalc > 0)? "+":"") + _damageCalc.ToString();
-		GameObject _spawnedText = EffectTools.SpawnText(transform.position + Vector3.up, transform, (_damageCalc > 0)? Color.green: Color.red , _textToWrite).transform.parent.gameObject;
-		StartCoroutine(EffectTools.CurveMove(_spawnedText.transform,4));
-		_spawnedText.transform.SetParent(null);
+		string _textToWrite = ((_damageCalc > 0)? "+" + _damageCalc.ToString(): (_damageCalc == 0)? "Block": _damageCalc.ToString()); //if over 0 +amount if 0 block if under 0 -amount
+
+		GameObject _spawnedText = EffectTools.SpawnText(transform.position + Vector3.up, transform, //spawn a text with color
+			(_damageCalc > 0)? Color.green: (_damageCalc == 0)? Color.gray: Color.red, _textToWrite).transform.parent.gameObject; //if over 0 green if 0 gray if under red
+
+		StartCoroutine(EffectTools.CurveDropMove(_spawnedText.transform,4)); //curve drop the damage text
+		_spawnedText.transform.SetParent(null); //free the text
 		_spawnedText.transform.position = transform.position + Vector3.up;
 		Destroy(_spawnedText,5);
 
@@ -814,6 +798,8 @@ public class CombatController : AbilityScript
 	/// </summary>
 	IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
 	{
+		var _orgTime = Time.time;
+
 		var _tempActiveAbility = selectedAbility;
 		if (!_byUser)
 		{
@@ -824,7 +810,12 @@ public class CombatController : AbilityScript
 		{
 			ResetAbilityPick();
 			if (turnOrder.Count == 0)
+			{
 				AddBuff(new Buff("Busy", "busy", 1, TryGetBuffIcon("busy"), StatBlock.StackType.Stack_Self, 1), this);
+				ForwardMover.speedBoost = 0;
+				ForwardMover.shouldMove = false;
+				CheckIfBuffIconsAreCorrect();
+			}
 		}
 
 		//yield return new WaitForEndOfFrame();
@@ -845,14 +836,16 @@ public class CombatController : AbilityScript
 
 		yield return StartCoroutine(_tempActiveAbility.function(_targetData));//.Invoke(this, Punch(targetCombatController, myStats.strength, Elementals.Physical));
 
+
 		//if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
 		if (_byUser)
 		{
-			playerCombatController.CheckIfBuffIconsAreCorrect();
-		}
+			while (Time.time - _orgTime < 1) //if it has been less than 1 sec since ability was used
+				yield return new WaitForSeconds(0.1f); //wait
 
-        if (_byUser)
-		{
+			playerCombatController.CheckIfBuffIconsAreCorrect();
+			ForwardMover.shouldMove = true;
+
 			yield return new WaitForSeconds( playerOwned? 1:2);
 			EndTurn();
 		}
