@@ -4,41 +4,42 @@ using UnityEngine;
 
 public class AbilityScript : AbilityData
 {
-	public static Ability punch				= new Ability("Punch",					Punch, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
-	public static Ability fireball			= new Ability("Fireball",				Fireball, Elementals.Fire, SkillUsed.Wizard, AbilityType.attack, -2);
-	public static Ability massExplosion		= new Ability("Mass Explosion",			MassExplosion, Elementals.Fire, SkillUsed.Wizard, AbilityType.attack, -4);
-	public static Ability smiteUnlife		= new Ability("Smite Undead",			Smite, Elementals.None, SkillUsed.Priest, AbilityType.attack, -1);
-	public static Ability doubleKick		= new Ability("Double Kick",			DoubleKick, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
-	public static Ability wildPunch			= new Ability("Wild Punch",				WildPunch, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
-	public static Ability tiltSwing			= new Ability("Tilt Swing",				TiltSwing, Elementals.Physical, SkillUsed.Barbarian, AbilityType.attack, 0);
-	public static Ability forcePunch		= new Ability("Force Punch",			ForcePunch, Elementals.Air, SkillUsed.Barbarian | SkillUsed.Wizard, AbilityType.attack, -1);
-	public static Ability chaosThesis		= new Ability("Chaos Thesis",			ChaosThesis, Elementals.Void, SkillUsed.Wizard | SkillUsed.Priest, AbilityType.attack, -1);
-	public static Ability manaDrain			= new Ability("Mana Drain",				ManaDrain, Elementals.Water, SkillUsed.Priest, AbilityType.attack, -3);
+	public static Ability punch				= new Ability("Punch",					Punch, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
+	public static Ability fireball			= new Ability("Fireball",				Fireball, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2);
+	public static Ability massExplosion		= new Ability("Mass Explosion",			MassExplosion, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -4);
+	public static Ability smiteUnlife		= new Ability("Smite Undead",			Smite, Elementals.None, SkillUsed.healing, AbilityType.attack, -1);
+	public static Ability doubleKick		= new Ability("Double Kick",			DoubleKick, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
+	public static Ability wildPunch			= new Ability("Wild Punch",				WildPunch, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
+	public static Ability tiltSwing			= new Ability("Tilt Swing",				TiltSwing, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
+	public static Ability forcePunch		= new Ability("Force Punch",			ForcePunch, Elementals.Air, SkillUsed.heavy_hits | SkillUsed.magic, AbilityType.attack, -1);
+	public static Ability chaosThesis		= new Ability("Chaos Thesis",			ChaosThesis, Elementals.Void, SkillUsed.magic | SkillUsed.healing, AbilityType.attack, -1);
+	public static Ability manaDrain			= new Ability("Mana Drain",				ManaDrain, Elementals.Water, SkillUsed.healing, AbilityType.attack, -3);
+	public static Ability meteorShower		= new Ability("Meteor Shower",			MeteorShower, Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7);
 
-	public static Ability siphonSoul		= new Ability("Siphon Soul",			SiphonSoul, Elementals.Unlife, SkillUsed.Priest, AbilityType.attack | AbilityType.recovery, -1);
+	public static Ability siphonSoul		= new Ability("Siphon Soul",			SiphonSoul, Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1);
 
-	public static Ability focus				= new Ability("Focus",					Focus, Elementals.Water, SkillUsed.Wizard, AbilityType.recovery, 0);
-	public static Ability heal				= new Ability("Heal",					Heal, Elementals.Light, SkillUsed.Priest, AbilityType.recovery, -2);
-	public static Ability regeneration		= new Ability("Regeneration",			Regeneration, Elementals.Light, SkillUsed.Priest, AbilityType.recovery, -1);
-	public static Ability massHeal			= new Ability("Mass Heal",				MassHeal, Elementals.Light, SkillUsed.Priest, AbilityType.recovery, -5);
-	public static Ability restoreSoul		= new Ability("Restore Soul",			RestoreSoul, Elementals.Water, SkillUsed.Priest, AbilityType.recovery, 0);
-	public static Ability clense			= new Ability("Clense",					Clense, Elementals.Water, SkillUsed.Priest, AbilityType.recovery, 0);
+	public static Ability focus				= new Ability("Focus",					Focus, Elementals.Water, SkillUsed.magic, AbilityType.recovery, 0);
+	public static Ability heal				= new Ability("Heal",					Heal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -2);
+	public static Ability regeneration		= new Ability("Regeneration",			Regeneration, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -1);
+	public static Ability massHeal			= new Ability("Mass Heal",				MassHeal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -5);
+	public static Ability restoreSoul		= new Ability("Restore Soul",			RestoreSoul, Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0);
+	public static Ability clense			= new Ability("Clense",					Clense, Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0);
 
-	public static Ability timeWarp			= new Ability("Time Warp",				TimeWarp, Elementals.Void, SkillUsed.Wizard, AbilityType.buff, -10);
-	public static Ability divineLuck		= new Ability("Divine Luck",			DivineLuck, Elementals.Light, SkillUsed.Priest | SkillUsed.Barbarian, AbilityType.buff, -3);
-	public static Ability bulkUp			= new Ability("Bulk Up",				BulkUp, Elementals.Physical, SkillUsed.Barbarian, AbilityType.buff, -1);
-	public static Ability divineFists		= new Ability("Divine Fists",			DivineFists, Elementals.Physical | Elementals.Light, SkillUsed.Priest, AbilityType.buff, -6);
-	public static Ability bless				= new Ability("Bless",					Bless, Elementals.Fire, SkillUsed.Priest, AbilityType.buff, -10);
+	public static Ability timeWarp			= new Ability("Time Warp",				TimeWarp, Elementals.Void, SkillUsed.magic, AbilityType.buff, -10);
+	public static Ability divineLuck		= new Ability("Divine Luck",			DivineLuck, Elementals.Light, SkillUsed.healing | SkillUsed.heavy_hits, AbilityType.buff, -3);
+	public static Ability bulkUp			= new Ability("Bulk Up",				BulkUp, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.buff, -1);
+	public static Ability divineFists		= new Ability("Divine Fists",			DivineFists, Elementals.Physical | Elementals.Light, SkillUsed.healing, AbilityType.buff, -6);
+	public static Ability bless				= new Ability("Bless",					Bless, Elementals.Fire, SkillUsed.healing, AbilityType.buff, -10);
 
-	public static Ability debulk			= new Ability("Debulk",					Debulk, Elementals.Unlife, SkillUsed.Priest, AbilityType.debuff, -2);
-	public static Ability curse				= new Ability("Curse",					Curse, Elementals.Unlife, SkillUsed.Priest, AbilityType.debuff, -5);
+	public static Ability debulk			= new Ability("Debulk",					Debulk, Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -2);
+	public static Ability curse				= new Ability("Curse",					Curse, Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -5);
 
 	public static Ability eat				= new Ability("Eat",					Eat, Elementals.Physical, default, AbilityType.misc, 0);
-	public static Ability keenSight			= new Ability("Keen Sight",				DisplayCritAreas, Elementals.Physical, SkillUsed.Rogue, AbilityType.misc, -1);
-	public static Ability displayCritAreas	= new Ability("Display Crit Areas",		DisplayCritAreas, Elementals.Physical, SkillUsed.Rogue, AbilityType.misc, -1);
-	public static Ability spotWeakness		= new Ability("Spot Weakness",			SpotWeakness, Elementals.Physical, SkillUsed.Rogue, AbilityType.misc, -1);
-	public static Ability lifeTap			= new Ability("Life Tap",				LifeTap, Elementals.Unlife, SkillUsed.Priest, AbilityType.misc, 0);
-	public static Ability syncSoul			= new Ability("Sync Soul",				SyncSoul, Elementals.Void, SkillUsed.Priest | SkillUsed.Wizard, AbilityType.misc, -10);
+	public static Ability keenSight			= new Ability("Keen Sight",				DisplayCritAreas, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
+	public static Ability displayCritAreas	= new Ability("Display Crit Areas",		DisplayCritAreas, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
+	public static Ability spotWeakness		= new Ability("Spot Weakness",			SpotWeakness, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
+	public static Ability lifeTap			= new Ability("Life Tap",				LifeTap, Elementals.Unlife, SkillUsed.healing, AbilityType.misc, 0);
+	public static Ability syncSoul			= new Ability("Sync Soul",				SyncSoul, Elementals.Void, SkillUsed.healing | SkillUsed.magic, AbilityType.misc, -10);
 
 
 	protected static Vector3 lastClick;
@@ -295,6 +296,122 @@ public class AbilityScript : AbilityData
 			//targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.luck + targetData.bonus + _smiteDamage, 0),Elementals.None);
 		}
 		yield return null;
+	}
+
+	protected static IEnumerator MeteorShower(TargetData targetData)
+	{
+		Vector3 _top = new Vector3(0, 0, targetData.centerPos.z) + Vector3.up * 6;
+		List<Transform> _meteors = new List<Transform>();
+		List<Coroutine> _moves = new List<Coroutine>();
+
+		int _totalBalls = 4 + (targetData.self.myStats.intelligence/2);
+		for (int i = 0; i < _totalBalls; i++)
+		{
+			Vector3 _randomDir = Vector3.right * Random.Range(-0.7f,0.7f);
+
+			var _meteor = EffectTools.SpawnEffect((Random.Range(0,128) == 0)? punch.name :  fireball.name, _top + Vector3.left * (i - Random.Range(1f,1.5f)), 6);
+			_moves.Add(CombatController.playerCombatController.StartCoroutine(EffectTools.MoveDirection(_meteor.transform,Vector3.down + _randomDir,3,5))); //global set the effect
+			_meteors.Add(_meteor.transform);
+		}
+
+		while (_meteors.Count > 0)
+		{
+			List<object[]> _justHit = new List<object[]>() { };
+			foreach (var _entry in _justHit)
+			{
+				_entry[1] = (float)_entry[1] - Time.deltaTime;
+				if ((float)_entry[1] <= 0)
+				{
+					_justHit.Remove(_entry);
+				}
+			}
+
+			for (int i = 0; i < _meteors.Count; i++) //for all meteors
+			{
+				if (_meteors[i].position.y <= -1)
+				{
+					CombatController.playerCombatController.StopCoroutine(_moves[i]);
+					_moves.RemoveAt(i);
+					Destroy(_meteors[i].gameObject);
+					_meteors.RemoveAt(i);
+					i--;
+					break;
+				}
+
+				foreach (Collider2D _col in Physics2D.OverlapCircleAll(_meteors[i].position, 1)) //find all cols
+				{
+					bool _found = false;
+					var _cc = _col.GetComponent<CombatController>();
+					if (_cc != null) //if col has combat
+					{
+						for (int j = 0; j < _justHit.Count; j++) //go through all just hit
+						{
+							if ((CombatController)_justHit[j][0] == _cc) //if this is in just hit
+							{
+								_found = true;
+								break;
+							}
+						}
+
+						if (!_found)
+						{
+							_justHit.Add(new object[] {_cc, 1});
+							_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
+						}
+					}
+
+				}
+			}
+
+			yield return new WaitForSeconds(0.5f);
+		}
+
+
+			//+ Vector3.left * Random.Range(-0.9f,0.9f) 
+
+			/*
+			while (_meteors.Count != 0)
+			{
+				bool _changed = false;
+				for (int i = 0; i < _meteors.Count || _changed; i++)
+				{
+					//break;
+					//yield return new WaitForSeconds(0.01f);
+					targetData.target = null;
+
+					var _hit = CheckIfHit(_meteors[i].position).transform;
+					if (_hit != null)
+					{
+						targetData.target = _hit.transform.GetComponent<CombatController>();
+						if (targetData.target != null)
+							targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element);
+					}
+
+					if (_meteors[i].position.y < 0)
+					{
+
+						print("metmov: " + _moves.Count + " i: " + i);
+
+						_moves.RemoveAt(i);
+						Destroy(_meteors[i].gameObject);
+
+						_changed = true;
+					}
+				}
+
+				yield return new WaitForSeconds(0.1f);
+
+				if (_changed)
+				{
+					yield break;
+				}
+				//else
+				//	_meteors.RemoveAll(x => x == null);
+			}
+			*/
+
+			//targetData.self.StartCoroutine();
+			yield return null;
 	}
 
 	protected static IEnumerator Fireball(TargetData targetData)//(Vector3 _centerPos, CombatController _self, int _bonus = 0)

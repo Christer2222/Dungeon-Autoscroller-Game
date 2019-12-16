@@ -55,11 +55,11 @@ public class AbilityData : MonoBehaviour
 
 	public enum SkillUsed
 	{
-		Adventurer = 0,
-		Barbarian = 1,
-		Rogue = 2,
-		Priest = 4,
-		Wizard = 8,
+		none = 0,
+		heavy_hits = 1,
+		light_hits = 2,
+		healing = 4,
+		magic = 8,
 	}
 
 	public enum AbilityType

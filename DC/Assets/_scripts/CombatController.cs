@@ -61,6 +61,7 @@ public class CombatController : AbilityScript
 
 	private List<Ability> debugAbilityList = new List<Ability>()
 	{
+		meteorShower,
 		chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
 		restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
 		spotWeakness, smiteUnlife, siphonSoul, heal, lifeTap, massHeal,fireball, focus, 
@@ -549,30 +550,42 @@ public class CombatController : AbilityScript
 
 	public int AdjustHealth(int _amount, Elementals _elementals)
 	{
-		print("given damage: " + _amount);
+		print("given damage: " + _amount + " element: " + _elementals);
 		//print("adjust hp: " + transform.name + " amount: " + _amount);
 		//if (!playerOwned) print(playerCombatController.activeAbility + " has Light: " + elementals.HasFlag(Elementals.Light));
 		float _amountMultiplier = 1;
-		if (myStats.weaknesses.HasFlag(_elementals)) //if weakness
+	//	if (myStats.weaknesses.HasFlag(_elementals)) //if weakness
+		if ((myStats.weaknesses & _elementals) != 0) //if weakness
 		{
-			_amountMultiplier *= (_amount > 0)? -1.5f: 1.5f; //any positive adjustment is turned negative with a multiplier
+				_amountMultiplier += 0.5f; // *= (_amount > 0)? -1.5f: 1.5f; //any positive adjustment is turned negative with a multiplier
 		}
 
-		if (myStats.resistances.HasFlag(_elementals)) //if resist
+		//if (myStats.resistances.HasFlag(_elementals)) //if resist
+		if ((myStats.resistances & _elementals) != 0) //if resist
 		{
-			 _amountMultiplier *= (_amount < 0)? 0.5f : 1; //any negative adjustment is halfed if resist
+			_amountMultiplier -= 0.5f;// *= (_amount < 0)? 0.5f : 1; //any negative adjustment is halfed if resist
 		}
 
-		if (myStats.immunities.HasFlag(_elementals)) //if immune
+		//if (myStats.immunities.HasFlag(_elementals)) //if immune
+		if ((myStats.immunities & _elementals) != 0) //if immune
 		{
-			_amountMultiplier *= (_amount < 0) ? 0 : 1; //any negative adjustment is set to 0 if immune
+				_amountMultiplier = 0;// *= (_amount < 0) ? 0 : 1; //any negative adjustment is set to 0 if immune
 		}
 
-		if (myStats.absorbs.HasFlag(_elementals))
+		//if (myStats.absorbs.HasFlag(_elementals))
+		if ((myStats.absorbs & _elementals) != 0)
 		{
-			if(_amountMultiplier == 0) _amountMultiplier = 1;
+			//if (_amountMultiplier == 0) _amountMultiplier = 1; //overrule immunity
+			_amount = Mathf.Abs(_amount); //always heal if absorb
+
+			//_amountMultiplier *= (_amount < 0) ? -1 : 1; //if negative amount, flip the multiplier to give 
+
+			/*
+
+			if (_amountMultiplier == 0) _amountMultiplier = 1;
 			else
 				_amountMultiplier *= (_amount < 0) ? -1 : 1; //any negative adjustment is turned positive
+			*/
 		}
 
 		//if (playerOwned)
@@ -580,7 +593,10 @@ public class CombatController : AbilityScript
 		//print("amount multiplier: " + _amountMultiplier);
 		int _totalDamage = currentHealth;
 
-		var _damageCalc = Mathf.CeilToInt(_amount * _amountMultiplier) + ((isCritted) ? -myStats.strength : 0);
+		if (_amount < 0)
+			_amount += ((isCritted) ? -myStats.strength : 0);
+
+		var _damageCalc = Mathf.CeilToInt(_amount * _amountMultiplier);
 
 		if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
 
@@ -814,106 +830,21 @@ public class CombatController : AbilityScript
 		//yield return new WaitForEndOfFrame();
 		//actedLastTick = false;
 
-		var _targetData = new TargetData(this, targetCombatController, 0, Elementals.None, lastClick, StatBlock.Race.Human);
+		var _targetData = new TargetData(this, targetCombatController, 0, _tempActiveAbility.element, lastClick, StatBlock.Race.Human);
 		if (_tempActiveAbility.name.ToLower().Contains("undead")) _targetData.targetRace = StatBlock.Race.Undead;
+
+		if (_byUser)
+		{
+			AdjustMana(_tempActiveAbility.manaCost);
+			if (playerOwned)
+			{
+				playerCombatController.CheckMana();
+				ResetAbilityPick();
+			}
+		}
 
 		yield return StartCoroutine(_tempActiveAbility.function(_targetData));//.Invoke(this, Punch(targetCombatController, myStats.strength, Elementals.Physical));
 
-		/*
-        switch (_tempActiveAbility.name)
-		{
-			case timeWarp.name:
-				yield return StartCoroutine(TimeWarp(this));
-				break;
-			case BULK_UP:
-				yield return StartCoroutine(BulkUp(this));
-				break;
-			case DEBULK:
-				yield return StartCoroutine(Debulk(targetCombatController));
-				break;
-			case MANA_DRAIN:
-				yield return StartCoroutine(ManaDrain(targetCombatController,this));
-				break;
-			case DIVINE_LUCK:
-				yield return StartCoroutine(DivineLuck(this));
-				break;
-			case REGENERATION:
-				yield return StartCoroutine(Regeneration(targetCombatController, myStats.luck + 1));
-				break;
-			case PUNCH:
-				yield return StartCoroutine(Punch(targetCombatController,this.myStats.strength));
-				break;
-			case DOUBLE_KICK:
-				yield return StartCoroutine(DoubleKick(lastClick, targetCombatController, this));
-				break;
-			case WILD_PUNCH:
-				yield return StartCoroutine(WildPunch(lastClick,this));
-				break;
-			case FORCE_PUNCH:
-				yield return StartCoroutine(ForcePunch(targetCombatController, this));
-				break;
-			case TILT_SWING:
-				yield return StartCoroutine(TiltSwing(targetCombatController,this));
-				break;
-			case CHAOS_THESIS:
-				yield return StartCoroutine(ChaosThesis(lastClick, this));
-				break;
-			case FIREBALL:
-				yield return StartCoroutine(Fireball(hitPosition,this));
-				break;
-			case MASS_EXPLOSION:
-				yield return StartCoroutine(MassExplosion(hitPosition,this));
-				break;
-			case FOCUS:
-				yield return StartCoroutine(Focus(this));
-				break;
-			case KEEN_SIGHT:
-				yield return StartCoroutine(DisplayCritAreas(this));
-				break;
-			case SPOT_WEAKNESS:
-				yield return StartCoroutine(SpotWeakness(targetCombatController, this));
-				break;
-			case SPOOK:
-				yield return StartCoroutine(Spook(targetCombatController,this));
-				break;
-			case HEAL:
-				yield return StartCoroutine(Heal(targetCombatController,(_value == null)? myStats.luck + 2: (int)_value));
-				break;
-			case MASS_HEAL:
-				yield return StartCoroutine(MassHeal(this));
-				break;
-			case SMITE_UNLIFE:
-				yield return StartCoroutine(Smite(targetCombatController, StatBlock.Race.Undead,myStats.strength));
-				break;
-			case SIPHON_SOUL:
-				yield return StartCoroutine(SiphonSoul(targetCombatController,this));
-				break;
-			case LIFE_TAP:
-				yield return StartCoroutine(LifeTap(this));
-				break;
-			case DIVINE_FISTS:
-				yield return StartCoroutine(DivineFists(this));
-				break;
-			case CURSE:
-				yield return StartCoroutine(Curse(targetCombatController));
-				break;
-			case BLESS:
-				yield return StartCoroutine(Bless(targetCombatController));
-				break;
-			case SYNC_SOUL:
-				yield return StartCoroutine(SyncSoul(targetCombatController, this));
-				break;
-			case CLENSE:
-				yield return StartCoroutine(Clense(this));
-				break;
-			case RESTORE_SOUL:
-				yield return StartCoroutine(RestoreSoul(this));
-				break;
-			default:
-				Debug.LogWarning("No move set for \"" + _tempActiveAbility + "\"");
-				break;
-		}
-		*/
 		//if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
 		if (_byUser)
 		{
@@ -922,8 +853,6 @@ public class CombatController : AbilityScript
 
         if (_byUser)
 		{
-			AdjustMana(_tempActiveAbility.manaCost);
-
 			yield return new WaitForSeconds( playerOwned? 1:2);
 			EndTurn();
 		}
@@ -947,14 +876,6 @@ public class CombatController : AbilityScript
 
 	void EndTurn()
 	{
-		if(playerOwned)
-		{
-			ResetAbilityPick();
-			//CheckMana();
-		}
-
-		playerCombatController.CheckMana();
-
 		if(turnOrder.Count > 1 && !CheckIfHasBuff(timeWarp.name))//"extra turn"))
 		{
 			turnOrder.Remove(this);
