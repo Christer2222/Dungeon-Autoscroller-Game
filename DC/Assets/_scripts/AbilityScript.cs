@@ -107,8 +107,10 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 				if (_same != null)
 				{
 					_same.turns++;
-					_same.constant++;
+					_same.constant += 1 * Mathf.Sign(_same.constant);
 				}
+				else
+					_target.myStats.buffList.Add(_buff);
 				break;
 			default:
 				Debug.LogError("ERROR when adding buff: " + _buff.name + " to: " + _target.transform.name);
@@ -205,7 +207,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		targetData.element = Elementals.Ice;
 		yield return targetData.self.StartCoroutine(Punch(targetData));
 		var _buff = new Buff("Frozen", new List<string> { "dexterity_constant"}, 2, AbilityIcons.TryGetBuffIcon("Frozen"), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
-		targetData.target.AddBuff(_buff,targetData.target);
+
+		targetData.self.AddBuff(_buff, targetData.target);
 	}
 
 	protected static IEnumerator DoubleKick(TargetData targetData)//(Vector3 _centerPos, CombatController _target, CombatController _self)

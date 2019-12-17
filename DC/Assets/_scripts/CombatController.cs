@@ -551,7 +551,7 @@ public class CombatController : AbilityScript
 
 
 
-		print(transform.name + "(+" + myStats.aiType + "+)" + " is doing " + selectedAbility);
+		print(transform.name + "(+" + myStats.aiType + "+)" + " is doing " + selectedAbility.name);
 		yield return StartCoroutine(InvokeActiveAbility());		
 	}
 

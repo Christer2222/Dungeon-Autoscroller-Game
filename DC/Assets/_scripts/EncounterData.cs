@@ -62,30 +62,46 @@ public class EncounterData : AbilityScript
 
 	public static readonly Encounter[] encounterTable = new Encounter[]
 	{
-		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock),
+		//new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock),
+		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: snowmanBlock),
+
 
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock),
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock),
 		
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: eyeballBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTR: eyeballBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock.Clone(), _monsterTR: eyeballBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: nosemanBlock.Clone(), _monsterTL: eyeballBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: fireElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: fireElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: earthElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: earthElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBL: waterElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: waterElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: airElementalBlock.Clone()),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: lightElementalBlock.Clone()),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: eyeballBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTR: eyeballBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock, _monsterTR: eyeballBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: nosemanBlock, _monsterTL: eyeballBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: fireElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: fireElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: earthElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: earthElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBL: waterElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: waterElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: airElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: lightElementalBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: druidBlock),
+
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: blueEyeballBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: fireElementalBlock, _monsterTR: fireElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBR: fireElementalBlock, _monsterTL: fireElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: waterElementalBlock, _monsterTR: fireElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock, _monsterTR: airElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: earthElementalBlock, _monsterBR: earthElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: waterElementalBlock, _monsterBR: earthElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBL: fireElementalBlock, _monsterTM: airElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: airElementalBlock, _monsterBR: waterElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock, _monsterTR: eyeballBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock, _monsterBR: eyeballBlock, _monsterTR: eyeballBlock),
 
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock),
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTL: ghostBlock),
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: ghostBlock),
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTR: ghostBlock),
+
+		new Encounter(_level: 10, _encounterLocation: EncounterLocation.None, _monsterBM: moonManBlock),
 
 	};
 
