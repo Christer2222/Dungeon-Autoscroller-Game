@@ -107,8 +107,13 @@ public class ForwardMover : MonoBehaviour
 		_cc.myStats = _monstarStat.Clone();
 		_go.name = _monstarStat.name + " " + _pos;
 		var _sprite = _monstarStat.name.Replace(" ", "_").ToLower();
-		_go.GetComponent<SpriteRenderer>().sprite = enemySpriteDictionary.TryGetValue(_sprite, out Sprite _out) ? _out: enemySpriteDictionary["Unknown_Sprite"];
+		_go.GetComponent<SpriteRenderer>().sprite = TryGetEnemySprite(_sprite);
 		CombatController.turnOrder.Add(_cc);
+	}
+
+	Sprite TryGetEnemySprite(string _name)
+	{
+		return enemySpriteDictionary.TryGetValue(_name, out Sprite _out) ? _out : enemySpriteDictionary["Unknown_Sprite"];
 	}
 
 

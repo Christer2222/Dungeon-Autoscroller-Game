@@ -4,10 +4,10 @@ using AbilityInfo;
 
 public class Buff
 {
-	public Buff(string _name, string _trait, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<string> { _trait }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) { }
-	public Buff(string _name, Ability _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<Ability> { _function }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) { }
+	public Buff(string _name, string _trait, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<string> { _trait }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) { }
+	public Buff(string _name, Ability _function, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<Ability> { _function }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) { }
 
-	public Buff(string _name, List<string> _traits, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
+	public Buff(string _name, List<string> _traits, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
 	{
 		name = _name;
 		traits = _traits;
@@ -19,7 +19,7 @@ public class Buff
 		shouldBeDisplayed = _shouldBeDisplyed;
 	}
 
-	public Buff(string _name, List<Ability> _functions, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
+	public Buff(string _name, List<Ability> _functions, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
 	{
 		name = _name;
 		functions = _functions;
@@ -37,7 +37,16 @@ public class Buff
 	public CombatController target;
 	public float constant;
 	public int turns;
-	public StatBlock.StackType stackType;
+	public StackType stackType;
 	public Sprite buffIcon;
 	public bool shouldBeDisplayed;
+
+	public enum StackType
+	{
+		Pick_Most_Turns,
+		Pick_Most_Potent,
+		Add_Duplicate,
+		Add_One_Duration_Add_All_Potency,
+		Add_One_Duration_And_One_Potency,
+	}
 }

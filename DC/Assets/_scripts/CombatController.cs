@@ -66,7 +66,7 @@ public class CombatController : AbilityScript
 
 	private List<Ability> debugAbilityList = new List<Ability>()
 	{
-		meteorShower,
+		meteorShower, freezingStrike,
 		chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
 		restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
 		spotWeakness, smiteUnlife, siphonSoul, heal, lifeTap, massHeal,fireball, focus, 
@@ -845,7 +845,7 @@ public class CombatController : AbilityScript
 			ResetAbilityPick();
 			if (turnOrder.Count == 0)
 			{
-				AddBuff(new Buff("Busy", "busy", 1, AbilityIcons.TryGetBuffIcon("busy"), StatBlock.StackType.Stack_Self, 1), this);
+				AddBuff(new Buff("Busy", "busy", 1, AbilityIcons.TryGetBuffIcon("busy"), Buff.StackType.Add_Duplicate, 1), this);
 				ForwardMover.speedBoost = 0;
 				ForwardMover.shouldMove = false;
 				CheckIfBuffIconsAreCorrect();

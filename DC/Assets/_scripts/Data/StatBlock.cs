@@ -24,14 +24,6 @@ public class StatBlock
 		Sprinter,
 	}
 
-	public enum StackType
-	{
-		Pick_Most_Turns,
-		Pick_Most_Potent,
-		Stack_Self,
-		Build_Up,
-	}
-
 	public StatBlock(Race _race,
 		string _name,
 		int _maxHealth,int _maxMana,
