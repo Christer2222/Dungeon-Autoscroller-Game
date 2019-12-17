@@ -13,6 +13,7 @@ public class CombatController : AbilityScript
 	private bool startedTurn;
 	private static Text turnorderText;
 	public static int turnCounter;
+	private bool processingAbility;
 
 	//Shows the player their status
 	private GameObject UICanvas;
@@ -48,7 +49,13 @@ public class CombatController : AbilityScript
 
 	private Button fleeButton;
 	private Slider fleeSlider;
-	private int fleeThreshold = 5;
+	private int FleeThreshold
+	{
+		get
+		{
+			return 5 + myStats.dexterity;
+		}
+	}
 
     public bool actedLastTick;
 
@@ -115,7 +122,7 @@ public class CombatController : AbilityScript
 						fleeButton = _t.GetComponent<Button>();
 						fleeButton.onClick.AddListener(delegate {
 							if (turnOrder.Count != 0)
-								if (turnOrder[0] == this)
+								if (turnOrder[0] == playerCombatController && !processingAbility)
 								{
 									ResetAbilityPick();
 
@@ -765,7 +772,7 @@ public class CombatController : AbilityScript
 
 		if (_fleeing) //if fleeing
 		{
-			if(Mathf.Abs((fleeSlider.maxValue / 2) - (fleeSlider.value)) <= fleeThreshold + myStats.dexterity) //if the pointer is withing the flee zone, succeed
+			if(Mathf.Abs((fleeSlider.maxValue / 2) - (fleeSlider.value)) <= FleeThreshold) //if the pointer is withing the flee zone, succeed
 			{
 				var _tempTurnorder = new CombatController[turnOrder.Count];
 				turnOrder.CopyTo(_tempTurnorder);
@@ -816,12 +823,6 @@ public class CombatController : AbilityScript
 			if (targetCombatController != null) targetCombatController.isCritted = false;
 			targetCombatController = null;
 		}
-		/*
-		else if (_hit.transform.name == "$PlayerPortrait")
-		{
-			LevelUpScreen.levelUpScreenInstance.GetComponent<LevelUpScreen>().ToggleLevelUpScreen();
-		}
-		*/
 	}
 
 	/// <summary>
@@ -839,6 +840,8 @@ public class CombatController : AbilityScript
 		}
 		else if (playerOwned)
 		{
+			processingAbility = true;
+
 			ResetAbilityPick();
 			if (turnOrder.Count == 0)
 			{
@@ -900,6 +903,8 @@ public class CombatController : AbilityScript
 
 	void EndTurn()
 	{
+		processingAbility = false;
+
 		if(turnOrder.Count > 1 && !CheckIfHasBuff(timeWarp.name))//"extra turn"))
 		{
 			turnOrder.Remove(this);
