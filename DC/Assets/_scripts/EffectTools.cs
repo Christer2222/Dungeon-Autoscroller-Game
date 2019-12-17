@@ -11,6 +11,20 @@ public class EffectTools : MonoBehaviour
 	private static WaitForSeconds waitForPointOneSeconds;
 	private static GameObject textHolder;
 
+	public struct FunctionAndDelay
+	{
+		public FunctionAndDelay(IEnumerator _funtion, float _delay) : this(new List<IEnumerator>() { _funtion }, _delay) { }
+
+		public FunctionAndDelay(List<IEnumerator> _funtions, float _delay)
+		{
+			functions = _funtions;
+			_secToStart = _delay;
+		}
+
+		public List<IEnumerator> functions;
+		public float _secToStart;
+	}
+
 	private static void Initialize()
 	{
 		initialized = true;
@@ -131,7 +145,45 @@ public class EffectTools : MonoBehaviour
 		return null;
 	}
 
-	public static Text SpawnText(Vector3 _pos, Transform _parent, Color _color, string _text)
+	public static IEnumerator ActivateInOrder(MonoBehaviour _holder, List<FunctionAndDelay> _functionAndDelay)
+	{
+		for (int i = 0; i < _functionAndDelay.Count; i++)
+		{
+			yield return new WaitForSeconds(_functionAndDelay[i]._secToStart);
+			for (int j = 0; j < _functionAndDelay[i].functions.Count; j++)
+			{
+				_holder.StartCoroutine(_functionAndDelay[i].functions[j]);
+			}
+		}
+	}
+
+	public static IEnumerator StretchFromTo(Transform _target, Vector3 _startVector, Vector3 _endVector, float _time)
+	{
+		_target.transform.localScale = _startVector;
+		yield return null;
+
+		//float _x = _target.transform.localScale.x;
+		//float _y = _target.transform.localScale.y;
+		//float _z = _target.transform.localScale.z;
+
+		float _life = 0;
+		var _current = _startVector;
+
+		while (_life <= _time)
+		{
+			_life = Mathf.Min(_life + Time.deltaTime, _time);
+			yield return waitForEndOfFrame;
+			_current = Vector3.Lerp(_current,_endVector,_life/ _time);
+			//_x = Mathf.Lerp(_x, _endVector.x, _time);
+			//_y = Mathf.Lerp(_y, _endVector.y, _time);
+			//_z = Mathf.Lerp(_z, _endVector.z, _time);
+
+			_target.transform.localScale = _current;//new Vector3(_x,_y,_z);
+		}
+
+	}
+
+	public static Text SpawnText(Vector3 _pos, Transform _parent, Color _color, string _text, int _fontSize = 70)
 	{
 		if (!initialized)
 			Initialize();
@@ -139,11 +191,12 @@ public class EffectTools : MonoBehaviour
 		var _go = Instantiate(textHolder, null);
 		var _goText = _go.GetComponentInChildren<Text>();
 
-		_go.transform.position = _pos + Vector3.back * 0.01f;
 		_go.transform.localScale = Vector3.one * 0.005f;
 		_go.transform.SetParent(_parent);
+		_go.transform.position = _pos;// + Vector3.back * 0.01f;
 		_goText.text = _text;
 		_goText.color = _color;
+		_goText.fontSize = _fontSize;
 		return _goText;
 	}
 

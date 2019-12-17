@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class AbilityScript : AbilityData
 {
 	public static Ability punch				= new Ability("Punch",					Punch, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
@@ -43,6 +44,8 @@ public class AbilityScript : AbilityData
 
 
 	protected static Vector3 lastClick;
+
+	protected static Camera mainCamera;
 
 	protected static Vector3 randomVector3
 	{
@@ -152,6 +155,17 @@ public class AbilityScript : AbilityData
 		return _hit;
 	}
 
+	static CombatController CheckForMultiHit(RaycastHit2D _hit)
+	{
+		CombatController _cc = null;
+		if (_hit.transform != null)
+		{
+			_cc = _hit.transform.GetComponentInParent<CombatController>();
+		}
+
+		return _cc;
+	}
+
 	protected static IEnumerator DivineFists(TargetData targetData)
 	{
 		yield return targetData.self.StartCoroutine(divineLuck.function(targetData));// DivineLuck(targetData._target));
@@ -165,25 +179,20 @@ public class AbilityScript : AbilityData
 		yield return null;
 	}
 
-	/*
-	protected IEnumerator Punch(CombatController _target, CombatController _self)
-	{
-		EffectTools.SpawnEffect(PUNCH, lastClick,1);
-		if(_target != null) _target.AdjustHealth(-Mathf.Max(_self.myStats.strength,0), Elementals.Physical);
-		yield return null;
-	}
-	*/
-
 	protected static IEnumerator DoubleKick(TargetData targetData)//(Vector3 _centerPos, CombatController _target, CombatController _self)
 	{
 		yield return targetData.self.StartCoroutine(punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
 		targetData.target = null;
 		yield return new WaitForSeconds(2);
 		var _hit = CheckIfHit(targetData.centerPos);
+
+		/*
 		if (_hit.transform != null)
 		{
 			targetData.target = _hit.transform.GetComponent<CombatController>();
 		}
+		*/
+		targetData.target = CheckForMultiHit(_hit);
 
 		yield return targetData.self.StartCoroutine(punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
 
@@ -196,11 +205,13 @@ public class AbilityScript : AbilityData
 	{
 		targetData.target = null;
 		var _hit = CheckIfHit(targetData.centerPos + randomVector3);
+		/*
 		if (_hit.transform != null)
 		{
 			targetData.target = _hit.transform.GetComponent<CombatController>();
 		}
-
+		*/
+		targetData.target = CheckForMultiHit(_hit);
 		yield return targetData.self.StartCoroutine(punch.function(targetData));// (Punch(_target, targetData._self.myStats.strength + 2));
 		yield return null;
 	}
@@ -252,7 +263,7 @@ public class AbilityScript : AbilityData
 		yield return null;
 	}
 
-	protected static IEnumerator LifeTap(TargetData targetData)//(CombatController _self)
+	protected static IEnumerator LifeTap(TargetData targetData)
 	{
         EffectTools.SpawnEffect("blue blast", targetData.self.transform.position, 1);
 		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.currentHealth -1),Elementals.Void);
@@ -260,25 +271,18 @@ public class AbilityScript : AbilityData
 		yield return null;
 	}
 
-	protected static IEnumerator SiphonSoul(TargetData targetData)//(CombatController _target, CombatController _self)
+	protected static IEnumerator SiphonSoul(TargetData targetData)
 	{
-		//_self.AdjustMana(-manaCostDictionary["siphon soul"]);
-		print("siphon at: " + targetData.target);
-
 		if(targetData.target != null)
 		{
 			int _hpRecover = targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.luck,0),Elementals.Unlife);
-			print("recover: " +_hpRecover);
 
-			//print(_self.AdjustHealth(-5,Elementals.None) + " was given");
-			targetData.self.AdjustHealth(Mathf.Max(_hpRecover,0),Elementals.Fire);// new Elementals[] { Elementals.Light });
-
-			//StartCoroutine(Eat(_self,_hpRecover));
+			targetData.self.AdjustHealth(Mathf.Max(_hpRecover,0), targetData.element);
 		}
 		yield return null;
 	}
 
-	protected static IEnumerator Smite(TargetData targetData)//CombatController _target, StatBlock.Race _targetRace, int _constant)
+	protected static IEnumerator Smite(TargetData targetData)
 	{
 		EffectTools.SpawnEffect("light cloud",lastClick,1);
 
@@ -303,7 +307,10 @@ public class AbilityScript : AbilityData
 		Vector3 _top = new Vector3(0, 0, targetData.centerPos.z) + Vector3.up * 6;
 		List<Transform> _meteors = new List<Transform>();
 		List<Coroutine> _moves = new List<Coroutine>();
+		List<Coroutine> _collisionChecks = new List<Coroutine>();
 
+
+		//Spawn meteors
 		int _totalBalls = 4 + (targetData.self.myStats.intelligence/2);
 		for (int i = 0; i < _totalBalls; i++)
 		{
@@ -314,11 +321,53 @@ public class AbilityScript : AbilityData
 			_meteors.Add(_meteor.transform);
 		}
 
+		//make them do collision checks
+		int a = 0;
+		for (int i = 0; i < _meteors.Count; i++)
+		{
+			_collisionChecks.Add(
+				CombatController.playerCombatController.StartCoroutine(CircleCollision(_meteors[i], 0.25f,
+					delegate (CombatController _cc)
+					{
+						a += _cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
+					}
+				))
+			);
+		}
+
+		//destroy them if they get too far off screen
 		while (_meteors.Count > 0)
 		{
-			List<object[]> _justHit = new List<object[]>() { };
+			for (int i = 0; i < _meteors.Count; i++)
+			{
+				if (_meteors[i].position.y <= -1)
+				{
+					CombatController.playerCombatController.StopCoroutine(_moves[i]);
+					CombatController.playerCombatController.StopCoroutine(_collisionChecks[i]);
+					_moves.RemoveAt(i);
+					_collisionChecks.RemoveAt(i);
+					Destroy(_meteors[i].gameObject);
+					_meteors.RemoveAt(i);
+					i--;
+					break;
+				}
+			}
+
+			yield return new WaitForSeconds(0.2f);
+		}
+
+		yield return null;
+	}
+
+	static IEnumerator CircleCollision(Transform _objectToCheck, float _frequency, System.Action<CombatController> _actionOnHit)
+	{
+		List<object[]> _justHit = new List<object[]>() { };
+
+		while (true)
+		{
 			foreach (var _entry in _justHit)
 			{
+				print(_entry.Length);
 				_entry[1] = (float)_entry[1] - Time.deltaTime;
 				if ((float)_entry[1] <= 0)
 				{
@@ -326,99 +375,38 @@ public class AbilityScript : AbilityData
 				}
 			}
 
-			for (int i = 0; i < _meteors.Count; i++) //for all meteors
+			foreach (Collider2D _col in Physics2D.OverlapCircleAll(_objectToCheck.position, 1f)) //find all cols
 			{
-				if (_meteors[i].position.y <= -1)
+				bool _found = false;
+				var _cc = _col.GetComponent<CombatController>();
+				if (_cc != null) //if col has combat
 				{
-					CombatController.playerCombatController.StopCoroutine(_moves[i]);
-					_moves.RemoveAt(i);
-					Destroy(_meteors[i].gameObject);
-					_meteors.RemoveAt(i);
-					i--;
-					break;
-				}
-
-				foreach (Collider2D _col in Physics2D.OverlapCircleAll(_meteors[i].position, 1)) //find all cols
-				{
-					bool _found = false;
-					var _cc = _col.GetComponent<CombatController>();
-					if (_cc != null) //if col has combat
+					for (int j = 0; j < _justHit.Count; j++) //go through all just hit
 					{
-						for (int j = 0; j < _justHit.Count; j++) //go through all just hit
+						if ((CombatController)_justHit[j][0] == _cc) //if this is in just hit
 						{
-							if ((CombatController)_justHit[j][0] == _cc) //if this is in just hit
-							{
-								_found = true;
-								break;
-							}
-						}
-
-						if (!_found)
-						{
-							_justHit.Add(new object[] {_cc, 1});
-							_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
+							_found = true;
+							break;
 						}
 					}
 
+					if (!_found)
+					{
+						_justHit.Add(new object[] { _cc, 1f });
+						_actionOnHit(_cc);//.Invoke();
+					}
 				}
+
 			}
 
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(_frequency);
 		}
-
-
-			//+ Vector3.left * Random.Range(-0.9f,0.9f) 
-
-			/*
-			while (_meteors.Count != 0)
-			{
-				bool _changed = false;
-				for (int i = 0; i < _meteors.Count || _changed; i++)
-				{
-					//break;
-					//yield return new WaitForSeconds(0.01f);
-					targetData.target = null;
-
-					var _hit = CheckIfHit(_meteors[i].position).transform;
-					if (_hit != null)
-					{
-						targetData.target = _hit.transform.GetComponent<CombatController>();
-						if (targetData.target != null)
-							targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element);
-					}
-
-					if (_meteors[i].position.y < 0)
-					{
-
-						print("metmov: " + _moves.Count + " i: " + i);
-
-						_moves.RemoveAt(i);
-						Destroy(_meteors[i].gameObject);
-
-						_changed = true;
-					}
-				}
-
-				yield return new WaitForSeconds(0.1f);
-
-				if (_changed)
-				{
-					yield break;
-				}
-				//else
-				//	_meteors.RemoveAll(x => x == null);
-			}
-			*/
-
-			//targetData.self.StartCoroutine();
-			yield return null;
 	}
 
-	protected static IEnumerator Fireball(TargetData targetData)//(Vector3 _centerPos, CombatController _self, int _bonus = 0)
+	protected static IEnumerator Fireball(TargetData targetData)
 	{
-		//_self.AdjustMana(-manaCostDictionary[_costName]);
 		var _sprite = EffectTools.SpawnEffect(fireball.name,targetData.centerPos,0.6f);
-		float _blastDiameter = 1;// Mathf.Ceil((float)_self.myStats.intelligence / 5);
+		float _blastDiameter = 1;
 		targetData.self.StartCoroutine(EffectTools.PingPongSize(_sprite.transform,Vector3.zero,Vector3.one * _blastDiameter,0.5f,1));
 
 		Debug.DrawLine(_sprite.transform.position,_sprite.transform.position + Vector3.right * _blastDiameter * 0.5f,Color.white,5,false);
@@ -428,23 +416,18 @@ public class AbilityScript : AbilityData
 
 		foreach(Collider2D _col in Physics2D.OverlapCircleAll(targetData.centerPos,_blastDiameter * 0.5f))
 		{
-			print(_col.transform.name + " was hit by firebazll");
 			var _cc = _col.GetComponent<CombatController>();
 			if (_cc != null)
 			{
-				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), Elementals.Fire);
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element);
 			}
 		}
-		yield return null;
 
+		yield return null;
 	}
 
 	protected static IEnumerator MassExplosion(TargetData targetData)//(Vector3 _centerPos,CombatController _self)
 	{
-		//_self.AdjustMana(-manaCostDictionary["mass explosion"]);
-
-
-
 		targetData.centerPos += Vector3.left; //-1
 		targetData.self.StartCoroutine(fireball.function(targetData));
 		yield return new WaitForSeconds(0.1f);
@@ -458,23 +441,20 @@ public class AbilityScript : AbilityData
 		yield return null;
 	}
 
-	protected static IEnumerator Heal(TargetData targetData)//(CombatController _target, int _baseStat)
+	protected static IEnumerator Heal(TargetData targetData)
 	{
-		//_self.AdjustMana(-manaCostDictionary[_costName]);
-
 		if(targetData.target != null)
 		{
 			targetData.target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(targetData.self.myStats.luck,0)),Elementals.Light);
-
 		}
 
 		if (lastClick != null)
-			EffectTools.SpawnEffect("heal_circle",lastClick, 1);// lastClick,1);
+			EffectTools.SpawnEffect("heal_circle",lastClick, 1);
 
 		yield return null;
 	}
 
-	protected static IEnumerator ManaDrain(TargetData targetData)//(CombatController _target, CombatController _self, int _bonus = 0)
+	protected static IEnumerator ManaDrain(TargetData targetData)
 	{
 		if(targetData.target != null)
 		{
@@ -485,7 +465,6 @@ public class AbilityScript : AbilityData
 			targetData.self.AdjustMana(Mathf.Max(_manaRecover,0));
 
 			yield return null;
-			//_target.AdjustMana(-2);
 		}
 
 		yield return null;
@@ -561,83 +540,59 @@ public class AbilityScript : AbilityData
 	{
 		EffectTools.SpawnEffect("luck up",lastClick,1);
 
-
 		var _buff = new Buff(divineLuck.name, "luck_constant", 3, TryGetBuffIcon("divine_luck"), StatBlock.StackType.Pick_Most_Potent,2);
 		targetData.self.AddBuff(_buff, targetData.self);
 		yield return null;
 	}
 
-	protected static IEnumerator Regeneration(TargetData targetData)//(CombatController _target, int _constant)
+	protected static IEnumerator Regeneration(TargetData targetData)
 	{
 		EffectTools.SpawnEffect("plusses",lastClick + Vector3.forward,1);
 
 		if(targetData.target != null)
 		{
-			//EffectTools.SpawnEffect("heal_circle",lastClick,1);
-
 			var _buff = new Buff(regeneration.name,heal.name,3, TryGetBuffIcon("yellow_pluss"), StatBlock.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.luck,0));
 			targetData.self.AddBuff(_buff,targetData.target);
 		}
 		yield return null;
 	}
 
-	protected static IEnumerator MassHeal(TargetData targetData)//(CombatController _self)
+	protected static IEnumerator MassHeal(TargetData targetData)
 	{
-		/*
-		var _dt = new CombatController[CombatController.turnOrder.Count];
-		CombatController.turnOrder.CopyTo(_dt);
-		foreach(CombatController _cc in _dt)
-		{
-			if(_cc != this)
-				StartCoroutine(Heal(_cc, Mathf.Max(_self.myStats.luck, 0)));
-		}
-		*/
-		Vector3? q = new Vector3(0, 0, 0);
-
 		CombatController.turnOrder.ForEach(x => {
 			lastClick = x.transform.position;
-			x.StartCoroutine(heal.function(targetData));// Heal(x, Mathf.Max(targetData._self.myStats.luck, 0)));
+			x.StartCoroutine(heal.function(targetData));
 		});
-		//CombatController.turnOrder.ForEach(x => EffectTools.SpawnEffect("heal_circle",x.transform.position + Vector3.forward,1));
 
-		//EffectTools.SpawnEffect("heal_circle",lastClick,1);// lastClick,1);
-
-		/*
-		foreach(CombatController _cc in CombatController.turnOrder)
-		{
-			StartCoroutine(Heal(_cc,_self.myStats.luck));
-		}
-		*/
 		yield return null;
 	}
 
-	protected static IEnumerator Eat(TargetData targetData)//(CombatController _target, int _amount = 0)
+	protected static IEnumerator Eat(TargetData targetData)
 	{
-		targetData.target.AdjustHealth(targetData.bonus, Elementals.Light);// new Elementals[] { Elementals.Light });
+		targetData.target.AdjustHealth(targetData.bonus, Elementals.Light);
 
 		yield return null;
 	}
 
-	protected static IEnumerator Focus(TargetData targetData)//(CombatController _self)
+	protected static IEnumerator Focus(TargetData targetData)
 	{
 		EffectTools.SpawnEffect("blue_sparkles", targetData.self.transform.position,1);
 		targetData.self.AdjustMana(Mathf.Max(targetData.self.myStats.intelligence, 0));
-		yield return null;// new WaitForSeconds(1);
-	}
-
-	protected static IEnumerator SpotWeakness(TargetData targetData)//(CombatController _target, CombatController _self)
-	{
-		if (targetData.target == null)
-		{
-			//_self.AdjustMana(-manaCostDictionary["spot weakness"]);
-			yield break;
-		}
-
-		targetData.target.StartCoroutine(displayCritAreas.function(targetData)); //DisplayCritAreas(targetData._self, targetData._target));
 		yield return null;
 	}
 
-	protected static IEnumerator TimeWarp(TargetData targetData)//(CombatController _self)
+	protected static IEnumerator SpotWeakness(TargetData targetData)
+	{
+		if (targetData.target == null)
+		{
+			yield break;
+		}
+
+		targetData.target.StartCoroutine(displayCritAreas.function(targetData));
+		yield return null;
+	}
+
+	protected static IEnumerator TimeWarp(TargetData targetData)
 	{
 		EffectTools.SpawnEffect(timeWarp.name,lastClick,1);
 		var _buff = new Buff(timeWarp.name,"extra turn",2, TryGetBuffIcon("pluss_time"),StatBlock.StackType.Stack_Self,1);

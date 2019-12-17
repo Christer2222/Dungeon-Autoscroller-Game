@@ -11,6 +11,7 @@ public class CombatController : AbilityScript
 	private bool playerOwned;
 	private bool startedTurn;
 	private static Text turnorderText;
+	public static int turnCounter;
 
 	//Shows the player their status
 	private GameObject UICanvas;
@@ -50,8 +51,6 @@ public class CombatController : AbilityScript
 
     public bool actedLastTick;
 
-	private static Camera mainCamera;
-
 	//variables for player ability toggeling
 	private GameObject buttonMenuScrollView, buttonMenuContent;
 	private static GameObject entryPrefab;
@@ -74,6 +73,7 @@ public class CombatController : AbilityScript
 		//abilityButton1 = abilityButton2 = abilityButton3 = abilityButton4 = null;
 		playerCombatController = null;
 		mainCamera = null;
+		turnCounter = 0;
 	}
 
 	private void Start()
@@ -308,16 +308,36 @@ public class CombatController : AbilityScript
 
 				if (!startedTurn)
 				{
-					TickBuffs();
+					startedTurn = true;
+					turnCounter++;
 
-					turnorderText.text = string.Empty;
-					for (int i = 0; i < turnOrder.Count; i++)
+					if (turnOrder[0] == playerOwned || turnCounter == 1)
 					{
-						turnorderText.text += turnOrder[i].myStats.name + " | ";
+						var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UICanvas.transform, (turnCounter == 1)? new Color(0.8f,0.4f,0) :Color.yellow + Color.red, (turnCounter == 1)? "Combat!": "Your Turn!", 150);
+						_playerTurnText.transform.parent.localPosition = Vector3.zero;
+						_playerTurnText.StartCoroutine(EffectTools.ActivateInOrder(_playerTurnText,
+							new List<EffectTools.FunctionAndDelay>()
+							{
+									new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(_playerTurnText.transform, new Vector3(2, 0, 0), Vector3.one, 1f),   0),
+									new EffectTools.FunctionAndDelay(new List<IEnumerator>()
+										{
+											EffectTools.MoveDirection(_playerTurnText.transform,Vector3.right,100,5),
+											EffectTools.StretchFromTo(_playerTurnText.transform, _playerTurnText.transform.localScale, new Vector3(2, 1, 0), 2f),
+										},2f)
+							}
+							));
+
+						Destroy(_playerTurnText.transform.parent.gameObject, 3);
 					}
 
+
 					//Invoke buffs
-					startedTurn = true;
+					TickBuffs();
+
+					//UpdateTurnOrder turn order
+					UpdateTurnOrderDisplay();
+
+
 					if (!playerOwned)
 					{
 						StartCoroutine(TakeEnemyTurn());
@@ -328,6 +348,15 @@ public class CombatController : AbilityScript
 		else
 		{
 			if(Input.GetMouseButtonDown(0)) Click(); //wait for clicks outside of the players turn
+		}
+	}
+
+	void UpdateTurnOrderDisplay()
+	{
+		turnorderText.text = string.Empty;
+		for (int i = 0; i < turnOrder.Count; i++)
+		{
+			turnorderText.text += turnOrder[i].myStats.name + " | ";
 		}
 	}
 	
@@ -745,7 +774,8 @@ public class CombatController : AbilityScript
 						StartCoroutine(RemoveFromTurnOrder(0,_cc)); //destroy and remove items from the turn order
 				}
 
-				turnorderText.text = string.Empty;
+				UpdateTurnOrderDisplay();
+				//turnorderText.text = string.Empty;
 				ForwardMover.speedBoost = 3; //run after fleeing
 			}
 			else
@@ -877,7 +907,8 @@ public class CombatController : AbilityScript
 
 		if (turnOrder.Count <= 1)
 		{
-			turnorderText.text = string.Empty;
+			UpdateTurnOrderDisplay();
+			//turnorderText.text = string.Empty;
 			ForwardMover.DoneWithCombat();
 		}
 

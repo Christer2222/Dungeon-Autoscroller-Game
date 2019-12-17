@@ -115,6 +115,7 @@ public class ForwardMover : MonoBehaviour
 
 	public static void DoneWithCombat()
 	{
+		CombatController.turnCounter = 0;
 		encounterTimer = Random.Range(5,10);
 		CombatController.turnOrder.Clear();
 	}
