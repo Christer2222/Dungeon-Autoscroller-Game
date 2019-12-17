@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AbilityInfo;
 
-
-public class AbilityScript : AbilityData
+public class AbilityScript : MonoBehaviour// : AbilityData
 {
+	#region Abilities
 	public static Ability punch				= new Ability("Punch",					Punch, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
 	public static Ability fireball			= new Ability("Fireball",				Fireball, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2);
 	public static Ability massExplosion		= new Ability("Mass Explosion",			MassExplosion, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -4);
@@ -41,7 +42,7 @@ public class AbilityScript : AbilityData
 	public static Ability spotWeakness		= new Ability("Spot Weakness",			SpotWeakness, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
 	public static Ability lifeTap			= new Ability("Life Tap",				LifeTap, Elementals.Unlife, SkillUsed.healing, AbilityType.misc, 0);
 	public static Ability syncSoul			= new Ability("Sync Soul",				SyncSoul, Elementals.Void, SkillUsed.healing | SkillUsed.magic, AbilityType.misc, -10);
-
+	#endregion
 
 	protected static Vector3 lastClick;
 
@@ -55,48 +56,11 @@ public class AbilityScript : AbilityData
 		}
 	}
 
-	public class Buff
-	{
-		public Buff(string _name, string _trait, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<string> { _trait }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) {}
-		public Buff(string _name, Ability _function, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<Ability> { _function }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) {}
-
-		public Buff(string _name, List<string> _traits, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
-		{
-			name = _name;
-			traits = _traits;
-			turns = _turns;
-			constant = _constant;
-			target = _target;
-			stackType = _stackType;
-			buffIcon = _buffIcon;
-			shouldBeDisplayed = _shouldBeDisplyed;
-		}
-
-		public Buff(string _name, List<Ability> _functions, int _turns, Sprite _buffIcon, StatBlock.StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
-		{
-			name = _name;
-			functions = _functions;
-			turns = _turns;
-			constant = _constant;
-			target = _target;
-			stackType = _stackType;
-			buffIcon = _buffIcon;
-			shouldBeDisplayed = _shouldBeDisplyed;
-		}
-
-		public string name;
-		public List<Ability> functions = new List<Ability>();
-		public List<string> traits = new List<string>();
-		public CombatController target;
-		public float constant;
-		public int turns;
-		public StatBlock.StackType stackType;
-		public Sprite buffIcon;
-		public bool shouldBeDisplayed;
-	}
 
 	protected void AddBuff(Buff _buff, CombatController _target)
 	{
+		if (_target == null) return;
+
 		var _same = _target.myStats.buffList.Find(x => x.name == _buff.name);
 		switch(_buff.stackType)
 		{
@@ -144,6 +108,7 @@ public class AbilityScript : AbilityData
 		}
 	}
 
+
 	protected static RaycastHit2D CheckIfHit(Vector3 _clickPos)
 	{
 		Debug.DrawLine(_clickPos,_clickPos + Vector3.up * 0.1f,Color.red,4,false);
@@ -155,6 +120,7 @@ public class AbilityScript : AbilityData
 		return _hit;
 	}
 
+
 	static CombatController CheckForMultiHit(RaycastHit2D _hit)
 	{
 		CombatController _cc = null;
@@ -165,6 +131,52 @@ public class AbilityScript : AbilityData
 
 		return _cc;
 	}
+
+
+	static IEnumerator CircleCollision(Transform _objectToCheck, float _frequency, System.Action<CombatController> _actionOnHit)
+	{
+		List<object[]> _justHit = new List<object[]>();
+
+		while (true)
+		{
+			foreach (var _entry in _justHit)
+			{
+				print(_entry.Length);
+				_entry[1] = (float)_entry[1] - Time.deltaTime;
+				if ((float)_entry[1] <= 0)
+				{
+					_justHit.Remove(_entry);
+				}
+			}
+
+			foreach (Collider2D _col in Physics2D.OverlapCircleAll(_objectToCheck.position, 1f)) //find all cols
+			{
+				bool _found = false;
+				var _cc = _col.GetComponent<CombatController>();
+				if (_cc != null) //if col has combat
+				{
+					for (int j = 0; j < _justHit.Count; j++) //go through all just hit
+					{
+						if ((CombatController)_justHit[j][0] == _cc) //if this is in just hit
+						{
+							_found = true;
+							break;
+						}
+					}
+
+					if (!_found)
+					{
+						_justHit.Add(new object[] { _cc, 1f });
+						_actionOnHit(_cc);
+					}
+				}
+
+			}
+
+			yield return new WaitForSeconds(_frequency);
+		}
+	}
+
 
 	protected static IEnumerator DivineFists(TargetData targetData)
 	{
@@ -237,15 +249,6 @@ public class AbilityScript : AbilityData
 	{
 		int _r = Random.Range(0,3);
 
-		/*
-		targetData.target = null;
-		var _hit = CheckIfHit(targetData.centerPos);
-		if (_hit.transform != null)
-		{
-			targetData.target = _hit.transform.GetComponent<CombatController>();
-		}
-		*/
-		print("chose: " + _r);
 		if (_r == 0)
 		{
 			targetData.bonus += 2;
@@ -319,17 +322,17 @@ public class AbilityScript : AbilityData
 			var _meteor = EffectTools.SpawnEffect((Random.Range(0,128) == 0)? punch.name :  fireball.name, _top + Vector3.left * (i - Random.Range(1f,1.5f)), 6);
 			_moves.Add(CombatController.playerCombatController.StartCoroutine(EffectTools.MoveDirection(_meteor.transform,Vector3.down + _randomDir,3,5))); //global set the effect
 			_meteors.Add(_meteor.transform);
+			yield return new WaitForSeconds(Random.Range(0.3f,0.6f));
 		}
 
 		//make them do collision checks
-		int a = 0;
 		for (int i = 0; i < _meteors.Count; i++)
 		{
 			_collisionChecks.Add(
 				CombatController.playerCombatController.StartCoroutine(CircleCollision(_meteors[i], 0.25f,
 					delegate (CombatController _cc)
 					{
-						a += _cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
+						_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
 					}
 				))
 			);
@@ -357,50 +360,6 @@ public class AbilityScript : AbilityData
 		}
 
 		yield return null;
-	}
-
-	static IEnumerator CircleCollision(Transform _objectToCheck, float _frequency, System.Action<CombatController> _actionOnHit)
-	{
-		List<object[]> _justHit = new List<object[]>() { };
-
-		while (true)
-		{
-			foreach (var _entry in _justHit)
-			{
-				print(_entry.Length);
-				_entry[1] = (float)_entry[1] - Time.deltaTime;
-				if ((float)_entry[1] <= 0)
-				{
-					_justHit.Remove(_entry);
-				}
-			}
-
-			foreach (Collider2D _col in Physics2D.OverlapCircleAll(_objectToCheck.position, 1f)) //find all cols
-			{
-				bool _found = false;
-				var _cc = _col.GetComponent<CombatController>();
-				if (_cc != null) //if col has combat
-				{
-					for (int j = 0; j < _justHit.Count; j++) //go through all just hit
-					{
-						if ((CombatController)_justHit[j][0] == _cc) //if this is in just hit
-						{
-							_found = true;
-							break;
-						}
-					}
-
-					if (!_found)
-					{
-						_justHit.Add(new object[] { _cc, 1f });
-						_actionOnHit(_cc);//.Invoke();
-					}
-				}
-
-			}
-
-			yield return new WaitForSeconds(_frequency);
-		}
 	}
 
 	protected static IEnumerator Fireball(TargetData targetData)
@@ -499,7 +458,7 @@ public class AbilityScript : AbilityData
 	{
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
-		var _buff = new Buff(bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("bless"), StatBlock.StackType.Pick_Most_Turns, 2);
+		var _buff = new Buff(bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, AbilityIcons.TryGetBuffIcon("bless"), StatBlock.StackType.Pick_Most_Turns, 2);
 		targetData.self.AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -509,7 +468,7 @@ public class AbilityScript : AbilityData
 	{
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
-		var _buff = new Buff(curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, TryGetBuffIcon("curse"), StatBlock.StackType.Pick_Most_Turns, 0.5f);
+		var _buff = new Buff(curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, AbilityIcons.TryGetBuffIcon("curse"), StatBlock.StackType.Pick_Most_Turns, 0.5f);
 		targetData.self.AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -519,7 +478,7 @@ public class AbilityScript : AbilityData
 	{
 		EffectTools.SpawnEffect("fist up",lastClick,1);
 
-		var _buff = new Buff(bulkUp.name,"strength_constant",2, TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Build_Up,1);
+		var _buff = new Buff(bulkUp.name,"strength_constant",2, AbilityIcons.TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Build_Up,1);
 		targetData.self.AddBuff(_buff, targetData.self);
 
 		yield return null;
@@ -529,7 +488,7 @@ public class AbilityScript : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			var _buff = new Buff(debulk.name, "strength_constant", 3, TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Pick_Most_Potent, -2);
+			var _buff = new Buff(debulk.name, "strength_constant", 3, AbilityIcons.TryGetBuffIcon("pluss_strength"), StatBlock.StackType.Pick_Most_Potent, -2);
 			targetData.self.AddBuff(_buff, targetData.target);
 		}
 
@@ -540,7 +499,7 @@ public class AbilityScript : AbilityData
 	{
 		EffectTools.SpawnEffect("luck up",lastClick,1);
 
-		var _buff = new Buff(divineLuck.name, "luck_constant", 3, TryGetBuffIcon("divine_luck"), StatBlock.StackType.Pick_Most_Potent,2);
+		var _buff = new Buff(divineLuck.name, "luck_constant", 3, AbilityIcons.TryGetBuffIcon("divine_luck"), StatBlock.StackType.Pick_Most_Potent,2);
 		targetData.self.AddBuff(_buff, targetData.self);
 		yield return null;
 	}
@@ -551,7 +510,7 @@ public class AbilityScript : AbilityData
 
 		if(targetData.target != null)
 		{
-			var _buff = new Buff(regeneration.name,heal.name,3, TryGetBuffIcon("yellow_pluss"), StatBlock.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.luck,0));
+			var _buff = new Buff(regeneration.name,heal.name,3, AbilityIcons.TryGetBuffIcon("yellow_pluss"), StatBlock.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.luck,0));
 			targetData.self.AddBuff(_buff,targetData.target);
 		}
 		yield return null;
@@ -583,19 +542,18 @@ public class AbilityScript : AbilityData
 
 	protected static IEnumerator SpotWeakness(TargetData targetData)
 	{
-		if (targetData.target == null)
+		if (targetData.target != null)
 		{
-			yield break;
+			targetData.target.StartCoroutine(displayCritAreas.function(targetData));
 		}
 
-		targetData.target.StartCoroutine(displayCritAreas.function(targetData));
 		yield return null;
 	}
 
 	protected static IEnumerator TimeWarp(TargetData targetData)
 	{
 		EffectTools.SpawnEffect(timeWarp.name,lastClick,1);
-		var _buff = new Buff(timeWarp.name,"extra turn",2, TryGetBuffIcon("pluss_time"),StatBlock.StackType.Stack_Self,1);
+		var _buff = new Buff(timeWarp.name,"extra turn",2, AbilityIcons.TryGetBuffIcon("pluss_time"),StatBlock.StackType.Stack_Self,1);
 		targetData.self.AddBuff(_buff, targetData.self);
 		yield return null;
 	}

@@ -162,10 +162,6 @@ public class EffectTools : MonoBehaviour
 		_target.transform.localScale = _startVector;
 		yield return null;
 
-		//float _x = _target.transform.localScale.x;
-		//float _y = _target.transform.localScale.y;
-		//float _z = _target.transform.localScale.z;
-
 		float _life = 0;
 		var _current = _startVector;
 
@@ -174,11 +170,8 @@ public class EffectTools : MonoBehaviour
 			_life = Mathf.Min(_life + Time.deltaTime, _time);
 			yield return waitForEndOfFrame;
 			_current = Vector3.Lerp(_current,_endVector,_life/ _time);
-			//_x = Mathf.Lerp(_x, _endVector.x, _time);
-			//_y = Mathf.Lerp(_y, _endVector.y, _time);
-			//_z = Mathf.Lerp(_z, _endVector.z, _time);
 
-			_target.transform.localScale = _current;//new Vector3(_x,_y,_z);
+			_target.transform.localScale = _current;
 		}
 
 	}

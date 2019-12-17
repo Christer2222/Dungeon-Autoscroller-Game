@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using AbilityInfo;
 
 public class CombatController : AbilityScript
 {
@@ -230,13 +231,13 @@ public class CombatController : AbilityScript
 			AdjustPlayerXP(0);
 #endregion
 
-			if (buffIconDictionary == null)
+			if (AbilityIcons.buffIconDictionary == null)
 			{
-				buffIconDictionary = new Dictionary<string, Sprite>();
+				AbilityIcons.buffIconDictionary = new Dictionary<string, Sprite>();
 				Sprite[] _buffIcons = Resources.LoadAll<Sprite>("Sprites/UI/StatusSpriteSheet");
 				for (int i = 0; i < _buffIcons.Length; i++)
 				{
-					buffIconDictionary.Add(_buffIcons[i].name, _buffIcons[i]);
+					AbilityIcons.buffIconDictionary.Add(_buffIcons[i].name, _buffIcons[i]);
 				}
 			}
 		}
@@ -841,7 +842,7 @@ public class CombatController : AbilityScript
 			ResetAbilityPick();
 			if (turnOrder.Count == 0)
 			{
-				AddBuff(new Buff("Busy", "busy", 1, TryGetBuffIcon("busy"), StatBlock.StackType.Stack_Self, 1), this);
+				AddBuff(new Buff("Busy", "busy", 1, AbilityIcons.TryGetBuffIcon("busy"), StatBlock.StackType.Stack_Self, 1), this);
 				ForwardMover.speedBoost = 0;
 				ForwardMover.shouldMove = false;
 				CheckIfBuffIconsAreCorrect();

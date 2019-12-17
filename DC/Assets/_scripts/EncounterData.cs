@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using AbilityInfo;
 
 public class EncounterData : AbilityScript
 {

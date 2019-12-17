@@ -62,17 +62,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\_scripts\AbilityData.cs" />
     <Compile Include="Assets\_scripts\AbilityScript.cs" />
     <Compile Include="Assets\_scripts\CombatController.cs" />
-    <Compile Include="Assets\_scripts\DebugController.cs" />
+    <Compile Include="Assets\_scripts\Data\AbilityInfo.cs" />
+    <Compile Include="Assets\_scripts\Data\Buff.cs" />
+    <Compile Include="Assets\_scripts\Data\DebugController.cs" />
+    <Compile Include="Assets\_scripts\Data\StatBlock.cs" />
     <Compile Include="Assets\_scripts\EffectTools.cs" />
     <Compile Include="Assets\_scripts\EncounterData.cs" />
     <Compile Include="Assets\_scripts\EnemyMover.cs" />
     <Compile Include="Assets\_scripts\ForwardMover.cs" />
     <Compile Include="Assets\_scripts\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\ResetStaticVariablesManager.cs" />
-    <Compile Include="Assets\_scripts\StatBlock.cs" />
     <Compile Include="Assets\_scripts\UIAspect.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/GitRepos/DC/DC/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
