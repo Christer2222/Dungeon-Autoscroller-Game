@@ -4,25 +4,28 @@ using AbilityInfo;
 
 public class EncounterData : AbilityScript
 {
-	#region enemy stat blocks
-	//																											hp,mp,		lv,xp,st,de,in,lu
-	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman",						2, 0,		1, 0, 1, 1, 1, 1, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock eyeballBlock = new StatBlock(StatBlock.Race.Demon, "Eyeball",						7, 7,		2, 0, 1, 2, 1, 2, new List<Ability> { punch, manaDrain }, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock lightElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Light Elemental",	10, 2,		2, 0, 1, 2, 1, 2, new List<Ability> { punch, heal }, _absorbs: Elementals.Light, _weaknesses: Elementals.Void, _aiType: StatBlock.AIType.Coward);
-	public static StatBlock airElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Air Elemental",		7, 5,		2, 0, 1, 2, 1, 2, new List<Ability> { punch }, _absorbs: Elementals.Air, _weaknesses: Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock earthElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Earth Elemental",	15, 5,		2, 0, 1, 2, 1, 2, new List<Ability> { punch }, _absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock fireElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Fire Elemental",		5, 5,		2, 0, 2, 2, 1, 2, new List<Ability> { punch, fireball }, _absorbs: Elementals.Fire, _weaknesses: Elementals.Water, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock waterElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Water Elemental",	12, 5,		2, 0, 2, 2, 1, 2, new List<Ability> { punch, regeneration }, _absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock harpyBlock = new StatBlock(StatBlock.Race.Demon, "Harpy",							10, 5,		2, 0, 1, 2, 1, 2, new List<Ability> { punch, bulkUp }, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock druidBlock = new StatBlock(StatBlock.Race.Elf, "Druid",								5, 10,		2, 0, 1, 2, 1, 2, new List<Ability> { punch, heal, regeneration }, _resistances: Elementals.Earth, _aiType: StatBlock.AIType.Coward);
-	public static StatBlock blueEyeballBlock = new StatBlock(StatBlock.Race.Demon, "Blueball",					12, 7,		3, 0, 2, 3, 2, 3, new List<Ability> { punch, manaDrain, curse }, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock snowmanBlock = new StatBlock(StatBlock.Race.Elemental, "Snowman",					9, 12,		3, 0, 1, 2, 1, 2, new List<Ability> { freezingStrike }, _absorbs: Elementals.Ice, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Coward);
-	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost",							8, 8,		6, 0, 1, 3, 1, 1, new List<Ability> { punch }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock moonManBlock = new StatBlock(StatBlock.Race.Demon, "Moonman",						30, 999,	10, 0, 2, 3, 2, 3, new List<Ability>{ meteorShower }, _resistances: Elementals.Void, _aiType: StatBlock.AIType.Dumb);
-	
-	
-	
-	
+	#region enemy stat blocks																										
+	//----------------------------------------------------------------------------------------------------------hp,--mp,--------lv,xp, st, de, in, lu------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	public static StatBlock urnBlock = new StatBlock(StatBlock.Race.Demon, "Urn",								001, 000,		00, 0, 00, 00, 00, 00, new List<Ability> { wobble }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman",						002, 000,		01, 0, 01, 01, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock eyeballBlock = new StatBlock(StatBlock.Race.Demon, "Eyeball",						007, 007,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, manaDrain }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock lightElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Light Elemental",	010, 002,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, heal }, _absorbs: Elementals.Light, _weaknesses: Elementals.Void, _aiType: StatBlock.AIType.Coward);
+	public static StatBlock fireElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Fire Elemental",		005, 005,		02, 0, 02, 02, 01, 02, new List<Ability> { punch, fireball }, _absorbs: Elementals.Fire, _weaknesses: Elementals.Water, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock airElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Air Elemental",		007, 005,		02, 0, 01, 02, 01, 02, new List<Ability> { punch }, _absorbs: Elementals.Air, _weaknesses: Elementals.Earth, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock waterElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Water Elemental",	012, 005,		02, 0, 02, 02, 01, 02, new List<Ability> { punch, regeneration }, _absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock earthElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Earth Elemental",	015, 005,		02, 0, 01, 02, 01, 02, new List<Ability> { punch }, _absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock druidBlock = new StatBlock(StatBlock.Race.Elf, "Druid",								005, 010,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, heal, regeneration }, _resistances: Elementals.Earth, _aiType: StatBlock.AIType.Coward);
+	public static StatBlock harpyBlock = new StatBlock(StatBlock.Race.Demon, "Harpy",							010, 005,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, bulkUp }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock blueEyeballBlock = new StatBlock(StatBlock.Race.Demon, "Blueball",					012, 007,		03, 0, 02, 03, 02, 03, new List<Ability> { punch, manaDrain, curse }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock snowmanBlock = new StatBlock(StatBlock.Race.Elemental, "Snowman",					009, 012,		03, 0, 01, 02, 01, 02, new List<Ability> { freezingStrike }, _absorbs: Elementals.Ice, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Coward);
+	public static StatBlock fleshGolemBlock = new StatBlock(StatBlock.Race.Demon, "Flesh Golem",				030, 010,		04, 0, 03, 02, 01, 01, new List<Ability> { doubleKick, bulkUp }, _weaknesses: Elementals.Fire | Elementals.Ice, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost",							008, 008,		06, 0, 01, 03, 01, 01, new List<Ability> { punch }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock stoneGolemBlock = new StatBlock(StatBlock.Race.Demon, "Stone Golem",				045, 010,		06, 0, 06, 02, 01, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water, _immunities: Elementals.Light, _aiType: StatBlock.AIType.Dumb, _defense: 2);
+	public static StatBlock steelGolemBlock = new StatBlock(StatBlock.Race.Demon, "Steel Golem",				060, 010,		08, 0, 10, 04, 03, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water | Elementals.Electricity, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 4, _magicDefense: -1);
+	public static StatBlock moonManBlock = new StatBlock(StatBlock.Race.Demon, "Moonman",						030, 999,		10, 0, 02, 03, 02, 03, new List<Ability> { meteorShower }, _resistances: Elementals.Void, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock goldGolemBlock = new StatBlock(StatBlock.Race.Demon, "Gold Golem",					075, 030,		10, 0, 15, 05, 08, 03, new List<Ability> { doubleKick, bulkUp, hardenSkin, fireball }, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 6, _magicDefense: -2);
+
+
 	#endregion
 
 	public enum EncounterLocation
@@ -62,9 +65,8 @@ public class EncounterData : AbilityScript
 
 	public static readonly Encounter[] encounterTable = new Encounter[]
 	{
-		//new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock),
-		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: snowmanBlock),
-
+		//new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: snowmanBlock),
+		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBL: urnBlock, _monsterBM: urnBlock, _monsterBR: urnBlock),
 
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock),
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock),
@@ -107,11 +109,11 @@ public class EncounterData : AbilityScript
 
 	public static readonly Vector3[] offsetTable = new Vector3[]
 	{
-		new Vector3(0.66f,0,0),
+		new Vector3(1.33f,0,0),
 		new Vector3(0,0,0),
-		new Vector3(-0.66f,0,0),
-		new Vector3(1,1,0),
-		new Vector3(0.33f,1,0),
+		new Vector3(-1.33f,0,0),
+		new Vector3(1.33f,1,0),
+		new Vector3(1.33f,1,0),
 		new Vector3(-0.33f,1,0),
 	};
 }

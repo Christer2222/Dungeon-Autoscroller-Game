@@ -11,7 +11,7 @@ public class ForwardMover : MonoBehaviour
 	private List<GameObject> segmentList = new List<GameObject>();
 	private const float SEGMENT_DISTANCE = 8;
 
-	public static float encounterTimer = 5;
+	public static float encounterTimer = 1;//5;
 	public const float ENEMY_SPAWN_DISTANCE = 5;
 
 	private const float DEFAULT_BUFF_TIMER = 5;
@@ -76,7 +76,7 @@ public class ForwardMover : MonoBehaviour
 					}
 				}
 
-				if (_playerStats.level == 1 && _playerStats.xp == 0) //if this is the first battle
+				if (!Options.finishedTutorial) //if this is the first battle
 					_possibles = EncounterData.encounterTable.Where(x => x.level == 0).ToArray(); //overwrite encounter check for the easiest
 
 				EncounterData.Encounter _selectedEncounter = _possibles[Random.Range(0,_possibles.Length)];
@@ -101,6 +101,7 @@ public class ForwardMover : MonoBehaviour
 	{
 		if (_monstarStat == null) return;
 
+		print(EncounterData.offsetTable[_pos]);
 		var _go = Instantiate(enemyPrefab, transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE + EncounterData.offsetTable[_pos], Quaternion.identity);
 		var _cc = _go.GetComponent<CombatController>();
 
@@ -119,6 +120,9 @@ public class ForwardMover : MonoBehaviour
 
 	public static void DoneWithCombat()
 	{
+		if (CombatController.turnOrder.Count > 1)
+			Options.finishedTutorial = true;
+
 		CombatController.turnCounter = 0;
 		encounterTimer = Random.Range(5,10);
 		CombatController.turnOrder.Clear();

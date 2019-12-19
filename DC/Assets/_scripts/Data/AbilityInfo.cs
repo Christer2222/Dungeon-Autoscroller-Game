@@ -22,6 +22,7 @@ namespace AbilityInfo
 		offensive = 8,
 		attack = 16,
 		buff = 32,
+		defensive = 64,
 	}
 
 	//can combine elements by doing Elem | Elem and check by doing 
@@ -63,21 +64,11 @@ namespace AbilityInfo
 		public StatBlock.Race targetRace;
 	}
 
-	public class AbilityIcons
-	{
-		public static Dictionary<string, Sprite> buffIconDictionary;
-
-		public static Sprite TryGetBuffIcon(string _name)
-		{
-			return buffIconDictionary.TryGetValue(_name, out var y) ? buffIconDictionary[_name] : buffIconDictionary["default"];
-		}
-	}
-
 	public class Ability
 	{
 		public delegate IEnumerator FunctionToCall(TargetData inputData);
 
-		public Ability(string _name, FunctionToCall _function, Elementals _element = default, SkillUsed _skill = default, AbilityType _type = default, int _manaCost = 0)
+		public Ability(string _name, FunctionToCall _function, Elementals _element, SkillUsed _skill, AbilityType _type, int _manaCost)
 		{
 			name = _name;
 			function = _function;

@@ -19,7 +19,6 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static Ability meteorShower		= new Ability("Meteor Shower",			MeteorShower, Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7);
 	public static Ability freezingStrike	= new Ability("Freezing Strike",		FreezingStrike, Elementals.Ice, SkillUsed.magic, AbilityType.attack, -1);
 
-
 	public static Ability siphonSoul		= new Ability("Siphon Soul",			SiphonSoul, Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1);
 
 	public static Ability focus				= new Ability("Focus",					Focus, Elementals.Water, SkillUsed.magic, AbilityType.recovery, 0);
@@ -38,12 +37,16 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static Ability debulk			= new Ability("Debulk",					Debulk, Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -2);
 	public static Ability curse				= new Ability("Curse",					Curse, Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -5);
 
-	public static Ability eat				= new Ability("Eat",					Eat, Elementals.Physical, default, AbilityType.misc, 0);
+	public static Ability hardenSkin		= new Ability("Harden Skin",			Harden, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.defensive, -3);
+
+	public static Ability eat				= new Ability("Eat",					Eat, default, default, AbilityType.misc, 0);
 	public static Ability keenSight			= new Ability("Keen Sight",				DisplayCritAreas, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
 	public static Ability displayCritAreas	= new Ability("Display Crit Areas",		DisplayCritAreas, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
 	public static Ability spotWeakness		= new Ability("Spot Weakness",			SpotWeakness, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
 	public static Ability lifeTap			= new Ability("Life Tap",				LifeTap, Elementals.Unlife, SkillUsed.healing, AbilityType.misc, 0);
 	public static Ability syncSoul			= new Ability("Sync Soul",				SyncSoul, Elementals.Void, SkillUsed.healing | SkillUsed.magic, AbilityType.misc, -10);
+
+	public static Ability wobble			= new Ability("Wobble",					Wobble, Elementals.None, SkillUsed.none, AbilityType.none, 0);
 	#endregion
 
 	protected static Vector3 lastClick;
@@ -188,6 +191,12 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 	}
 
+	protected static IEnumerator Harden(TargetData targetData)
+	{
+		var _buff = new Buff("Hardened Skin","defense_constant",3, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Pick_Most_Turns, 2);
+		targetData.self.AddBuff(_buff, targetData.self);
+		yield return null;
+	}
 
 	protected static IEnumerator DivineFists(TargetData targetData)
 	{
@@ -206,9 +215,11 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		targetData.element = Elementals.Ice;
 		yield return targetData.self.StartCoroutine(Punch(targetData));
-		var _buff = new Buff("Frozen", new List<string> { "dexterity_constant"}, 2, AbilityIcons.TryGetBuffIcon("Frozen"), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
+		var _buff =  new Buff("Frozen", new List<string> { "dexterity_constant",}, 2, BuffIcons.TryGetBuffIcon("Frozen"), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
+		//var _buff2 = new Buff("Hardened Skin", "defense_constant", 2, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Add_One_Duration_And_One_Potency, 1, _shouldBeDisplyed: false);
 
 		targetData.self.AddBuff(_buff, targetData.target);
+		//targetData.self.AddBuff(_buff, targetData.target);
 	}
 
 	protected static IEnumerator DoubleKick(TargetData targetData)//(Vector3 _centerPos, CombatController _target, CombatController _self)
@@ -478,7 +489,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
-		var _buff = new Buff(bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, AbilityIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
+		var _buff = new Buff(bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
 		targetData.self.AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -488,7 +499,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
-		var _buff = new Buff(curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, AbilityIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
+		var _buff = new Buff(curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
 		targetData.self.AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -498,7 +509,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect("fist up",lastClick,1);
 
-		var _buff = new Buff(bulkUp.name,"strength_constant",2, AbilityIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
+		var _buff = new Buff(bulkUp.name,"strength_constant",2, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
 		targetData.self.AddBuff(_buff, targetData.self);
 
 		yield return null;
@@ -508,7 +519,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			var _buff = new Buff(debulk.name, "strength_constant", 3, AbilityIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
+			var _buff = new Buff(debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
 			targetData.self.AddBuff(_buff, targetData.target);
 		}
 
@@ -519,7 +530,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect("luck up",lastClick,1);
 
-		var _buff = new Buff(divineLuck.name, "luck_constant", 3, AbilityIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
+		var _buff = new Buff(divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
 		targetData.self.AddBuff(_buff, targetData.self);
 		yield return null;
 	}
@@ -530,7 +541,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		if(targetData.target != null)
 		{
-			var _buff = new Buff(regeneration.name,heal.name,3, AbilityIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.luck,0));
+			var _buff = new Buff(regeneration.name,heal.name,3, BuffIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.luck,0));
 			targetData.self.AddBuff(_buff,targetData.target);
 		}
 		yield return null;
@@ -573,7 +584,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	protected static IEnumerator TimeWarp(TargetData targetData)
 	{
 		EffectTools.SpawnEffect(timeWarp.name,lastClick,1);
-		var _buff = new Buff(timeWarp.name,"extra turn",2, AbilityIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
+		var _buff = new Buff(timeWarp.name,"extra turn",2, BuffIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
 		targetData.self.AddBuff(_buff, targetData.self);
 		yield return null;
 	}
@@ -608,6 +619,19 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		yield return null;
 
 	}
+
+	protected static IEnumerator Wobble(TargetData targetData)
+	{
+		
+		targetData.self.StartCoroutine(EffectTools.ActivateInOrder(targetData.self, new List<EffectTools.FunctionAndDelay>()
+		{
+			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(targetData.self.transform,Vector3.right,1,0.2f), 0),
+			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(targetData.self.transform,Vector3.left,1,0.3f), 0.2f),
+			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(targetData.self.transform,Vector3.right,1,0.1f), 0.3f),
+		}));
+		yield return null;
+	}
+
 
 	protected static IEnumerator Spook(TargetData targetData)//(CombatController _target,CombatController _self)
 	{

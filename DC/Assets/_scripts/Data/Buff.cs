@@ -49,4 +49,15 @@ public class Buff
 		Add_One_Duration_Add_All_Potency,
 		Add_One_Duration_And_One_Potency,
 	}
+
+}
+
+public class BuffIcons
+{
+	public static Dictionary<string, Sprite> buffIconDictionary;
+
+	public static Sprite TryGetBuffIcon(string _name)
+	{
+		return buffIconDictionary.TryGetValue(_name, out var y) ? buffIconDictionary[_name] : buffIconDictionary["default"];
+	}
 }

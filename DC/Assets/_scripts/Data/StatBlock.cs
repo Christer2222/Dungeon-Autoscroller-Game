@@ -32,7 +32,8 @@ public class StatBlock
 		List<Ability> _abilities, //should be List<Ienumerator> to have less human errors
 		Elementals _weaknesses = default, Elementals _resistances = default, Elementals _immunities = default, Elementals _absorbs = default,
 		AIType _aiType = default,
-		List<Buff> _buffs = default)
+		List<Buff> _buffs = default,
+		int _defense = 0, int _magicDefense = 0)
 	{
 		race = _race;
 		name = _name;
@@ -57,6 +58,9 @@ public class StatBlock
 			abilities.Add(_abilities[i]);//.ToLower());
 		}
 		aiType = _aiType;
+
+		baseDefense = _defense;
+		baseMagicDegense = _magicDefense;
 	}
 
 	public Race race;
@@ -66,6 +70,7 @@ public class StatBlock
 	public int level, xp;
 
 	public int baseStrength, baseDexterity, baseIntelligence, baseLuck;
+	public int baseDefense, baseMagicDegense;
 
 	public List<Ability> abilities;
 	public AIType aiType;
@@ -136,6 +141,24 @@ public class StatBlock
 			}
 
 			return _bl;
+		}
+	}
+
+	public int defense
+	{
+		get
+		{
+			int _bd = baseDefense;
+			return _bd;
+		}
+	}
+
+	public int magicDefense
+	{
+		get
+		{
+			int _bm = magicDefense;
+			return _bm;
 		}
 	}
 

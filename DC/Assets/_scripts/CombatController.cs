@@ -16,7 +16,7 @@ public class CombatController : AbilityScript
 	private bool processingAbility;
 
 	//Shows the player their status
-	private GameObject UICanvas;
+	private static GameObject UICanvas;
 	private Slider healthSlider, manaSlider, xpSlider;
 	private Slider healthSliderSlow, manaSliderSlow;
 	private Text currentHealthText, currentManaText, maxManaText, maxHealthText;
@@ -35,6 +35,7 @@ public class CombatController : AbilityScript
 
 	//Gameover variables
 	private GameObject gameOverHolder;
+	private EnemyMover myEnemyMover;
 
 	//Variables for targeting, and using abilities
 	public Ability selectedAbility;
@@ -93,11 +94,11 @@ public class CombatController : AbilityScript
         }
 
 		if(mainCamera == null) mainCamera = Camera.main;
+		if (UICanvas == null) UICanvas = GameObject.Find("$UICanvas");
+			//damageText = transform.Find("$DamageTextHolder").Find("$DamageText").GetComponent<Text>();
 
-		//damageText = transform.Find("$DamageTextHolder").Find("$DamageText").GetComponent<Text>();
-
-		//Set stats for enemies and the player + ui for player
-		if(gameObject.name == "$PlayerPortrait")
+			//Set stats for enemies and the player + ui for player
+		if (gameObject.name == "$PlayerPortrait")
 		{
             myStats = new StatBlock(
                 StatBlock.Race.Human,
@@ -113,7 +114,6 @@ public class CombatController : AbilityScript
 			buffEntryPrefab = Resources.Load<GameObject>("Prefabs/$BuffEntry");
 
 #region UI Assignment
-			UICanvas = GameObject.Find("$UICanvas");
 			foreach(Transform _t in UICanvas.GetComponentsInChildren<Transform>(true))
 			{
 				switch(_t.name)
@@ -238,18 +238,20 @@ public class CombatController : AbilityScript
 			AdjustPlayerXP(0);
 #endregion
 
-			if (AbilityIcons.buffIconDictionary == null)
+			if (BuffIcons.buffIconDictionary == null)
 			{
-				AbilityIcons.buffIconDictionary = new Dictionary<string, Sprite>();
+				BuffIcons.buffIconDictionary = new Dictionary<string, Sprite>();
 				Sprite[] _buffIcons = Resources.LoadAll<Sprite>("Sprites/UI/StatusSpriteSheet");
 				for (int i = 0; i < _buffIcons.Length; i++)
 				{
-					AbilityIcons.buffIconDictionary.Add(_buffIcons[i].name, _buffIcons[i]);
+					BuffIcons.buffIconDictionary.Add(_buffIcons[i].name, _buffIcons[i]);
 				}
 			}
 		}
 		else
 		{
+			myEnemyMover = GetComponent<EnemyMover>();
+
 			currentHealth = myStats.maxHealth;
 			currentMana = myStats.maxMana;
 		}
@@ -319,6 +321,9 @@ public class CombatController : AbilityScript
 					startedTurn = true;
 					turnCounter++;
 
+					//UpdateTurnOrder turn order
+					UpdateTurnOrderDisplay();
+
 					if (turnOrder[0] == playerOwned || turnCounter == 1)
 					{
 						var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UICanvas.transform, (turnCounter == 1)? new Color(0.8f,0.4f,0) :Color.yellow + Color.red, (turnCounter == 1)? "Combat!": "Your Turn!", 150);
@@ -342,12 +347,9 @@ public class CombatController : AbilityScript
 					//Invoke buffs
 					TickBuffs();
 
-					//UpdateTurnOrder turn order
-					UpdateTurnOrderDisplay();
-
-
 					if (!playerOwned)
 					{
+						myEnemyMover.shouldMove = false;
 						StartCoroutine(TakeEnemyTurn());
 					}
 				}
@@ -362,10 +364,11 @@ public class CombatController : AbilityScript
 	void UpdateTurnOrderDisplay()
 	{
 		turnorderText.text = string.Empty;
-		for (int i = 0; i < turnOrder.Count; i++)
-		{
-			turnorderText.text += turnOrder[i].myStats.name + " | ";
-		}
+		if (turnOrder.Count > 1)
+			for (int i = 0; i < turnOrder.Count; i++)
+			{
+				turnorderText.text += turnOrder[i].myStats.name + " | ";
+			}
 	}
 	
 	public void TickBuffs()
@@ -535,8 +538,32 @@ public class CombatController : AbilityScript
 				break;
 		}
 
-		transform.position += Vector3.up * (UnityEngine.Random.Range(0f,2f) - 1);
+		//transform.position += Vector3.up * (UnityEngine.Random.Range(0f,2f) - 1);
 		//activeAbility = myStats.abilities[UnityEngine.Random.Range(0,myStats.abilities.Count)];
+		var _startScale = transform.localScale;
+
+
+		//_playerTurnText.transform.parent.localPosition = Vector3.zero;
+
+		var _abilityUsedText = EffectTools.SpawnText(Vector3.zero, UICanvas.transform, new Color(0.7f,0,0), myStats.name + " used " + selectedAbility.name, 90);
+		_abilityUsedText.transform.parent.localPosition = Vector3.zero + Vector3.up * 400;
+		Destroy(_abilityUsedText.transform.parent.gameObject, 6);
+
+		float _turnDelay = 1f / ((float)turnOrder.Count / 5);
+		StartCoroutine(
+		EffectTools.ActivateInOrder(_abilityUsedText, new List<EffectTools.FunctionAndDelay>()
+		{
+			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_abilityUsedText.transform,Vector3.right,100,5),_turnDelay),
+		}));
+
+		yield return StartCoroutine(
+		EffectTools.ActivateInOrder(this, new List<EffectTools.FunctionAndDelay>()
+		{
+			new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, _startScale, _startScale * 1.5f, 0.2f), _turnDelay + 0.5f),
+			new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _startScale, 0.2f), 0.2f),
+		}));
+
+		yield return new WaitForSeconds(0.3f);
 
 		if(activeType == AbilityType.offensive)
 		{
@@ -549,10 +576,9 @@ public class CombatController : AbilityScript
 			lastClick = transform.position;
 		}
 
-
-
-		print(transform.name + "(+" + myStats.aiType + "+)" + " is doing " + selectedAbility.name);
-		yield return StartCoroutine(InvokeActiveAbility());		
+		//print(transform.name + "(+" + myStats.aiType + "+)" + " is doing " + selectedAbility.name);
+		yield return StartCoroutine(InvokeActiveAbility());
+		myEnemyMover.shouldMove = true;
 	}
 
 	public void AdjustPlayerXP(int _amount)
@@ -658,6 +684,8 @@ public class CombatController : AbilityScript
 			if (!playerOwned)
 			{
 				playerCombatController.AdjustPlayerXP(myStats.level * 3);
+
+				myEnemyMover.shouldMove = false;
 
 				StartCoroutine(RemoveFromTurnOrder(1.0f,this));
 			}
@@ -781,6 +809,7 @@ public class CombatController : AbilityScript
 					if (_cc != this)
 						StartCoroutine(RemoveFromTurnOrder(0,_cc)); //destroy and remove items from the turn order
 				}
+				//turnOrder.Clear();
 
 				UpdateTurnOrderDisplay();
 				//turnorderText.text = string.Empty;
@@ -845,7 +874,7 @@ public class CombatController : AbilityScript
 			ResetAbilityPick();
 			if (turnOrder.Count == 0)
 			{
-				AddBuff(new Buff("Busy", "busy", 1, AbilityIcons.TryGetBuffIcon("busy"), Buff.StackType.Add_Duplicate, 1), this);
+				AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon("busy"), Buff.StackType.Add_Duplicate, 1), this);
 				ForwardMover.speedBoost = 0;
 				ForwardMover.shouldMove = false;
 				CheckIfBuffIconsAreCorrect();
