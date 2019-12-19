@@ -51,6 +51,11 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	protected static Vector3 lastClick;
 
+	public static Vector3 hitPosition
+	{
+		get { return mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE)); } //store where to click
+	}
+
 	protected static Camera mainCamera;
 
 	protected static Vector3 randomVector3
@@ -123,7 +128,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	}
 
 
-	protected static RaycastHit2D CheckIfHit(Vector3 _clickPos)
+	public static RaycastHit2D CheckIfHit(Vector3 _clickPos)
 	{
 		Debug.DrawLine(_clickPos,_clickPos + Vector3.up * 0.1f,Color.red,4,false);
 		Debug.DrawLine(_clickPos,_clickPos + Vector3.right * 0.1f,Color.blue,4,false);

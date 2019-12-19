@@ -214,4 +214,10 @@ public class EffectTools : MonoBehaviour
 			_life -= Time.deltaTime;
 		}
 	}
+
+	public static IEnumerator DeactivateGameObject(GameObject _go, float _time)
+	{
+		yield return new WaitForSeconds(_time);
+		_go.SetActive(false);
+	}
 }

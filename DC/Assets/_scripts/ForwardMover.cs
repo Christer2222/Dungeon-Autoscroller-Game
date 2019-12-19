@@ -120,12 +120,15 @@ public class ForwardMover : MonoBehaviour
 
 	public static void DoneWithCombat()
 	{
-		if (CombatController.turnOrder.Count > 1)
+		if (CombatController.turnOrder.Count >= 1)
 			Options.finishedTutorial = true;
 
-		CombatController.turnCounter = 0;
 		encounterTimer = Random.Range(5,10);
+
+		CombatController.turnCounter = 0;
 		CombatController.turnOrder.Clear();
+		CombatController.playerCombatController.startedTurn = false;
+		CombatController.UpdateTurnOrderDisplay();
 	}
 
 	private void OnTriggerEnter(Collider _trig)

@@ -10,7 +10,7 @@ public class CombatController : AbilityScript
 	//Keeps track of whos turn it is, and switching
 	public static List<CombatController> turnOrder = new List<CombatController>();
 	private bool playerOwned;
-	private bool startedTurn;
+	public bool startedTurn;
 	private static Text turnorderText;
 	public static int turnCounter;
 	private bool processingAbility;
@@ -41,7 +41,7 @@ public class CombatController : AbilityScript
 	public Ability selectedAbility;
 	private CombatController targetCombatController;
     public static CombatController playerCombatController;
-	private Vector3 hitPosition;
+	//private Vector3 hitPosition;
 	private bool isCritted;
 	private Color activeColor = new Color(0,0,0.35f), deactiveColor = Color.gray;
 
@@ -129,7 +129,8 @@ public class CombatController : AbilityScript
 									buttonMenuScrollView.SetActive(false);
 
 									fleeSlider.gameObject.SetActive(!fleeSlider.gameObject.activeSelf);
-									fleeSlider.value = 0;
+									fleeSlider.GetComponent<FleeLogic>().enabled = true;
+									//fleeSlider.value = 0;
 								}
 						});
 						break;
@@ -310,9 +311,6 @@ public class CombatController : AbilityScript
 			{
 				if (playerOwned)
 				{
-					if(fleeSlider.gameObject.activeSelf == true)
-						fleeSlider.value = Mathf.PingPong(Time.timeSinceLevelLoad * fleeSlider.maxValue,fleeSlider.maxValue);
-
 					if(Input.GetMouseButtonDown(0)) Click(); //wait for clicks
 				}
 
@@ -361,7 +359,7 @@ public class CombatController : AbilityScript
 		}
 	}
 
-	void UpdateTurnOrderDisplay()
+	public static void UpdateTurnOrderDisplay()
 	{
 		turnorderText.text = string.Empty;
 		if (turnOrder.Count > 1)
@@ -615,25 +613,11 @@ public class CombatController : AbilityScript
 
 		float _amountMultiplier = 1;
 
-		if ((myStats.weaknesses & _elementals) != 0) //if weakness
-		{
-			_amountMultiplier += 0.5f; //multiplier is booseted
-		}
-
-		if ((myStats.resistances & _elementals) != 0) //if resist
-		{
-			_amountMultiplier -= 0.5f; //multiplier is halfed
-		}
-
-		if ((myStats.immunities & _elementals) != 0) //if immune
-		{
-			_amountMultiplier = 0; //multiplier is set to 0
-		}
-
-		if ((myStats.absorbs & _elementals) != 0)
-		{
-			_amount = Mathf.Abs(_amount); //always heal if absorb
-		}
+		if ((myStats.weaknesses & _elementals) != 0) _amountMultiplier += 0.5f; //multiplier is booseted if weakness
+		if ((myStats.resistances & _elementals) != 0) _amountMultiplier -= 0.5f; //multiplier is halfed if resist
+		if ((myStats.immunities & _elementals) != 0) _amountMultiplier = 0; //multiplier is set to 0 if immune
+		if ((myStats.absorbs & _elementals) != 0) _amount = Mathf.Abs(_amount); //always heal if absorb
+		
 
 		int _totalDamage = currentHealth; //store previous health for display text and return value
 
@@ -646,12 +630,14 @@ public class CombatController : AbilityScript
 
 		string _textToWrite = ((_damageCalc > 0)? "+" + _damageCalc.ToString(): (_damageCalc == 0)? "Block": _damageCalc.ToString()); //if over 0 +amount if 0 block if under 0 -amount
 
-		GameObject _spawnedText = EffectTools.SpawnText(transform.position + Vector3.up, transform, //spawn a text with color
-			(_damageCalc > 0)? Color.green: (_damageCalc == 0)? Color.gray: Color.red, _textToWrite).transform.parent.gameObject; //if over 0 green if 0 gray if under red
+		Text _spawnedText = EffectTools.SpawnText(transform.position + Vector3.up, transform, //spawn a text with color
+			(_damageCalc > 0)? Color.green: (_damageCalc == 0)? Color.gray: Color.red, _textToWrite); //if over 0 green if 0 gray if under red
 
-		StartCoroutine(EffectTools.CurveDropMove(_spawnedText.transform,4)); //curve drop the damage text
-		_spawnedText.transform.SetParent(null); //free the text
-		_spawnedText.transform.position = transform.position + Vector3.up;
+		GameObject _spawnedTextParent = _spawnedText.transform.parent.gameObject;
+
+		_spawnedText.StartCoroutine(EffectTools.CurveDropMove(_spawnedText.transform,4)); //curve drop the damage text
+		_spawnedTextParent.transform.SetParent(null); //free the text
+		_spawnedTextParent.transform.position = transform.position + Vector3.up;
 		Destroy(_spawnedText,5);
 
 		currentHealth = Mathf.Clamp(currentHealth + _damageCalc, 0, myStats.maxHealth);
@@ -772,7 +758,7 @@ public class CombatController : AbilityScript
 
 	public void Click()
 	{
-		hitPosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE)); //store where to click
+		//hitPosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE)); //store where to click
 		RaycastHit2D _hit = CheckIfHit(hitPosition); //get click info
 		
 		bool _hitSomething = (_hit.collider != null); //store if something was hit
@@ -794,11 +780,12 @@ public class CombatController : AbilityScript
 			}
 		}
 
+		/*
 #region Flee Logic
 		bool _fleeing = fleeSlider != null; //is the fleeslider there
 		if(_fleeing) _fleeing = fleeSlider.gameObject.activeSelf; //is the player fleeing
 
-		if (_fleeing) //if fleeing
+		if (fleeSlider.gameObject.activeSelf)//_fleeing) //if fleeing
 		{
 			if(Mathf.Abs((fleeSlider.maxValue / 2) - (fleeSlider.value)) <= FleeThreshold) //if the pointer is withing the flee zone, succeed
 			{
@@ -818,14 +805,15 @@ public class CombatController : AbilityScript
 			else
 			{
 				EndTurn(); //if failed fleeing, end the turn as an action
-				
 			}
-			StartCoroutine(DeactivateGameObject(fleeSlider.gameObject,0.2f));
+			StartCoroutine(EffectTools.DeactivateGameObject(fleeSlider.gameObject,0.2f));
 		}
 #endregion
-		else if (selectedAbility != null) //if not fleeing, but has an ability selected
+			*/
+		//else if (selectedAbility != null) //if not fleeing, but has an ability selected
+		if (selectedAbility != null && !fleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
 		{
-			if(_hit.transform != null) //if something was hit
+			if (_hit.transform != null) //if something was hit
 			{
 				if(_hit.transform.CompareTag("CritArea")) //if it was a crit area
 				{
@@ -924,13 +912,7 @@ public class CombatController : AbilityScript
 		Destroy(_target.gameObject);
 	}
 
-	IEnumerator DeactivateGameObject(GameObject _go, float _time)
-	{
-		yield return new WaitForSeconds(_time);
-		_go.SetActive(false);
-	}
-
-	void EndTurn()
+	public void EndTurn()
 	{
 		processingAbility = false;
 
