@@ -81,6 +81,9 @@ public class ForwardMover : MonoBehaviour
 
 				EncounterData.Encounter _selectedEncounter = _possibles[Random.Range(0,_possibles.Length)];
 
+				_selectedEncounter = EncounterData.RandomizeEncounter(_selectedEncounter);
+
+
 				SpawnEnemy(_selectedEncounter.monsterBL, 0);
 				SpawnEnemy(_selectedEncounter.monsterBM, 1);
 				SpawnEnemy(_selectedEncounter.monsterBR, 2);

@@ -18,6 +18,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static Ability manaDrain			= new Ability("Mana Drain",				ManaDrain, Elementals.Water, SkillUsed.healing, AbilityType.attack, -3);
 	public static Ability meteorShower		= new Ability("Meteor Shower",			MeteorShower, Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7);
 	public static Ability freezingStrike	= new Ability("Freezing Strike",		FreezingStrike, Elementals.Ice, SkillUsed.magic, AbilityType.attack, -1);
+	public static Ability thunderbolt		= new Ability("Thunderbolt",			Thunderbolt, Elementals.Electricity, SkillUsed.magic, AbilityType.attack, -4);
 
 	public static Ability siphonSoul		= new Ability("Siphon Soul",			SiphonSoul, Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1);
 
@@ -38,6 +39,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static Ability curse				= new Ability("Curse",					Curse, Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -5);
 
 	public static Ability hardenSkin		= new Ability("Harden Skin",			Harden, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.defensive, -3);
+	public static Ability magicShield		= new Ability("Magic Shield",			MagicShield, Elementals.Water, SkillUsed.magic, AbilityType.defensive, -3);
 
 	public static Ability eat				= new Ability("Eat",					Eat, default, default, AbilityType.misc, 0);
 	public static Ability keenSight			= new Ability("Keen Sight",				DisplayCritAreas, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
@@ -66,8 +68,15 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 	}
 
+	protected static Vector3 topPosition
+	{
+		get
+		{
+			return new Vector3(0, 6, mainCamera.transform.position.z + ForwardMover.ENEMY_SPAWN_DISTANCE);
+		}
+	}
 
-	protected void AddBuff(Buff _buff, CombatController _target)
+	protected static void AddBuff(Buff _buff, CombatController _target)
 	{
 		if (_target == null) return;
 
@@ -152,23 +161,34 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	}
 
 
-	static IEnumerator CircleCollision(Transform _objectToCheck, float _frequency, System.Action<CombatController> _actionOnHit)
+	static IEnumerator CircleCollision(Transform _objectToCheck, float _frequency, float _radius, System.Action<CombatController> _actionOnHit)
 	{
 		List<object[]> _justHit = new List<object[]>();
 
 		while (true)
 		{
+			for (int i = 0; i < _justHit.Count; i++)
+			{
+				_justHit[i][1] = (float)_justHit[i][1] - Time.deltaTime;
+				if ((float)_justHit[i][1] <= 0)
+				{
+					_justHit.Remove(_justHit[i]);
+					i--;
+				}
+			}
+			/*
 			foreach (var _entry in _justHit)
 			{
-				print(_entry.Length);
 				_entry[1] = (float)_entry[1] - Time.deltaTime;
 				if ((float)_entry[1] <= 0)
 				{
 					_justHit.Remove(_entry);
 				}
 			}
+			*/
+			//_justHit.ForEach(x => { x[1] = (float)x[1] - Time.deltaTime;  if ((float)x[1] <= 0) _justHit.Remove(x); });
 
-			foreach (Collider2D _col in Physics2D.OverlapCircleAll(_objectToCheck.position, 1f)) //find all cols
+			foreach (Collider2D _col in Physics2D.OverlapCircleAll(_objectToCheck.position, _radius)) //find all cols
 			{
 				bool _found = false;
 				var _cc = _col.GetComponent<CombatController>();
@@ -196,10 +216,102 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 	}
 
+	protected static IEnumerator Thunderbolt(TargetData targetData)
+	{
+		var _topPress = targetData.centerPos;
+		_topPress.y = topPosition.y;
+
+		var _bolt = EffectTools.SpawnEffect(punch.name, _topPress); //spawn effect
+		var _mono = _bolt.gameObject.AddComponent<EmptyMonoBehaviour>(); //add monoholder
+		List<GameObject> _spawnedMonos = new List<GameObject>();
+		_bolt.name = "orgBolt";
+
+		_spawnedMonos.Add(_mono.gameObject);
+		Destroy(_bolt.gameObject, 3);
+
+		_mono.StartCoroutine(EffectTools.ActivateInOrder(_mono, new List<EffectTools.FunctionAndDelay>()
+		{
+				new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_bolt.transform, Vector3.down,2,0.1f),0), //move effect
+		}));
+
+		//var _moDel = new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_bolt.transform, Vector3.down + Vector3.right * randomVector3.x, 2, 0.1f), 0);
+		for (int i = 1; i < 100; i++)
+		{
+			//_moDel._secToStart = i * 0.1f;
+			_mono.StartCoroutine(EffectTools.ActivateInOrder(_mono, new List<EffectTools.FunctionAndDelay>() {
+				//_moDel,
+				new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_bolt.transform, Vector3.down + Vector3.right * randomVector3.x,2,0.1f),i * 0.1f), //move effect
+			}));
+		}
+
+		_mono.StartCoroutine(CircleCollision(_bolt.transform,0.1f, 0.1f,
+			delegate (CombatController _cc) //check for collisions, when found...
+			{
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element); //change health
+				GameObject _orgHit = _cc.gameObject;
+				
+				var _hits = Physics2D.OverlapCircleAll(_bolt.transform.position, 1f); //check for nearby colliders
+				for (int i = 0; i < _hits.Length; i++) //for all found
+				{
+					if (_hits[i].gameObject == _cc.gameObject) continue;
+					if (_hits[i].GetComponent<CombatController>() == null) continue;
+
+					var _spawnedBolt = EffectTools.SpawnEffect(punch.name, _bolt.transform.position); //spawn new effect
+					var _spawnedMono = _spawnedBolt.gameObject.AddComponent<EmptyMonoBehaviour>(); //add mono holder
+					Destroy(_spawnedBolt.gameObject, 3);
+					_spawnedMonos.Add(_spawnedMono.gameObject);
+					_spawnedBolt.name = "spawnBolt " + i;
+
+					_spawnedMono.StartCoroutine(EffectTools.ActivateInOrder(_spawnedMono, new List<EffectTools.FunctionAndDelay>() {
+						new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_spawnedBolt.transform, _hits[i].transform.position - _spawnedBolt.transform.position,2,2f),0.5f), //move effect
+					}));
+					//_spawnedMono.StartCoroutine(EffectTools.MoveDirection(_spawnedBolt.transform, _hits[i].transform.position - _spawnedBolt.transform.position,2,2)); //move effect 2
+
+					_spawnedMono.StartCoroutine(CircleCollision(_spawnedBolt.transform, 0.1f, 0.1f, //check for colliders
+					delegate (CombatController _cc2) //when a collider is found
+					{
+						if (_cc2.gameObject != _orgHit) //if the hit is not the original one
+						{
+							_cc2.AdjustHealth(-Mathf.Max(Mathf.CeilToInt((float)targetData.self.myStats.intelligence/2), 0), targetData.element);
+							Destroy(_spawnedBolt.gameObject);
+						}
+					}));
+				}
+				
+
+				Destroy(_bolt.gameObject);
+			}));
+
+
+		
+		do
+		{
+			print(_spawnedMonos.Count);
+			for(int i = 0; i < _spawnedMonos.Count; i++)
+				if (_spawnedMonos[i] == null)
+				{
+					_spawnedMonos.RemoveAt(i);
+					i--;
+				}
+			yield return new WaitForSeconds(0.1f);
+		}
+		while (_spawnedMonos.Count > 0);
+		
+
+		yield return null;
+	}
+
 	protected static IEnumerator Harden(TargetData targetData)
 	{
 		var _buff = new Buff("Hardened Skin","defense_constant",3, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Pick_Most_Turns, 2);
-		targetData.self.AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self);
+		yield return null;
+	}
+
+	protected static IEnumerator MagicShield(TargetData targetData)
+	{
+		var _buff = new Buff("Magic Shield", "magicDefense_constant", 3, BuffIcons.TryGetBuffIcon("MagicShielded"), Buff.StackType.Pick_Most_Turns, 2);
+		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
 
@@ -223,7 +335,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		var _buff =  new Buff("Frozen", new List<string> { "dexterity_constant",}, 2, BuffIcons.TryGetBuffIcon("Frozen"), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
 		//var _buff2 = new Buff("Hardened Skin", "defense_constant", 2, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Add_One_Duration_And_One_Potency, 1, _shouldBeDisplyed: false);
 
-		targetData.self.AddBuff(_buff, targetData.target);
+		AddBuff(_buff, targetData.target);
 		//targetData.self.AddBuff(_buff, targetData.target);
 	}
 
@@ -343,7 +455,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	protected static IEnumerator MeteorShower(TargetData targetData)
 	{
-		Vector3 _top = new Vector3(0, 0, targetData.centerPos.z) + Vector3.up * 6;
+		Vector3 _top = topPosition;
 		List<Transform> _meteors = new List<Transform>();
 		List<Coroutine> _moves = new List<Coroutine>();
 		List<Coroutine> _collisionChecks = new List<Coroutine>();
@@ -365,7 +477,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		for (int i = 0; i < _meteors.Count; i++)
 		{
 			_collisionChecks.Add(
-				CombatController.playerCombatController.StartCoroutine(CircleCollision(_meteors[i], 0.25f,
+				CombatController.playerCombatController.StartCoroutine(CircleCollision(_meteors[i], 0.25f, 1f,
 					delegate (CombatController _cc)
 					{
 						_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
@@ -495,7 +607,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
 		var _buff = new Buff(bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
-		targetData.self.AddBuff(_buff, targetData.target);
+		AddBuff(_buff, targetData.target);
 
 		yield return null;
 	}
@@ -505,7 +617,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		EffectTools.SpawnEffect("bless", lastClick, 1);
 
 		var _buff = new Buff(curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
-		targetData.self.AddBuff(_buff, targetData.target);
+		AddBuff(_buff, targetData.target);
 
 		yield return null;
 	}
@@ -515,7 +627,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		EffectTools.SpawnEffect("fist up",lastClick,1);
 
 		var _buff = new Buff(bulkUp.name,"strength_constant",2, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
-		targetData.self.AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self);
 
 		yield return null;
 	}
@@ -525,7 +637,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		if (targetData.target != null)
 		{
 			var _buff = new Buff(debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
-			targetData.self.AddBuff(_buff, targetData.target);
+			AddBuff(_buff, targetData.target);
 		}
 
 		yield return null;
@@ -536,7 +648,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		EffectTools.SpawnEffect("luck up",lastClick,1);
 
 		var _buff = new Buff(divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
-		targetData.self.AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
 
@@ -547,7 +659,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		if(targetData.target != null)
 		{
 			var _buff = new Buff(regeneration.name,heal.name,3, BuffIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.luck,0));
-			targetData.self.AddBuff(_buff,targetData.target);
+			AddBuff(_buff,targetData.target);
 		}
 		yield return null;
 	}
@@ -590,7 +702,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(timeWarp.name,lastClick,1);
 		var _buff = new Buff(timeWarp.name,"extra turn",2, BuffIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
-		targetData.self.AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
 
@@ -626,8 +738,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	}
 
 	protected static IEnumerator Wobble(TargetData targetData)
-	{
-		
+	{		
 		targetData.self.StartCoroutine(EffectTools.ActivateInOrder(targetData.self, new List<EffectTools.FunctionAndDelay>()
 		{
 			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(targetData.self.transform,Vector3.right,1,0.2f), 0),

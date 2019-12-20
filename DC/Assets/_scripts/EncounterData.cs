@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using AbilityInfo;
 
 public class EncounterData : AbilityScript
-{
+{   /* 	/----------------------------\
+	*	| Space to line up abilities |
+	*///\----------------------------/
 	#region enemy stat blocks																										
 	//----------------------------------------------------------------------------------------------------------hp,--mp,--------lv,xp, st, de, in, lu------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	public static StatBlock urnBlock = new StatBlock(StatBlock.Race.Demon, "Urn",								001, 000,		00, 0, 00, 00, 00, 00, new List<Ability> { wobble }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock urnBlock = new StatBlock(StatBlock.Race.Construct, "Urn",							001, 000,		00, 0, 00, 00, 00, 00, new List<Ability> { wobble }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman",						002, 000,		01, 0, 01, 01, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock eyeballBlock = new StatBlock(StatBlock.Race.Demon, "Eyeball",						007, 007,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, manaDrain }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock lightElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Light Elemental",	010, 002,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, heal }, _absorbs: Elementals.Light, _weaknesses: Elementals.Void, _aiType: StatBlock.AIType.Coward);
@@ -15,16 +17,17 @@ public class EncounterData : AbilityScript
 	public static StatBlock waterElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Water Elemental",	012, 005,		02, 0, 02, 02, 01, 02, new List<Ability> { punch, regeneration }, _absorbs: Elementals.Water, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock earthElementalBlock = new StatBlock(StatBlock.Race.Elemental, "Earth Elemental",	015, 005,		02, 0, 01, 02, 01, 02, new List<Ability> { punch }, _absorbs: Elementals.Earth, _weaknesses: Elementals.Air, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock druidBlock = new StatBlock(StatBlock.Race.Elf, "Druid",								005, 010,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, heal, regeneration }, _resistances: Elementals.Earth, _aiType: StatBlock.AIType.Coward);
-	public static StatBlock harpyBlock = new StatBlock(StatBlock.Race.Demon, "Harpy",							010, 005,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, bulkUp }, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock blueEyeballBlock = new StatBlock(StatBlock.Race.Demon, "Blueball",					012, 007,		03, 0, 02, 03, 02, 03, new List<Ability> { punch, manaDrain, curse }, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock harpyBlock = new StatBlock(StatBlock.Race.Demon, "Harpy",							010, 005,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, bulkUp }, _weaknesses: Elementals.Electricity, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock blueEyeballBlock = new StatBlock(StatBlock.Race.Demon, "Blueball",					012, 007,		03, 0, 02, 03, 02, 03, new List<Ability> { punch, manaDrain, curse }, _aiType: StatBlock.AIType.Smart);
 	public static StatBlock snowmanBlock = new StatBlock(StatBlock.Race.Elemental, "Snowman",					009, 012,		03, 0, 01, 02, 01, 02, new List<Ability> { freezingStrike }, _absorbs: Elementals.Ice, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Coward);
-	public static StatBlock fleshGolemBlock = new StatBlock(StatBlock.Race.Demon, "Flesh Golem",				030, 010,		04, 0, 03, 02, 01, 01, new List<Ability> { doubleKick, bulkUp }, _weaknesses: Elementals.Fire | Elementals.Ice, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock fleshGolemBlock = new StatBlock(StatBlock.Race.Construct, "Flesh Golem",			030, 010,		04, 0, 03, 02, 01, 01, new List<Ability> { doubleKick, bulkUp }, _weaknesses: Elementals.Fire | Elementals.Ice, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock guardianBlock = new StatBlock(StatBlock.Race.Human, "Guardian",						020, 020,		05, 0, 05, 04, 01, 03, new List<Ability> { forcePunch, magicShield }, _aiType: StatBlock.AIType.Smart, _defense: 1);
+	public static StatBlock gieantBlock = new StatBlock(StatBlock.Race.Human, "Giant",							030, 000,		05, 0, 08, 04, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb, _defense: 1);
 	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost",							008, 008,		06, 0, 01, 03, 01, 01, new List<Ability> { punch }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock stoneGolemBlock = new StatBlock(StatBlock.Race.Demon, "Stone Golem",				045, 010,		06, 0, 06, 02, 01, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water, _immunities: Elementals.Light, _aiType: StatBlock.AIType.Dumb, _defense: 2);
-	public static StatBlock steelGolemBlock = new StatBlock(StatBlock.Race.Demon, "Steel Golem",				060, 010,		08, 0, 10, 04, 03, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water | Elementals.Electricity, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 4, _magicDefense: -1);
-	public static StatBlock moonManBlock = new StatBlock(StatBlock.Race.Demon, "Moonman",						030, 999,		10, 0, 02, 03, 02, 03, new List<Ability> { meteorShower }, _resistances: Elementals.Void, _aiType: StatBlock.AIType.Dumb);
-	public static StatBlock goldGolemBlock = new StatBlock(StatBlock.Race.Demon, "Gold Golem",					075, 030,		10, 0, 15, 05, 08, 03, new List<Ability> { doubleKick, bulkUp, hardenSkin, fireball }, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 6, _magicDefense: -2);
-
+	public static StatBlock stoneGolemBlock = new StatBlock(StatBlock.Race.Construct, "Stone Golem",			045, 010,		06, 0, 06, 02, 01, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water, _immunities: Elementals.Light, _aiType: StatBlock.AIType.Dumb, _defense: 2);
+	public static StatBlock steelGolemBlock = new StatBlock(StatBlock.Race.Construct, "Steel Golem",			060, 010,		08, 0, 10, 04, 03, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water | Elementals.Electricity, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 4, _magicDefense: -1);
+	public static StatBlock moonManBlock = new StatBlock(StatBlock.Race.Alien, "Moonman",						030, 999,		10, 0, 02, 03, 02, 03, new List<Ability> { meteorShower }, _resistances: Elementals.Void, _aiType: StatBlock.AIType.Genious);
+	public static StatBlock goldGolemBlock = new StatBlock(StatBlock.Race.Construct, "Gold Golem",				075, 030,		10, 0, 15, 05, 08, 03, new List<Ability> { doubleKick, bulkUp, hardenSkin, fireball }, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Smart, _defense: 6, _magicDefense: -2);
 
 	#endregion
 
@@ -46,10 +49,11 @@ public class EncounterData : AbilityScript
 		public StatBlock monsterBL, monsterBM, monsterBR, monsterTL, monsterTM, monsterTR;
 		public EncounterLocation encounterLocation;
 		public int level;
+		public bool randomBottom, randomTop;
 
-		public Encounter(StatBlock _monsterBL = default, StatBlock _monsterBM = default, StatBlock _monsterBR = default,
-						 StatBlock _monsterTL = default, StatBlock _monsterTM = default, StatBlock _monsterTR = default,
-						 EncounterLocation _encounterLocation = default, int _level = 99)
+		public Encounter(StatBlock _monsterBL = null, StatBlock _monsterBM = null, StatBlock _monsterBR = null,
+						 StatBlock _monsterTL = null, StatBlock _monsterTM = null, StatBlock _monsterTR = null,
+						 EncounterLocation _encounterLocation = default, int _level = 99, bool _randomTop = true, bool _randomBottom = true)
 		{
 			monsterBL = _monsterBL;
 			monsterBM = _monsterBM;
@@ -60,48 +64,48 @@ public class EncounterData : AbilityScript
 
 			encounterLocation = _encounterLocation;
 			level = _level;
+
+			randomBottom = _randomBottom;
+			randomTop = _randomTop;
 		}
 	}
 
 	public static readonly Encounter[] encounterTable = new Encounter[]
 	{
-		//new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBM: snowmanBlock),
-		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBL: urnBlock, _monsterBM: urnBlock, _monsterBR: urnBlock),
+		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBL: urnBlock, _monsterBM: urnBlock,  _monsterBR: urnBlock),
 
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock),
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock),
 		
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: eyeballBlock),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTR: eyeballBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock, _monsterTR: eyeballBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: nosemanBlock, _monsterTL: eyeballBlock),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: fireElementalBlock),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: fireElementalBlock),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: earthElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: fireElementalBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: earthElementalBlock),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBL: waterElementalBlock),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: waterElementalBlock),
-		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock),
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: waterElementalBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: airElementalBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: lightElementalBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: druidBlock),
 
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: snowmanBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: blueEyeballBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: fireElementalBlock, _monsterTR: fireElementalBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBR: fireElementalBlock, _monsterTL: fireElementalBlock),
-		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: waterElementalBlock, _monsterTR: fireElementalBlock),
-		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock, _monsterTR: airElementalBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: earthElementalBlock, _monsterBR: earthElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: waterElementalBlock, _monsterBR: waterElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTL: airElementalBlock, _monsterTR: airElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: waterElementalBlock, _monsterTR: fireElementalBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: waterElementalBlock, _monsterBR: earthElementalBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBL: fireElementalBlock, _monsterTM: airElementalBlock),
-		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: airElementalBlock, _monsterBR: waterElementalBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: airElementalBlock, _monsterBR: waterElementalBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock, _monsterTR: eyeballBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock, _monsterBR: eyeballBlock, _monsterTR: eyeballBlock),
 
+		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterBM: fleshGolemBlock),
+		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterTM: blueEyeballBlock, _monsterTL: blueEyeballBlock),
+
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock),
-		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTL: ghostBlock),
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: ghostBlock),
-		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTR: ghostBlock),
 
 		new Encounter(_level: 10, _encounterLocation: EncounterLocation.None, _monsterBM: moonManBlock),
 
@@ -116,4 +120,37 @@ public class EncounterData : AbilityScript
 		new Vector3(1.33f,1,0),
 		new Vector3(-0.33f,1,0),
 	};
+
+	public static Encounter RandomizeEncounter(Encounter _inputEncounter)
+	{
+		if (_inputEncounter.randomBottom)
+		{
+			var _list = new List<StatBlock>() { _inputEncounter.monsterBL, _inputEncounter.monsterBM, _inputEncounter.monsterBR };
+			for (int i = 0; i < 7; i++)
+			{
+				int _index = Random.Range(0, _list.Count);
+				_list.Add(_list[_index]);
+				_list.RemoveAt(_index);
+			}
+			_inputEncounter.monsterBL = _list[0];
+			_inputEncounter.monsterBM = _list[1];
+			_inputEncounter.monsterBR = _list[2];
+		}
+
+		if (_inputEncounter.randomTop)
+		{
+			var _list = new List<StatBlock>() { _inputEncounter.monsterTL, _inputEncounter.monsterTM, _inputEncounter.monsterTR };
+			for (int i = 0; i < 7; i++)
+			{
+				int _index = Random.Range(0, _list.Count);
+				_list.Add(_list[_index]);
+				_list.RemoveAt(_index);
+			}
+			_inputEncounter.monsterTL = _list[0];
+			_inputEncounter.monsterTM = _list[1];
+			_inputEncounter.monsterTR = _list[2];
+		}
+
+		return _inputEncounter;
+	}
 }

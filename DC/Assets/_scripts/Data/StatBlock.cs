@@ -12,6 +12,8 @@ public class StatBlock
 		Orc,
 		Elemental,
 		Demon,
+		Construct,
+		Alien,
 	}
 
 	public enum AIType

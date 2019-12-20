@@ -11,21 +11,9 @@ public class LevelUpScreen : AbilityScript
 
 	private struct AbilityChoices
 	{
-		public AbilityChoices(Ability _option1)
-		{
-			option1 = _option1;
-			option2 = null;
-			option3 = null;
-			used = false;
-		}
+		public AbilityChoices(Ability _option1) : this(_option1, null, null){}
 
-		public AbilityChoices(Ability _option1, Ability _option2)
-		{
-			option1 = _option1;
-			option2 = _option2;
-			option3 = null;
-			used = false;
-		}
+		public AbilityChoices(Ability _option1, Ability _option2) : this (_option1, _option2, null) {}
 
 		public AbilityChoices(Ability _option1, Ability _option2, Ability _option3)
 		{
@@ -34,20 +22,39 @@ public class LevelUpScreen : AbilityScript
 			option3 = _option3;
 			used = false;
 		}
+
 		public Ability option1, option2, option3;
 		public bool used;
 	}
 
 	private List<AbilityChoices> levelUpQue = new List<AbilityChoices>();
-	private int addedAdventurerLevels;
+	private int addedAdventurerLevels, addedWizardLevels;
 	private List<AbilityChoices> adventurerLevelLine = new List<AbilityChoices>()
 	{
-		new AbilityChoices(spotWeakness),
-		new AbilityChoices(wildPunch,	doubleKick),
-		new AbilityChoices(lifeTap,		tiltSwing,		heal),
-		new AbilityChoices(siphonSoul,	fireball),
-		new AbilityChoices(forcePunch,	regeneration),
-		new AbilityChoices(chaosThesis,	divineLuck),
+		new AbilityChoices(spotWeakness							),
+		new AbilityChoices(wildPunch,		doubleKick			),
+		new AbilityChoices(lifeTap,			tiltSwing,		heal),
+		new AbilityChoices(siphonSoul,		fireball			),
+		new AbilityChoices(forcePunch,		regeneration		),
+		new AbilityChoices(chaosThesis,		divineLuck			),
+		new AbilityChoices(clense,			hardenSkin			),
+		new AbilityChoices(bulkUp,			magicShield			),
+		new AbilityChoices(restoreSoul,		debulk				),
+
+	};
+
+	private List<AbilityChoices> wizardLevelLine = new List<AbilityChoices>()
+	{
+		new AbilityChoices(focus                         ),
+		new AbilityChoices(fireball,	    doubleKick          ),
+		new AbilityChoices(manaDrain,       tiltSwing,      heal),
+		new AbilityChoices(massExplosion,      fireball            ),
+		new AbilityChoices(forcePunch,      regeneration        ),
+		new AbilityChoices(chaosThesis,     divineLuck          ),
+		new AbilityChoices(meteorShower,          hardenSkin          ),
+		new AbilityChoices(bulkUp,          magicShield         ),
+		new AbilityChoices(timeWarp,     debulk              ),
+
 	};
 
 	private int strengthChange, dexterityChange, intelligenceChange, luckChange;
