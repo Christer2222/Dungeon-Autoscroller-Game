@@ -505,7 +505,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	protected static IEnumerator Eruption(TargetData targetData)
 	{
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < targetData.self.myStats.intelligence; i++)
 		{
 			var _rock =	EffectTools.SpawnEffect(fireball.name,targetData.self.transform.position + Vector3.up,5);
 			var _rockMono = _rock.gameObject.AddComponent<EmptyMonoBehaviour>();

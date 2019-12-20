@@ -585,9 +585,9 @@ public class CombatController : AbilityScript
 		xpSlider.value = myStats.xp;
 		if (levelUpText == null && myStats.xp >= xpSlider.maxValue)
 		{
-			levelUpText = EffectTools.SpawnText(transform.position + Vector3.left, transform, Color.yellow, "LEVEL UP!");
+			levelUpText = EffectTools.SpawnText(transform.position, transform, Color.yellow, "LEVEL UP!");
 			levelUpText.StartCoroutine(EffectTools.MoveDirection(levelUpText.transform, Vector3.up, 1, 2));
-			levelUpText.StartCoroutine(EffectTools.BlinkText(levelUpText, Color.green, 5));
+			levelUpText.StartCoroutine(EffectTools.BlinkText(levelUpText, Color.yellow + Color.red, 5));
 			Destroy(levelUpText.gameObject,5);
 		}
 
