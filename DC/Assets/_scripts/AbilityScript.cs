@@ -19,6 +19,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static Ability meteorShower		= new Ability("Meteor Shower",			MeteorShower, Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7);
 	public static Ability freezingStrike	= new Ability("Freezing Strike",		FreezingStrike, Elementals.Ice, SkillUsed.magic, AbilityType.attack, -1);
 	public static Ability thunderbolt		= new Ability("Thunderbolt",			Thunderbolt, Elementals.Electricity, SkillUsed.magic, AbilityType.attack, -4);
+	public static Ability eruption			= new Ability("Eruption",				Eruption, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -5);
 
 	public static Ability siphonSoul		= new Ability("Siphon Soul",			SiphonSoul, Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1);
 
@@ -330,7 +331,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	protected static IEnumerator FreezingStrike(TargetData targetData)
 	{
-		targetData.element = Elementals.Ice;
+		//targetData.element = Elementals.Ice;
 		yield return targetData.self.StartCoroutine(Punch(targetData));
 		var _buff =  new Buff("Frozen", new List<string> { "dexterity_constant",}, 2, BuffIcons.TryGetBuffIcon("Frozen"), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
 		//var _buff2 = new Buff("Hardened Skin", "defense_constant", 2, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Add_One_Duration_And_One_Potency, 1, _shouldBeDisplyed: false);
@@ -456,10 +457,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	protected static IEnumerator MeteorShower(TargetData targetData)
 	{
 		Vector3 _top = topPosition;
-		List<Transform> _meteors = new List<Transform>();
-		List<Coroutine> _moves = new List<Coroutine>();
-		List<Coroutine> _collisionChecks = new List<Coroutine>();
-
+		List<EmptyMonoBehaviour> _meteors = new List<EmptyMonoBehaviour>();
 
 		//Spawn meteors
 		int _totalBalls = 4 + (targetData.self.myStats.intelligence/2);
@@ -468,22 +466,21 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			Vector3 _randomDir = Vector3.right * Random.Range(-0.7f,0.7f);
 
 			var _meteor = EffectTools.SpawnEffect((Random.Range(0,128) == 0)? punch.name :  fireball.name, _top + Vector3.left * (i - Random.Range(1f,1.5f)), 6);
-			_moves.Add(CombatController.playerCombatController.StartCoroutine(EffectTools.MoveDirection(_meteor.transform,Vector3.down + _randomDir,3,5))); //global set the effect
-			_meteors.Add(_meteor.transform);
+			var _meteorMono = _meteor.gameObject.AddComponent<EmptyMonoBehaviour>();
+			_meteorMono.StartCoroutine(EffectTools.MoveDirection(_meteor.transform, Vector3.down + _randomDir, 3, 5)); //global set the effect
+			_meteors.Add(_meteorMono);
 			yield return new WaitForSeconds(Random.Range(0.3f,0.6f));
 		}
 
 		//make them do collision checks
 		for (int i = 0; i < _meteors.Count; i++)
 		{
-			_collisionChecks.Add(
-				CombatController.playerCombatController.StartCoroutine(CircleCollision(_meteors[i], 0.25f, 1f,
-					delegate (CombatController _cc)
-					{
-						_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
-					}
-				))
-			);
+			_meteors[i].StartCoroutine(CircleCollision(_meteors[i].transform, 0.25f, 1f,
+				delegate (CombatController _cc)
+				{
+					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
+				}
+			));
 		}
 
 		//destroy them if they get too far off screen
@@ -491,12 +488,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		{
 			for (int i = 0; i < _meteors.Count; i++)
 			{
-				if (_meteors[i].position.y <= -1)
+				if (_meteors[i].transform.position.y <= -1)
 				{
-					CombatController.playerCombatController.StopCoroutine(_moves[i]);
-					CombatController.playerCombatController.StopCoroutine(_collisionChecks[i]);
-					_moves.RemoveAt(i);
-					_collisionChecks.RemoveAt(i);
 					Destroy(_meteors[i].gameObject);
 					_meteors.RemoveAt(i);
 					i--;
@@ -508,6 +501,24 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 
 		yield return null;
+	}
+
+	protected static IEnumerator Eruption(TargetData targetData)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			var _rock =	EffectTools.SpawnEffect(fireball.name,targetData.self.transform.position + Vector3.up,5);
+			var _rockMono = _rock.gameObject.AddComponent<EmptyMonoBehaviour>();
+			_rockMono.StartCoroutine(EffectTools.CurveDropMove(_rock.transform, 5, 14, 1));
+			Destroy(_rock,4);
+			_rockMono.StartCoroutine(CircleCollision(_rock.transform, 0.1f, 0.3f, delegate (CombatController _cc)
+			{
+				if (_cc.gameObject != targetData.self.gameObject)
+					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element);
+			}));
+
+			yield return new WaitForSeconds(Random.Range(0.2f,0.5f));
+		}
 	}
 
 	protected static IEnumerator Fireball(TargetData targetData)

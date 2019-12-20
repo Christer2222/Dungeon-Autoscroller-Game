@@ -157,6 +157,20 @@ public class EffectTools : MonoBehaviour
 		}
 	}
 
+	public static IEnumerator Shake(Transform _target, float _magnitude, int _amount)
+	{
+		for (int i = 0; i < _amount; i++)
+		{
+			float _ratrio = 1f - ((float)i /_amount);
+			yield return MoveDirection(_target, Vector3.left, _magnitude * 10f * _ratrio, 0.01f);
+			yield return new WaitForSeconds(0.1f);
+			yield return MoveDirection(_target, Vector3.right, _magnitude * 15f * _ratrio, 0.01f);
+			yield return new WaitForSeconds(0.1f);
+			yield return MoveDirection(_target, Vector3.left, _magnitude * 5f * _ratrio, 0.01f);
+			yield return null;
+		}
+	}
+
 	public static IEnumerator StretchFromTo(Transform _target, Vector3 _startVector, Vector3 _endVector, float _time)
 	{
 		_target.transform.localScale = _startVector;
@@ -203,14 +217,14 @@ public class EffectTools : MonoBehaviour
 		}
 	}
 
-	public static IEnumerator CurveDropMove(Transform _t, float _life)
+	public static IEnumerator CurveDropMove(Transform _t, float _life, float _magnitude = 1, float _speed = 1)
 	{
 		Vector3 _direction = Vector3.up * (Random.Range(1f,2f)) + Vector3.right * (Random.Range(0f,1f) * 2 - 1);
 		while (_life > 0)
 		{
-			_t.transform.position += _direction * Time.deltaTime;
-			_direction.y -= 0.1f;
-			yield return new WaitForEndOfFrame();
+			_t.transform.position += _direction * Time.deltaTime * _magnitude * _speed;
+			_direction.y -= 0.1f * _speed;
+			yield return waitForEndOfFrame;
 			_life -= Time.deltaTime;
 		}
 	}

@@ -67,7 +67,7 @@ public class CombatController : AbilityScript
 
 	private List<Ability> debugAbilityList = new List<Ability>()
 	{
-		thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
+		eruption, thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
 		chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
 		restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
 		spotWeakness, smiteUnlife, siphonSoul, heal, lifeTap, massHeal,fireball, focus, 
@@ -648,22 +648,17 @@ public class CombatController : AbilityScript
 			if (playerOwned)
 			{
 				float _magnitude = Mathf.Min(Mathf.Ceil(Mathf.Abs(_damageCalc) * 0.2f),3);
-				print("m:" +_magnitude + " _dc: " + _damageCalc);
-
+				StartCoroutine(EffectTools.Shake(mainCamera.transform,_magnitude,3));
+			}
+			else
+			{
+				Vector3 _orgScale = transform.localScale;
 				StartCoroutine(EffectTools.ActivateInOrder(this, new List<EffectTools.FunctionAndDelay>()
 				{
-					new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(mainCamera.transform,Vector3.left, _magnitude * 10f, 0.01f),0),
-					new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(mainCamera.transform,Vector3.right, _magnitude * 15f, 0.01f),0.1f),
-					new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(mainCamera.transform,Vector3.left, _magnitude * 5f, 0.01f),0.1f)
+					new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform,_orgScale,_orgScale * 0.9f, 0.1f),0),
+					new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _orgScale, 0.1f),Random.Range(0.1f,0.2f))
 				}));
 			}
-		
-			Vector3 _orgScale = transform.localScale;
-			StartCoroutine(EffectTools.ActivateInOrder(this, new List<EffectTools.FunctionAndDelay>()
-			{
-				new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform,_orgScale,_orgScale * 0.9f, 0.1f),0),
-				new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _orgScale, 0.1f),Random.Range(0.1f,0.2f))
-			}));
 		}
 
 		if(playerOwned)
