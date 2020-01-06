@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AbilityInfo;
+using UnityEngine;
 
 public class StatBlock
 {
@@ -63,6 +64,8 @@ public class StatBlock
 
 		baseDefense = _defense;
 		baseMagicDegense = _magicDefense;
+
+		idleAnimation = AnimationTextParser.ParseDocument(Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _name.ToLower().Replace(" ", "_") + "_a_text"));
 	}
 
 	public Race race;
@@ -78,6 +81,8 @@ public class StatBlock
 	public AIType aiType;
 
 	public List<Buff> buffList = new List<Buff>();
+
+	public Sprite[] idleAnimation;
 
 	public int strength
 	{

@@ -97,7 +97,8 @@ public class CombatController : AbilityScript
 		if (UICanvas == null) UICanvas = GameObject.Find("$UICanvas");
 			//damageText = transform.Find("$DamageTextHolder").Find("$DamageText").GetComponent<Text>();
 
-			//Set stats for enemies and the player + ui for player
+
+		//Set stats for enemies and the player + ui for player
 		if (gameObject.name == "$PlayerPortrait")
 		{
             myStats = new StatBlock(
@@ -257,6 +258,11 @@ public class CombatController : AbilityScript
 			currentMana = myStats.maxMana;
 		}
 
+		if (myStats.idleAnimation != null)
+		{
+			StartCoroutine(Animate());
+		}
+
 	}
 
 	public void RefreshAbilityList()
@@ -295,6 +301,19 @@ public class CombatController : AbilityScript
 	{
 		yield return new WaitForEndOfFrame();
 		actedLastTick = false;
+	}
+
+	IEnumerator Animate()
+	{
+		SpriteRenderer _rend = GetComponent<SpriteRenderer>();
+		int _index = 0;
+		while (true)
+		{
+			_index++;
+			_index %= myStats.idleAnimation.Length;
+			_rend.sprite = myStats.idleAnimation[_index];
+			yield return new WaitForSeconds(0.2f);
+		}
 	}
 
 	void Update()
@@ -638,7 +657,7 @@ public class CombatController : AbilityScript
 		_spawnedText.StartCoroutine(EffectTools.CurveDropMove(_spawnedText.transform,4)); //curve drop the damage text
 		_spawnedTextParent.transform.SetParent(null); //free the text
 		_spawnedTextParent.transform.position = transform.position + Vector3.up;
-		Destroy(_spawnedText,5);
+		Destroy(_spawnedText.transform.parent.gameObject,5);
 
 		currentHealth = Mathf.Clamp(currentHealth + _damageCalc, 0, myStats.maxHealth);
 		_totalDamage -= currentHealth;

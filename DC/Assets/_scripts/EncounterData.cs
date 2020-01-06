@@ -22,7 +22,7 @@ public class EncounterData : AbilityScript
 	public static StatBlock snowmanBlock = new StatBlock(StatBlock.Race.Elemental, "Snowman",					009, 012,		03, 0, 01, 02, 01, 02, new List<Ability> { freezingStrike }, _absorbs: Elementals.Ice, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Coward);
 	public static StatBlock fleshGolemBlock = new StatBlock(StatBlock.Race.Construct, "Flesh Golem",			030, 010,		04, 0, 03, 02, 01, 01, new List<Ability> { doubleKick, bulkUp }, _weaknesses: Elementals.Fire | Elementals.Ice, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock guardianBlock = new StatBlock(StatBlock.Race.Human, "Guardian",						020, 020,		05, 0, 05, 04, 01, 03, new List<Ability> { forcePunch, magicShield }, _aiType: StatBlock.AIType.Smart, _defense: 1);
-	public static StatBlock gieantBlock = new StatBlock(StatBlock.Race.Human, "Giant",							030, 000,		05, 0, 08, 04, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb, _defense: 1);
+	public static StatBlock giantBlock = new StatBlock(StatBlock.Race.Human, "Giant",							030, 000,		05, 0, 08, 04, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb, _defense: 1);
 	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost",							008, 008,		06, 0, 01, 03, 01, 01, new List<Ability> { punch }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock stoneGolemBlock = new StatBlock(StatBlock.Race.Construct, "Stone Golem",			045, 010,		06, 0, 06, 02, 01, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water, _immunities: Elementals.Light, _aiType: StatBlock.AIType.Dumb, _defense: 2);
 	public static StatBlock steelGolemBlock = new StatBlock(StatBlock.Race.Construct, "Steel Golem",			060, 010,		08, 0, 10, 04, 03, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water | Elementals.Electricity, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 4, _magicDefense: -1);
@@ -74,7 +74,7 @@ public class EncounterData : AbilityScript
 	{
 		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBL: urnBlock, _monsterBM: urnBlock,  _monsterBR: urnBlock),
 
-		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock),
+		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock),
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock),
 		
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: eyeballBlock),
@@ -100,15 +100,35 @@ public class EncounterData : AbilityScript
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: airElementalBlock, _monsterBR: waterElementalBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock, _monsterBR: nosemanBlock, _monsterTR: eyeballBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock, _monsterBR: eyeballBlock, _monsterTR: eyeballBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: druidBlock, _monsterBL: druidBlock),
+		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: harpyBlock, _monsterTL: harpyBlock),
+
 
 		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterBM: fleshGolemBlock),
+		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterBM: snowmanBlock, _monsterTM: blueEyeballBlock),
 		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterTM: blueEyeballBlock, _monsterTL: blueEyeballBlock),
+		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterTM: blueEyeballBlock, _monsterTL: eyeballBlock, _monsterTR: eyeballBlock, _randomTop: false),
+
+		new Encounter(_level: 5, _encounterLocation: EncounterLocation.None, _monsterBM: giantBlock),
+		new Encounter(_level: 5, _encounterLocation: EncounterLocation.None, _monsterBM: guardianBlock),
 
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterTM: ghostBlock),
 		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: ghostBlock),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: stoneGolemBlock),
+		new Encounter(_level: 6, _encounterLocation: EncounterLocation.None, _monsterBM: guardianBlock, _monsterBR: guardianBlock),
+
+
+		new Encounter(_level: 7, _encounterLocation: EncounterLocation.None, _monsterBM: stoneGolemBlock, _monsterBL: stoneGolemBlock),
+		new Encounter(_level: 7, _encounterLocation: EncounterLocation.None, _monsterBM: giantBlock, _monsterBL: giantBlock, _monsterBR: giantBlock),
+		new Encounter(_level: 7, _encounterLocation: EncounterLocation.None, _monsterBM: guardianBlock, _monsterBR: guardianBlock, _monsterBL: guardianBlock),
+
+		new Encounter(_level: 8, _encounterLocation: EncounterLocation.None, _monsterBM: steelGolemBlock),
+
+		new Encounter(_level: 9, _encounterLocation: EncounterLocation.None, _monsterBM: steelGolemBlock, _monsterBL: steelGolemBlock),
 
 		new Encounter(_level: 10, _encounterLocation: EncounterLocation.None, _monsterBM: moonManBlock),
-
+		new Encounter(_level: 10, _encounterLocation: EncounterLocation.None, _monsterBM: goldGolemBlock),
+		new Encounter(_level: 10, _encounterLocation: EncounterLocation.None, _monsterBM: steelGolemBlock, _monsterBL: steelGolemBlock, _monsterBR: steelGolemBlock),
 	};
 
 	public static readonly Vector3[] offsetTable = new Vector3[]

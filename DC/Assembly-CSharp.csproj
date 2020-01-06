@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\_scripts\AbilityScript.cs" />
+    <Compile Include="Assets\_scripts\AnimationTextParser.cs" />
     <Compile Include="Assets\_scripts\CombatController.cs" />
     <Compile Include="Assets\_scripts\Data\AbilityInfo.cs" />
     <Compile Include="Assets\_scripts\Data\Buff.cs" />
@@ -78,6 +79,26 @@
     <Compile Include="Assets\_scripts\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\ResetStaticVariablesManager.cs" />
     <Compile Include="Assets\_scripts\UIAspect.cs" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\ghost_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\giant_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\snowman_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\moonman_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\gold_golem_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\guardian_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\light_elemental_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\eyeball_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\stone_golem_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\flesh_golem_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\fire_elemental_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\noseman_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\urn_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\earth_elemental_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\steel_golem_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\water_elemental_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\druid_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\harpy_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\blueball_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\air_elemental_a_text.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/GitRepos/DC/DC/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
