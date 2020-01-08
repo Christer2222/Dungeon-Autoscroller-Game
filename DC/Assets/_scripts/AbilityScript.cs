@@ -6,50 +6,56 @@ using AbilityInfo;
 public class AbilityScript : MonoBehaviour// : AbilityData
 {
 	#region Abilities
-	public static Ability punch				= new Ability("Punch",					Punch, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
-	public static Ability fireball			= new Ability("Fireball",				Fireball, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2);
-	public static Ability massExplosion		= new Ability("Mass Explosion",			MassExplosion, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -4);
-	public static Ability smiteUnlife		= new Ability("Smite Undead",			Smite, Elementals.None, SkillUsed.healing, AbilityType.attack, -1);
-	public static Ability doubleKick		= new Ability("Double Kick",			DoubleKick, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
-	public static Ability wildPunch			= new Ability("Wild Punch",				WildPunch, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
-	public static Ability tiltSwing			= new Ability("Tilt Swing",				TiltSwing, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0);
-	public static Ability forcePunch		= new Ability("Force Punch",			ForcePunch, Elementals.Air, SkillUsed.heavy_hits | SkillUsed.magic, AbilityType.attack, -1);
-	public static Ability chaosThesis		= new Ability("Chaos Thesis",			ChaosThesis, Elementals.Void, SkillUsed.magic | SkillUsed.healing, AbilityType.attack, -1);
-	public static Ability manaDrain			= new Ability("Mana Drain",				ManaDrain, Elementals.Water, SkillUsed.healing, AbilityType.attack, -3);
-	public static Ability meteorShower		= new Ability("Meteor Shower",			MeteorShower, Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7);
-	public static Ability freezingStrike	= new Ability("Freezing Strike",		FreezingStrike, Elementals.Ice, SkillUsed.magic, AbilityType.attack, -1);
-	public static Ability thunderbolt		= new Ability("Thunderbolt",			Thunderbolt, Elementals.Electricity, SkillUsed.magic, AbilityType.attack, -4);
-	public static Ability eruption			= new Ability("Eruption",				Eruption, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -5);
+	protected static Ability punch				= new Ability("Punch",					Punch,				Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
+	protected static Ability fireball			= new Ability("Fireball",				Fireball,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2, ExtraData.blockable | ExtraData.magic);
+	protected static Ability massExplosion		= new Ability("Mass Explosion",			MassExplosion,		Elementals.Fire, SkillUsed.magic, AbilityType.attack, -4, ExtraData.blockable);
+	protected static Ability smiteUnlife		= new Ability("Smite Undead",			Smite,				Elementals.None, SkillUsed.healing, AbilityType.attack, -1, ExtraData.blockable);
+	protected static Ability doubleKick			= new Ability("Double Kick",			DoubleKick,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
+	protected static Ability wildPunch			= new Ability("Wild Punch",				WildPunch,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
+	protected static Ability tiltSwing			= new Ability("Tilt Swing",				TiltSwing,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
+	protected static Ability forcePunch			= new Ability("Force Punch",			ForcePunch,			Elementals.Air, SkillUsed.heavy_hits | SkillUsed.magic, AbilityType.attack, -1, ExtraData.blockable | ExtraData.makes_contact_with_user);
+	protected static Ability chaosThesis		= new Ability("Chaos Thesis",			ChaosThesis,		Elementals.Void, SkillUsed.magic | SkillUsed.healing, AbilityType.attack, -1, ExtraData.none);
+	protected static Ability manaDrain			= new Ability("Mana Drain",				ManaDrain,			Elementals.Water, SkillUsed.healing, AbilityType.attack, -3, ExtraData.magic);
+	protected static Ability meteorShower		= new Ability("Meteor Shower",			MeteorShower,		Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7, ExtraData.blockable | ExtraData.magic);
+	protected static Ability freezingStrike		= new Ability("Freezing Strike",		FreezingStrike,		Elementals.Ice, SkillUsed.magic, AbilityType.attack, -1, ExtraData.blockable | ExtraData.magic | ExtraData.makes_contact_with_user);
+	protected static Ability thunderbolt		= new Ability("Thunderbolt",			Thunderbolt,		Elementals.Electricity, SkillUsed.magic, AbilityType.attack, -4, ExtraData.blockable | ExtraData.magic);
+	protected static Ability eruption			= new Ability("Eruption",				Eruption,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -5, ExtraData.blockable | ExtraData.magic);
+	protected static Ability airSlash			= new Ability("Air Slash",				AirSlash,			Elementals.Air, SkillUsed.magic, AbilityType.attack, -3, ExtraData.blockable | ExtraData.magic);
+	protected static Ability bubble				= new Ability("Bubble",					Bubble,				Elementals.Water, SkillUsed.magic, AbilityType.attack, -2, ExtraData.blockable | ExtraData.magic);
+	protected static Ability poision			= new Ability("Poision",				Poision,			Elementals.Poision, SkillUsed.light_hits | SkillUsed.magic, AbilityType.attack, -2, ExtraData.none);
 
-	public static Ability siphonSoul		= new Ability("Siphon Soul",			SiphonSoul, Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1);
+	protected static Ability siphonSoul			= new Ability("Siphon Soul",			SiphonSoul,			Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1, ExtraData.magic);
 
-	public static Ability focus				= new Ability("Focus",					Focus, Elementals.Water, SkillUsed.magic, AbilityType.recovery, 0);
-	public static Ability heal				= new Ability("Heal",					Heal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -2);
-	public static Ability regeneration		= new Ability("Regeneration",			Regeneration, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -1);
-	public static Ability massHeal			= new Ability("Mass Heal",				MassHeal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -5);
-	public static Ability restoreSoul		= new Ability("Restore Soul",			RestoreSoul, Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0);
-	public static Ability clense			= new Ability("Clense",					Clense, Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0);
+	protected static Ability crystalLance		= new Ability("Crystal Lance",			CrystalLance,		Elementals.Earth | Elementals.Air, SkillUsed.heavy_hits, AbilityType.attack | AbilityType.defensive, -2, ExtraData.blockable | ExtraData.magic);
 
-	public static Ability timeWarp			= new Ability("Time Warp",				TimeWarp, Elementals.Void, SkillUsed.magic, AbilityType.buff, -10);
-	public static Ability divineLuck		= new Ability("Divine Luck",			DivineLuck, Elementals.Light, SkillUsed.healing | SkillUsed.heavy_hits, AbilityType.buff, -3);
-	public static Ability bulkUp			= new Ability("Bulk Up",				BulkUp, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.buff, -1);
-	public static Ability divineFists		= new Ability("Divine Fists",			DivineFists, Elementals.Physical | Elementals.Light, SkillUsed.healing, AbilityType.buff, -6);
-	public static Ability bless				= new Ability("Bless",					Bless, Elementals.Fire, SkillUsed.healing, AbilityType.buff, -10);
+	protected static Ability focus				= new Ability("Focus",					Focus,				Elementals.Water, SkillUsed.magic, AbilityType.recovery, 0, ExtraData.magic);
+	protected static Ability heal				= new Ability("Heal",					Heal,				Elementals.Light, SkillUsed.healing, AbilityType.recovery, -2, ExtraData.blockable | ExtraData.magic);
+	protected static Ability regeneration		= new Ability("Regeneration",			Regeneration,		Elementals.Light, SkillUsed.healing, AbilityType.recovery, -1, ExtraData.blockable | ExtraData.magic);
+	protected static Ability massHeal			= new Ability("Mass Heal",				MassHeal,			Elementals.Light, SkillUsed.healing, AbilityType.recovery, -5, ExtraData.blockable | ExtraData.magic);
+	protected static Ability restoreSoul		= new Ability("Restore Soul",			RestoreSoul,		Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0, ExtraData.magic);
+	protected static Ability clense				= new Ability("Clense",					Clense,				Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0, ExtraData.magic);
 
-	public static Ability debulk			= new Ability("Debulk",					Debulk, Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -2);
-	public static Ability curse				= new Ability("Curse",					Curse, Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -5);
+	protected static Ability timeWarp			= new Ability("Time Warp",				TimeWarp,			Elementals.Void, SkillUsed.magic, AbilityType.buff, -10, ExtraData.magic);
+	protected static Ability divineLuck			= new Ability("Divine Luck",			DivineLuck,			Elementals.Light, SkillUsed.healing | SkillUsed.heavy_hits, AbilityType.buff, -3, ExtraData.magic);
+	protected static Ability bulkUp				= new Ability("Bulk Up",				BulkUp,				Elementals.Physical, SkillUsed.heavy_hits, AbilityType.buff, -1, ExtraData.none);
+	protected static Ability divineFists		= new Ability("Divine Fists",			DivineFists,		Elementals.Physical | Elementals.Light, SkillUsed.healing, AbilityType.buff, -6, ExtraData.magic);
+	protected static Ability bless				= new Ability("Bless",					Bless,				Elementals.Fire, SkillUsed.healing, AbilityType.buff, -10, ExtraData.magic);
 
-	public static Ability hardenSkin		= new Ability("Harden Skin",			Harden, Elementals.Physical, SkillUsed.heavy_hits, AbilityType.defensive, -3);
-	public static Ability magicShield		= new Ability("Magic Shield",			MagicShield, Elementals.Water, SkillUsed.magic, AbilityType.defensive, -3);
+	protected static Ability debulk				= new Ability("Debulk",					Debulk,				Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -2, ExtraData.magic);
+	protected static Ability curse				= new Ability("Curse",					Curse,				Elementals.Unlife, SkillUsed.healing, AbilityType.debuff, -5, ExtraData.magic);
 
-	public static Ability eat				= new Ability("Eat",					Eat, default, default, AbilityType.misc, 0);
-	public static Ability keenSight			= new Ability("Keen Sight",				DisplayCritAreas, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
-	public static Ability displayCritAreas	= new Ability("Display Crit Areas",		DisplayCritAreas, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
-	public static Ability spotWeakness		= new Ability("Spot Weakness",			SpotWeakness, Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1);
-	public static Ability lifeTap			= new Ability("Life Tap",				LifeTap, Elementals.Unlife, SkillUsed.healing, AbilityType.misc, 0);
-	public static Ability syncSoul			= new Ability("Sync Soul",				SyncSoul, Elementals.Void, SkillUsed.healing | SkillUsed.magic, AbilityType.misc, -10);
+	public static Ability hardenSkin			= new Ability("Harden Skin",			Harden,				Elementals.Physical, SkillUsed.heavy_hits, AbilityType.defensive, -3, ExtraData.none);
+	public static Ability magicShield			= new Ability("Magic Shield",			MagicShield,		Elementals.Water, SkillUsed.magic, AbilityType.defensive, -3, ExtraData.none);
 
-	public static Ability wobble			= new Ability("Wobble",					Wobble, Elementals.None, SkillUsed.none, AbilityType.none, 0);
+	//public static Ability eat					= new Ability("Eat",					Eat, default, default, AbilityType.misc, 0);
+	protected static Ability keenSight			= new Ability("Keen Sight",				DisplayCritAreas,	Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1, ExtraData.none);
+	protected static Ability spotWeakness		= new Ability("Spot Weakness",			SpotWeakness,		Elementals.Physical, SkillUsed.light_hits, AbilityType.misc, -1, ExtraData.none);
+	protected static Ability lifeTap			= new Ability("Life Tap",				LifeTap,			Elementals.Unlife, SkillUsed.healing, AbilityType.misc, 0, ExtraData.magic);
+	protected static Ability syncSoul			= new Ability("Sync Soul",				SyncSoul,			Elementals.Void, SkillUsed.healing | SkillUsed.magic, AbilityType.misc, -10, ExtraData.magic);
+
+	protected static Ability wobble				= new Ability("Wobble",					Wobble,				Elementals.None, SkillUsed.none, AbilityType.none, 0, ExtraData.none);
+	private static Ability poisionTick			= new Ability("Poistion Tick",			PoisionTick,		Elementals.Poision, SkillUsed.none, AbilityType.none, 0, ExtraData.none);
+
 	#endregion
 
 	protected static Vector3 lastClick;
@@ -77,6 +83,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 	}
 
+	/// <summary>
+	/// Adds a buff to the target (checks if target is null)
+	/// </summary>
 	protected static void AddBuff(Buff _buff, CombatController _target)
 	{
 		if (_target == null) return;
@@ -168,6 +177,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		while (true)
 		{
+			Debug.DrawRay(_objectToCheck.position,Vector3.down * _radius,Color.yellow,0,false);
+			Debug.DrawRay(_objectToCheck.position, Vector3.left * _radius, Color.cyan, 0, false);
+
 			for (int i = 0; i < _justHit.Count; i++)
 			{
 				_justHit[i][1] = (float)_justHit[i][1] - Time.deltaTime;
@@ -217,6 +229,32 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 	}
 
+	protected static IEnumerator Poision(TargetData targetData)
+	{
+		EffectTools.SpawnEffect("green blast", targetData.centerPos, 1);
+
+		int _potency = Mathf.Clamp(targetData.self.myStats.intelligence,1,5);
+
+		var _buff = new Buff("Poisioned", poisionTick, _potency, BuffIcons.TryGetBuffIcon("poision"), Buff.StackType.Pick_Most_Turns, _potency);
+		AddBuff(_buff, targetData.target);
+		
+		yield return null;
+	}
+
+	static IEnumerator PoisionTick(TargetData targetData) //only available through the poision ability
+	{
+		var _previousBuff = targetData.target.myStats.buffList.Find(x => x.name == "Poisioned");
+		
+		if (_previousBuff != null)
+		{
+			_previousBuff.constant = _previousBuff.turns;
+
+			targetData.target.AdjustHealth(-Mathf.Max((int)_previousBuff.constant,0),targetData.element, ExtraData.none);
+			EffectTools.SpawnEffect("green blast", targetData.target.transform.position,1);
+		}
+		yield return null;
+	}
+
 	protected static IEnumerator Thunderbolt(TargetData targetData)
 	{
 		var _topPress = targetData.centerPos;
@@ -248,7 +286,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		_mono.StartCoroutine(CircleCollision(_bolt.transform,0.1f, 0.1f,
 			delegate (CombatController _cc) //check for collisions, when found...
 			{
-				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element); //change health
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element, targetData.ability.extraData); //change health
 				GameObject _orgHit = _cc.gameObject;
 				
 				var _hits = Physics2D.OverlapCircleAll(_bolt.transform.position, 1f); //check for nearby colliders
@@ -273,7 +311,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 					{
 						if (_cc2.gameObject != _orgHit) //if the hit is not the original one
 						{
-							_cc2.AdjustHealth(-Mathf.Max(Mathf.CeilToInt((float)targetData.self.myStats.intelligence/2), 0), targetData.element);
+							_cc2.AdjustHealth(-Mathf.Max(Mathf.CeilToInt((float)targetData.self.myStats.intelligence/2), 0), targetData.element, targetData.ability.extraData);
 							Destroy(_spawnedBolt.gameObject);
 						}
 					}));
@@ -302,6 +340,29 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		yield return null;
 	}
 
+	protected static IEnumerator CrystalLance(TargetData targetData)
+	{
+		var _t = EffectTools.SpawnEffect("punch", targetData.self.transform.position,10).transform;
+
+		var _mono = _t.gameObject.AddComponent<EmptyMonoBehaviour>();
+		_mono.StartCoroutine(EffectTools.MoveDirection(_t, targetData.centerPos - _t.transform.position, 2, 10));
+		_mono.StartCoroutine(CircleCollision(_t, 0.1f, 0.1f, delegate (CombatController _cc) {
+			if (_cc.transform != targetData.self.transform)
+			{
+				print(_cc.transform.name +  " " + _t.name);
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.strength, 0), targetData.element, targetData.ability.extraData);
+				Destroy(_t.gameObject);
+			}
+		}));
+
+		//yield return new WaitForSeconds(0.5f);
+
+		var _buff = new Buff("Crystalized", new List<string> { "defense_constant", "magicDefense_constant" }, 1, BuffIcons.TryGetBuffIcon("Crystalized"), Buff.StackType.Pick_Most_Turns, 99);
+		AddBuff(_buff, targetData.self);
+
+		yield return null;
+	}
+
 	protected static IEnumerator Harden(TargetData targetData)
 	{
 		var _buff = new Buff("Hardened Skin","defense_constant",3, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Pick_Most_Turns, 2);
@@ -316,6 +377,35 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		yield return null;
 	}
 
+	protected static IEnumerator Bubble(TargetData targetData)
+	{
+		var _t = EffectTools.SpawnEffect("punch", targetData.centerPos, 10).transform;
+		var _mono = _t.gameObject.AddComponent<EmptyMonoBehaviour>();
+
+		_mono.StartCoroutine(EffectTools.MoveDirection(_t,Vector3.right,0.4f,10));
+		_mono.StartCoroutine(CircleCollision(_t, 0.2f, 0.5f, delegate (CombatController _cc) {
+			_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0),targetData.element, targetData.ability.extraData);
+		}));
+
+		_mono.StartCoroutine(EffectTools.Wobble(_t,0.75f, 0.75f, 10));
+		
+		yield return null;
+	}
+
+	protected static IEnumerator AirSlash(TargetData targetData)
+	{
+		var _t = EffectTools.SpawnEffect("punch", targetData.centerPos, 1).transform;
+		var _mono = _t.gameObject.AddComponent<EmptyMonoBehaviour>();
+		_mono.StartCoroutine(EffectTools.MoveDirection(_t,Vector3.left,5,1) );
+		_mono.StartCoroutine(CircleCollision(_t,0.05f,0.5f, delegate (CombatController cc) {
+			cc.AdjustHealth(-Mathf.Clamp(targetData.self.myStats.intelligence * 2 ,0 , 10),targetData.element, targetData.ability.extraData);
+			Destroy(_t.gameObject);
+		}));
+
+
+		yield return null;
+	}
+
 	protected static IEnumerator DivineFists(TargetData targetData)
 	{
 		yield return targetData.self.StartCoroutine(divineLuck.function(targetData));// DivineLuck(targetData._target));
@@ -325,7 +415,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	protected static IEnumerator Punch(TargetData targetData)//CombatController _target, int _damage, Elementals _element = Elementals.Physical)
 	{
 		EffectTools.SpawnEffect(punch.name, lastClick, 1);
-		if (targetData.target != null) targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.strength + targetData.bonus, 0), targetData.element);
+		if (targetData.target != null) targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.strength + targetData.bonus, 0), targetData.element, targetData.ability.extraData);
 		yield return null;
 	}
 
@@ -379,6 +469,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	protected static IEnumerator ForcePunch(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
+		if (targetData.self.myStats.intelligence > 5) targetData.bonus += 1;
 		yield return targetData.self.StartCoroutine(punch.function(targetData));// (Punch(_target, _self.myStats.strength + 2, Elementals.Air));
 		yield return null;
 	}
@@ -418,7 +509,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	protected static IEnumerator LifeTap(TargetData targetData)
 	{
         EffectTools.SpawnEffect("blue blast", targetData.self.transform.position, 1);
-		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.currentHealth -1),Elementals.Void);
+		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.currentHealth -1),Elementals.Void, targetData.ability.extraData);
 		targetData.self.AdjustMana(_tapped);
 		yield return null;
 	}
@@ -427,9 +518,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if(targetData.target != null)
 		{
-			int _hpRecover = targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.luck,0),Elementals.Unlife);
+			int _hpRecover = targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.luck,0),Elementals.Unlife, targetData.ability.extraData);
 
-			targetData.self.AdjustHealth(Mathf.Max(_hpRecover,0), targetData.element);
+			targetData.self.AdjustHealth(Mathf.Max(_hpRecover,0), targetData.element, targetData.ability.extraData);
 		}
 		yield return null;
 	}
@@ -478,7 +569,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			_meteors[i].StartCoroutine(CircleCollision(_meteors[i].transform, 0.25f, 1f,
 				delegate (CombatController _cc)
 				{
-					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element);
+					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence, 0), targetData.element, targetData.ability.extraData);
 				}
 			));
 		}
@@ -514,7 +605,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			_rockMono.StartCoroutine(CircleCollision(_rock.transform, 0.1f, 0.3f, delegate (CombatController _cc)
 			{
 				if (_cc.gameObject != targetData.self.gameObject)
-					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element);
+					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element, targetData.ability.extraData);
 			}));
 
 			yield return new WaitForSeconds(Random.Range(0.2f,0.5f));
@@ -537,7 +628,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			var _cc = _col.GetComponent<CombatController>();
 			if (_cc != null)
 			{
-				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element);
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.intelligence,0), targetData.element, targetData.ability.extraData);
 			}
 		}
 
@@ -563,7 +654,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if(targetData.target != null)
 		{
-			targetData.target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(targetData.self.myStats.luck,0)),Elementals.Light);
+			targetData.target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(targetData.self.myStats.luck,0)),Elementals.Light, targetData.ability.extraData);
 		}
 
 		if (lastClick != null)
@@ -687,7 +778,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	protected static IEnumerator Eat(TargetData targetData)
 	{
-		targetData.target.AdjustHealth(targetData.bonus, Elementals.Light);
+		targetData.target.AdjustHealth(targetData.bonus, Elementals.Light, targetData.ability.extraData);
 
 		yield return null;
 	}
@@ -703,7 +794,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			targetData.target.StartCoroutine(displayCritAreas.function(targetData));
+			targetData.target.StartCoroutine(keenSight.function(targetData));// displayCritAreas.function(targetData));
 		}
 
 		yield return null;
@@ -763,7 +854,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	protected static IEnumerator Spook(TargetData targetData)//(CombatController _target,CombatController _self)
 	{
 		yield return targetData.self.StartCoroutine(EffectTools.BlinkImage(targetData.self.transform.GetComponent<SpriteRenderer>(),new Color(1,1,1,0),1,1));
-		targetData.target.AdjustHealth(-targetData.self.myStats.intelligence, Elementals.Unlife);
+		targetData.target.AdjustHealth(-targetData.self.myStats.intelligence, Elementals.Unlife, targetData.ability.extraData);
 
 	}
 }

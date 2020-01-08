@@ -15,6 +15,7 @@ public class StatBlock
 		Demon,
 		Construct,
 		Alien,
+		Animal,
 	}
 
 	public enum AIType
@@ -63,7 +64,7 @@ public class StatBlock
 		aiType = _aiType;
 
 		baseDefense = _defense;
-		baseMagicDegense = _magicDefense;
+		baseMagicDefense = _magicDefense;
 
 		idleAnimation = AnimationTextParser.ParseDocument(Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _name.ToLower().Replace(" ", "_") + "_a_text"));
 	}
@@ -75,7 +76,7 @@ public class StatBlock
 	public int level, xp;
 
 	public int baseStrength, baseDexterity, baseIntelligence, baseLuck;
-	public int baseDefense, baseMagicDegense;
+	public int baseDefense, baseMagicDefense;
 
 	public List<Ability> abilities;
 	public AIType aiType;
@@ -156,6 +157,11 @@ public class StatBlock
 		get
 		{
 			int _bd = baseDefense;
+			foreach (Buff _b in buffList)
+			{
+				if (_b.traits.Contains("defense_constant")) _bd += (int)_b.constant;
+				else if (_b.traits.Contains("defense_multiplier")) _bd = (int)(_bd * _b.constant);
+			}
 			return _bd;
 		}
 	}
@@ -164,7 +170,12 @@ public class StatBlock
 	{
 		get
 		{
-			int _bm = magicDefense;
+			int _bm = baseMagicDefense;
+			foreach (Buff _b in buffList)
+			{
+				if (_b.traits.Contains("magicDefense_constant")) _bm += (int)_b.constant;
+				else if (_b.traits.Contains("magicDefense_multiplier")) _bm = (int)(_bm * _b.constant);
+			}
 			return _bm;
 		}
 	}

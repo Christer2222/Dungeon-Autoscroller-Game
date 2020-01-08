@@ -48,8 +48,9 @@ public class CombatController : AbilityScript
 
 	private GameObject inventoryScreen;
 
-	private Button fleeButton;
+	//private Button fleeButton;
 	private Slider fleeSlider;
+	/*
 	private int FleeThreshold
 	{
 		get
@@ -57,16 +58,18 @@ public class CombatController : AbilityScript
 			return 5 + myStats.dexterity;
 		}
 	}
-
+	*/
     public bool actedLastTick;
+	private bool invokingAbility;
 
 	//variables for player ability toggeling
-	private GameObject buttonMenuScrollView, buttonMenuContent;
+	private GameObject abilityMenuScrollView, buttonMenuContent;
 	private static GameObject entryPrefab;
 	private Text abilityButtonText;
 
 	private List<Ability> debugAbilityList = new List<Ability>()
 	{
+		poision, airSlash, bubble, crystalLance,
 		eruption, thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
 		chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
 		restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
@@ -120,14 +123,18 @@ public class CombatController : AbilityScript
 				switch(_t.name)
 				{
 					case "$FleeButton":
-						fleeButton = _t.GetComponent<Button>();
-						fleeButton.onClick.AddListener(delegate {
+						//fleeButton = _t.GetComponent<Button>();
+						ForwardMover.fleeButton = _t.GetComponent<Button>();
+						ForwardMover.fleeButton.onClick.AddListener(delegate {
+
+							if (LevelUpScreen.levelUpScreen.activeSelf) return;
+
 							if (turnOrder.Count != 0)
 								if (turnOrder[0] == playerCombatController && !processingAbility)
 								{
 									ResetAbilityPick();
 
-									buttonMenuScrollView.SetActive(false);
+									abilityMenuScrollView.SetActive(false);
 
 									fleeSlider.gameObject.SetActive(!fleeSlider.gameObject.activeSelf);
 									fleeSlider.GetComponent<FleeLogic>().enabled = true;
@@ -151,14 +158,27 @@ public class CombatController : AbilityScript
 						maxManaText = _t.GetComponent<Text>();
 						break;
 					case "$AbilityButton":
-						_t.GetComponent<Button>().onClick.AddListener(delegate {
-							if (CheckIfHasBuff("Busy")) return;
+						ForwardMover.abilityButton = _t.GetComponent<Button>();
+						ForwardMover.abilityButton.onClick.AddListener(delegate {
+							if (CheckIfHasBuff("Busy") || LevelUpScreen.levelUpScreen.activeSelf) return;
 
-							buttonMenuScrollView.SetActive(!buttonMenuScrollView.activeSelf);
+							abilityMenuScrollView.SetActive(!abilityMenuScrollView.activeSelf);
 							fleeSlider.gameObject.SetActive(false);
 							ResetAbilityPick();
 						});
 						abilityButtonText = _t.Find("$Text").GetComponent<Text>();
+						break;
+					case "$ItemsButton":
+						ForwardMover.itemsButton = _t.GetComponent<Button>();
+						ForwardMover.itemsButton.onClick.AddListener(delegate {
+							print("items");
+						});
+						break;
+					case "$InspectButton":
+						ForwardMover.inspectButton = _t.GetComponent<Button>();
+						ForwardMover.inspectButton.onClick.AddListener(delegate {
+							print("inspect");
+						});
 						break;
 					case "$HealthSlider":
 						healthSlider = _t.GetComponent<Slider>();
@@ -176,8 +196,8 @@ public class CombatController : AbilityScript
 						xpSlider = _t.GetComponent<Slider>();
 						break;
 					case "$ButtonMenuScrollView":
-						buttonMenuScrollView = _t.gameObject;
-						buttonMenuScrollView.transform.SetParent(UICanvas.transform);
+						abilityMenuScrollView = _t.gameObject;
+						abilityMenuScrollView.transform.SetParent(UICanvas.transform);
 						break;
 					case "$AbilityContent":
 						buttonMenuContent = _t.gameObject;
@@ -209,11 +229,6 @@ public class CombatController : AbilityScript
 
 			CheckIfBuffIconsAreCorrect();
 
-			//foreach(KeyValuePair<string,AbilityType> i in abilityTypeDictionary) print(i.Key);
-
-			//print(BulkUp(null).ToString());
-			//print(myStats.buffs.Count);
-
 #region Stat Reset
 			currentHealth = myStats.maxHealth;
 			currentMana = myStats.maxMana;
@@ -235,8 +250,6 @@ public class CombatController : AbilityScript
 			currentHealthText.text = currentHealth.ToString();
 			manaSlider.value = currentMana;
 			currentManaText.text = currentMana.ToString();
-			//AdjustHealth(0, Elementals.None, false);
-			//AdjustMana(0);
 			AdjustPlayerXP(0);
 #endregion
 
@@ -265,6 +278,9 @@ public class CombatController : AbilityScript
 
 	}
 
+	/// <summary>
+	/// Update available buttons
+	/// </summary>
 	public void RefreshAbilityList()
 	{
 		var _children = buttonMenuContent.GetComponentsInChildren<Transform>();
@@ -287,7 +303,7 @@ public class CombatController : AbilityScript
 
 			int _index = i;
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
-				buttonMenuScrollView.SetActive(false);
+				abilityMenuScrollView.SetActive(false);
 				abilityButtonText.text = _s;
 				selectedAbility = myStats.abilities[_index]; //set ability to this ability
 			});
@@ -388,6 +404,9 @@ public class CombatController : AbilityScript
 			}
 	}
 	
+	/// <summary>
+	/// Call each buff, and decrement their turn counter
+	/// </summary>
 	public void TickBuffs()
 	{
 		targetCombatController = this;
@@ -423,6 +442,9 @@ public class CombatController : AbilityScript
 		myStats.buffList.RemoveAll(x => x.name.Contains(_buffName));
 	}
 
+	/// <summary>
+	/// Refreshes the buff sidebar.
+	/// </summary>
 	void CheckIfBuffIconsAreCorrect()
 	{
 		List<Text> _buffHolderTurnList = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
@@ -463,15 +485,14 @@ public class CombatController : AbilityScript
 							_children[j].text = string.Empty;
 							for (int k = 0; k < myStats.buffList[i].functions.Count; k++)
 							{
-								_children[j].text += myStats.buffList[i].functions[k]; //TODO Add description to all buffs
+								_children[j].text += myStats.buffList[i].functions[k]; //TODO: Add description to all buffs
 								if (k < myStats.buffList[i].functions.Count) _children[j].text += "\n";
 							}
 
 							for (int k = 0; k < myStats.buffList[i].traits.Count; k++)
 							{
-								_children[j].text += myStats.buffList[i].traits[k]; //TODO Add description to all buffs
+								_children[j].text += myStats.buffList[i].traits[k]; //TODO: Add description to all buffs
 								if (k < myStats.buffList[i].traits.Count) _children[j].text += "\n";
-								//print("k: " + k + " bu " + myStats.buffList[i].traits.Count);
 							}
 							break;
 					}
@@ -482,7 +503,7 @@ public class CombatController : AbilityScript
 
 		for (int i = 0; i < _uncheckedBuffs.Count; i++)
 		{
-			//detroy rest
+			//destroy rest
 			_amount--;
 			Destroy(_buffHolderTurnList[i].transform.parent.parent.parent.gameObject);
 		}
@@ -555,8 +576,6 @@ public class CombatController : AbilityScript
 				break;
 		}
 
-		//transform.position += Vector3.up * (UnityEngine.Random.Range(0f,2f) - 1);
-		//activeAbility = myStats.abilities[UnityEngine.Random.Range(0,myStats.abilities.Count)];
 		var _startScale = transform.localScale;
 
 
@@ -593,7 +612,6 @@ public class CombatController : AbilityScript
 			lastClick = transform.position;
 		}
 
-		//print(transform.name + "(+" + myStats.aiType + "+)" + " is doing " + selectedAbility.name);
 		yield return StartCoroutine(InvokeActiveAbility());
 		myEnemyMover.shouldMove = true;
 	}
@@ -613,7 +631,7 @@ public class CombatController : AbilityScript
 		while (myStats.xp >= xpSlider.maxValue)
 		{
 			LevelUpScreen.traitPointsToSpend += 1;
-			//LevelUpScreen.abilityPointsToSpend += (myStats.level + 1) % 2;
+
 			if ((myStats.level + 1) % 2 == 0)
 			{
 				LevelUpScreen.instance.AddNextChoicesToQue();
@@ -626,7 +644,7 @@ public class CombatController : AbilityScript
 		}
 	}
 
-	public int AdjustHealth(int _amount, Elementals _elementals)
+	public int AdjustHealth(int _amount, Elementals _elementals, ExtraData _extraData)
 	{
 		if (currentHealth <= 0) return 0;
 
@@ -643,9 +661,11 @@ public class CombatController : AbilityScript
 		if (_amount < 0) //if negative damage
 			_amount += ((isCritted) ? -myStats.strength : 0); //allow critting
 
-		var _damageCalc = Mathf.CeilToInt(_amount * _amountMultiplier); //round up any damage/healing
+		var _damageCalc = Mathf.RoundToInt(_amount * _amountMultiplier); //round up any damage/healing
+		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.blockable)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? myStats.defense: myStats.magicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
 
-		if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
+		//if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
+		if (Mathf.Sign(_amount) != Mathf.Sign(_damageCalc)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
 
 		string _textToWrite = ((_damageCalc > 0)? "+" + _damageCalc.ToString(): (_damageCalc == 0)? "Block": _damageCalc.ToString()); //if over 0 +amount if 0 block if under 0 -amount
 
@@ -716,7 +736,7 @@ public class CombatController : AbilityScript
 				
 				foreach(CombatController _cc in turnOrder)
 				{
-					RemoveFromTurnOrder(0,_cc);//Destroy(_cc);
+					RemoveFromTurnOrder(0,_cc);
 					Destroy(_cc.gameObject);
 				}
 
@@ -727,18 +747,6 @@ public class CombatController : AbilityScript
 
 		return _totalDamage;
 	}
-
-	/*
-	public void AdjustMana(string _manaCost = "")
-	{
-		if(manaCostDictionary.ContainsKey(_manaCost))
-		{
-			AdjustMana(manaCostDictionary[_manaCost]);
-		}
-		else
-			AdjustMana(0);
-	}
-	*/
 
 	public int AdjustMana(int _amount)
 	{
@@ -794,7 +802,6 @@ public class CombatController : AbilityScript
 
 	public void Click()
 	{
-		//hitPosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE)); //store where to click
 		RaycastHit2D _hit = CheckIfHit(hitPosition); //get click info
 		
 		bool _hitSomething = (_hit.collider != null); //store if something was hit
@@ -805,48 +812,14 @@ public class CombatController : AbilityScript
 			
 			if(_hit.transform.CompareTag("AbilityButton"))
 			{
-				//selectedAbility = _hit.transform.Find("$Text").GetComponent<Text>().text;
 				return;
 			}
 			else if(_hit.transform.CompareTag("UI"))
 			{
-
-				//activeAbility = string.Empty;
 				return;
 			}
 		}
 
-		/*
-#region Flee Logic
-		bool _fleeing = fleeSlider != null; //is the fleeslider there
-		if(_fleeing) _fleeing = fleeSlider.gameObject.activeSelf; //is the player fleeing
-
-		if (fleeSlider.gameObject.activeSelf)//_fleeing) //if fleeing
-		{
-			if(Mathf.Abs((fleeSlider.maxValue / 2) - (fleeSlider.value)) <= FleeThreshold) //if the pointer is withing the flee zone, succeed
-			{
-				var _tempTurnorder = new CombatController[turnOrder.Count];
-				turnOrder.CopyTo(_tempTurnorder);
-				foreach (CombatController _cc in _tempTurnorder) //for all entries in the temp turn order
-				{
-					if (_cc != this)
-						StartCoroutine(RemoveFromTurnOrder(0,_cc)); //destroy and remove items from the turn order
-				}
-				//turnOrder.Clear();
-
-				UpdateTurnOrderDisplay();
-				//turnorderText.text = string.Empty;
-				ForwardMover.speedBoost = 3; //run after fleeing
-			}
-			else
-			{
-				EndTurn(); //if failed fleeing, end the turn as an action
-			}
-			StartCoroutine(EffectTools.DeactivateGameObject(fleeSlider.gameObject,0.2f));
-		}
-#endregion
-			*/
-		//else if (selectedAbility != null) //if not fleeing, but has an ability selected
 		if (selectedAbility != null && !fleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
 		{
 			if (_hit.transform != null) //if something was hit
@@ -858,7 +831,7 @@ public class CombatController : AbilityScript
 				}
 				else if (_hit.transform.name == "$PlayerPortrait") //if it was the player itself
 				{
-					print(selectedAbility + " self!");
+					print(selectedAbility.name + " self!");
 					targetCombatController = playerCombatController;
 				}
 				else //if just the normal enemy body was hit
@@ -883,6 +856,9 @@ public class CombatController : AbilityScript
 	/// </summary>
 	IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
 	{
+		if (invokingAbility) yield break;
+		invokingAbility = true;
+
 		var _orgTime = Time.time;
 
 		var _tempActiveAbility = selectedAbility;
@@ -893,6 +869,7 @@ public class CombatController : AbilityScript
 		}
 		else if (playerOwned)
 		{
+
 			processingAbility = true;
 
 			ResetAbilityPick();
@@ -908,11 +885,16 @@ public class CombatController : AbilityScript
 		//yield return new WaitForEndOfFrame();
 		//actedLastTick = false;
 
-		var _targetData = new TargetData(this, targetCombatController, 0, _tempActiveAbility.element, lastClick, StatBlock.Race.Human);
+		var _targetData = new TargetData(_tempActiveAbility, this, targetCombatController, 0, _tempActiveAbility.element, lastClick, StatBlock.Race.Human);
 		if (_tempActiveAbility.name.ToLower().Contains("undead")) _targetData.targetRace = StatBlock.Race.Undead;
+		print(targetCombatController);
+		print(selectedAbility);
+		//var _targetData = new TargetData(this, targetCombatController, 0, selectedAbility.element, lastClick, StatBlock.Race.Human);
+		//if (selectedAbility.name.ToLower().Contains("undead")) _targetData.targetRace = StatBlock.Race.Undead;
 
 		if (_byUser)
 		{
+			//AdjustMana(selectedAbility.manaCost);
 			AdjustMana(_tempActiveAbility.manaCost);
 			if (playerOwned)
 			{
@@ -922,9 +904,8 @@ public class CombatController : AbilityScript
 		}
 
 		yield return StartCoroutine(_tempActiveAbility.function(_targetData));//.Invoke(this, Punch(targetCombatController, myStats.strength, Elementals.Physical));
+		//yield return StartCoroutine(selectedAbility.function(_targetData));//.Invoke(this, Punch(targetCombatController, myStats.strength, Elementals.Physical));
 
-
-		//if (actedLastTick) print("end ability:" + Time.timeSinceLevelLoad);
 		if (_byUser)
 		{
 			while (Time.time - _orgTime < 1) //if it has been less than 1 sec since ability was used
@@ -936,6 +917,7 @@ public class CombatController : AbilityScript
 			yield return new WaitForSeconds( playerOwned? 1:2);
 			EndTurn();
 		}
+		invokingAbility = false;
 	}
 
 	IEnumerator RemoveFromTurnOrder(float _sec, CombatController _target)
@@ -978,7 +960,7 @@ public class CombatController : AbilityScript
 	{
 		ResetAbilityPick();
 		fleeSlider.gameObject.SetActive(false);
-		buttonMenuScrollView.SetActive(false);
+		abilityMenuScrollView.SetActive(false);
 		inventoryScreen.SetActive(false);
 	}
 }

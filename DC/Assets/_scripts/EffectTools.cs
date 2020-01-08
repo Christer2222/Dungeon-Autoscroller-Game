@@ -229,6 +229,20 @@ public class EffectTools : MonoBehaviour
 		}
 	}
 
+	public static IEnumerator Wobble(Transform _t, float _magnitude, float _speed, float _life)
+	{
+		float _time = 0;
+
+		while (_life > _time)
+		{
+			_time += Time.deltaTime;
+			_t.position += _t.up * ((Mathf.Cos(_time) * Time.deltaTime * _magnitude));//_startPos + Vector3.up * Mathf.Sin(_startTime);
+			yield return waitForEndOfFrame;
+		}
+
+		yield return null;
+	}
+
 	public static IEnumerator DeactivateGameObject(GameObject _go, float _time)
 	{
 		yield return new WaitForSeconds(_time);

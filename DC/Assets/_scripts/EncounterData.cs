@@ -20,9 +20,11 @@ public class EncounterData : AbilityScript
 	public static StatBlock harpyBlock = new StatBlock(StatBlock.Race.Demon, "Harpy",							010, 005,		02, 0, 01, 02, 01, 02, new List<Ability> { punch, bulkUp }, _weaknesses: Elementals.Electricity, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock blueEyeballBlock = new StatBlock(StatBlock.Race.Demon, "Blueball",					012, 007,		03, 0, 02, 03, 02, 03, new List<Ability> { punch, manaDrain, curse }, _aiType: StatBlock.AIType.Smart);
 	public static StatBlock snowmanBlock = new StatBlock(StatBlock.Race.Elemental, "Snowman",					009, 012,		03, 0, 01, 02, 01, 02, new List<Ability> { freezingStrike }, _absorbs: Elementals.Ice, _weaknesses: Elementals.Fire, _aiType: StatBlock.AIType.Coward);
+	public static StatBlock poisionousSpider = new StatBlock(StatBlock.Race.Animal, "Poisionous Spider",		005, 008,		03, 0, 02, 02, 03, 02, new List<Ability> { poision }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock fleshGolemBlock = new StatBlock(StatBlock.Race.Construct, "Flesh Golem",			030, 010,		04, 0, 03, 02, 01, 01, new List<Ability> { doubleKick, bulkUp }, _weaknesses: Elementals.Fire | Elementals.Ice, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock guardianBlock = new StatBlock(StatBlock.Race.Human, "Guardian",						020, 020,		05, 0, 05, 04, 01, 03, new List<Ability> { forcePunch, magicShield }, _aiType: StatBlock.AIType.Smart, _defense: 1);
 	public static StatBlock giantBlock = new StatBlock(StatBlock.Race.Human, "Giant",							030, 000,		05, 0, 08, 04, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb, _defense: 1);
+	public static StatBlock deathSpider = new StatBlock(StatBlock.Race.Animal, "Death Spider",					015, 018,		05, 0, 04, 03, 05, 03, new List<Ability> { poision }, _immunities: Elementals.Poision, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost",							008, 008,		06, 0, 01, 03, 01, 01, new List<Ability> { punch }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock stoneGolemBlock = new StatBlock(StatBlock.Race.Construct, "Stone Golem",			045, 010,		06, 0, 06, 02, 01, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water, _immunities: Elementals.Light, _aiType: StatBlock.AIType.Dumb, _defense: 2);
 	public static StatBlock steelGolemBlock = new StatBlock(StatBlock.Race.Construct, "Steel Golem",			060, 010,		08, 0, 10, 04, 03, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water | Elementals.Electricity, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 4, _magicDefense: -1);
@@ -75,8 +77,8 @@ public class EncounterData : AbilityScript
 		new Encounter(_level: 0, _encounterLocation: EncounterLocation.None, _monsterBL: urnBlock, _monsterBM: urnBlock,  _monsterBR: urnBlock),
 
 		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: nosemanBlock),
-		new Encounter(_level: 1, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock),
 		
+		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: harpyBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterTM: eyeballBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBM: eyeballBlock, _monsterTR: eyeballBlock),
 		new Encounter(_level: 2, _encounterLocation: EncounterLocation.None, _monsterBR: nosemanBlock, _monsterTL: eyeballBlock),

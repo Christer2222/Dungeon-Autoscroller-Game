@@ -24,14 +24,14 @@ public class FleeLogic : MonoBehaviour
     {
 		fleeSlider.value = Mathf.PingPong(Time.timeSinceLevelLoad * fleeSlider.maxValue, fleeSlider.maxValue);
 
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(Options.acceptKey))
 		{
-			var a = AbilityScript.CheckIfHit(AbilityScript.hitPosition);
-			if (a.transform != null)
+			var _hit = AbilityScript.CheckIfHit(AbilityScript.hitPosition);
+			if (_hit.transform != null)
 			{
-				print(a.transform.name + " tag: " + a.transform.tag);
+				print(_hit.transform.name + " tag: " + _hit.transform.tag);
 
-				if (!a.transform.CompareTag("UI") && a.transform.name != CombatController.playerCombatController.gameObject.name)
+				if (!_hit.transform.CompareTag("UI") && _hit.transform.name != CombatController.playerCombatController.gameObject.name)
 					Flee();
 
 			}

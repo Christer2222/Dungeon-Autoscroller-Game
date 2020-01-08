@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace AbilityInfo
 {
+	public enum ExtraData
+	{
+		none = 0,
+		blockable = 1,
+		makes_contact_with_user = 2,
+		magic = 4,
+	}
+
 	public enum SkillUsed
 	{
 		none = 0,
@@ -46,7 +54,7 @@ namespace AbilityInfo
 
 	public struct TargetData
 	{
-		public TargetData(CombatController _self = null, CombatController _target = null, int _constant = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default)
+		public TargetData(Ability _currentAbility, CombatController _self = null, CombatController _target = null, int _constant = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default)
 		{
 			self = _self;
 			target = _target;
@@ -54,6 +62,7 @@ namespace AbilityInfo
 			element = _element;
 			centerPos = _centerPos;
 			targetRace = _race;
+			ability = _currentAbility;
 		}
 
 		public CombatController self;
@@ -62,19 +71,21 @@ namespace AbilityInfo
 		public Elementals element;
 		public Vector3 centerPos;
 		public StatBlock.Race targetRace;
+		public Ability ability;
 	}
 
 	public class Ability
 	{
 		public delegate IEnumerator FunctionToCall(TargetData inputData);
 
-		public Ability(string _name, FunctionToCall _function, Elementals _element, SkillUsed _skill, AbilityType _type, int _manaCost)
+		public Ability(string _name, FunctionToCall _function, Elementals _element, SkillUsed _skill, AbilityType _type, int _manaCost, ExtraData _extraData)
 		{
 			name = _name;
 			function = _function;
 			manaCost = _manaCost;
 			element = _element;
 			abilityType = _type;
+			extraData = _extraData;
 		}
 		
 		public string name;
@@ -83,6 +94,7 @@ namespace AbilityInfo
 		public Elementals element;
 		public AbilityType abilityType;
 		public SkillUsed abilityClass;
+		public ExtraData extraData;
 	}
 }
 

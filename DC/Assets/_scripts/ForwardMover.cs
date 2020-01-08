@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using UnityEngine.UI;
 
 public class ForwardMover : MonoBehaviour
 {
@@ -20,6 +21,9 @@ public class ForwardMover : MonoBehaviour
 	public static float speedBoost;
 	public static bool shouldMove = true;
 
+	public static Button abilityButton, fleeButton, itemsButton, inspectButton, 
+		levelUpButton;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +41,13 @@ public class ForwardMover : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+		if (Input.GetKeyDown(Options.abilitiesHotkey)) abilityButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.fleeHotkey)) fleeButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.itemsHotkey)) itemsButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.inspectHotkey)) inspectButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.levelUpHotkey)) levelUpButton.onClick.Invoke();
+
+
 		if (encounterTimer > 0)
 		{
 			if (shouldMove)

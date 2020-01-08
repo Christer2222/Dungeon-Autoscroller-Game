@@ -20,7 +20,7 @@ public class UIAspect : MonoBehaviour
 			RectTransform _flRec = GameObject.Find("$FleeButton").GetComponent<RectTransform>();
 			SetApectUI(_flRec, 2);
 
-			RectTransform _opRec = GameObject.Find("$OptionsButton").GetComponent<RectTransform>();
+			RectTransform _opRec = GameObject.Find("$InspectButton").GetComponent<RectTransform>();
 			SetApectUI(_opRec, 3);
 
 			RectTransform _plRec = GameObject.Find("$PlayerPortrait").GetComponent<RectTransform>();

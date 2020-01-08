@@ -5,7 +5,9 @@ using AbilityInfo;
 
 public class LevelUpScreen : AbilityScript
 {
-	public GameObject levelUpScreen;
+	private static Button levelUpButton;
+
+	public static GameObject levelUpScreen;
 
 	public static LevelUpScreen instance;
 
@@ -45,15 +47,15 @@ public class LevelUpScreen : AbilityScript
 
 	private List<AbilityChoices> wizardLevelLine = new List<AbilityChoices>()
 	{
-		new AbilityChoices(focus                         ),
+		new AbilityChoices(focus					            ),
 		new AbilityChoices(fireball,	    doubleKick          ),
 		new AbilityChoices(manaDrain,       tiltSwing,      heal),
-		new AbilityChoices(massExplosion,      fireball            ),
+		new AbilityChoices(massExplosion,   fireball            ),
 		new AbilityChoices(forcePunch,      regeneration        ),
 		new AbilityChoices(chaosThesis,     divineLuck          ),
-		new AbilityChoices(meteorShower,          hardenSkin          ),
+		new AbilityChoices(meteorShower,    hardenSkin          ),
 		new AbilityChoices(bulkUp,          magicShield         ),
-		new AbilityChoices(timeWarp,     debulk              ),
+		new AbilityChoices(timeWarp,		debulk              ),
 
 	};
 
@@ -74,7 +76,8 @@ public class LevelUpScreen : AbilityScript
 
 	void Start()
 	{
-		GetComponent<Button>().onClick.AddListener(delegate { ToggleLevelUpScreen(); });
+		ForwardMover.levelUpButton = GetComponent<Button>();
+		ForwardMover.levelUpButton.onClick.AddListener(delegate { ToggleLevelUpScreen(); });
 
 		instance = this;
 
