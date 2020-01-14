@@ -67,9 +67,11 @@ public class CombatController : AbilityScript
 	private static GameObject entryPrefab;
 	private Text abilityButtonText;
 
-	private List<Ability> debugAbilityList = new List<Ability>()
+	private readonly List<Ability> debugAbilityList = new List<Ability>()
 	{
-		poision, airSlash, bubble, crystalLance,
+
+	/*
+		poision, poisionBite, airSlash, bubble, crystalLance,
 		eruption, thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
 		chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
 		restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
@@ -77,6 +79,7 @@ public class CombatController : AbilityScript
 		timeWarp, keenSight,
 
 		tiltSwing, massExplosion,
+	*/
 	};
 
 	public static void ClearAllValues()
@@ -104,13 +107,14 @@ public class CombatController : AbilityScript
 		//Set stats for enemies and the player + ui for player
 		if (gameObject.name == "$PlayerPortrait")
 		{
-            myStats = new StatBlock(
-                StatBlock.Race.Human,
+			myStats = new StatBlock(
+				StatBlock.Race.Human,
 				"Player",
-                10, 15, //hp, mp
-                1, 0, //lv, xp
-                1, 1, 1, 1, //str, dex. int, luck
-                (DebugController.debugAbilities) ? debugAbilityList : new List<Ability> { punch });
+				10, 15, //hp, mp
+				1, 0, //lv, xp
+				1, 1, 1, 1, //str, dex. int, luck
+				new List<Ability> { ASD.punch});
+				//(DebugController.debugAbilities) ? new List<Ability> { punch, fireball } : new List<Ability> { punch });
 
 			//playerOwned = true;
 
@@ -659,10 +663,10 @@ public class CombatController : AbilityScript
 		int _totalDamage = currentHealth; //store previous health for display text and return value
 
 		if (_amount < 0) //if negative damage
-			_amount += ((isCritted) ? -myStats.strength : 0); //allow critting
+			_amount += ((isCritted) ? -myStats.Strength : 0); //allow critting
 
 		var _damageCalc = Mathf.RoundToInt(_amount * _amountMultiplier); //round up any damage/healing
-		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.blockable)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? myStats.defense: myStats.magicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
+		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.blockable)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? myStats.Defense: myStats.MagicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
 
 		//if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
 		if (Mathf.Sign(_amount) != Mathf.Sign(_damageCalc)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
@@ -802,7 +806,7 @@ public class CombatController : AbilityScript
 
 	public void Click()
 	{
-		RaycastHit2D _hit = CheckIfHit(hitPosition); //get click info
+		RaycastHit2D _hit = CheckIfHit(HitPosition); //get click info
 		
 		bool _hitSomething = (_hit.collider != null); //store if something was hit
 
@@ -887,8 +891,6 @@ public class CombatController : AbilityScript
 
 		var _targetData = new TargetData(_tempActiveAbility, this, targetCombatController, 0, _tempActiveAbility.element, lastClick, StatBlock.Race.Human);
 		if (_tempActiveAbility.name.ToLower().Contains("undead")) _targetData.targetRace = StatBlock.Race.Undead;
-		print(targetCombatController);
-		print(selectedAbility);
 		//var _targetData = new TargetData(this, targetCombatController, 0, selectedAbility.element, lastClick, StatBlock.Race.Human);
 		//if (selectedAbility.name.ToLower().Contains("undead")) _targetData.targetRace = StatBlock.Race.Undead;
 
@@ -934,7 +936,7 @@ public class CombatController : AbilityScript
 	{
 		processingAbility = false;
 
-		if(turnOrder.Count > 1 && !CheckIfHasBuff(timeWarp.name))//"extra turn"))
+		if(turnOrder.Count > 1)// && !CheckIfHasBuff(TEST.timeWarp.name))//"extra turn"))
 		{
 			turnOrder.Remove(this);
 			turnOrder.Add(this);

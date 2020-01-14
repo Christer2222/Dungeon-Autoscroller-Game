@@ -59,14 +59,17 @@ public class StatBlock
 		abilities = new List<Ability>();
 		for(int i = 0; i < _abilities.Count; i++)
 		{
-			abilities.Add(_abilities[i]);//.ToLower());
+			abilities.Add(_abilities[i]);
 		}
 		aiType = _aiType;
 
 		baseDefense = _defense;
 		baseMagicDefense = _magicDefense;
 
-		idleAnimation = AnimationTextParser.ParseDocument(Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _name.ToLower().Replace(" ", "_") + "_a_text"));
+		string _standardizedName = _name.Replace(" ", "_").ToLower().Replace(" ", "_");
+		
+		idleAnimation = AnimationTextParser.ParseDocument(Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _standardizedName + "_a_text"), AnimationTextParser.Type.enemy);
+
 	}
 
 	public Race race;
@@ -85,7 +88,7 @@ public class StatBlock
 
 	public Sprite[] idleAnimation;
 
-	public int strength
+	public int Strength
 	{
 		get
 		{
@@ -104,7 +107,7 @@ public class StatBlock
 		}
 	}
 
-	public int dexterity
+	public int Dexterity
 	{
 		get
 		{
@@ -120,7 +123,7 @@ public class StatBlock
 		}
 	}
 
-	public int intelligence
+	public int Intelligence
 	{
 		get
 		{
@@ -136,7 +139,7 @@ public class StatBlock
 		}
 	}
 
-	public int luck
+	public int Luck
 	{
 		get
 		{
@@ -152,7 +155,7 @@ public class StatBlock
 		}
 	}
 
-	public int defense
+	public int Defense
 	{
 		get
 		{
@@ -166,7 +169,7 @@ public class StatBlock
 		}
 	}
 
-	public int magicDefense
+	public int MagicDefense
 	{
 		get
 		{

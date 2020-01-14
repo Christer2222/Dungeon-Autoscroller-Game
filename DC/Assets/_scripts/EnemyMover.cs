@@ -28,7 +28,7 @@ public class EnemyMover : MonoBehaviour
 		//int _randomIndex = Random.Range(0,localEnemyMovePoints.Count - 1);
 		//transform.position += localEnemyMovePoints[_randomIndex];
 		positionIndex = 1;// _randomIndex;
-		moveSpeed = (float)combatController.myStats.dexterity / 10; // Random.Range(0.2f,2f);
+		moveSpeed = (float)combatController.myStats.Dexterity / 10; // Random.Range(0.2f,2f);
 	}
 
     // Update is called once per frame

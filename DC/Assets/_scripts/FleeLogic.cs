@@ -9,7 +9,7 @@ public class FleeLogic : MonoBehaviour
 	{
 		get
 		{
-			return 5 + CombatController.playerCombatController.myStats.dexterity;
+			return 5 + CombatController.playerCombatController.myStats.Dexterity;
 		}
 	}
 
@@ -26,7 +26,7 @@ public class FleeLogic : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(Options.acceptKey))
 		{
-			var _hit = AbilityScript.CheckIfHit(AbilityScript.hitPosition);
+			var _hit = AbilityScript.CheckIfHit(AbilityScript.HitPosition);
 			if (_hit.transform != null)
 			{
 				print(_hit.transform.name + " tag: " + _hit.transform.tag);

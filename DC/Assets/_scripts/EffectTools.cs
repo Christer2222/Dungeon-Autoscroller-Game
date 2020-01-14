@@ -3,13 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class EffectTools : MonoBehaviour
 {
 	private static bool initialized;
-	private static Dictionary<string, Sprite> effectDictionary;
+	//private static Dictionary<string, Sprite> effectDictionary;
 	private static WaitForEndOfFrame waitForEndOfFrame;
 	private static WaitForSeconds waitForPointOneSeconds;
 	private static GameObject textHolder;
+	private static Dictionary<string, Sprite[]> effectDictionary = new Dictionary<string, Sprite[]>();
+
+
+	public static void AddToEffectDictionary(string _key, Sprite[] _value)
+	{
+		if (!effectDictionary.ContainsKey(_key))
+			effectDictionary.Add(_key, _value);
+		else
+			Debug.LogWarning("The effectDictionary already contains the key: " + _key);
+	}
 
 	public struct FunctionAndDelay
 	{
@@ -35,17 +46,17 @@ public class EffectTools : MonoBehaviour
 		if (textHolder == null)
 			textHolder = Resources.Load<GameObject>("Prefabs/$TextHolder");
 
-		if (effectDictionary == null)
-		{
-			effectDictionary = new Dictionary<string, Sprite>();
+		//if (ed == null)//effectDictionary == null)
+		//{
+		//	effectDictionary = new Dictionary<string, Sprite>();
 
-			var _sprites = Resources.LoadAll<Sprite>("Sprites/Effects");
+		//	var _sprites = Resources.LoadAll<Sprite>("Sprites/Effects");
 
-			for (int i = 0; i < _sprites.Length; i++)
-			{
-				effectDictionary.Add(_sprites[i].name, _sprites[i]);
-			}
-		}
+		//	for (int i = 0; i < _sprites.Length; i++)
+		//	{
+		//		effectDictionary.Add(_sprites[i].name, _sprites[i]);
+		//	}
+		//}
 	}
 
 	public static IEnumerator ApproachSlider(Slider _sliderToMove, Slider _targetSlider, float _speed, float _ratio)
@@ -125,13 +136,13 @@ public class EffectTools : MonoBehaviour
 		//print("wp: " + _worldPos + " pccp: " + CombatController.playerCombatController.transform.position.z);
 		//if (_worldPos.z < CombatController.playerCombatController.transform.position.z + 1)
 		//    _worldPos = CombatController.playe
-		_name = _name.ToLower();
-		if (effectDictionary.ContainsKey(_name))
+		//_name = _name.ToLower();
+		if (effectDictionary.ContainsKey(_name))//effectDictionary.ContainsKey(_name))
 		{
 			var _go = new GameObject();
 			var _sr = _go.AddComponent<SpriteRenderer>();
 			_go.transform.position = _worldPos;
-			_sr.sprite = effectDictionary[_name];
+			_sr.sprite = effectDictionary[_name][0]; //effectDictionary[_name];
 			_sr.sortingLayerName = _sortingLayer;
 			_sr.sortingOrder = _layerIndex;
 
@@ -140,7 +151,9 @@ public class EffectTools : MonoBehaviour
 			return _sr;
 		}
 		else
+		{
 			Debug.LogError("No effect in dictionary with name: " + _name);
+		}
 
 		return null;
 	}

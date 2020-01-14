@@ -36,6 +36,11 @@ public class ForwardMover : MonoBehaviour
 		}
 		//playerCombatController = gameObject.GetComponent<CombatController>();
 
+		print(CombatController.playerCombatController);
+		levelUpButton = CombatController.playerCombatController.GetComponent<Button>();
+		LevelUpScreen.instance = new LevelUpScreen(); //CombatController.playerCombatController.GetComponent<LevelUpScreen>();
+		LevelUpScreen.instance.Initialize();
+
 	}
 
 	// Update is called once per frame
@@ -102,7 +107,7 @@ public class ForwardMover : MonoBehaviour
 				SpawnEnemy(_selectedEncounter.monsterTM, 4);
 				SpawnEnemy(_selectedEncounter.monsterTR, 5);
 
-				CombatController.turnOrder.OrderBy(x => (x.myStats.level * 2 + x.myStats.luck));
+				CombatController.turnOrder.OrderBy(x => (x.myStats.level * 2 + x.myStats.Luck));
 
 			}
 

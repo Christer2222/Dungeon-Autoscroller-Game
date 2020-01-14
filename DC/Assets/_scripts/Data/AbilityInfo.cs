@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AbilityInfo
@@ -77,7 +76,7 @@ namespace AbilityInfo
 	public class Ability
 	{
 		public delegate IEnumerator FunctionToCall(TargetData inputData);
-
+		
 		public Ability(string _name, FunctionToCall _function, Elementals _element, SkillUsed _skill, AbilityType _type, int _manaCost, ExtraData _extraData)
 		{
 			name = _name;
@@ -86,8 +85,37 @@ namespace AbilityInfo
 			element = _element;
 			abilityType = _type;
 			extraData = _extraData;
-		}
-		
+
+			string _path = "Sprites/Effects/AnimationTexts/";
+			string _standardizedName = _name.Replace(" ", "_").ToLower().Replace(" ", "_");
+			string _extention = "_a_text.txt";
+			//Debug.Log("code initialized in editor");
+			//TextAsset a = Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _standardizedName + "_a_text");
+			//TextAsset b = Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _standardizedName + "_a_text");
+			//var i = new TextAsset("f");
+			//idleAnimation = AnimationTextParser.ParseDocument(b, AnimationTextParser.Type.enemy);
+			var _textAsset = Resources.Load<TextAsset>(_path + _standardizedName + _extention);
+			if (_textAsset == null)
+			{
+				_textAsset = new TextAsset("0");
+				Debug.Log("started null");
+#if UNITY_EDITOR
+				Debug.Log("is editor");
+
+				if (Resources.Load<TextAsset>(_path + "EMPTY" + _standardizedName + _extention) == null)
+				{
+					Debug.Log("EMPTY was null");
+
+					UnityEditor.AssetDatabase.AddObjectToAsset(_textAsset ,_path + "EMPTY" + _standardizedName + _extention);
+				}
+#endif
+			}
+			var _spriteArray = AnimationTextParser.ParseDocument(_textAsset, AnimationTextParser.Type.effect);
+
+			EffectTools.AddToEffectDictionary(_standardizedName, _spriteArray);
+	}
+
+	
 		public string name;
 		public FunctionToCall function;
 		public int manaCost;

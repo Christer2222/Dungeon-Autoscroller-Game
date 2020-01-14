@@ -3,10 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using AbilityInfo;
 
-public class LevelUpScreen : AbilityScript
+public class LevelUpScreen : ASD
 {
-	private static Button levelUpButton;
-
 	public static GameObject levelUpScreen;
 
 	public static LevelUpScreen instance;
@@ -42,7 +40,6 @@ public class LevelUpScreen : AbilityScript
 		new AbilityChoices(clense,			hardenSkin			),
 		new AbilityChoices(bulkUp,			magicShield			),
 		new AbilityChoices(restoreSoul,		debulk				),
-
 	};
 
 	private List<AbilityChoices> wizardLevelLine = new List<AbilityChoices>()
@@ -74,9 +71,8 @@ public class LevelUpScreen : AbilityScript
 	private Text abilityPickText1, abilityPickText2, abilityPickText3;
 	private Button cancelButton, confirmButton;
 
-	void Start()
+	public void Initialize()
 	{
-		ForwardMover.levelUpButton = GetComponent<Button>();
 		ForwardMover.levelUpButton.onClick.AddListener(delegate { ToggleLevelUpScreen(); });
 
 		instance = this;
@@ -171,7 +167,6 @@ public class LevelUpScreen : AbilityScript
 					abilityPickText1 = abilityPickButton1.GetComponentInChildren<Text>();
 
 					abilityPickButton1.onClick.AddListener(delegate {
-						print("pick ab 1");
 						AddAbility(levelUpQue[0].option1);// abilityPickText1.text);
 					});
 
@@ -181,8 +176,6 @@ public class LevelUpScreen : AbilityScript
 					abilityPickText2 = abilityPickButton2.GetComponentInChildren<Text>();
 
 					abilityPickButton2.onClick.AddListener(delegate {
-						print("pick ab 2");
-
 						AddAbility(levelUpQue[0].option2);
 					});
 					break;
@@ -191,8 +184,6 @@ public class LevelUpScreen : AbilityScript
 					abilityPickText3 = abilityPickButton3.GetComponentInChildren<Text>();
 
 					abilityPickButton3.onClick.AddListener(delegate {
-						print("pick ab 3");
-
 						AddAbility(levelUpQue[0].option3);
 					});
 					break;

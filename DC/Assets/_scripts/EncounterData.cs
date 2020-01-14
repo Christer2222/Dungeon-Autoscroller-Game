@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using AbilityInfo;
 
-public class EncounterData : AbilityScript
+public class EncounterData : ASD
 {   /* 	/----------------------------\
 	*	| Space to line up abilities |
 	*///\----------------------------/
-	#region enemy stat blocks																										
+	#region enemy stat blocks		
 	//----------------------------------------------------------------------------------------------------------hp,--mp,--------lv,xp, st, de, in, lu------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	public static StatBlock urnBlock = new StatBlock(StatBlock.Race.Construct, "Urn",							001, 000,		00, 0, 00, 00, 00, 00, new List<Ability> { wobble }, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock nosemanBlock = new StatBlock(StatBlock.Race.Demon, "Noseman",						002, 000,		01, 0, 01, 01, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb);
@@ -24,13 +24,12 @@ public class EncounterData : AbilityScript
 	public static StatBlock fleshGolemBlock = new StatBlock(StatBlock.Race.Construct, "Flesh Golem",			030, 010,		04, 0, 03, 02, 01, 01, new List<Ability> { doubleKick, bulkUp }, _weaknesses: Elementals.Fire | Elementals.Ice, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock guardianBlock = new StatBlock(StatBlock.Race.Human, "Guardian",						020, 020,		05, 0, 05, 04, 01, 03, new List<Ability> { forcePunch, magicShield }, _aiType: StatBlock.AIType.Smart, _defense: 1);
 	public static StatBlock giantBlock = new StatBlock(StatBlock.Race.Human, "Giant",							030, 000,		05, 0, 08, 04, 01, 01, new List<Ability> { punch }, _aiType: StatBlock.AIType.Dumb, _defense: 1);
-	public static StatBlock deathSpider = new StatBlock(StatBlock.Race.Animal, "Death Spider",					015, 018,		05, 0, 04, 03, 05, 03, new List<Ability> { poision }, _immunities: Elementals.Poision, _aiType: StatBlock.AIType.Dumb);
+	public static StatBlock deathSpider = new StatBlock(StatBlock.Race.Animal, "Death Spider",					015, 018,		05, 0, 04, 03, 05, 03, new List<Ability> { poision, poisionBite }, _immunities: Elementals.Poision, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock ghostBlock = new StatBlock(StatBlock.Race.Undead, "Ghost",							008, 008,		06, 0, 01, 03, 01, 01, new List<Ability> { punch }, _weaknesses: Elementals.Light, _absorbs: Elementals.Unlife, _immunities: Elementals.Physical, _aiType: StatBlock.AIType.Dumb);
 	public static StatBlock stoneGolemBlock = new StatBlock(StatBlock.Race.Construct, "Stone Golem",			045, 010,		06, 0, 06, 02, 01, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water, _immunities: Elementals.Light, _aiType: StatBlock.AIType.Dumb, _defense: 2);
 	public static StatBlock steelGolemBlock = new StatBlock(StatBlock.Race.Construct, "Steel Golem",			060, 010,		08, 0, 10, 04, 03, 01, new List<Ability> { doubleKick, bulkUp, hardenSkin }, _weaknesses: Elementals.Water | Elementals.Electricity, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Dumb, _defense: 4, _magicDefense: -1);
 	public static StatBlock moonManBlock = new StatBlock(StatBlock.Race.Alien, "Moonman",						030, 999,		10, 0, 02, 03, 02, 03, new List<Ability> { meteorShower }, _resistances: Elementals.Void, _aiType: StatBlock.AIType.Genious);
 	public static StatBlock goldGolemBlock = new StatBlock(StatBlock.Race.Construct, "Gold Golem",				075, 030,		10, 0, 15, 05, 08, 03, new List<Ability> { doubleKick, bulkUp, hardenSkin, fireball }, _immunities: Elementals.Light | Elementals.Poision, _aiType: StatBlock.AIType.Smart, _defense: 6, _magicDefense: -2);
-
 	#endregion
 
 	public enum EncounterLocation

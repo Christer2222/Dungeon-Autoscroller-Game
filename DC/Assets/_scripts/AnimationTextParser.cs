@@ -3,22 +3,40 @@ using System;
 
 public class AnimationTextParser
 {
-	private static Sprite[] spriteArray;
+	public enum Type
+	{
+		enemy,
+		effect,
+	}
 
-	public static Sprite[] ParseDocument(TextAsset _textAsset)
+	private static Sprite[] enemySpriteArray;
+	private static Sprite[] effectSpriteArray;
+
+	public static Sprite[] ParseDocument(TextAsset _textAsset, Type _type)
 	{
 		if (_textAsset == null)
 		{
 			return null;
 		}
 
-		if (spriteArray == null)
-		{
-			spriteArray = Resources.LoadAll<Sprite>("Sprites/Enemies/EnemySpriteSheet");
-		}
+		if (enemySpriteArray == null) enemySpriteArray = Resources.LoadAll<Sprite>("Sprites/Enemies/EnemySpriteSheet");
+		if (effectSpriteArray == null) effectSpriteArray = Resources.LoadAll<Sprite>("Sprites/Enemies/EnemySpriteSheet");
+
 
 		string[] _entries = _textAsset.text.Split(new string[]{Environment.NewLine},StringSplitOptions.RemoveEmptyEntries);
 		Sprite[] _result = new Sprite[_entries.Length];
+
+		Sprite[] _targetArray = null;
+		switch (_type)
+		{
+			case Type.enemy:
+				_targetArray = enemySpriteArray;
+				break;
+			case Type.effect:
+				_targetArray = effectSpriteArray;
+				break;
+		}
+
 
 		for (int i = 0; i < _entries.Length; i++)
 		{
@@ -27,7 +45,7 @@ public class AnimationTextParser
 				_entries[i] = _entries[i].Remove(0, _entries[i].IndexOf("_") + 1);
 			}
 
-			_result[i] = spriteArray[int.TryParse(_entries[i], out int x)? x : 0];
+			_result[i] = _targetArray[int.TryParse(_entries[i], out int x)? x : 0];
 		}
 
 
