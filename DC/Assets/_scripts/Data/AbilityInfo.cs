@@ -86,33 +86,31 @@ namespace AbilityInfo
 			abilityType = _type;
 			extraData = _extraData;
 
-			string _path = "Sprites/Effects/AnimationTexts/";
+			string _path = "Assets/Resources/Sprites/Effects/AnimationTexts/";
 			string _standardizedName = _name.Replace(" ", "_").ToLower().Replace(" ", "_");
 			string _extention = "_a_text.txt";
-			//Debug.Log("code initialized in editor");
-			//TextAsset a = Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _standardizedName + "_a_text");
-			//TextAsset b = Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _standardizedName + "_a_text");
-			//var i = new TextAsset("f");
-			//idleAnimation = AnimationTextParser.ParseDocument(b, AnimationTextParser.Type.enemy);
+
+
 			var _textAsset = Resources.Load<TextAsset>(_path + _standardizedName + _extention);
-			if (_textAsset == null)
+			if (_textAsset == null) //if the text asset wasn't found
 			{
-				_textAsset = new TextAsset("0");
-				Debug.Log("started null");
+				_textAsset = new TextAsset("0"); //creat a text asset if this happen during play
 #if UNITY_EDITOR
-				Debug.Log("is editor");
-
-				if (Resources.Load<TextAsset>(_path + "EMPTY" + _standardizedName + _extention) == null)
+				var _storedAsset = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(_path + "EMPTY_" + _standardizedName + _extention); //figure out if there is an empty
+				if (_storedAsset.Length == 0) //if not create it
 				{
-					Debug.Log("EMPTY was null");
-
-					UnityEditor.AssetDatabase.AddObjectToAsset(_textAsset ,_path + "EMPTY" + _standardizedName + _extention);
+					Debug.LogWarning("created: " + _path + "EMPTY_" + _standardizedName + _extention);
+					UnityEditor.AssetDatabase.CreateAsset(_textAsset, _path + "EMPTY_" + _standardizedName + _extention);
+					UnityEditor.AssetDatabase.Refresh();
+					Debug.Log(_textAsset);
 				}
+				else
+					_textAsset = (TextAsset)_storedAsset[0]; //if there is an empty, use it
 #endif
 			}
 			var _spriteArray = AnimationTextParser.ParseDocument(_textAsset, AnimationTextParser.Type.effect);
 
-			EffectTools.AddToEffectDictionary(_standardizedName, _spriteArray);
+			EffectTools.AddToEffectDictionary(name, _spriteArray);
 	}
 
 	
