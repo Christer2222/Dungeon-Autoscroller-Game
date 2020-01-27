@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using AbilityInfo;
 
-public class LevelUpScreen : ASD
+public class LevelUpScreen : AbilityClass
 {
 	public static GameObject levelUpScreen;
 

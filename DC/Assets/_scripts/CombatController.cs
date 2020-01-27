@@ -109,11 +109,11 @@ public class CombatController : AbilityScript
 		{
 			myStats = new StatBlock(
 				StatBlock.Race.Human,
-				"Player",
+				"Default_Player",
 				10, 15, //hp, mp
 				1, 0, //lv, xp
 				1, 1, 1, 1, //str, dex. int, luck
-				new List<Ability> { ASD.punch});
+				new List<Ability> { AbilityClass.punch});
 				//(DebugController.debugAbilities) ? new List<Ability> { punch, fireball } : new List<Ability> { punch });
 
 			//playerOwned = true;
@@ -277,7 +277,7 @@ public class CombatController : AbilityScript
 
 		if (myStats.idleAnimation != null)
 		{
-			StartCoroutine(Animate());
+			gameObject.AddComponent<AnimationHandler>();
 		}
 
 	}
@@ -321,19 +321,6 @@ public class CombatController : AbilityScript
 	{
 		yield return new WaitForEndOfFrame();
 		actedLastTick = false;
-	}
-
-	IEnumerator Animate()
-	{
-		SpriteRenderer _rend = GetComponent<SpriteRenderer>();
-		int _index = 0;
-		while (true)
-		{
-			_index++;
-			_index %= myStats.idleAnimation.Length;
-			_rend.sprite = myStats.idleAnimation[_index];
-			yield return new WaitForSeconds(0.2f);
-		}
 	}
 
 	void Update()

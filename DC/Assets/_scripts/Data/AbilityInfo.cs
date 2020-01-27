@@ -94,20 +94,9 @@ namespace AbilityInfo
 			var _textAsset = Resources.Load<TextAsset>(_path + _standardizedName + _extention);
 			if (_textAsset == null) //if the text asset wasn't found
 			{
-				_textAsset = new TextAsset("0"); //creat a text asset if this happen during play
-#if UNITY_EDITOR
-				var _storedAsset = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(_path + "EMPTY_" + _standardizedName + _extention); //figure out if there is an empty
-				if (_storedAsset.Length == 0) //if not create it
-				{
-					Debug.LogWarning("created: " + _path + "EMPTY_" + _standardizedName + _extention);
-					UnityEditor.AssetDatabase.CreateAsset(_textAsset, _path + "EMPTY_" + _standardizedName + _extention);
-					UnityEditor.AssetDatabase.Refresh();
-					Debug.Log(_textAsset);
-				}
-				else
-					_textAsset = (TextAsset)_storedAsset[0]; //if there is an empty, use it
-#endif
+				_textAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_path + "EMPTY_" + _standardizedName + _extention);
 			}
+
 			var _spriteArray = AnimationTextParser.ParseDocument(_textAsset, AnimationTextParser.Type.effect);
 
 			EffectTools.AddToEffectDictionary(name, _spriteArray);
@@ -121,6 +110,11 @@ namespace AbilityInfo
 		public AbilityType abilityType;
 		public SkillUsed abilityClass;
 		public ExtraData extraData;
+
+
+
+
+
 	}
 }
 

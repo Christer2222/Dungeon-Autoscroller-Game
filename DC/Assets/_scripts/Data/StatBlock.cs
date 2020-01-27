@@ -66,9 +66,17 @@ public class StatBlock
 		baseDefense = _defense;
 		baseMagicDefense = _magicDefense;
 
+		string _path = "Assets/Resources/Sprites/Enemies/AnimationTexts/";
 		string _standardizedName = _name.Replace(" ", "_").ToLower().Replace(" ", "_");
-		
-		idleAnimation = AnimationTextParser.ParseDocument(Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _standardizedName + "_a_text"), AnimationTextParser.Type.enemy);
+		string _extention = "_a_text.txt";
+
+		TextAsset _animationTextAsset = Resources.Load<TextAsset>("Sprites/Enemies/AnimationTexts/" + _standardizedName + "_a_text");
+		if (_animationTextAsset == null)
+		{
+			_animationTextAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_path + "EMPTY_" + _standardizedName + _extention);
+		}
+
+		idleAnimation = AnimationTextParser.ParseDocument(_animationTextAsset, AnimationTextParser.Type.enemy);
 
 	}
 

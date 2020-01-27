@@ -12,6 +12,24 @@ public class AnimationTextParser
 	private static Sprite[] enemySpriteArray;
 	private static Sprite[] effectSpriteArray;
 
+	public static TextAsset GetNewTextAssetOrAddNewToAssetDatabase(string _pathWithExtention)
+	{
+		var _textAsset = new TextAsset("0");
+#if UNITY_EDITOR
+		var _storedAsset = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(_pathWithExtention); //figure out if there is an empty
+		if (_storedAsset.Length == 0) //if not create it
+		{
+			Debug.LogWarning("created: " + _pathWithExtention);
+			UnityEditor.AssetDatabase.CreateAsset(_textAsset, _pathWithExtention);
+			UnityEditor.AssetDatabase.Refresh();
+			Debug.Log(_textAsset);
+		}
+		else
+			_textAsset = (TextAsset)_storedAsset[0]; //if there is an empty, use it
+#endif
+		return _textAsset;
+	}
+
 	public static Sprite[] ParseDocument(TextAsset _textAsset, Type _type)
 	{
 		if (_textAsset == null)
@@ -20,7 +38,7 @@ public class AnimationTextParser
 		}
 
 		if (enemySpriteArray == null) enemySpriteArray = Resources.LoadAll<Sprite>("Sprites/Enemies/EnemySpriteSheet");
-		if (effectSpriteArray == null) effectSpriteArray = Resources.LoadAll<Sprite>("Sprites/Enemies/EnemySpriteSheet");
+		if (effectSpriteArray == null) effectSpriteArray = Resources.LoadAll<Sprite>("Sprites/Effects/effectSpriteSheet");
 
 
 		string[] _entries = _textAsset.text.Split(new string[]{Environment.NewLine},StringSplitOptions.RemoveEmptyEntries);

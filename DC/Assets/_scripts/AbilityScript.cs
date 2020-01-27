@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AbilityInfo;
 
-public class ASD
+public class AbilityClass
 {
 	public static readonly Ability punch				= new Ability("Punch",					AbilityScript.Punch,				Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
 	public static readonly Ability fireball				= new Ability("Fireball",				AbilityScript.Fireball,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2, ExtraData.blockable | ExtraData.magic);
@@ -300,7 +300,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		int _potency = Mathf.Clamp(targetData.self.myStats.Intelligence,1,5);
 
-		var _buff = new Buff("Poisioned", ASD.poisionTick, _potency, BuffIcons.TryGetBuffIcon("poision"), Buff.StackType.Pick_Most_Turns, _potency);
+		var _buff = new Buff("Poisioned", AbilityClass.poisionTick, _potency, BuffIcons.TryGetBuffIcon("poision"), Buff.StackType.Pick_Most_Turns, _potency);
 		AddBuff(_buff, targetData.target);
 		
 		yield return null;
@@ -315,7 +315,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			_previousBuff.constant = _previousBuff.turns;
 
 			targetData.target.AdjustHealth(-Mathf.Max((int)_previousBuff.constant,0),targetData.element, ExtraData.none);
-			var _t = EffectTools.SpawnEffect(ASD.poision.name, targetData.target.transform.position,1).transform;
+			var _t = EffectTools.SpawnEffect(AbilityClass.poision.name, targetData.target.transform.position,1).transform;
 			_t.SetParent(targetData.target.transform);
 		}
 		yield return null;
@@ -484,8 +484,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator DivineFists(TargetData targetData)
 	{
-		yield return targetData.self.StartCoroutine(ASD.divineLuck.function(targetData));// DivineLuck(targetData._target));
-		yield return targetData.self.StartCoroutine(ASD.bulkUp.function(targetData));//BulkUp(targetData._target));
+		yield return targetData.self.StartCoroutine(AbilityClass.divineLuck.function(targetData));// DivineLuck(targetData._target));
+		yield return targetData.self.StartCoroutine(AbilityClass.bulkUp.function(targetData));//BulkUp(targetData._target));
 	}
 	
 	public static IEnumerator Punch(TargetData targetData)//CombatController _target, int _damage, Elementals _element = Elementals.Physical)
@@ -510,7 +510,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator DoubleKick(TargetData targetData)//(Vector3 _centerPos, CombatController _target, CombatController _self)
 	{
-		yield return targetData.self.StartCoroutine(ASD.punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
+		yield return targetData.self.StartCoroutine(AbilityClass.punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
 		targetData.target = null;
 		yield return new WaitForSeconds(2);
 		var _hit = CheckIfHit(targetData.centerPos);
@@ -523,7 +523,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		*/
 		targetData.target = CheckForMultiHit(_hit);
 
-		yield return targetData.self.StartCoroutine(ASD.punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
+		yield return targetData.self.StartCoroutine(AbilityClass.punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
 
 
 		//yield return StartCoroutine(Punch(_target, _self.myStats.strength));
@@ -541,14 +541,14 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 		*/
 		targetData.target = CheckForMultiHit(_hit);
-		yield return targetData.self.StartCoroutine(ASD.punch.function(targetData));// (Punch(_target, targetData._self.myStats.strength + 2));
+		yield return targetData.self.StartCoroutine(AbilityClass.punch.function(targetData));// (Punch(_target, targetData._self.myStats.strength + 2));
 		yield return null;
 	}
 
 	public static IEnumerator ForcePunch(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
 		if (targetData.self.myStats.Intelligence > 5) targetData.bonus += 1;
-		yield return targetData.self.StartCoroutine(ASD.punch.function(targetData));// (Punch(_target, _self.myStats.strength + 2, Elementals.Air));
+		yield return targetData.self.StartCoroutine(AbilityClass.punch.function(targetData));// (Punch(_target, _self.myStats.strength + 2, Elementals.Air));
 		yield return null;
 	}
 
@@ -559,7 +559,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		targetData.bonus += _result;
 
-		yield return targetData.self.StartCoroutine(ASD.punch.function(targetData));//Punch(_target, _self.myStats.strength + _r));
+		yield return targetData.self.StartCoroutine(AbilityClass.punch.function(targetData));//Punch(_target, _self.myStats.strength + _r));
 		yield return null;
 	}
 
@@ -570,15 +570,15 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		if (_r == 0)
 		{
 			targetData.bonus += 2;
-			yield return targetData.self.StartCoroutine(ASD.manaDrain.function(targetData));// ManaDrain(_target,_self, 2));
+			yield return targetData.self.StartCoroutine(AbilityClass.manaDrain.function(targetData));// ManaDrain(_target,_self, 2));
 		}
 		else if (_r == 1)
 		{
-			yield return targetData.self.StartCoroutine(ASD.fireball.function(targetData));//Fireball(_centerPos, _self, 2));
+			yield return targetData.self.StartCoroutine(AbilityClass.fireball.function(targetData));//Fireball(_centerPos, _self, 2));
 		}
 		else if (_r == 2)
 		{
-			yield return targetData.self.StartCoroutine(ASD.heal.function(targetData));// Heal(_target, _self.myStats.luck));
+			yield return targetData.self.StartCoroutine(AbilityClass.heal.function(targetData));// Heal(_target, _self.myStats.luck));
 		}
 
 		yield return null;
@@ -634,7 +634,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		{
 			Vector3 _randomDir = Vector3.right * Random.Range(-0.7f,0.7f);
 
-			var _meteor = EffectTools.SpawnEffect((Random.Range(0,128) == 0)? ASD.punch.name :  targetData.ability.name, _top + Vector3.left * (i - Random.Range(1f,1.5f)), 6);
+			var _meteor = EffectTools.SpawnEffect((Random.Range(0,128) == 0)? AbilityClass.punch.name :  targetData.ability.name, _top + Vector3.left * (i - Random.Range(1f,1.5f)), 6);
 			var _meteorMono = _meteor.gameObject.AddComponent<EmptyMonoBehaviour>();
 			_meteorMono.StartCoroutine(EffectTools.MoveDirection(_meteor.transform, Vector3.down + _randomDir, 3, 5)); //global set the effect
 			_meteors.Add(_meteorMono);
@@ -716,15 +716,15 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator MassExplosion(TargetData targetData)//(Vector3 _centerPos,CombatController _self)
 	{
 		targetData.centerPos += Vector3.left; //-1
-		targetData.self.StartCoroutine(ASD.fireball.function(targetData));
+		targetData.self.StartCoroutine(AbilityClass.fireball.function(targetData));
 		yield return new WaitForSeconds(0.1f);
 
 		targetData.centerPos += Vector3.right; //0
-		targetData.self.StartCoroutine(ASD.fireball.function(targetData));
+		targetData.self.StartCoroutine(AbilityClass.fireball.function(targetData));
 		yield return new WaitForSeconds(0.1f);
 
 		targetData.centerPos += Vector3.right; //+1
-		targetData.self.StartCoroutine(ASD.fireball.function(targetData));
+		targetData.self.StartCoroutine(AbilityClass.fireball.function(targetData));
 		yield return null;
 	}
 
@@ -786,7 +786,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name, lastClick, 1);
 
-		var _buff = new Buff(ASD.bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
+		var _buff = new Buff(AbilityClass.bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
 		AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -796,7 +796,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name, lastClick, 1);
 
-		var _buff = new Buff(ASD.curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
+		var _buff = new Buff(AbilityClass.curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
 		AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -806,7 +806,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name,lastClick,1);
 
-		var _buff = new Buff(ASD.bulkUp.name,"strength_constant",2, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
+		var _buff = new Buff(AbilityClass.bulkUp.name,"strength_constant",2, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
 		AddBuff(_buff, targetData.self);
 
 		yield return null;
@@ -816,7 +816,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			var _buff = new Buff(ASD.debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
+			var _buff = new Buff(AbilityClass.debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
 			AddBuff(_buff, targetData.target);
 		}
 
@@ -827,7 +827,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name,lastClick,1);
 
-		var _buff = new Buff(ASD.divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
+		var _buff = new Buff(AbilityClass.divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
 		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
@@ -838,7 +838,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		if(targetData.target != null)
 		{
-			var _buff = new Buff(ASD.regeneration.name, ASD.heal.name,3, BuffIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.Luck,0));
+			var _buff = new Buff(AbilityClass.regeneration.name, AbilityClass.heal.name,3, BuffIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.Luck,0));
 			AddBuff(_buff,targetData.target);
 		}
 		yield return null;
@@ -848,7 +848,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		CombatController.turnOrder.ForEach(x => {
 			lastClick = x.transform.position;
-			x.StartCoroutine(ASD.heal.function(targetData));
+			x.StartCoroutine(AbilityClass.heal.function(targetData));
 		});
 
 		yield return null;
@@ -872,7 +872,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			targetData.target.StartCoroutine(ASD.keenSight.function(targetData));// displayCritAreas.function(targetData));
+			targetData.target.StartCoroutine(AbilityClass.keenSight.function(targetData));// displayCritAreas.function(targetData));
 		}
 
 		yield return null;
@@ -881,7 +881,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator TimeWarp(TargetData targetData)
 	{
 		EffectTools.SpawnEffect(targetData.ability.name,lastClick,1);
-		var _buff = new Buff(ASD.timeWarp.name,"extra turn",2, BuffIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
+		var _buff = new Buff(AbilityClass.timeWarp.name,"extra turn",2, BuffIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
 		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
