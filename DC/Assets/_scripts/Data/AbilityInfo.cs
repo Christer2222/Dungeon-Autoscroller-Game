@@ -97,6 +97,7 @@ namespace AbilityInfo
 				_textAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_path + "EMPTY_" + _standardizedName + _extention + ".txt");
 			}
 
+			Debug.Log(_standardizedName + " parsed: ");
 			var _spriteArray = AnimationTextParser.ParseDocument(_textAsset, AnimationTextParser.Type.effect);
 
 			EffectTools.AddToEffectDictionary(name, _spriteArray);

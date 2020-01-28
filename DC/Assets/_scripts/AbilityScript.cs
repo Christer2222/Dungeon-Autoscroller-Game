@@ -805,6 +805,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		if (targetData.self.myStats.buffList.Count > 0)
 		{
 			targetData.self.myStats.buffList.RemoveAt(Random.Range(0, targetData.self.myStats.buffList.Count));
+			EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position,1);
 		}
 		yield return null;
 	}

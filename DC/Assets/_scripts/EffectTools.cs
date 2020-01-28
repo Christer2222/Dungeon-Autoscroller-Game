@@ -127,7 +127,6 @@ public class EffectTools : MonoBehaviour
 	}
 
 
-	/// <param name="_name">Gets ToLowered</param>
 	public static SpriteRenderer SpawnEffect(string _name, Vector3 _worldPos, float _destroyTime = 0, int _layerIndex = 10, string _sortingLayer = "UI")
 	{
 		if (!initialized)

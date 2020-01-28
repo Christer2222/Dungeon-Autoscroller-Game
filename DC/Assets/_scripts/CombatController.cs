@@ -272,8 +272,6 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public void RefreshAbilityList()
 	{
-		print(myStats.abilities.Count);
-
 		var _children = buttonMenuContent.GetComponentsInChildren<Transform>();
 
 		for (int i = 1; i < _children.Length; i++) //exclude parent by starting at 1
