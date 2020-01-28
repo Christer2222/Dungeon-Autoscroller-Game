@@ -87,14 +87,14 @@ namespace AbilityInfo
 			extraData = _extraData;
 
 			string _path = "Assets/Resources/Sprites/Effects/AnimationTexts/";
-			string _standardizedName = _name.Replace(" ", "_").ToLower().Replace(" ", "_");
-			string _extention = "_a_text.txt";
+			string _standardizedName = _name.Replace(" ", "_").ToLower();
+			string _extention = "_a_text";
 
 
-			var _textAsset = Resources.Load<TextAsset>(_path + _standardizedName + _extention);
+			var _textAsset = Resources.Load<TextAsset>("Sprites/Effects/AnimationTexts/" + _standardizedName + _extention);
 			if (_textAsset == null) //if the text asset wasn't found
 			{
-				_textAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_path + "EMPTY_" + _standardizedName + _extention);
+				_textAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_path + "EMPTY_" + _standardizedName + _extention + ".txt");
 			}
 
 			var _spriteArray = AnimationTextParser.ParseDocument(_textAsset, AnimationTextParser.Type.effect);

@@ -55,9 +55,15 @@ public class Buff
 public class BuffIcons
 {
 	public static Dictionary<string, Sprite> buffIconDictionary;
+	public static Sprite[] spriteSheet = Resources.LoadAll<Sprite>("Sprites/UI/StatusSpriteSheet");
 
 	public static Sprite TryGetBuffIcon(string _name)
 	{
 		return buffIconDictionary.TryGetValue(_name, out var y) ? buffIconDictionary[_name] : buffIconDictionary["default"];
+	}
+
+	public static Sprite TryGetBuffIcon(int _index)
+	{
+		return spriteSheet[_index];
 	}
 }

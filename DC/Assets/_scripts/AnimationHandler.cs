@@ -21,7 +21,10 @@ public class AnimationHandler : MonoBehaviour
 
 	int Counter(int[] _numbers, int index)
 	{
+		index++;
+		index %= _numbers.Length;
 
+		return _numbers[index];
 	}
 
 	IEnumerator Animate(SpriteRenderer _targetRenderer)

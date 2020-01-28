@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AbilityInfo;
 
-public class Items : ASD
+public class Items : AbilityClass
 {
 	public static ItemInfo apple = new ItemInfo(heal, 2, 0);
 	public static ItemInfo orange = new ItemInfo(heal, 4, 1);

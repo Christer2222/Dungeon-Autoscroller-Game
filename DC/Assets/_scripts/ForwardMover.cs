@@ -36,7 +36,6 @@ public class ForwardMover : MonoBehaviour
 		}
 		//playerCombatController = gameObject.GetComponent<CombatController>();
 
-		print(CombatController.playerCombatController);
 		levelUpButton = CombatController.playerCombatController.GetComponent<Button>();
 		LevelUpScreen.instance = new LevelUpScreen(); //CombatController.playerCombatController.GetComponent<LevelUpScreen>();
 		LevelUpScreen.instance.Initialize();

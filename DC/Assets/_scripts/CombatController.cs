@@ -67,20 +67,6 @@ public class CombatController : AbilityScript
 	private static GameObject entryPrefab;
 	private Text abilityButtonText;
 
-	private readonly List<Ability> debugAbilityList = new List<Ability>()
-	{
-
-	/*
-		poision, poisionBite, airSlash, bubble, crystalLance,
-		eruption, thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
-		chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
-		restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
-		spotWeakness, smiteUnlife, siphonSoul, heal, lifeTap, massHeal,fireball, focus, 
-		timeWarp, keenSight,
-
-		tiltSwing, massExplosion,
-	*/
-	};
 
 	public static void ClearAllValues()
 	{
@@ -105,16 +91,16 @@ public class CombatController : AbilityScript
 
 
 		//Set stats for enemies and the player + ui for player
-		if (gameObject.name == "$PlayerPortrait")
+		if (playerOwned)//gameObject.name == "$PlayerPortrait")
 		{
 			myStats = new StatBlock(
 				StatBlock.Race.Human,
-				"Default_Player",
+				"Player",
 				10, 15, //hp, mp
 				1, 0, //lv, xp
 				1, 1, 1, 1, //str, dex. int, luck
-				new List<Ability> { AbilityClass.punch});
-				//(DebugController.debugAbilities) ? new List<Ability> { punch, fireball } : new List<Ability> { punch });
+				//new List<Ability> { AbilityClass.punch});
+				(DebugController.debugAbilities) ? AbilityClass.Tes() : new List<Ability> { AbilityClass.punch });
 
 			//playerOwned = true;
 
@@ -275,11 +261,10 @@ public class CombatController : AbilityScript
 			currentMana = myStats.maxMana;
 		}
 
-		if (myStats.idleAnimation != null)
+		if (myStats.idleAnimation != null && !playerOwned)
 		{
 			gameObject.AddComponent<AnimationHandler>();
 		}
-
 	}
 
 	/// <summary>
@@ -287,6 +272,8 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public void RefreshAbilityList()
 	{
+		print(myStats.abilities.Count);
+
 		var _children = buttonMenuContent.GetComponentsInChildren<Transform>();
 
 		for (int i = 1; i < _children.Length; i++) //exclude parent by starting at 1
@@ -298,6 +285,7 @@ public class CombatController : AbilityScript
 		{
 			string _s = "";
 			_s = myStats.abilities[i].name;
+
 
 			buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0,(myStats.abilities.Count - 1) * 160 + 10); //set size to fit all entries
 
@@ -866,7 +854,9 @@ public class CombatController : AbilityScript
 			ResetAbilityPick();
 			if (turnOrder.Count == 0)
 			{
-				AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon("busy"), Buff.StackType.Add_Duplicate, 1), this);
+				//AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon("busy"), Buff.StackType.Add_Duplicate, 1), this);
+				AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
+
 				ForwardMover.speedBoost = 0;
 				ForwardMover.shouldMove = false;
 				CheckIfBuffIconsAreCorrect();

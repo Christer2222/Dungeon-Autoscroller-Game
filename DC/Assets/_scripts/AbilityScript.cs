@@ -5,6 +5,35 @@ using AbilityInfo;
 
 public class AbilityClass
 {
+	public static List<Ability> Tes()
+	{
+		return new List<Ability>()
+		{
+			poision, poisionBite, airSlash, bubble, crystalLance,
+			eruption, thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
+			chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
+			restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
+			spotWeakness, smiteUnlife, siphonSoul, heal, lifeTap, massHeal,fireball, focus,
+			timeWarp, keenSight,
+
+			tiltSwing, massExplosion,
+		};
+	}
+
+	/*
+	public static List<Ability> debugAbilityList = new List<Ability>()
+	{
+			poision, poisionBite, airSlash, bubble, crystalLance,
+			eruption, thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
+			chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
+			restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
+			spotWeakness, smiteUnlife, siphonSoul, heal, lifeTap, massHeal,fireball, focus, 
+			timeWarp, keenSight,
+
+			tiltSwing, massExplosion,
+	};
+	*/
+
 	public static readonly Ability punch				= new Ability("Punch",					AbilityScript.Punch,				Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
 	public static readonly Ability fireball				= new Ability("Fireball",				AbilityScript.Fireball,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2, ExtraData.blockable | ExtraData.magic);
 	public static readonly Ability massExplosion		= new Ability("Mass Explosion",			AbilityScript.MassExplosion,		Elementals.Fire, SkillUsed.magic, AbilityType.attack, -4, ExtraData.blockable);
@@ -300,7 +329,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		int _potency = Mathf.Clamp(targetData.self.myStats.Intelligence,1,5);
 
-		var _buff = new Buff("Poisioned", AbilityClass.poisionTick, _potency, BuffIcons.TryGetBuffIcon("poision"), Buff.StackType.Pick_Most_Turns, _potency);
+		//var _buff = new Buff("Poisioned", AbilityClass.poisionTick, _potency, BuffIcons.TryGetBuffIcon("poision"), Buff.StackType.Pick_Most_Turns, _potency);
+		var _buff = new Buff("Poisioned", AbilityClass.poisionTick, _potency, BuffIcons.TryGetBuffIcon(21), Buff.StackType.Pick_Most_Turns, _potency);
 		AddBuff(_buff, targetData.target);
 		
 		yield return null;
@@ -424,7 +454,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		//yield return new WaitForSeconds(0.5f);
 
-		var _buff = new Buff("Crystalized", new List<string> { "defense_constant", "magicDefense_constant" }, 1, BuffIcons.TryGetBuffIcon("Crystalized"), Buff.StackType.Pick_Most_Turns, 99);
+		//var _buff = new Buff("Crystalized", new List<string> { "defense_constant", "magicDefense_constant" }, 1, BuffIcons.TryGetBuffIcon("Crystalized"), Buff.StackType.Pick_Most_Turns, 99);
+		var _buff = new Buff("Crystalized", new List<string> { "defense_constant", "magicDefense_constant" }, 1, BuffIcons.TryGetBuffIcon(17), Buff.StackType.Pick_Most_Turns, 99);
+
 		AddBuff(_buff, targetData.self);
 
 		yield return null;
@@ -435,7 +467,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position, 1).transform;
 		_t.SetParent(targetData.self.transform);
 
-		var _buff = new Buff("Hardened Skin","defense_constant",3, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Pick_Most_Turns, 2);
+		//var _buff = new Buff("Hardened Skin","defense_constant",3, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Pick_Most_Turns, 2);
+		var _buff = new Buff("Hardened Skin", "defense_constant", 3, BuffIcons.TryGetBuffIcon(15), Buff.StackType.Pick_Most_Turns, 2);
+
 		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
@@ -445,10 +479,12 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position, 1).transform;
 		_t.SetParent(targetData.self.transform);
 
-		var _t2 = EffectTools.SpawnEffect("blue_sparkles", targetData.self.transform.position, 1, 11).transform;
-		_t2.SetParent(targetData.self.transform);
+		//var _t2 = EffectTools.SpawnEffect("blue_sparkles", targetData.self.transform.position, 1, 11).transform;
+		//_t2.SetParent(targetData.self.transform);
 
-		var _buff = new Buff("Magic Shield", "magicDefense_constant", 3, BuffIcons.TryGetBuffIcon("MagicShielded"), Buff.StackType.Pick_Most_Turns, 2);
+		//var _buff = new Buff("Magic Shield", "magicDefense_constant", 3, BuffIcons.TryGetBuffIcon("MagicShielded"), Buff.StackType.Pick_Most_Turns, 2);
+		var _buff = new Buff("Magic Shield", "magicDefense_constant", 3, BuffIcons.TryGetBuffIcon(14), Buff.StackType.Pick_Most_Turns, 2);
+
 		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
@@ -501,7 +537,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		//targetData.element = Elementals.Ice;
 		yield return targetData.self.StartCoroutine(Punch(targetData));
-		var _buff =  new Buff("Frozen", new List<string> { "dexterity_constant",}, 2, BuffIcons.TryGetBuffIcon("Frozen"), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
+		//var _buff =  new Buff("Frozen", new List<string> { "dexterity_constant",}, 2, BuffIcons.TryGetBuffIcon("Frozen"), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
+		var _buff = new Buff("Frozen", new List<string> { "dexterity_constant", }, 2, BuffIcons.TryGetBuffIcon(18), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
 		//var _buff2 = new Buff("Hardened Skin", "defense_constant", 2, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Add_One_Duration_And_One_Potency, 1, _shouldBeDisplyed: false);
 
 		AddBuff(_buff, targetData.target);
@@ -786,7 +823,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name, lastClick, 1);
 
-		var _buff = new Buff(AbilityClass.bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
+		//var _buff = new Buff(AbilityClass.bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
+		var _buff = new Buff(AbilityClass.bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon(22), Buff.StackType.Pick_Most_Turns, 2);
+
 		AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -796,7 +835,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name, lastClick, 1);
 
-		var _buff = new Buff(AbilityClass.curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
+		//var _buff = new Buff(AbilityClass.curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
+		var _buff = new Buff(AbilityClass.curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon(23), Buff.StackType.Pick_Most_Turns, 0.5f);
+
 		AddBuff(_buff, targetData.target);
 
 		yield return null;
@@ -806,7 +847,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name,lastClick,1);
 
-		var _buff = new Buff(AbilityClass.bulkUp.name,"strength_constant",2, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
+		//var _buff = new Buff(AbilityClass.bulkUp.name,"strength_constant",2, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
+		var _buff = new Buff(AbilityClass.bulkUp.name, "strength_constant", 2, BuffIcons.TryGetBuffIcon(3), Buff.StackType.Add_One_Duration_Add_All_Potency, 1);
+
 		AddBuff(_buff, targetData.self);
 
 		yield return null;
@@ -816,7 +859,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			var _buff = new Buff(AbilityClass.debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
+			//var _buff = new Buff(AbilityClass.debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
+			var _buff = new Buff(AbilityClass.debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon(4), Buff.StackType.Pick_Most_Potent, -2);
+
 			AddBuff(_buff, targetData.target);
 		}
 
@@ -827,7 +872,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		EffectTools.SpawnEffect(targetData.ability.name,lastClick,1);
 
-		var _buff = new Buff(AbilityClass.divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
+		//var _buff = new Buff(AbilityClass.divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
+		var _buff = new Buff(AbilityClass.divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon(9), Buff.StackType.Pick_Most_Potent, 2);
+
 		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
@@ -838,7 +885,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		if(targetData.target != null)
 		{
-			var _buff = new Buff(AbilityClass.regeneration.name, AbilityClass.heal.name,3, BuffIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.Luck,0));
+			//var _buff = new Buff(AbilityClass.regeneration.name, AbilityClass.heal.name,3, BuffIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.Luck,0));
+			var _buff = new Buff(AbilityClass.regeneration.name, AbilityClass.heal.name, 3, BuffIcons.TryGetBuffIcon(12), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.Luck, 0));
+
 			AddBuff(_buff,targetData.target);
 		}
 		yield return null;
@@ -881,7 +930,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator TimeWarp(TargetData targetData)
 	{
 		EffectTools.SpawnEffect(targetData.ability.name,lastClick,1);
-		var _buff = new Buff(AbilityClass.timeWarp.name,"extra turn",2, BuffIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
+		//var _buff = new Buff(AbilityClass.timeWarp.name,"extra turn",2, BuffIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
+		var _buff = new Buff(AbilityClass.timeWarp.name, "extra turn", 2, BuffIcons.TryGetBuffIcon(11), Buff.StackType.Add_Duplicate, 1);
+
 		AddBuff(_buff, targetData.self);
 		yield return null;
 	}
