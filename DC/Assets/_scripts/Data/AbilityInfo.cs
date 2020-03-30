@@ -111,11 +111,6 @@ namespace AbilityInfo
 		public AbilityType abilityType;
 		public SkillUsed abilityClass;
 		public ExtraData extraData;
-
-
-
-
-
 	}
 }
 

@@ -70,6 +70,7 @@
     <Compile Include="Assets\_scripts\Data\AbilityInfo.cs" />
     <Compile Include="Assets\_scripts\Data\Buff.cs" />
     <Compile Include="Assets\_scripts\Data\DebugController.cs" />
+    <Compile Include="Assets\_scripts\Data\EnemyAI.cs" />
     <Compile Include="Assets\_scripts\Data\ItemInfo.cs" />
     <Compile Include="Assets\_scripts\Data\Options.cs" />
     <Compile Include="Assets\_scripts\Data\StatBlock.cs" />

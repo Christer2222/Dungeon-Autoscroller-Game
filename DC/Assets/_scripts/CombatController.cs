@@ -501,96 +501,34 @@ public class CombatController : AbilityScript
 	IEnumerator TakeEnemyTurn()
 	{
 		yield return new WaitForSeconds(1);
-		//var a = myStats.abilities.FindAll(x => x.);
-		List<Ability> _recoveries = myStats.abilities.FindAll(x => x.abilityType == AbilityType.recovery && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y)? y <= currentMana: true)); //find all recoveries. If it has cost, check if has more or equal mana. If no cost, act as if has mana.
-		List<Ability> _nonRecover = myStats.abilities.FindAll(x => x.abilityType != AbilityType.recovery && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
-		List<Ability> _offensive = myStats.abilities.FindAll(x => x.abilityType == AbilityType.offensive && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
-		List<Ability> _buffs = myStats.abilities.FindAll(x => x.abilityType == AbilityType.buff && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
 
-		AbilityType activeType = AbilityType.none;
-
-		switch(myStats.aiType)
-		{
-			case StatBlock.AIType.None:
-				selectedAbility = null;
-				break;
-			case StatBlock.AIType.Dumb:
-				selectedAbility = myStats.abilities[Random.Range(0,myStats.abilities.Count)];
-				activeType = AbilityType.offensive;
-				break;
-			case StatBlock.AIType.Smart:
-				if(currentHealth <= myStats.maxHealth / 3 && _recoveries.Count > 0)
-				{
-					selectedAbility = _recoveries[Random.Range(0,_recoveries.Count)];
-					activeType = AbilityType.recovery;
-				}
-				else if (myStats.buffList.Count == 0 && _buffs.Count > 0)
-				{
-					selectedAbility = _buffs[Random.Range(0,_offensive.Count)];
-					activeType = AbilityType.buff;
-				}
-				else
-				{
-					selectedAbility = _offensive[Random.Range(0,myStats.abilities.Count)];
-					activeType = AbilityType.offensive;
-				}
-
-				break;
-			case StatBlock.AIType.Coward:
-
-				if (currentHealth <= myStats.maxHealth / 2 && _recoveries.Count > 0)
-				{
-					selectedAbility = _recoveries[Random.Range(0,_recoveries.Count)];
-					activeType = AbilityType.recovery;
-				}
-				else
-				{
-					selectedAbility = _nonRecover[Random.Range(0,_nonRecover.Count)];
-					activeType = AbilityType.offensive;
-				}
-				break;
-			case StatBlock.AIType.Sprinter:
-				break;
-		}
-
-		var _startScale = transform.localScale;
-
+		selectedAbility = EnemyAI.SelectAbility(myStats, currentHealth, currentMana);
 
 		//_playerTurnText.transform.parent.localPosition = Vector3.zero;
 
-		var _abilityUsedText = EffectTools.SpawnText(Vector3.zero, UICanvas.transform, new Color(0.7f,0,0), myStats.name + " used " + selectedAbility.name, 90);
-		_abilityUsedText.transform.parent.localPosition = Vector3.zero + Vector3.up * 400;
-		Destroy(_abilityUsedText.transform.parent.gameObject, 6);
-
-		float _turnDelay = 1f / ((float)turnOrder.Count / 5);
-		StartCoroutine(
-		EffectTools.ActivateInOrder(_abilityUsedText, new List<EffectTools.FunctionAndDelay>()
-		{
-			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_abilityUsedText.transform,Vector3.right,100,5),_turnDelay),
-		}));
-
-		yield return StartCoroutine(
-		EffectTools.ActivateInOrder(this, new List<EffectTools.FunctionAndDelay>()
-		{
-			new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, _startScale, _startScale * 1.5f, 0.2f), _turnDelay + 0.5f),
-			new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _startScale, 0.2f), 0.2f),
-		}));
+		yield return StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UICanvas.transform, myStats, selectedAbility, this));
 
 		yield return new WaitForSeconds(0.3f);
 
-		if(activeType == AbilityType.offensive)
-		{
-			targetCombatController = playerCombatController;
-			lastClick = playerCombatController.transform.position;
-		}
-		else
+		print("enemy tried to do move : " + selectedAbility + " of type " + selectedAbility.abilityType);
+
+		//if the seleced ability has any bit set to any of the accepted types
+		if (((AbilityType.buff | AbilityType.defensive | AbilityType.recovery | AbilityType.misc) & (selectedAbility.abilityType)) != 0)
 		{
 			targetCombatController = this;
 			lastClick = transform.position;
 		}
+		else
+		{
+			targetCombatController = playerCombatController;
+			lastClick = playerCombatController.transform.position;
+		}
+
 
 		yield return StartCoroutine(InvokeActiveAbility());
 		myEnemyMover.shouldMove = true;
+
+
 	}
 
 	public void AdjustPlayerXP(int _amount)
