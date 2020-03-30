@@ -7,9 +7,9 @@ public class ForwardMover : MonoBehaviour
 {
 	private GameObject segmentPrefab;
 	private GameObject enemyPrefab;
-	private Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
+	private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
-	private List<GameObject> segmentList = new List<GameObject>();
+	private readonly List<GameObject> segmentList = new List<GameObject>();
 	private const float SEGMENT_DISTANCE = 8;
 
 	public static float encounterTimer = 1;//5;
@@ -64,7 +64,7 @@ public class ForwardMover : MonoBehaviour
 				if (buffTimer <= 0)
 				{
 					buffTimer = DEFAULT_BUFF_TIMER;
-					CombatController.playerCombatController.TickBuffs();
+					StartCoroutine( CombatController.playerCombatController.TickBuffs());
 				}
 			}
 		}

@@ -316,7 +316,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator PoisionBite(TargetData targetData)
 	{
 		targetData.self.StartCoroutine(Punch(targetData));
-		if (Random.Range(0,2) == 0)
+		//if (Random.Range(0,2) == 0)
 			targetData.self.StartCoroutine(Poision(targetData));
 
 		yield return null;

@@ -27,6 +27,7 @@ public class CombatController : AbilityScript
 	private Image buffScrollImage;
 	private static GameObject buffEntryPrefab;
 	private Text levelUpText;
+	private int xpPoolToaddAfterCombat;
 
 	//game stats that change often
 	public StatBlock myStats;
@@ -41,24 +42,12 @@ public class CombatController : AbilityScript
 	public Ability selectedAbility;
 	private CombatController targetCombatController;
     public static CombatController playerCombatController;
-	//private Vector3 hitPosition;
 	private bool isCritted;
 	private Color activeColor = new Color(0,0,0.35f), deactiveColor = Color.gray;
 
-
 	private GameObject inventoryScreen;
-
-	//private Button fleeButton;
 	private Slider fleeSlider;
-	/*
-	private int FleeThreshold
-	{
-		get
-		{
-			return 5 + myStats.dexterity;
-		}
-	}
-	*/
+
     public bool actedLastTick;
 	private bool invokingAbility;
 
@@ -161,14 +150,30 @@ public class CombatController : AbilityScript
 					case "$ItemsButton":
 						ForwardMover.itemsButton = _t.GetComponent<Button>();
 						ForwardMover.itemsButton.onClick.AddListener(delegate {
-							print("items");
+							
 						});
+
+						if (ForwardMover.itemsButton.onClick.GetPersistentEventCount() == 0)
+						{
+							_t.GetComponentInChildren<Text>().text = "-";
+						}
+						else
+							print("REMOVE ME");
+
 						break;
 					case "$InspectButton":
 						ForwardMover.inspectButton = _t.GetComponent<Button>();
 						ForwardMover.inspectButton.onClick.AddListener(delegate {
-							print("inspect");
+							
 						});
+
+						if (ForwardMover.inspectButton.onClick.GetPersistentEventCount() == 0)
+						{
+							_t.GetComponentInChildren<Text>().text = "-";
+						}
+						else
+							print("REMOVE ME");
+
 						break;
 					case "$HealthSlider":
 						healthSlider = _t.GetComponent<Slider>();
@@ -188,6 +193,10 @@ public class CombatController : AbilityScript
 					case "$ButtonMenuScrollView":
 						abilityMenuScrollView = _t.gameObject;
 						abilityMenuScrollView.transform.SetParent(UICanvas.transform);
+
+						var rectAb = _t.GetComponent<RectTransform>();
+						rectAb.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, rectAb.rect.width);
+
 						break;
 					case "$AbilityContent":
 						buttonMenuContent = _t.gameObject;
@@ -321,54 +330,63 @@ public class CombatController : AbilityScript
 		{
 			if (turnOrder[0] == this) //if it is this actors turn
 			{
-				if (playerOwned)
-				{
-					if(Input.GetMouseButtonDown(0)) Click(); //wait for clicks
-				}
+				StartCoroutine(StartOfTurnActions());
+			}
+		}
+		
+		if (playerOwned)
+		{
+			if(Input.GetMouseButtonDown(0)) Click(); //wait for clicks outside of the players turn
+		}
+	}
 
-				if (!startedTurn)
-				{
-					startedTurn = true;
-					turnCounter++;
+	IEnumerator StartOfTurnActions()
+	{
+		if (!startedTurn)
+		{
+			startedTurn = true;
+			turnCounter++;
 
-					//UpdateTurnOrder turn order
-					UpdateTurnOrderDisplay();
+			//Invoke buffs
+			yield return TickBuffs();
 
-					if (turnOrder[0] == playerOwned || turnCounter == 1)
+			//UpdateTurnOrder turn order
+			UpdateTurnOrderDisplay();
+
+			if (turnOrder[0] == playerOwned || turnCounter == 1)
+			{
+				var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UICanvas.transform, (turnCounter == 1) ? new Color(0.8f, 0.4f, 0) : Color.yellow + Color.red, (turnCounter == 1) ? "Combat!" : "Your Turn!", 150);
+				_playerTurnText.transform.parent.localPosition = Vector3.zero;
+				_playerTurnText.StartCoroutine(EffectTools.ActivateInOrder(_playerTurnText,
+					new List<EffectTools.FunctionAndDelay>()
 					{
-						var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UICanvas.transform, (turnCounter == 1)? new Color(0.8f,0.4f,0) :Color.yellow + Color.red, (turnCounter == 1)? "Combat!": "Your Turn!", 150);
-						_playerTurnText.transform.parent.localPosition = Vector3.zero;
-						_playerTurnText.StartCoroutine(EffectTools.ActivateInOrder(_playerTurnText,
-							new List<EffectTools.FunctionAndDelay>()
-							{
 									new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(_playerTurnText.transform, new Vector3(2, 0, 0), Vector3.one, 1f),   0),
 									new EffectTools.FunctionAndDelay(new List<IEnumerator>()
 										{
 											EffectTools.MoveDirection(_playerTurnText.transform,Vector3.right,100,5),
 											EffectTools.StretchFromTo(_playerTurnText.transform, _playerTurnText.transform.localScale, new Vector3(2, 1, 0), 2f),
 										},2f)
-							}
-							));
-
-						Destroy(_playerTurnText.transform.parent.gameObject, 3);
 					}
+					));
 
+				Destroy(_playerTurnText.transform.parent.gameObject, 3);
+			}
 
-					//Invoke buffs
-					TickBuffs();
-
-					if (!playerOwned)
-					{
-						myEnemyMover.shouldMove = false;
-						StartCoroutine(TakeEnemyTurn());
-					}
-				}
+			if (!playerOwned)
+			{
+				yield return new WaitForEndOfFrame();
+				myEnemyMover.shouldMove = false;
+				if (currentHealth > 0)
+					StartCoroutine(TakeEnemyTurn());
 			}
 		}
-		else
-		{
-			if(Input.GetMouseButtonDown(0)) Click(); //wait for clicks outside of the players turn
-		}
+
+		
+		//if (playerOwned)
+		//{
+		//	if (Input.GetMouseButtonDown(0)) Click(); //wait for clicks
+		//}
+		
 	}
 
 	public static void UpdateTurnOrderDisplay()
@@ -384,7 +402,7 @@ public class CombatController : AbilityScript
 	/// <summary>
 	/// Call each buff, and decrement their turn counter
 	/// </summary>
-	public void TickBuffs()
+	public IEnumerator TickBuffs()
 	{
 		targetCombatController = this;
 		var _prevActiveAbility = selectedAbility;
@@ -395,7 +413,7 @@ public class CombatController : AbilityScript
 			for (int j = 0; j < _buff.functions.Count; j++)
 			{
 				selectedAbility = _buff.functions[j];
-				StartCoroutine(InvokeActiveAbility(false,_buff.constant));
+				yield return StartCoroutine(InvokeActiveAbility(false,_buff.constant));
 			}
 			_buff.turns--;
 		}
@@ -509,8 +527,6 @@ public class CombatController : AbilityScript
 		yield return StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UICanvas.transform, myStats, selectedAbility, this));
 
 		yield return new WaitForSeconds(0.3f);
-
-		print("enemy tried to do move : " + selectedAbility + " of type " + selectedAbility.abilityType);
 
 		//if the seleced ability has any bit set to any of the accepted types
 		if (((AbilityType.buff | AbilityType.defensive | AbilityType.recovery | AbilityType.misc) & (selectedAbility.abilityType)) != 0)
@@ -640,7 +656,15 @@ public class CombatController : AbilityScript
 		{
 			if (!playerOwned)
 			{
-				playerCombatController.AdjustPlayerXP(myStats.level * 3);
+				xpPoolToaddAfterCombat += myStats.level * 3;
+				
+				print(turnOrder.Count);
+
+				if (turnOrder.Count <= 2) //if this was the last enemy, and the player is left
+				{
+					playerCombatController.AdjustPlayerXP(xpPoolToaddAfterCombat);
+					xpPoolToaddAfterCombat = 0;
+				}
 
 				myEnemyMover.shouldMove = false;
 
@@ -840,7 +864,10 @@ public class CombatController : AbilityScript
 		turnOrder.Remove(_target);
 		yield return new WaitForSeconds(_sec);
 		if(turnOrder.Count <= 1)
+		{
 			ForwardMover.DoneWithCombat();
+
+		}
 
 		Destroy(_target.gameObject);
 	}
