@@ -40,7 +40,7 @@ public class UIAspect : MonoBehaviour
 			_hpRec.anchorMax = new Vector2(1, 0);
 			_hpRec.offsetMin = new Vector2(Camera.main.scaledPixelWidth* 1.06f, 128);
 			_hpRec.offsetMax = new Vector2(0, 256);
-			print(_plRec.localPosition.x);
+
 			/*
 			_hpRec.anchorMin = new Vector2(1, 0);
 			_hpRec.anchorMax = new Vector2(1, 0);

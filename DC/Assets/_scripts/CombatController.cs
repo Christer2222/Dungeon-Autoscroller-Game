@@ -106,7 +106,7 @@ public class CombatController : AbilityScript
 						ForwardMover.fleeButton = _t.GetComponent<Button>();
 						ForwardMover.fleeButton.onClick.AddListener(delegate {
 
-							if (LevelUpScreen.levelUpScreen.activeSelf) return;
+							//if (LevelUpScreen.levelUpScreen.activeSelf) return;
 
 							if (turnOrder.Count != 0)
 								if (turnOrder[0] == playerCombatController && !processingAbility)
@@ -854,7 +854,7 @@ public class CombatController : AbilityScript
 			ForwardMover.shouldMove = true;
 
 			yield return new WaitForSeconds( playerOwned? 1:2);
-			EndTurn();
+			StartCoroutine( EndTurn());
 		}
 		invokingAbility = false;
 	}
@@ -865,14 +865,14 @@ public class CombatController : AbilityScript
 		yield return new WaitForSeconds(_sec);
 		if(turnOrder.Count <= 1)
 		{
-			ForwardMover.DoneWithCombat();
+			yield return ForwardMover.DoneWithCombat();
 
 		}
 
 		Destroy(_target.gameObject);
 	}
 
-	public void EndTurn()
+	public IEnumerator EndTurn()
 	{
 		processingAbility = false;
 
@@ -886,7 +886,7 @@ public class CombatController : AbilityScript
 		{
 			UpdateTurnOrderDisplay();
 			//turnorderText.text = string.Empty;
-			ForwardMover.DoneWithCombat();
+			yield return ForwardMover.DoneWithCombat();
 		}
 
 		startedTurn = false;

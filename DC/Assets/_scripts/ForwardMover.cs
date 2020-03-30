@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class ForwardMover : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class ForwardMover : MonoBehaviour
 
 	public static float speedBoost;
 	public static bool shouldMove = true;
+	private static bool finnishingCombat;
 
 	public static Button abilityButton, fleeButton, itemsButton, inspectButton, 
 		levelUpButton;
@@ -70,7 +72,7 @@ public class ForwardMover : MonoBehaviour
 		}
 		else
 		{
-			if (CombatController.turnOrder.Count == 0)
+			if (CombatController.turnOrder.Count == 0 && !finnishingCombat)
 			{
 				CombatController.turnOrder.Add(CombatController.playerCombatController);
 
@@ -119,7 +121,6 @@ public class ForwardMover : MonoBehaviour
 	{
 		if (_monstarStat == null) return;
 
-		print(EncounterData.offsetTable[_pos]);
 		var _go = Instantiate(enemyPrefab, transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE + EncounterData.offsetTable[_pos], Quaternion.identity);
 		var _cc = _go.GetComponent<CombatController>();
 
@@ -136,17 +137,24 @@ public class ForwardMover : MonoBehaviour
 	}
 
 
-	public static void DoneWithCombat()
+	public static IEnumerator DoneWithCombat()
 	{
+		finnishingCombat = true;
+
 		if (CombatController.turnOrder.Count >= 1)
 			Options.finishedTutorial = true;
-
-		encounterTimer = Random.Range(5,10);
 
 		CombatController.turnCounter = 0;
 		CombatController.turnOrder.Clear();
 		CombatController.playerCombatController.startedTurn = false;
+
+		yield return new WaitForSeconds(3);
+
 		CombatController.UpdateTurnOrderDisplay();
+		
+
+		encounterTimer = Random.Range(5,10);
+		finnishingCombat = false;
 	}
 
 	private void OnTriggerEnter(Collider _trig)

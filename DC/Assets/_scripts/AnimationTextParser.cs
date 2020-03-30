@@ -45,7 +45,7 @@ public class AnimationTextParser
 		string[] _entries = _textAsset.text.Split(new string[]{Environment.NewLine},StringSplitOptions.RemoveEmptyEntries);
 		Sprite[] _result = new Sprite[_entries.Length];
 
-		Debug.Log(" lenght: " + _result.Length + " ");
+		//Debug.Log(" lenght: " + _result.Length + " ");
 
 		Sprite[] _targetArray = null;
 		switch (_type)
@@ -68,13 +68,14 @@ public class AnimationTextParser
 
 			_result[i] = _targetArray[int.TryParse(_entries[i], out int x)? x : 0];
 		}
-
+		/*
 		string _all = string.Empty;
 		for (int i = 0; i < _entries.Length; i++)
 		{
 			_all += "| " + _entries[i];
 		}
 		Debug.Log(_all);
+		*/
 		return _result;
 	}
 }

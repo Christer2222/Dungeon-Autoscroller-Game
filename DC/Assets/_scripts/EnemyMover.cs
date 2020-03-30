@@ -36,7 +36,7 @@ public class EnemyMover : MonoBehaviour
     {
 		if(!shouldMove)//!CombatController.turnOrder.Contains(combatController))
 			return;
-
+		
 		if(Vector2.Distance(transform.position,localEnemyMovePoints[positionIndex] + home) < 0.1f)
 		{
 			positionIndex++;
