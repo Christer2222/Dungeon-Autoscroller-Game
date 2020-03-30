@@ -5,21 +5,34 @@ using AbilityInfo;
 
 public class Items : AbilityClass
 {
-	public static ItemInfo apple = new ItemInfo(heal, 2, 0);
-	public static ItemInfo orange = new ItemInfo(heal, 4, 1);
-	public static ItemInfo banana = new ItemInfo(heal, 6, 2);
+	public static ItemInfo apple = new ItemInfo(heal, 2, 0, ItemType.Consumable);
+	public static ItemInfo orange = new ItemInfo(heal, 4, 1, ItemType.Consumable);
+	public static ItemInfo banana = new ItemInfo(heal, 6, 2, ItemType.Consumable);
+
+	public enum ItemType
+	{
+		Garbage = 1,
+		Consumable = 2,
+		Consumable2 = 2,
+		Consumable3 = 2,
+		Value = 4,
+		Crafting = 8,
+		Equipment = 16,
+	}
 
 	public class ItemInfo
 	{
 		public Ability ability;
 		public int constant;
 		public int spriteIndex;
+		public ItemType type;
 
-		public ItemInfo(Ability _ability, int _constant, int _spriteIndex)
+		public ItemInfo(Ability _ability, int _constant, int _spriteIndex, ItemType _type)
 		{
 			ability = _ability;
 			constant = _constant;
 			spriteIndex = _spriteIndex;
+			type = _type;
 
 			string _path = "Sprites/Items/AnimationTexts/";
 			string _standardizedName = _ability.name.ToLower().Replace(" ", "_");
