@@ -38,7 +38,9 @@ public class UIAspect : MonoBehaviour
 			RectTransform _hpRec = GameObject.Find("$HealthSlider").GetComponent<RectTransform>();
 			_hpRec.anchorMin = new Vector2(0, 0);
 			_hpRec.anchorMax = new Vector2(1, 0);
-			_hpRec.offsetMin = new Vector2(Camera.main.scaledPixelWidth* 1.06f, 128);
+			//_hpRec.offsetMin = new Vector2(Camera.main.scaledPixelWidth* 1.06f, 128);
+			_hpRec.offsetMin = new Vector2(_plRec.offsetMax.x, 128);
+
 			_hpRec.offsetMax = new Vector2(0, 256);
 
 			/*
