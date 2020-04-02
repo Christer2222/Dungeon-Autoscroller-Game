@@ -66,6 +66,7 @@
     <Compile Include="Assets\_scripts\AbilityScript.cs" />
     <Compile Include="Assets\_scripts\AnimationHandler.cs" />
     <Compile Include="Assets\_scripts\AnimationTextParser.cs" />
+    <Compile Include="Assets\_scripts\BlockController.cs" />
     <Compile Include="Assets\_scripts\CombatController.cs" />
     <Compile Include="Assets\_scripts\Data\AbilityInfo.cs" />
     <Compile Include="Assets\_scripts\Data\Buff.cs" />

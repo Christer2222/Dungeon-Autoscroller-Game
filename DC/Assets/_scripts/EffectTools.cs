@@ -126,6 +126,30 @@ public class EffectTools : MonoBehaviour
 		}
 	}
 
+	public static SpriteRenderer SpawnEffect(Sprite _sprite, Vector3 _worldPos, float _destroyTime = 0, int _layerIndex = 10, string _sortingLayer = "UI")
+	{
+		if (!initialized)
+			Initialize();
+
+		if (_sprite != null)
+		{
+			var _go = new GameObject();
+			var _sr = _go.AddComponent<SpriteRenderer>();
+			_go.transform.position = _worldPos;
+			_sr.sprite = _sprite; //effectDictionary[_name];
+			_sr.sortingLayerName = _sortingLayer;
+			_sr.sortingOrder = _layerIndex;
+
+			//var _s = Instantiate(effectDictionary[_name], _worldPos,Quaternion.identity);
+			if (_destroyTime > 0) Destroy(_go, _destroyTime);
+			return _sr;
+		}
+		else
+		{
+			Debug.LogError("Sprite attempted to be spawned was null");
+			return null;
+		}
+	}
 
 	public static SpriteRenderer SpawnEffect(string _name, Vector3 _worldPos, float _destroyTime = 0, int _layerIndex = 10, string _sortingLayer = "UI")
 	{
@@ -151,7 +175,7 @@ public class EffectTools : MonoBehaviour
 		}
 		else
 		{
-			Debug.LogError("No effect in dictionary with name: " + _name);
+			Debug.LogError($"No effect in dictionary with name: {_name}");
 		}
 
 		return null;

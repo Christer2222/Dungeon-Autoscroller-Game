@@ -8,8 +8,9 @@ public class Options
 
 	public static KeyCode levelUpHotkey = KeyCode.C;
 
-	public static KeyCode acceptKey = KeyCode.Space;
+	public static KeyCode blockKey = KeyCode.B;
 
+	public static KeyCode acceptKey = KeyCode.Space;
 
 #if UNITY_EDITOR
 	public static bool finishedTutorial = true;//false;
