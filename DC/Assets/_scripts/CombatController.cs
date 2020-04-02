@@ -20,7 +20,7 @@ public class CombatController : AbilityScript
 	private Slider healthSlider, manaSlider, xpSlider;
 	private Slider healthSliderSlow, manaSliderSlow;
 	private Text currentHealthText, currentManaText, maxManaText, maxHealthText;
-	private Coroutine healthMove, manaMove;
+	private Coroutine healthMove, manaMove, xpMove;
 	private const float SLOW_SLIDER_RATIO_TO_NORMAL = 100;
 	private Transform buffContent;
 	private ScrollRect buffScrollRect;
@@ -550,13 +550,16 @@ public class CombatController : AbilityScript
 	public void AdjustPlayerXP(int _amount)
 	{
 		myStats.xp += _amount;
-		xpSlider.value = myStats.xp;
+
+		MoveXPSlider();
+
+		//xpSlider.value = myStats.xp;
 		if (levelUpText == null && myStats.xp >= xpSlider.maxValue)
 		{
 			levelUpText = EffectTools.SpawnText(transform.position, transform, Color.yellow, "LEVEL UP!");
 			levelUpText.StartCoroutine(EffectTools.MoveDirection(levelUpText.transform, Vector3.up, 1, 2));
-			levelUpText.StartCoroutine(EffectTools.BlinkText(levelUpText, Color.yellow + Color.red, 5));
-			Destroy(levelUpText.gameObject,5);
+			levelUpText.StartCoroutine(EffectTools.BlinkText(levelUpText, Color.red + Color.green * 0.75f, 5));
+			Destroy(levelUpText.gameObject,4);
 		}
 
 		while (myStats.xp >= xpSlider.maxValue)
@@ -569,10 +572,26 @@ public class CombatController : AbilityScript
 			}
 
 			myStats.level++;
-			myStats.xp -= (int)xpSlider.maxValue;
-			xpSlider.value = myStats.xp;
-			xpSlider.maxValue = myStats.level * 10;
+			myStats.xp -= (int)xpSlider.maxValue; //subtract this levels xp requirement
+			xpSlider.value = myStats.xp; //then set the xp bar to show the current xp (which might be over the requirement for a levelup)
+			xpSlider.maxValue = myStats.level * 10; //set the next levelup to be at 10 times the level
+
+			MoveXPSlider();
 		}
+	}
+
+	void MoveXPSlider()
+	{
+		print("xpMove exists: " + xpMove);
+
+		if (xpMove != null)
+		{
+			//xpSlider.value = myStats.xp;
+			StopCoroutine(xpMove);
+		}
+
+		print("adjusting xp");
+		xpMove = StartCoroutine(EffectTools.AnimateSlider(xpSlider, myStats.xp, 1, 1));
 	}
 
 	public int AdjustHealth(int _amount, Elementals _elementals, ExtraData _extraData)
@@ -643,12 +662,12 @@ public class CombatController : AbilityScript
 			if (_damageCalc < 0)
 			{
 				healthSlider.value = currentHealth;
-				healthMove = StartCoroutine(EffectTools.ApproachSlider(healthSliderSlow, healthSlider, 3, SLOW_SLIDER_RATIO_TO_NORMAL));
+				healthMove = StartCoroutine(EffectTools.AnimateSlider(healthSliderSlow, healthSlider, 3, SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 			else
 			{
 				healthSliderSlow.value = currentHealth * SLOW_SLIDER_RATIO_TO_NORMAL;
-				healthMove = StartCoroutine(EffectTools.ApproachSlider(healthSlider, healthSliderSlow, 1, 1/SLOW_SLIDER_RATIO_TO_NORMAL));
+				healthMove = StartCoroutine(EffectTools.AnimateSlider(healthSlider, healthSliderSlow, 1, 1/SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 		}
 
@@ -658,7 +677,6 @@ public class CombatController : AbilityScript
 			{
 				xpPoolToaddAfterCombat += myStats.level * 3;
 				
-				print(turnOrder.Count);
 
 				if (turnOrder.Count <= 2) //if this was the last enemy, and the player is left
 				{
@@ -703,12 +721,12 @@ public class CombatController : AbilityScript
 			if (_manaLost > 0)
 			{
 				manaSlider.value = currentMana;
-				manaMove = StartCoroutine(EffectTools.ApproachSlider(manaSliderSlow, manaSlider, 1, SLOW_SLIDER_RATIO_TO_NORMAL));
+				manaMove = StartCoroutine(EffectTools.AnimateSlider(manaSliderSlow, manaSlider, 1, SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 			else
 			{
 				manaSliderSlow.value = currentMana * SLOW_SLIDER_RATIO_TO_NORMAL;
-				manaMove = StartCoroutine(EffectTools.ApproachSlider(manaSlider, manaSliderSlow, 0.3f, 1 / SLOW_SLIDER_RATIO_TO_NORMAL));
+				manaMove = StartCoroutine(EffectTools.AnimateSlider(manaSlider, manaSliderSlow, 0.3f, 1 / SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 
 		}

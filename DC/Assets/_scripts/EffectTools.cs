@@ -59,14 +59,21 @@ public class EffectTools : MonoBehaviour
 		//}
 	}
 
-	public static IEnumerator ApproachSlider(Slider _sliderToMove, Slider _targetSlider, float _speed, float _ratio)
+	public static IEnumerator AnimateSlider(Slider _sliderToMove, Slider _targetSlider, float _speed, float _ratio)
 	{
+		yield return AnimateSlider(_sliderToMove, _targetSlider.value, _speed, _ratio);
+	}
+
+	public static IEnumerator AnimateSlider(Slider _sliderToMove, float _value, float _speed, float _ratio)
+	{
+		
 		float _timer = 0;
 		while (_timer < _speed)
 		{
 			yield return waitForEndOfFrame;
 			_timer += Time.deltaTime;
-			_sliderToMove.value = Mathf.Lerp(_sliderToMove.value, _targetSlider.value * _ratio, _timer/_speed);
+			//if (_sliderToMove.maxValue != 15) print($"sliderVal: {_sliderToMove.value}, max: {_sliderToMove.maxValue} target: {_value * _ratio} at speed: {_timer / _speed}");
+			_sliderToMove.value = Mathf.Lerp(_sliderToMove.value, _value * _ratio, _timer/_speed);
 		}
 	}
 
