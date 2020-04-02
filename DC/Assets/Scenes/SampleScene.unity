@@ -1804,7 +1804,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7414,7 +7414,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8957,7 +8957,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.58
+  m_Value: 0.713
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -10570,6 +10570,7 @@ GameObject:
   - component: {fileID: 1921367573}
   - component: {fileID: 1921367575}
   - component: {fileID: 1921367576}
+  - component: {fileID: 1921367574}
   m_Layer: 5
   m_Name: $PlayerPortrait
   m_TagString: Untagged
@@ -10658,6 +10659,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 256, y: 256}
   m_EdgeRadius: 0
+--- !u!114 &1921367574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921367569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f76def4f145744ab3f84f9dae744f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1921367575
 MonoBehaviour:
   m_ObjectHideFlags: 0
