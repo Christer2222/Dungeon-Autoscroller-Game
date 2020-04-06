@@ -34,10 +34,12 @@ public class StatBlock
 		int _level,int _xp,
 		int _strenght,int _dexterity,int _intelligence,int _luck,
 		List<Ability> _abilities, //should be List<Ienumerator> to have less human errors
+		List<ItemDrop> _drops,
 		Elementals _weaknesses = default, Elementals _resistances = default, Elementals _immunities = default, Elementals _absorbs = default,
 		AIType _aiType = default,
 		List<Buff> _buffs = default,
-		int _defense = 0, int _magicDefense = 0)
+		int _defense = 0, int _magicDefense = 0
+		)
 	{
 		race = _race;
 		name = _name;
@@ -61,6 +63,9 @@ public class StatBlock
 		{
 			abilities.Add(_abilities[i]);
 		}
+
+		drops = _drops;
+
 		aiType = _aiType;
 
 		baseDefense = _defense;
@@ -95,6 +100,8 @@ public class StatBlock
 	public List<Buff> buffList = new List<Buff>();
 
 	public Sprite[] idleAnimation;
+
+	public List<ItemDrop> drops;
 
 	public int Strength
 	{

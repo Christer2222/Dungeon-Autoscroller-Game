@@ -89,7 +89,8 @@ public class CombatController : AbilityScript
 				1, 0, //lv, xp
 				1, 1, 1, 1, //str, dex. int, luck
 				//new List<Ability> { AbilityClass.punch});
-				(DebugController.debugAbilities) ? AbilityClass.Tes() : new List<Ability> { AbilityClass.punch });
+				(DebugController.debugAbilities) ? AbilityClass.DebugAbilities() : new List<Ability> { AbilityClass.punch }
+				, _drops: DropTable.none);
 
 			//playerOwned = true;
 
@@ -612,7 +613,7 @@ public class CombatController : AbilityScript
 			_amount += ((isCritted) ? -myStats.Strength : 0); //allow critting
 
 		var _damageCalc = Mathf.RoundToInt(_amount * _amountMultiplier); //round up any damage/healing
-		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.blockable)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? myStats.Defense: myStats.MagicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
+		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.nonPiercing)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? myStats.Defense: myStats.MagicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
 
 		//if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
 		if (Mathf.Sign(_amount) != Mathf.Sign(_damageCalc)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0

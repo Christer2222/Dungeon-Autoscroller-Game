@@ -5,7 +5,7 @@ using AbilityInfo;
 
 public class AbilityClass
 {
-	public static List<Ability> Tes()
+	public static List<Ability> DebugAbilities()
 	{
 		return new List<Ability>()
 		{
@@ -34,33 +34,33 @@ public class AbilityClass
 	};
 	*/
 
-	public static readonly Ability punch				= new Ability("Punch",					AbilityScript.Punch,				Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
-	public static readonly Ability fireball				= new Ability("Fireball",				AbilityScript.Fireball,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2, ExtraData.blockable | ExtraData.magic);
-	public static readonly Ability massExplosion		= new Ability("Mass Explosion",			AbilityScript.MassExplosion,		Elementals.Fire, SkillUsed.magic, AbilityType.attack, -4, ExtraData.blockable);
-	public static readonly Ability smiteUnlife			= new Ability("Smite Undead",			AbilityScript.Smite,				Elementals.None, SkillUsed.healing, AbilityType.attack, -1, ExtraData.blockable);
-	public static readonly Ability doubleKick			= new Ability("Double Kick",			AbilityScript.DoubleKick,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
-	public static readonly Ability wildPunch			= new Ability("Wild Punch",				AbilityScript.WildPunch,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
-	public static readonly Ability tiltSwing			= new Ability("Tilt Swing",				AbilityScript.TiltSwing,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
-	public static readonly Ability forcePunch			= new Ability("Force Punch",			AbilityScript.ForcePunch,			Elementals.Air, SkillUsed.heavy_hits | SkillUsed.magic, AbilityType.attack, -1, ExtraData.blockable | ExtraData.makes_contact_with_user);
+	public static readonly Ability punch				= new Ability("Punch",					AbilityScript.Punch,				Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
+	public static readonly Ability fireball				= new Ability("Fireball",				AbilityScript.Fireball,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -2, ExtraData.nonPiercing | ExtraData.magic);
+	public static readonly Ability massExplosion		= new Ability("Mass Explosion",			AbilityScript.MassExplosion,		Elementals.Fire, SkillUsed.magic, AbilityType.attack, -4, ExtraData.nonPiercing);
+	public static readonly Ability smiteUnlife			= new Ability("Smite Undead",			AbilityScript.Smite,				Elementals.None, SkillUsed.healing, AbilityType.attack, -1, ExtraData.nonPiercing);
+	public static readonly Ability doubleKick			= new Ability("Double Kick",			AbilityScript.DoubleKick,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
+	public static readonly Ability wildPunch			= new Ability("Wild Punch",				AbilityScript.WildPunch,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
+	public static readonly Ability tiltSwing			= new Ability("Tilt Swing",				AbilityScript.TiltSwing,			Elementals.Physical, SkillUsed.heavy_hits, AbilityType.attack, 0, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
+	public static readonly Ability forcePunch			= new Ability("Force Punch",			AbilityScript.ForcePunch,			Elementals.Air, SkillUsed.heavy_hits | SkillUsed.magic, AbilityType.attack, -1, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
 	public static readonly Ability chaosThesis			= new Ability("Chaos Thesis",			AbilityScript.ChaosThesis,		Elementals.Void, SkillUsed.magic | SkillUsed.healing, AbilityType.attack, -1, ExtraData.none);
 	public static readonly Ability manaDrain			= new Ability("Mana Drain",				AbilityScript.ManaDrain,			Elementals.Water, SkillUsed.healing, AbilityType.attack, -3, ExtraData.magic);
-	public static readonly Ability meteorShower			= new Ability("Meteor Shower",			AbilityScript.MeteorShower,		Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7, ExtraData.blockable | ExtraData.magic);
-	public static readonly Ability freezingStrike		= new Ability("Freezing Strike",		AbilityScript.FreezingStrike,		Elementals.Ice, SkillUsed.magic, AbilityType.attack, -1, ExtraData.blockable | ExtraData.magic | ExtraData.makes_contact_with_user);
-	public static readonly Ability thunderbolt			= new Ability("Thunderbolt",			AbilityScript.Thunderbolt,		Elementals.Electricity, SkillUsed.magic, AbilityType.attack, -4, ExtraData.blockable | ExtraData.magic);
-	public static readonly Ability eruption				= new Ability("Eruption",				AbilityScript.Eruption,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -5, ExtraData.blockable | ExtraData.magic);
-	public static readonly Ability airSlash				= new Ability("Air Slash",				AbilityScript.AirSlash,			Elementals.Air, SkillUsed.magic, AbilityType.attack, -3, ExtraData.blockable | ExtraData.magic);
-	public static readonly Ability bubble				= new Ability("Bubble",					AbilityScript.Bubble,				Elementals.Water, SkillUsed.magic, AbilityType.attack, -2, ExtraData.blockable | ExtraData.magic);
+	public static readonly Ability meteorShower			= new Ability("Meteor Shower",			AbilityScript.MeteorShower,		Elementals.Fire | Elementals.Earth, SkillUsed.magic, AbilityType.attack, -7, ExtraData.nonPiercing | ExtraData.magic);
+	public static readonly Ability freezingStrike		= new Ability("Freezing Strike",		AbilityScript.FreezingStrike,		Elementals.Ice, SkillUsed.magic, AbilityType.attack, -1, ExtraData.nonPiercing | ExtraData.magic | ExtraData.makes_contact_with_user);
+	public static readonly Ability thunderbolt			= new Ability("Thunderbolt",			AbilityScript.Thunderbolt,		Elementals.Electricity, SkillUsed.magic, AbilityType.attack, -4, ExtraData.nonPiercing | ExtraData.magic);
+	public static readonly Ability eruption				= new Ability("Eruption",				AbilityScript.Eruption,			Elementals.Fire, SkillUsed.magic, AbilityType.attack, -5, ExtraData.nonPiercing | ExtraData.magic);
+	public static readonly Ability airSlash				= new Ability("Air Slash",				AbilityScript.AirSlash,			Elementals.Air, SkillUsed.magic, AbilityType.attack, -3, ExtraData.nonPiercing | ExtraData.magic);
+	public static readonly Ability bubble				= new Ability("Bubble",					AbilityScript.Bubble,				Elementals.Water, SkillUsed.magic, AbilityType.attack, -2, ExtraData.nonPiercing | ExtraData.magic);
 	public static readonly Ability poision				= new Ability("Poision",				AbilityScript.Poision,			Elementals.Poision, SkillUsed.light_hits | SkillUsed.magic, AbilityType.attack, -2, ExtraData.none);
-	public static readonly Ability poisionBite			= new Ability("Poision Bite",			AbilityScript.PoisionBite,		Elementals.Physical | Elementals.Poision, SkillUsed.heavy_hits | SkillUsed.light_hits, AbilityType.attack, 0, ExtraData.blockable | ExtraData.makes_contact_with_user);
+	public static readonly Ability poisionBite			= new Ability("Poision Bite",			AbilityScript.PoisionBite,		Elementals.Physical | Elementals.Poision, SkillUsed.heavy_hits | SkillUsed.light_hits, AbilityType.attack, 0, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
 
 	public static readonly Ability siphonSoul			= new Ability("Siphon Soul",			AbilityScript.SiphonSoul, Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1, ExtraData.magic);
 
-	public static readonly Ability crystalLance			= new Ability("Crystal Lance",			AbilityScript.CrystalLance, Elementals.Earth | Elementals.Air, SkillUsed.heavy_hits, AbilityType.attack | AbilityType.defensive, -2, ExtraData.blockable | ExtraData.magic);
+	public static readonly Ability crystalLance			= new Ability("Crystal Lance",			AbilityScript.CrystalLance, Elementals.Earth | Elementals.Air, SkillUsed.heavy_hits, AbilityType.attack | AbilityType.defensive, -2, ExtraData.nonPiercing | ExtraData.magic);
 
 	public static readonly Ability focus				= new Ability("Focus",					AbilityScript.Focus, Elementals.Water, SkillUsed.magic, AbilityType.recovery, 0, ExtraData.magic);
-	public static readonly Ability heal					= new Ability("Heal",					AbilityScript.Heal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -2, ExtraData.blockable | ExtraData.magic);
-	public static readonly Ability regeneration			= new Ability("Regeneration",			AbilityScript.Regeneration, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -1, ExtraData.blockable | ExtraData.magic);
-	public static readonly Ability massHeal				= new Ability("Mass Heal",				AbilityScript.MassHeal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -5, ExtraData.blockable | ExtraData.magic);
+	public static readonly Ability heal					= new Ability("Heal",					AbilityScript.Heal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -2, ExtraData.nonPiercing | ExtraData.magic);
+	public static readonly Ability regeneration			= new Ability("Regeneration",			AbilityScript.Regeneration, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -1, ExtraData.nonPiercing | ExtraData.magic);
+	public static readonly Ability massHeal				= new Ability("Mass Heal",				AbilityScript.MassHeal, Elementals.Light, SkillUsed.healing, AbilityType.recovery, -5, ExtraData.nonPiercing | ExtraData.magic);
 	public static readonly Ability restoreSoul			= new Ability("Restore Soul",			AbilityScript.RestoreSoul, Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0, ExtraData.magic);
 	public static readonly Ability clense				= new Ability("Clense",					AbilityScript.Clense, Elementals.Water, SkillUsed.healing, AbilityType.recovery, 0, ExtraData.magic);
 

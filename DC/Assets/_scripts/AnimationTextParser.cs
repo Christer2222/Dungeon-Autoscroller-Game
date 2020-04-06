@@ -12,6 +12,13 @@ public class AnimationTextParser
 	private static Sprite[] enemySpriteArray;
 	private static Sprite[] effectSpriteArray;
 
+	/// <summary>
+	/// Looks at the path.
+	/// If in the unity editor; Look in the asset database for text. If none are found, make a new one. Otherwise return the first one.
+	/// At the end return a TextAsset with text "0".
+	/// </summary>
+	/// <param name="_pathWithExtention"></param>
+	/// <returns></returns>
 	public static TextAsset GetNewTextAssetOrAddNewToAssetDatabase(string _pathWithExtention)
 	{
 		var _textAsset = new TextAsset("0");

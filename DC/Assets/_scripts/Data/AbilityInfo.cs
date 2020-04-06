@@ -6,7 +6,7 @@ namespace AbilityInfo
 	public enum ExtraData
 	{
 		none = 0,
-		blockable = 1,
+		nonPiercing = 1,
 		makes_contact_with_user = 2,
 		magic = 4,
 	}
