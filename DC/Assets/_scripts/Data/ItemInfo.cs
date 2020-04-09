@@ -16,7 +16,7 @@ public class Items : AbilityClass
 
 	public static readonly ItemInfo stick = new ItemInfo("Stick", 2, punch, 1, ItemType.Craftable | ItemType.OneHanded, $"En Garde!\nDeals {ITEM_CONSTANT} damage when held and used as a weapon.\nCan also be used to craft various items.");
 
-	public static readonly ItemInfo goldCoin = new ItemInfo("Gold Coint", 1, ItemType.Valueable, $"Cash, Moola, Dough, whatever you wanna call it, its money.");
+	public static readonly ItemInfo goldCoin = new ItemInfo("Gold Coin", 1, ItemType.Valueable, $"Cash, Moola, Dough, whatever you wanna call it, its money.");
 	public static readonly ItemInfo goldbar = new ItemInfo("Gold Bar", 25, ItemType.Valueable, $"This should be worht quite a bit.");
 
 	public static readonly ItemInfo headband = new ItemInfo("Headband", 10, 1, 0, ItemType.Headgear, $"Protects your noggin.\nGives you {ITEM_DEFENSE} defense.");
@@ -84,11 +84,11 @@ public class Items : AbilityClass
 			string _standardizedName = _name.ToLower().Replace(" ", "_");
 			string _extention = "_sprite_index.txt";
 			var textAssetContaintinSpriteData = Resources.Load<TextAsset>(_path + _standardizedName + _extention);
-			
+
 			if (textAssetContaintinSpriteData == null)
 				textAssetContaintinSpriteData = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase("Assets/Resources/" + _path + _standardizedName + _extention);
 
-			var _sprites = AnimationTextParser.ParseDocument(textAssetContaintinSpriteData, AnimationTextParser.Type.effect);
+			var _sprites = AnimationTextParser.ParseDocument(textAssetContaintinSpriteData, AnimationTextParser.Type.Item);
 			sprite = (_sprites != null)? (_sprites.Length > 0)? _sprites[0]: null: null; //if the spritesheet is found, but no sprites are given
 		}
 
@@ -109,7 +109,7 @@ public class Items : AbilityClass
 
 public class ItemDrop
 {
-	public ItemDrop(float _permilleToDrop, Items.ItemInfo _item, int _maxCount = 1, int _minCount = 1)
+	public ItemDrop(float _permilleToDrop, Items.ItemInfo _item, int _minCount, int _maxCount)
 	{
 		permille = _permilleToDrop;
 		item = _item;

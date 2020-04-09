@@ -5,12 +5,12 @@ public class AnimationTextParser
 {
 	public enum Type
 	{
-		enemy,
-		effect,
+		Enemy,
+		Effect,
+		Item,
 	}
 
-	private static Sprite[] enemySpriteArray;
-	private static Sprite[] effectSpriteArray;
+	private static Sprite[] enemySpriteArray, effectSpriteArray, itemSpriteArray;
 
 	/// <summary>
 	/// Looks at the path.
@@ -47,6 +47,7 @@ public class AnimationTextParser
 
 		if (enemySpriteArray == null) enemySpriteArray = Resources.LoadAll<Sprite>("Sprites/Enemies/EnemySpriteSheet");
 		if (effectSpriteArray == null) effectSpriteArray = Resources.LoadAll<Sprite>("Sprites/Effects/effectSpriteSheet");
+		if (itemSpriteArray == null) itemSpriteArray = Resources.LoadAll<Sprite>("Sprites/Items/itemSpriteSheet");
 
 
 		string[] _entries = _textAsset.text.Split(new string[]{Environment.NewLine},StringSplitOptions.RemoveEmptyEntries);
@@ -57,11 +58,14 @@ public class AnimationTextParser
 		Sprite[] _targetArray = null;
 		switch (_type)
 		{
-			case Type.enemy:
+			case Type.Enemy:
 				_targetArray = enemySpriteArray;
 				break;
-			case Type.effect:
+			case Type.Effect:
 				_targetArray = effectSpriteArray;
+				break;
+			case Type.Item:
+				_targetArray = itemSpriteArray;
 				break;
 		}
 

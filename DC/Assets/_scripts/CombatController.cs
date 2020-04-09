@@ -583,15 +583,12 @@ public class CombatController : AbilityScript
 
 	void MoveXPSlider()
 	{
-		print("xpMove exists: " + xpMove);
-
 		if (xpMove != null)
 		{
 			//xpSlider.value = myStats.xp;
 			StopCoroutine(xpMove);
 		}
 
-		print("adjusting xp");
 		xpMove = StartCoroutine(EffectTools.AnimateSlider(xpSlider, myStats.xp, 1, 1));
 	}
 
@@ -683,6 +680,9 @@ public class CombatController : AbilityScript
 				{
 					playerCombatController.AdjustPlayerXP(xpPoolToaddAfterCombat);
 					xpPoolToaddAfterCombat = 0;
+
+
+					PlayerInventory.instance.ProcessDrops(myStats.drops);
 				}
 
 				myEnemyMover.shouldMove = false;

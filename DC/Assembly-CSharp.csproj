@@ -67,6 +67,7 @@
     <Compile Include="Assets\_scripts\AnimationHandler.cs" />
     <Compile Include="Assets\_scripts\AnimationTextParser.cs" />
     <Compile Include="Assets\_scripts\BlockController.cs" />
+    <Compile Include="Assets\_scripts\Cheats.cs" />
     <Compile Include="Assets\_scripts\CombatController.cs" />
     <Compile Include="Assets\_scripts\Data\AbilityInfo.cs" />
     <Compile Include="Assets\_scripts\Data\Buff.cs" />
@@ -83,8 +84,10 @@
     <Compile Include="Assets\_scripts\FleeLogic.cs" />
     <Compile Include="Assets\_scripts\ForwardMover.cs" />
     <Compile Include="Assets\_scripts\LevelUpScreen.cs" />
+    <Compile Include="Assets\_scripts\PlayerInventory.cs" />
     <Compile Include="Assets\_scripts\ResetStaticVariablesManager.cs" />
     <Compile Include="Assets\_scripts\UIAspect.cs" />
+    <Compile Include="Assets\_scripts\UIController.cs" />
     <None Include="Assets\Resources\Sprites\Effects\old\life_tap_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\bless_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\freezing_strike_a_text.txt" />
@@ -98,7 +101,6 @@
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\clense_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\mass_heal_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\gold_golem_a_text.txt" />
-    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\gold_coint_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\heal_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\noseman_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\bulk_up_a_text.txt" />
@@ -115,6 +117,7 @@
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\banana_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\clense_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\steel_golem_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\gold_coin_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\smite_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\light_elemental_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\moonman_a_text.txt" />
@@ -197,6 +200,7 @@
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\crystal_lance_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\debulk_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\eruption_a_text.txt" />
+    <None Include="Assets\_knownBugs.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\smite_undead_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\chaos_thesis_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\focus_a_text.txt" />

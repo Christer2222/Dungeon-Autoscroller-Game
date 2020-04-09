@@ -81,7 +81,7 @@ public class StatBlock
 			_animationTextAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_path + "EMPTY_" + _standardizedName + _extention + ".txt");
 		}
 
-		idleAnimation = AnimationTextParser.ParseDocument(_animationTextAsset, AnimationTextParser.Type.enemy);
+		idleAnimation = AnimationTextParser.ParseDocument(_animationTextAsset, AnimationTextParser.Type.Enemy);
 
 	}
 

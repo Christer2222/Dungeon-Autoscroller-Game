@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class EffectTools : MonoBehaviour
+public class EffectTools// : MonoBehaviour
 {
 	private static bool initialized;
 	//private static Dictionary<string, Sprite> effectDictionary;
@@ -148,7 +148,7 @@ public class EffectTools : MonoBehaviour
 			_sr.sortingOrder = _layerIndex;
 
 			//var _s = Instantiate(effectDictionary[_name], _worldPos,Quaternion.identity);
-			if (_destroyTime > 0) Destroy(_go, _destroyTime);
+			if (_destroyTime > 0) Object.Destroy(_go, _destroyTime);
 			return _sr;
 		}
 		else
@@ -177,7 +177,7 @@ public class EffectTools : MonoBehaviour
 			_sr.sortingOrder = _layerIndex;
 
 			//var _s = Instantiate(effectDictionary[_name], _worldPos,Quaternion.identity);
-			if (_destroyTime > 0) Destroy(_go, _destroyTime);
+			if (_destroyTime > 0) Object.Destroy(_go, _destroyTime);
 			return _sr;
 		}
 		else
@@ -238,7 +238,7 @@ public class EffectTools : MonoBehaviour
 		if (!initialized)
 			Initialize();
 
-		var _go = Instantiate(textHolder, null);
+		var _go = Object.Instantiate(textHolder, null);
 		var _goText = _go.GetComponentInChildren<Text>();
 
 		_go.transform.localScale = Vector3.one * 0.005f;

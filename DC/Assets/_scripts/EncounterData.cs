@@ -142,17 +142,14 @@ public class EncounterData : AbilityClass
 		new Vector3(-0.33f,1,0),
 	};
 
+
 	public static Encounter RandomizeEncounter(Encounter _inputEncounter)
 	{
+		int randomizeFactor = 10;
+
 		if (_inputEncounter.randomBottom)
 		{
-			var _list = new List<StatBlock>() { _inputEncounter.monsterBL, _inputEncounter.monsterBM, _inputEncounter.monsterBR };
-			for (int i = 0; i < 7; i++)
-			{
-				int _index = Random.Range(0, _list.Count);
-				_list.Add(_list[_index]);
-				_list.RemoveAt(_index);
-			}
+			var _list = Shuffle(new List<StatBlock>() { _inputEncounter.monsterBL, _inputEncounter.monsterBM, _inputEncounter.monsterBR }, randomizeFactor); //shuffle
 			_inputEncounter.monsterBL = _list[0];
 			_inputEncounter.monsterBM = _list[1];
 			_inputEncounter.monsterBR = _list[2];
@@ -160,18 +157,24 @@ public class EncounterData : AbilityClass
 
 		if (_inputEncounter.randomTop)
 		{
-			var _list = new List<StatBlock>() { _inputEncounter.monsterTL, _inputEncounter.monsterTM, _inputEncounter.monsterTR };
-			for (int i = 0; i < 7; i++)
-			{
-				int _index = Random.Range(0, _list.Count);
-				_list.Add(_list[_index]);
-				_list.RemoveAt(_index);
-			}
+			var _list = Shuffle(new List<StatBlock>() { _inputEncounter.monsterTL, _inputEncounter.monsterTM, _inputEncounter.monsterTR }, randomizeFactor); //shuffle
 			_inputEncounter.monsterTL = _list[0];
 			_inputEncounter.monsterTM = _list[1];
 			_inputEncounter.monsterTR = _list[2];
 		}
 
 		return _inputEncounter;
+	}
+
+	static List<StatBlock> Shuffle(List<StatBlock> originalList, int _randomizeFactor)
+	{
+		for (int i = 0; i < _randomizeFactor; i++) //shuffle around the list equal to the randomize factor
+		{
+			int _index = Random.Range(0, originalList.Count); //take a random selected element
+			originalList.Add(originalList[_index]); //add it to the back
+			originalList.RemoveAt(_index); //then remove it from the original position
+		}
+
+		return originalList;
 	}
 }
