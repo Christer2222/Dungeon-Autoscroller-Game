@@ -1,3 +1,4 @@
 blueball spawns ontop of eyeball sometimes on 3 top layout
 flee twice in a row makes you unable to hit
 blueball and blueball is able to spawn on top of eachother
+UI need to be updated for weird screen resolutions (add a script that stretches/adds black bars)
