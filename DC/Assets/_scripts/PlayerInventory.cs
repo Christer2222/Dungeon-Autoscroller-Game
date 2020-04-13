@@ -113,11 +113,8 @@ public class PlayerInventory : MonoBehaviour
                 Vector3 pos = go.transform.position;
                 pos.x = 0;
                 //pos.y = Mathf.Clamp(pos.y,0 + halfItemContextHeight,1920 - halfItemContextHeight)/100;
-                Vector3 a = UIController.InventoryContextMenu.InverseTransformPoint(pos);
-                a.y = Mathf.Clamp(a.y, 0 + halfItemContextHeight, 1920 - halfItemContextHeight) / 100;
-                print(a);
-
-                UIController.InventoryContextMenu.position = a; //UIController.InventoryContextMenu.TransformPoint(pos);
+                
+                UIController.InventoryContextMenu.position = pos;
                 print("clcik item " + selectedItem.item.name);
                 print("halfItemContextHeight: " + halfItemContextHeight);
             });
