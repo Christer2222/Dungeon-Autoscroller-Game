@@ -53,11 +53,11 @@ namespace AbilityInfo
 
 	public struct TargetData
 	{
-		public TargetData(Ability _currentAbility, CombatController _self = null, CombatController _target = null, int _constant = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default)
+		public TargetData(Ability _currentAbility, CombatController _self = null, CombatController _target = null, int _bonus = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default)
 		{
 			self = _self;
 			target = _target;
-			bonus = _constant;
+			bonus = _bonus;
 			element = _element;
 			centerPos = _centerPos;
 			targetRace = _race;

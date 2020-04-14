@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using AbilityInfo;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,8 +14,9 @@ public class PlayerInventory : MonoBehaviour
     public Transform dropList;
     private ItemInfoGameObject[] itemInfoGameObjects;
 
-    private GameObject itemDropPrefab;
+    private GameObject inventoryItemEntryPrefab;
     private float itemDropPrefabHeight;
+    private float itemSpacing;
 
     private float halfItemContextHeight;
 
@@ -29,16 +30,20 @@ public class PlayerInventory : MonoBehaviour
     {
         public int count;
         public Items.ItemInfo item;
-
+        public RawImage selectionBox;
+        public Text title;
+        public GameObject entryGameObject;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        itemDropPrefab = Resources.Load<GameObject>("Prefabs/InventoryItemEntry");
-        itemDropPrefabHeight = itemDropPrefab.GetComponent<RectTransform>().rect.height;
+        instance = this;
+        inventoryItemEntryPrefab = Resources.Load<GameObject>("Prefabs/InventoryItemEntry");
+        itemDropPrefabHeight = inventoryItemEntryPrefab.GetComponent<RectTransform>().rect.height;
 
         halfItemContextHeight = UIController.InventoryContextMenu.GetComponentInChildren<Image>().rectTransform.rect.height/2;
+        itemSpacing = UIController.InventoryItemContent.GetComponent<VerticalLayoutGroup>().spacing;
 
         ItemQuantity[] debugItems =
             {
@@ -56,37 +61,100 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { count = 5, item = Items.orange },
             new ItemQuantity() { count = 5, item = Items.banana }
         };
-
         inventory.AddRange(debugItems);
 
-        instance = this;
-        dropList = UIController.ItemDropListGameObject;
 
+        //Info about the drops after battle
+        dropList = UIController.ItemDropListGameObject;
         itemInfoGameObjects = new ItemInfoGameObject[dropList.childCount];
         for (int i = 0; i < dropList.childCount; i++)
         {
             var child = dropList.GetChild(i);
-            itemInfoGameObjects[i] = new ItemInfoGameObject() { icon = child.GetComponentInChildren<Image>(), text = child.GetComponentInChildren<Text>() };
+            itemInfoGameObjects[i] = new ItemInfoGameObject() { icon = child.GetComponentInChildren<Image>(), text = child.GetComponentInChildren<Text>()};
         }
 
-        ClearInventory();
-        UpdateItemList();
+        UIController.InventoryUseButton.onClick.AddListener(() => {  
+            if (selectedItem !=  null)
+            {
+                switch (selectedItem.item.type)
+                {
+                    case Items.ItemType.Consumable:
+                    {
+                        UIController.InventoryRootRectTransform.gameObject.SetActive(false);
+                        for (int i = 0; i < selectedItem.item.abilities.Count; i++)
+                        {
+                            print(selectedItem.item.constant);
+                            //CombatController.playerCombatController.selectedAbility = selectedItem.item.abilities[i];
+                            TargetData targetData = new TargetData(
+                                selectedItem.item.abilities[i],
+                                null,
+                                CombatController.playerCombatController, 
+                                selectedItem.item.constant,
+                                selectedItem.item.abilities[i].element,
+                                CombatController.playerCombatController.transform.position
+                                );
 
-        UIController.InventoryUseButton.onClick.AddListener(() => print("used"));
+                            CombatController.playerCombatController.StartCoroutine(CombatController.playerCombatController.SimpleInvokeAbility(targetData, selectedItem.item.abilities[i],false,true));// CombatController.playerCombatController.InvokeActiveAbility(false));
+                        }
+                    }
+                    break;
+                }
+            }
+
+        });
         UIController.InventoryEquipButton.onClick.AddListener(() => print("equiped"));
-        UIController.InventoryTossButton.onClick.AddListener(() => print("tossed " + UIController.InventoryTossInputField.text));
+
+        UIController.InventoryTossButton.onClick.AddListener(() => { 
+            if (selectedItem != null) 
+            { 
+                selectedItem.count -= GetTossValue();
+                if (selectedItem.count <= 0)
+                {
+                    Destroy(selectedItem.entryGameObject);
+                    inventory.Remove(selectedItem);
+                    selectedItem = null;
+                    UIController.InventoryContextMenu.gameObject.SetActive(false);
+                    return;
+                }
+                selectedItem.title.text = GetItemText(selectedItem); 
+            }
+        });
         UIController.InventoryTossUp1Button.onClick.AddListener(() => ChangeTossNumber(+1)) ;
         UIController.InventoryTossUp10Button.onClick.AddListener(   () => ChangeTossNumber(+10));
         UIController.InventoryTossDown1Button.onClick.AddListener(  () => ChangeTossNumber(-1));
         UIController.InventoryTossDown10Button.onClick.AddListener( () => ChangeTossNumber(-10));
         
+        //debug
+        OpenInventory();
+    }
+
+    string GetItemText(ItemQuantity entry)
+    {
+        return $"{entry.item.name} x{entry.count}";
+    }
+
+    void OpenInventory()
+    {
+        if (selectedItem != null)
+            selectedItem.selectionBox.color = Color.clear;
+
+        UIController.InventoryContextMenu.gameObject.SetActive(false);
+
+        UIController.InventoryRootRectTransform.gameObject.SetActive(true);
+        ClearInventory();
+        UpdateItemList();
     }
 
     void ChangeTossNumber(int amount)
     {
-        int newNum = int.TryParse(UIController.InventoryTossInputField.text, out newNum) ? newNum : 0;
-        newNum = Mathf.Clamp(newNum + amount, 0, 99);
+        int newNum = Mathf.Clamp(GetTossValue() + amount, 0, 99);
         UIController.InventoryTossInputField.text = newNum.ToString("00");
+    }
+
+    int GetTossValue()
+    {
+        int newNum = int.TryParse(UIController.InventoryTossInputField.text, out newNum) ? newNum : 0;
+        return newNum;
     }
 
     void ClearInventory()
@@ -99,24 +167,38 @@ public class PlayerInventory : MonoBehaviour
 
     void UpdateItemList()
     {
-        UIController.InventoryItemContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (itemDropPrefabHeight + 20) * inventory.Count - 5);
+        UIController.InventoryItemContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (itemDropPrefabHeight + itemSpacing) * inventory.Count - 5);
         for (int i = 0; i < inventory.Count; i++)
         {
-            GameObject go = Instantiate(itemDropPrefab, UIController.InventoryItemContent);
+            GameObject go = Instantiate(inventoryItemEntryPrefab, UIController.InventoryItemContent);
             go.name = i + " " + inventory[i].item.name;
             go.GetComponentInChildren<Image>().sprite = inventory[i].item.sprite;
-            go.GetComponentInChildren<Text>().text = $"{inventory[i].item.name} x{inventory[i].count}";
-            int index = i; //reference by value, otherwise all items would point to out of range
+            inventory[i].title = go.GetComponentInChildren<Text>();
+            inventory[i].title.text = GetItemText(inventory[i]);
+            inventory[i].selectionBox = go.GetComponent<RawImage>();
+            inventory[i].entryGameObject = go;
+
+            //reference by value, otherwise all items would point to out of range
             go.GetComponent<Button>().onClick.AddListener(() => {
+                int index = go.transform.GetSiblingIndex();
+
+                if (selectedItem != null)
+                    selectedItem.selectionBox.color = Color.clear;
 
                 selectedItem = inventory[index];
-                Vector3 pos = go.transform.position;
-                pos.x = 0;
-                //pos.y = Mathf.Clamp(pos.y,0 + halfItemContextHeight,1920 - halfItemContextHeight)/100;
-                
-                UIController.InventoryContextMenu.position = pos;
-                print("clcik item " + selectedItem.item.name);
-                print("halfItemContextHeight: " + halfItemContextHeight);
+                selectedItem.selectionBox.color = Color.white;
+
+                var contextMenu = UIController.InventoryContextMenu; //shortcut
+                Vector3 orgPos = contextMenu.position; //get orgPos position of menu
+                Vector3 targetPos = go.transform.position; //where to put this
+                targetPos.x = contextMenu.position.x; //keep same x of menu
+                contextMenu.position = targetPos; //update placement (target pos has a different bounds, and can't be used with ancoredPosition)
+
+                orgPos = contextMenu.anchoredPosition; //get new ancored position
+                orgPos.y = Mathf.Clamp(orgPos.y, UIController.InventoryRootRectTransform.rect.y + halfItemContextHeight, -UIController.InventoryRootRectTransform.rect.y - halfItemContextHeight); //clamp within bounds of inventory
+                contextMenu.anchoredPosition = orgPos; //update position again
+
+                contextMenu.gameObject.SetActive(true);
             });
         }
     }
@@ -180,10 +262,13 @@ public class PlayerInventory : MonoBehaviour
     {
         if (Random.Range(1, 1001) <= item.permille) //if the roll is equal to or less than the permille it was a success
         {
-            var drop = new ItemQuantity() 
-            { 
-                item = item.item, 
-                count = Random.Range(item.minCount, item.maxCount + 1) 
+            var drop = new ItemQuantity()
+            {
+                item = item.item,
+                count = Random.Range(item.minCount, item.maxCount + 1),
+                selectionBox = null,
+                title = null,
+                entryGameObject = null
             }; //roll for quantity
             print($"drop [{item.item.name}]  min: {item.minCount} max: {item.maxCount} rolled {drop.count}");
 

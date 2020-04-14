@@ -6,7 +6,7 @@ public class UIController : MonoBehaviour
 {
     public static Transform ItemDropListGameObject { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }
-    
+    public static RectTransform InventoryRootRectTransform { get; private set; }
     public static RectTransform InventoryContextMenu { get; private set; }
     public static Button InventoryUseButton { get; private set; }
     public static Button InventoryEquipButton { get; private set; }
@@ -74,6 +74,9 @@ public class UIController : MonoBehaviour
                     break;
                 case "$TossInputField":
                     InventoryTossInputField = child.GetComponent<InputField>();
+                    break;
+                case "$InventoryRoot":
+                    InventoryRootRectTransform = child.GetComponent<RectTransform>();
                     break;
             }
         }

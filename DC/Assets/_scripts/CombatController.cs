@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using AbilityInfo;
+using System;
 
 public class CombatController : AbilityScript
 {
@@ -45,7 +46,6 @@ public class CombatController : AbilityScript
 	private bool isCritted;
 	private Color activeColor = new Color(0,0,0.35f), deactiveColor = Color.gray;
 
-	private GameObject inventoryScreen;
 	private Slider fleeSlider;
 
     public bool actedLastTick;
@@ -210,9 +210,6 @@ public class CombatController : AbilityScript
 					case "$TurnorderText":
 						turnorderText = _t.GetComponent<Text>();
 						break;
-					case "$InventoryScreen":
-						inventoryScreen = _t.gameObject;
-						break;
 					case "$GameOverHolder":
 						gameOverHolder = _t.gameObject;
 						foreach (Transform _childGameOver in _t.GetComponentsInChildren<Transform>(true))
@@ -310,7 +307,7 @@ public class CombatController : AbilityScript
 
 		}
 
-		CheckMana();
+		UpdateAbilitiesToManaAvailability();
 	}
 
 	IEnumerator EndActedLastTick()
@@ -643,7 +640,7 @@ public class CombatController : AbilityScript
 				StartCoroutine(EffectTools.ActivateInOrder(this, new List<EffectTools.FunctionAndDelay>()
 				{
 					new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform,_orgScale,_orgScale * 0.9f, 0.1f),0),
-					new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _orgScale, 0.1f),Random.Range(0.1f,0.2f))
+					new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _orgScale, 0.1f), UnityEngine.Random.Range(0.1f,0.2f))
 				}));
 			}
 		}
@@ -738,7 +735,7 @@ public class CombatController : AbilityScript
 	/// <summary>
 	/// Toggles all buttons for which the player don't have enough mana for
 	/// </summary>
-	void CheckMana()
+	void UpdateAbilitiesToManaAvailability()
 	{
 		var _children = buttonMenuContent.GetComponentsInChildren<Button>();
 		for (int i = 0; i < _children.Length; i++)
@@ -809,10 +806,35 @@ public class CombatController : AbilityScript
 		}
 	}
 
+	public IEnumerator SimpleInvokeAbility(TargetData targetData, Ability ability, bool drainMana, bool endsTurn, Action onComplete = null)
+	{
+		if (invokingAbility) yield break;
+
+		if (drainMana) AdjustMana(ability.manaCost);
+		AddBusyIfNotInCombat();
+
+		yield return StartCoroutine(ability.function(targetData));
+
+		if (onComplete != null) onComplete.Invoke();
+
+		if (endsTurn) StartCoroutine(EndTurn());
+	}
+
+	void AddBusyIfNotInCombat()
+	{
+		if (turnOrder.Count == 0)
+		{
+			AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
+
+			ForwardMover.speedBoost = 0;
+			ForwardMover.shouldMove = false;
+			CheckIfBuffIconsAreCorrect();
+		}
+	}
 	/// <summary>
 	/// Calls the active ability
 	/// </summary>
-	IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
+	public IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
 	{
 		if (invokingAbility) yield break;
 		invokingAbility = true;
@@ -831,15 +853,7 @@ public class CombatController : AbilityScript
 			processingAbility = true;
 
 			ResetAbilityPick();
-			if (turnOrder.Count == 0)
-			{
-				//AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon("busy"), Buff.StackType.Add_Duplicate, 1), this);
-				AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
-
-				ForwardMover.speedBoost = 0;
-				ForwardMover.shouldMove = false;
-				CheckIfBuffIconsAreCorrect();
-			}
+			AddBusyIfNotInCombat();
 		}
 
 		//yield return new WaitForEndOfFrame();
@@ -856,7 +870,7 @@ public class CombatController : AbilityScript
 			AdjustMana(_tempActiveAbility.manaCost);
 			if (playerOwned)
 			{
-				playerCombatController.CheckMana();
+				playerCombatController.UpdateAbilitiesToManaAvailability();
 				ResetAbilityPick();
 			}
 		}
@@ -922,6 +936,5 @@ public class CombatController : AbilityScript
 		ResetAbilityPick();
 		fleeSlider.gameObject.SetActive(false);
 		abilityMenuScrollView.SetActive(false);
-		inventoryScreen.SetActive(false);
 	}
 }

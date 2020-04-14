@@ -32,10 +32,10 @@ RectTransform:
   m_Father: {fileID: 1153605756308880565}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -436, y: 0}
-  m_SizeDelta: {x: 128, y: 128}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 48, y: 0}
+  m_SizeDelta: {x: 96, y: 96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1153605755348764715
 CanvasRenderer:
@@ -82,6 +82,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1153605756308880565}
+  - component: {fileID: 1666076238}
   m_Layer: 5
   m_Name: ItemDropEntry
   m_TagString: Untagged
@@ -110,6 +111,14 @@ RectTransform:
   m_AnchoredPosition: {x: -550, y: -80}
   m_SizeDelta: {x: 1000, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1666076238
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1153605756308880458}
+  m_CullTransparentMesh: 0
 --- !u!1 &1153605756999413026
 GameObject:
   m_ObjectHideFlags: 0
@@ -144,8 +153,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 70, y: 0}
-  m_SizeDelta: {x: -140, y: 0}
+  m_AnchoredPosition: {x: 50, y: 0}
+  m_SizeDelta: {x: -100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1153605756999413039
 CanvasRenderer:
@@ -175,7 +184,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 70
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 5
@@ -186,4 +195,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ItemItemItem ItemItem Item
+  m_Text: ItemIteITemITemITte X Item

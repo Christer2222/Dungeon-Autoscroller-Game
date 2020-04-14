@@ -438,6 +438,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator CrystalLance(TargetData targetData)
 	{
+		var _buff = new Buff("Crystalized", new List<string> { "defense_constant", "magicDefense_constant" }, 1, BuffIcons.TryGetBuffIcon(17), Buff.StackType.Pick_Most_Turns, 99);
+		AddBuff(_buff, targetData.self);
+
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position,10).transform;
 		_t.SetParent(targetData.self.transform);
 
@@ -455,9 +458,6 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//yield return new WaitForSeconds(0.5f);
 
 		//var _buff = new Buff("Crystalized", new List<string> { "defense_constant", "magicDefense_constant" }, 1, BuffIcons.TryGetBuffIcon("Crystalized"), Buff.StackType.Pick_Most_Turns, 99);
-		var _buff = new Buff("Crystalized", new List<string> { "defense_constant", "magicDefense_constant" }, 1, BuffIcons.TryGetBuffIcon(17), Buff.StackType.Pick_Most_Turns, 99);
-
-		AddBuff(_buff, targetData.self);
 
 		yield return null;
 	}
@@ -767,9 +767,13 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator Heal(TargetData targetData)
 	{
-		if(targetData.target != null)
+		int num = 0;
+		if (targetData.self != null) 
+			num = targetData.self.myStats.Luck;
+
+		if (targetData.target != null)
 		{
-			targetData.target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(targetData.self.myStats.Luck,0)),Elementals.Light, targetData.ability.extraData);
+			targetData.target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(num + targetData.bonus,0)),Elementals.Light, targetData.ability.extraData);
 		}
 
 		if (lastClick != null)
