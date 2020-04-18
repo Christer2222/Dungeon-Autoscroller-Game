@@ -12,15 +12,11 @@ public class CombatController : AbilityScript
 	public static List<CombatController> turnOrder = new List<CombatController>();
 	private bool playerOwned;
 	public bool startedTurn;
-	private static Text turnorderText;
 	public static int turnCounter;
 	private bool processingAbility;
 
 	//Shows the player their status
 	private static GameObject UICanvas;
-	private Slider healthSlider, manaSlider, xpSlider;
-	private Slider healthSliderSlow, manaSliderSlow;
-	private Text currentHealthText, currentManaText, maxManaText, maxHealthText;
 	private Coroutine healthMove, manaMove, xpMove;
 	private const float SLOW_SLIDER_RATIO_TO_NORMAL = 100;
 	private Transform buffContent;
@@ -28,7 +24,7 @@ public class CombatController : AbilityScript
 	private Image buffScrollImage;
 	private static GameObject buffEntryPrefab;
 	private Text levelUpText;
-	private int xpPoolToaddAfterCombat;
+	private static int xpPoolToaddAfterCombat;
 
 	//game stats that change often
 	public StatBlock myStats;
@@ -42,20 +38,15 @@ public class CombatController : AbilityScript
 	//Variables for targeting, and using abilities
 	public Ability selectedAbility;
 	private CombatController targetCombatController;
-    public static CombatController playerCombatController;
+	public static CombatController playerCombatController;
 	private bool isCritted;
-	private Color activeColor = new Color(0,0,0.35f), deactiveColor = Color.gray;
+	private Color abilityActiveColor = new Color(0, 0, 0.35f), abilityInactive = Color.gray;
 
-	private Slider fleeSlider;
-
-    public bool actedLastTick;
+	public bool actedLastTick;
 	private bool invokingAbility;
 
 	//variables for player ability toggeling
-	private GameObject abilityMenuScrollView, buttonMenuContent;
 	private static GameObject entryPrefab;
-	private Text abilityButtonText;
-
 
 	public static void ClearAllValues()
 	{
@@ -102,6 +93,7 @@ public class CombatController : AbilityScript
 			{
 				switch(_t.name)
 				{
+						/*
 					case "$FleeButton":
 						//fleeButton = _t.GetComponent<Button>();
 						ForwardMover.fleeButton = _t.GetComponent<Button>();
@@ -125,21 +117,9 @@ public class CombatController : AbilityScript
 					case "$FleeSlider":
 						fleeSlider = _t.GetComponent<Slider>();
 						break;
-					case "$CurrentHealthText":
-						currentHealthText = _t.GetComponent<Text>();
-						break;
-					case "$MaxHealthText":
-						maxHealthText = _t.GetComponent<Text>();
-						break;
-					case "$CurrentManaText":
-						currentManaText = _t.GetComponent<Text>();
-						break;
-					case "$MaxManaText":
-						maxManaText = _t.GetComponent<Text>();
-						break;
 					case "$AbilityButton":
-						ForwardMover.abilityButton = _t.GetComponent<Button>();
-						ForwardMover.abilityButton.onClick.AddListener(delegate {
+						//ForwardMover.abilityButton = _t.GetComponent<Button>();
+						UIController.AbilityButton.onClick.AddListener(delegate {
 							if (CheckIfHasBuff("Busy") || LevelUpScreen.levelUpScreen.activeSelf) return;
 
 							abilityMenuScrollView.SetActive(!abilityMenuScrollView.activeSelf);
@@ -160,8 +140,8 @@ public class CombatController : AbilityScript
 						}
 						else
 							print("REMOVE ME");
-
 						break;
+							
 					case "$InspectButton":
 						ForwardMover.inspectButton = _t.GetComponent<Button>();
 						ForwardMover.inspectButton.onClick.AddListener(delegate {
@@ -176,21 +156,7 @@ public class CombatController : AbilityScript
 							print("REMOVE ME");
 
 						break;
-					case "$HealthSlider":
-						healthSlider = _t.GetComponent<Slider>();
-						break;
-					case "$HealthSliderSlow":
-						healthSliderSlow = _t.GetComponent<Slider>();
-						break;
-					case "$ManaSlider":
-						manaSlider = _t.GetComponent<Slider>();
-						break;
-					case "$ManaSliderSlow":
-						manaSliderSlow = _t.GetComponent<Slider>();
-						break;
-					case "$XPSlider":
-						xpSlider = _t.GetComponent<Slider>();
-						break;
+
 					case "$ButtonMenuScrollView":
 						abilityMenuScrollView = _t.gameObject;
 						abilityMenuScrollView.transform.SetParent(UICanvas.transform);
@@ -199,16 +165,11 @@ public class CombatController : AbilityScript
 						rectAb.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, rectAb.rect.width);
 
 						break;
-					case "$AbilityContent":
-						buttonMenuContent = _t.gameObject;
-						break;
+						*/
 					case "$BuffContent":
 						buffContent = _t;
 						buffScrollRect = _t.parent.parent.GetComponent<ScrollRect>();
 						buffScrollImage = buffScrollRect.transform.Find("$BuffScrollbarVertical").GetComponent<Image>();
-						break;
-					case "$TurnorderText":
-						turnorderText = _t.GetComponent<Text>();
 						break;
 					case "$GameOverHolder":
 						gameOverHolder = _t.gameObject;
@@ -222,32 +183,70 @@ public class CombatController : AbilityScript
 						break;
 				}
 			}
-#endregion
+
+			
+
+			UIController.AbilityButton.onClick.AddListener(delegate {
+				//if (/*playerCombatController.CheckIfHasBuff("Busy") ||*/ UIController.LevelUpScreen.activeSelf) return;
+
+				//UIController.AbilityMenuScrollView.SetActive(!UIController.AbilityMenuScrollView.activeSelf);
+				//UIController.FleeSlider.gameObject.SetActive(false);
+				playerCombatController.ResetAbilityPick();
+			});
+
+			UIController.FleeButton.onClick.AddListener(delegate {
+
+				//if (LevelUpScreen.levelUpScreen.activeSelf) return;
+
+				if (turnOrder.Count != 0)
+					if (turnOrder[0] == playerCombatController && !processingAbility)
+					{
+						ResetAbilityPick();
+
+						UIController.AbilityMenuScrollView.SetActive(false);
+
+						UIController.FleeSlider.gameObject.SetActive(!UIController.FleeSlider.gameObject.activeSelf);
+						UIController.FleeSlider.GetComponent<FleeLogic>().enabled = true;
+					}
+			});
+
+			
+
+			#endregion
 
 			CheckIfBuffIconsAreCorrect();
 
 #region Stat Reset
+			//get current stats
 			currentHealth = myStats.maxHealth;
 			currentMana = myStats.maxMana;
-			maxHealthText.text = myStats.maxHealth.ToString();
-			maxManaText.text = myStats.maxMana.ToString();
+
 			RefreshAbilityList();
 
-			xpSlider.maxValue = myStats.level * 10;
+			UIController.XPSlider.maxValue = myStats.level * 10;
 
-			healthSlider.maxValue = myStats.maxHealth;
-			manaSlider.maxValue = myStats.maxMana;
-			healthSliderSlow.maxValue = healthSlider.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
-			healthSliderSlow.value = healthSliderSlow.maxValue;
-			manaSliderSlow.maxValue = manaSlider.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
-			manaSliderSlow.value = manaSliderSlow.maxValue;
+			//set the normal bars to their max value
+			UIController.HealthSliderPair.minObject.maxValue = myStats.maxHealth;
+			UIController.ManaSliderPair.minObject.maxValue = myStats.maxMana;
+
+			//show values are at current status
+			UIController.HealthSliderPair.minObject.value = currentHealth;
+			UIController.ManaSliderPair.minObject.value = currentMana;
+
+			//update texts to min/max status
+			UIController.HealthTextPair.minObject.text = currentHealth.ToString();
+			UIController.HealthTextPair.maxObject.text = myStats.maxHealth.ToString();
+			UIController.ManaTextPair.minObject.text = currentMana.ToString();
+			UIController.ManaTextPair.maxObject.text = myStats.maxMana.ToString();
+
+			//update slow sliders
+			UIController.HealthSliderPair.maxObject.maxValue = UIController.HealthSliderPair.minObject.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
+			UIController.HealthSliderPair.maxObject.value = UIController.HealthSliderPair.maxObject.maxValue;
+			UIController.ManaSliderPair.maxObject.maxValue = UIController.ManaSliderPair.minObject.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
+			UIController.ManaSliderPair.maxObject.value = UIController.ManaSliderPair.maxObject.maxValue;
 
 
-			healthSlider.value = currentHealth;
-			currentHealthText.text = currentHealth.ToString();
-			manaSlider.value = currentMana;
-			currentManaText.text = currentMana.ToString();
-			AdjustPlayerXP(0);
+			UIController.XPSlider.value = myStats.xp;
 #endregion
 
 			if (BuffIcons.buffIconDictionary == null)
@@ -279,7 +278,7 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public void RefreshAbilityList()
 	{
-		var _children = buttonMenuContent.GetComponentsInChildren<Transform>();
+		var _children = UIController.AbilityMenuContent.GetComponentsInChildren<Transform>();
 
 		for (int i = 1; i < _children.Length; i++) //exclude parent by starting at 1
 		{
@@ -292,16 +291,16 @@ public class CombatController : AbilityScript
 			_s = myStats.abilities[i].name;
 
 
-			buttonMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0,(myStats.abilities.Count - 1) * 160 + 10); //set size to fit all entries
+			UIController.AbilityMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0,(myStats.abilities.Count - 1) * 160 + 10); //set size to fit all entries
 
-			GameObject _go = Instantiate(entryPrefab,buttonMenuContent.transform); //spawn a new entry for each ability
+			GameObject _go = Instantiate(entryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry for each ability
 			_go.transform.localPosition = new Vector3(325,-10 + -(i + 0.5f) * 170,0); //place it
 			_go.transform.Find("$Text").GetComponent<Text>().text = myStats.abilities[i].name; //write what ability the button selects
 
 			int _index = i;
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
-				abilityMenuScrollView.SetActive(false);
-				abilityButtonText.text = _s;
+				UIController.AbilityMenuScrollView.SetActive(false);
+				UIController.AbilityButtonText.text = _s;
 				selectedAbility = myStats.abilities[_index]; //set ability to this ability
 			});
 
@@ -389,11 +388,11 @@ public class CombatController : AbilityScript
 
 	public static void UpdateTurnOrderDisplay()
 	{
-		turnorderText.text = string.Empty;
+		UIController.TurnOrderText.text = string.Empty;
 		if (turnOrder.Count > 1)
 			for (int i = 0; i < turnOrder.Count; i++)
 			{
-				turnorderText.text += turnOrder[i].myStats.name + " | ";
+				UIController.TurnOrderText.text += turnOrder[i].myStats.name + " | ";
 			}
 	}
 	
@@ -425,7 +424,7 @@ public class CombatController : AbilityScript
 			CheckIfBuffIconsAreCorrect();
 	}
 
-	bool CheckIfHasBuff(string _buffName)
+	public bool CheckIfHasBuff(string _buffName)
 	{
 		return (myStats.buffList.Exists(x => x.name == _buffName));
 	}
@@ -552,7 +551,7 @@ public class CombatController : AbilityScript
 		MoveXPSlider();
 
 		//xpSlider.value = myStats.xp;
-		if (levelUpText == null && myStats.xp >= xpSlider.maxValue)
+		if (levelUpText == null && myStats.xp >= UIController.XPSlider.maxValue)
 		{
 			levelUpText = EffectTools.SpawnText(transform.position, transform, Color.yellow, "LEVEL UP!");
 			levelUpText.StartCoroutine(EffectTools.MoveDirection(levelUpText.transform, Vector3.up, 1, 2));
@@ -560,7 +559,7 @@ public class CombatController : AbilityScript
 			Destroy(levelUpText.gameObject,4);
 		}
 
-		while (myStats.xp >= xpSlider.maxValue)
+		while (myStats.xp >= UIController.XPSlider.maxValue)
 		{
 			LevelUpScreen.traitPointsToSpend += 1;
 
@@ -570,9 +569,9 @@ public class CombatController : AbilityScript
 			}
 
 			myStats.level++;
-			myStats.xp -= (int)xpSlider.maxValue; //subtract this levels xp requirement
-			xpSlider.value = myStats.xp; //then set the xp bar to show the current xp (which might be over the requirement for a levelup)
-			xpSlider.maxValue = myStats.level * 10; //set the next levelup to be at 10 times the level
+			myStats.xp -= (int)UIController.XPSlider.maxValue; //subtract this levels xp requirement
+			UIController.XPSlider.value = myStats.xp; //then set the xp bar to show the current xp (which might be over the requirement for a levelup)
+			UIController.XPSlider.maxValue = myStats.level * 10; //set the next levelup to be at 10 times the level
 
 			MoveXPSlider();
 		}
@@ -586,7 +585,7 @@ public class CombatController : AbilityScript
 			StopCoroutine(xpMove);
 		}
 
-		xpMove = StartCoroutine(EffectTools.AnimateSlider(xpSlider, myStats.xp, 1, 1));
+		xpMove = StartCoroutine(EffectTools.AnimateSlider(UIController.XPSlider, myStats.xp, 1, 1));
 	}
 
 	public int AdjustHealth(int _amount, Elementals _elementals, ExtraData _extraData)
@@ -647,7 +646,7 @@ public class CombatController : AbilityScript
 
 		if(playerOwned)
 		{
-			currentHealthText.text = currentHealth.ToString();
+			UIController.HealthTextPair.minObject.text = currentHealth.ToString();
 
 			if (healthMove != null)
 			{
@@ -656,13 +655,13 @@ public class CombatController : AbilityScript
 
 			if (_damageCalc < 0)
 			{
-				healthSlider.value = currentHealth;
-				healthMove = StartCoroutine(EffectTools.AnimateSlider(healthSliderSlow, healthSlider, 3, SLOW_SLIDER_RATIO_TO_NORMAL));
+				UIController.HealthSliderPair.minObject.value = currentHealth;
+				healthMove = StartCoroutine(EffectTools.AnimateSlider(UIController.HealthSliderPair.maxObject, UIController.HealthSliderPair.minObject, 3, SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 			else
 			{
-				healthSliderSlow.value = currentHealth * SLOW_SLIDER_RATIO_TO_NORMAL;
-				healthMove = StartCoroutine(EffectTools.AnimateSlider(healthSlider, healthSliderSlow, 1, 1/SLOW_SLIDER_RATIO_TO_NORMAL));
+				UIController.HealthSliderPair.maxObject.value = currentHealth * SLOW_SLIDER_RATIO_TO_NORMAL;
+				healthMove = StartCoroutine(EffectTools.AnimateSlider(UIController.HealthSliderPair.minObject, UIController.HealthSliderPair.maxObject, 1, 1/SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 		}
 
@@ -711,20 +710,20 @@ public class CombatController : AbilityScript
 
 		if(playerOwned)
 		{
-			currentManaText.text = currentMana.ToString();
+			UIController.ManaTextPair.minObject.text = currentMana.ToString();
 
 			if (manaMove != null)
 				StopCoroutine(manaMove);
 
 			if (_manaLost > 0)
 			{
-				manaSlider.value = currentMana;
-				manaMove = StartCoroutine(EffectTools.AnimateSlider(manaSliderSlow, manaSlider, 1, SLOW_SLIDER_RATIO_TO_NORMAL));
+				UIController.ManaSliderPair.minObject.value = currentMana;
+				manaMove = StartCoroutine(EffectTools.AnimateSlider(UIController.ManaSliderPair.maxObject, UIController.ManaSliderPair.minObject, 1, SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 			else
 			{
-				manaSliderSlow.value = currentMana * SLOW_SLIDER_RATIO_TO_NORMAL;
-				manaMove = StartCoroutine(EffectTools.AnimateSlider(manaSlider, manaSliderSlow, 0.3f, 1 / SLOW_SLIDER_RATIO_TO_NORMAL));
+				UIController.ManaSliderPair.maxObject.value = currentMana * SLOW_SLIDER_RATIO_TO_NORMAL;
+				manaMove = StartCoroutine(EffectTools.AnimateSlider(UIController.ManaSliderPair.minObject, UIController.ManaSliderPair.maxObject, 0.3f, 1 / SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 
 		}
@@ -737,10 +736,10 @@ public class CombatController : AbilityScript
 	/// </summary>
 	void UpdateAbilitiesToManaAvailability()
 	{
-		var _children = buttonMenuContent.GetComponentsInChildren<Button>();
-		for (int i = 0; i < _children.Length; i++)
+		var _children = UIController.AbilityMenuContent.GetComponentsInChildren<Button>(); //Get all ability buttons
+		for (int i = 0; i < _children.Length; i++) //go through them
 		{
-			ToggleButtonOnMana(_children[i]);
+			ToggleButtonOnMana(_children[i]); //Set state based on players mana
 		}
 	}
 
@@ -750,7 +749,7 @@ public class CombatController : AbilityScript
 
 		bool _hasEnoughMana = playerCombatController.currentMana >= -myStats.abilities.Find(x => x.name == _buttonText).manaCost; //playerCombatController.selectedAbility.manaCost;
 
-		_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? activeColor: deactiveColor;
+		_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? abilityActiveColor: abilityInactive;
 		_button.GetComponent<Button>().enabled = _hasEnoughMana;
 		_button.GetComponent<Collider2D>().enabled = _hasEnoughMana;
 	}
@@ -775,7 +774,7 @@ public class CombatController : AbilityScript
 			}
 		}
 
-		if (selectedAbility != null && !fleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
+		if (selectedAbility != null && !UIController.FleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
 		{
 			if (_hit.transform != null) //if something was hit
 			{
@@ -836,7 +835,7 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
 	{
-		if (invokingAbility) yield break;
+		if (invokingAbility || (turnOrder.Count != 0 && turnOrder[0] != this || CheckIfHasBuff("Busy"))) yield break;
 		invokingAbility = true;
 
 		var _orgTime = Time.time;
@@ -927,14 +926,14 @@ public class CombatController : AbilityScript
 
 	void ResetAbilityPick()
 	{
-		abilityButtonText.text = "Abilities";
+		UIController.AbilityButtonText.text = "Abilities";
 		selectedAbility = null;// string.Empty;
 	}
 
 	public void CloseAllCombatUI()
 	{
 		ResetAbilityPick();
-		fleeSlider.gameObject.SetActive(false);
-		abilityMenuScrollView.SetActive(false);
+		UIController.FleeSlider.gameObject.SetActive(false);
+		UIController.AbilityMenuScrollView.SetActive(false);
 	}
 }

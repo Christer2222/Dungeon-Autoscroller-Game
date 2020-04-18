@@ -1,14 +1,13 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 
 public class ForwardMover : MonoBehaviour
 {
 	private GameObject segmentPrefab;
 	private GameObject enemyPrefab;
-	private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
+	//private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
 	private readonly List<GameObject> segmentList = new List<GameObject>();
 	private const float SEGMENT_DISTANCE = 8;
@@ -23,35 +22,33 @@ public class ForwardMover : MonoBehaviour
 	public static bool shouldMove = true;
 	private static bool finnishingCombat;
 
-	public static Button abilityButton, fleeButton, itemsButton, inspectButton, 
-		levelUpButton;
-
     // Start is called before the first frame update
     void Start()
     {
 		segmentPrefab = (GameObject)Resources.Load("Prefabs/Segment");
 		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
-		var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
+		//var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
+		/*
 		for (int i = 0; i < enemySprites.Length; i++)
 		{
 			enemySpriteDictionary.Add(enemySprites[i].name.Replace(" ", "_"), enemySprites[i]);
 		}
+		*/
 		//playerCombatController = gameObject.GetComponent<CombatController>();
 
-		levelUpButton = CombatController.playerCombatController.GetComponent<Button>();
+		
 		LevelUpScreen.instance = new LevelUpScreen(); //CombatController.playerCombatController.GetComponent<LevelUpScreen>();
 		LevelUpScreen.instance.Initialize();
-
 	}
 
 	// Update is called once per frame
 	void Update()
     {
-		if (Input.GetKeyDown(Options.abilitiesHotkey)) abilityButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.fleeHotkey)) fleeButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.itemsHotkey)) itemsButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.inspectHotkey)) inspectButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.levelUpHotkey)) levelUpButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.abilitiesHotkey)) UIController.AbilityButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.fleeHotkey)) UIController.FleeButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.itemsHotkey)) UIController.InventoryButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.inspectHotkey)) UIController.InspectButton.onClick.Invoke();
+		if (Input.GetKeyDown(Options.levelUpHotkey)) UIController.LevelUpButton.onClick.Invoke();
 
 
 		if (encounterTimer > 0)

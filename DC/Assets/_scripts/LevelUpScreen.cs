@@ -5,8 +5,6 @@ using AbilityInfo;
 
 public class LevelUpScreen : AbilityClass
 {
-	public static GameObject levelUpScreen;
-
 	public static LevelUpScreen instance;
 
 	private struct AbilityChoices
@@ -73,7 +71,7 @@ public class LevelUpScreen : AbilityClass
 
 	public void Initialize()
 	{
-		ForwardMover.levelUpButton.onClick.AddListener(delegate { ToggleLevelUpScreen(); });
+		UIController.LevelUpButton.onClick.AddListener(delegate { ToggleLevelUpScreen(); });
 
 		instance = this;
 
@@ -84,9 +82,6 @@ public class LevelUpScreen : AbilityClass
 		{
 			switch(_t.name)
 			{
-				case "$LevelUpHolder":
-					levelUpScreen = _t.gameObject;
-					break;
                 case "$TraitPointsToSpendText":
                     traitPointToSpendText = _t.GetComponent<Text>();
                     break;
@@ -291,9 +286,9 @@ public class LevelUpScreen : AbilityClass
         if (CombatController.playerCombatController.actedLastTick) return;
 		//if (CombatController.playerCombatController.selectedAbility != string.Empty) return;
 
-		levelUpScreen.SetActive(!levelUpScreen.activeSelf);
+		UIController.LevelUpScreen.SetActive(!UIController.LevelUpScreen.activeSelf);
 
-		if (levelUpScreen.activeSelf)
+		if (UIController.LevelUpScreen.activeSelf)
 		{
 			RefreshAbilities();
 

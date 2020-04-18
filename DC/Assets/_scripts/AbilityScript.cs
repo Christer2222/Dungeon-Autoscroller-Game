@@ -527,9 +527,13 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator Punch(TargetData targetData)//CombatController _target, int _damage, Elementals _element = Elementals.Physical)
 	{
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, lastClick, 1).transform;
-		_t.SetParent(targetData.target.transform);
+		if (targetData.target != null)
+		{
+			_t.SetParent(targetData.target.transform);
 
-		if (targetData.target != null) targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.Strength + targetData.bonus, 0), targetData.element, targetData.ability.extraData);
+			targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.Strength + targetData.bonus, 0), targetData.element, targetData.ability.extraData);
+		}
+
 		yield return null;
 	}
 

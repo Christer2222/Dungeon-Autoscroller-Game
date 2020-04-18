@@ -45,6 +45,20 @@ public class PlayerInventory : MonoBehaviour
         halfItemContextHeight = UIController.InventoryContextMenu.GetComponentInChildren<Image>().rectTransform.rect.height/2;
         itemSpacing = UIController.InventoryItemContent.GetComponent<VerticalLayoutGroup>().spacing;
 
+
+        UIController.InventoryButton.onClick.AddListener(delegate {
+            OpenInventory();
+        });
+
+        UIController.InventoryCloseButton.onClick.AddListener(delegate {
+            if (selectedItem != null)
+                selectedItem.selectionBox.color = Color.clear;
+
+            selectedItem = null;
+            UIController.InventoryContextMenu.gameObject.SetActive(false);
+            UIController.InventoryRootRectTransform.gameObject.SetActive(false);
+        });
+
         ItemQuantity[] debugItems =
             {
             new ItemQuantity() { count = 5, item = Items.apple },
@@ -123,9 +137,11 @@ public class PlayerInventory : MonoBehaviour
         UIController.InventoryTossUp10Button.onClick.AddListener(   () => ChangeTossNumber(+10));
         UIController.InventoryTossDown1Button.onClick.AddListener(  () => ChangeTossNumber(-1));
         UIController.InventoryTossDown10Button.onClick.AddListener( () => ChangeTossNumber(-10));
-        
+
+        UIController.InventoryContextMenu.gameObject.SetActive(false);
+
         //debug
-        OpenInventory();
+        //OpenInventory();
     }
 
     string GetItemText(ItemQuantity entry)
@@ -135,11 +151,6 @@ public class PlayerInventory : MonoBehaviour
 
     void OpenInventory()
     {
-        if (selectedItem != null)
-            selectedItem.selectionBox.color = Color.clear;
-
-        UIController.InventoryContextMenu.gameObject.SetActive(false);
-
         UIController.InventoryRootRectTransform.gameObject.SetActive(true);
         ClearInventory();
         UpdateItemList();
