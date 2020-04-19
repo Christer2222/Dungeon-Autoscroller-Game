@@ -16,12 +16,8 @@ public class CombatController : AbilityScript
 	private bool processingAbility;
 
 	//Shows the player their status
-	private static GameObject UICanvas;
 	private Coroutine healthMove, manaMove, xpMove;
 	private const float SLOW_SLIDER_RATIO_TO_NORMAL = 100;
-	private Transform buffContent;
-	private ScrollRect buffScrollRect;
-	private Image buffScrollImage;
 	private static GameObject buffEntryPrefab;
 	private Text levelUpText;
 	private static int xpPoolToaddAfterCombat;
@@ -32,7 +28,6 @@ public class CombatController : AbilityScript
 	public int currentMana;
 
 	//Gameover variables
-	private GameObject gameOverHolder;
 	private EnemyMover myEnemyMover;
 
 	//Variables for targeting, and using abilities
@@ -52,7 +47,6 @@ public class CombatController : AbilityScript
 	public static void ClearAllValues()
 	{
 		turnOrder.Clear();
-		//abilityButton1 = abilityButton2 = abilityButton3 = abilityButton4 = null;
 		playerCombatController = null;
 		mainCamera = null;
 		turnCounter = 0;
@@ -67,12 +61,11 @@ public class CombatController : AbilityScript
         }
 
 		if(mainCamera == null) mainCamera = Camera.main;
-		if (UICanvas == null) UICanvas = GameObject.Find("$UICanvas");
 			//damageText = transform.Find("$DamageTextHolder").Find("$DamageText").GetComponent<Text>();
 
 
 		//Set stats for enemies and the player + ui for player
-		if (playerOwned)//gameObject.name == "$PlayerPortrait")
+		if (playerOwned)
 		{
 			myStats = new StatBlock(
 				StatBlock.Race.Human,
@@ -81,111 +74,15 @@ public class CombatController : AbilityScript
 				1, 0, //lv, xp
 				1, 1, 1, 1, //str, dex. int, luck
 				//new List<Ability> { AbilityClass.punch});
-				(DebugController.debugAbilities) ? AbilityClass.DebugAbilities() : new List<Ability> { AbilityClass.punch }
-				, _drops: DropTable.none);
-
-			//playerOwned = true;
+				new List<Ability> { AbilityClass.punch },
+				_drops: DropTable.none
+				);
 
 			entryPrefab = Resources.Load<GameObject>("Prefabs/$Entry");
 			buffEntryPrefab = Resources.Load<GameObject>("Prefabs/$BuffEntry");
 
 #region UI Assignment
-			foreach(Transform _t in UICanvas.GetComponentsInChildren<Transform>(true))
-			{
-				switch(_t.name)
-				{
-						/*
-					case "$FleeButton":
-						//fleeButton = _t.GetComponent<Button>();
-						ForwardMover.fleeButton = _t.GetComponent<Button>();
-						ForwardMover.fleeButton.onClick.AddListener(delegate {
 
-							//if (LevelUpScreen.levelUpScreen.activeSelf) return;
-
-							if (turnOrder.Count != 0)
-								if (turnOrder[0] == playerCombatController && !processingAbility)
-								{
-									ResetAbilityPick();
-
-									abilityMenuScrollView.SetActive(false);
-
-									fleeSlider.gameObject.SetActive(!fleeSlider.gameObject.activeSelf);
-									fleeSlider.GetComponent<FleeLogic>().enabled = true;
-									//fleeSlider.value = 0;
-								}
-						});
-						break;
-					case "$FleeSlider":
-						fleeSlider = _t.GetComponent<Slider>();
-						break;
-					case "$AbilityButton":
-						//ForwardMover.abilityButton = _t.GetComponent<Button>();
-						UIController.AbilityButton.onClick.AddListener(delegate {
-							if (CheckIfHasBuff("Busy") || LevelUpScreen.levelUpScreen.activeSelf) return;
-
-							abilityMenuScrollView.SetActive(!abilityMenuScrollView.activeSelf);
-							fleeSlider.gameObject.SetActive(false);
-							ResetAbilityPick();
-						});
-						abilityButtonText = _t.Find("$Text").GetComponent<Text>();
-						break;
-					case "$ItemsButton":
-						ForwardMover.itemsButton = _t.GetComponent<Button>();
-						ForwardMover.itemsButton.onClick.AddListener(delegate {
-							
-						});
-
-						if (ForwardMover.itemsButton.onClick.GetPersistentEventCount() == 0)
-						{
-							_t.GetComponentInChildren<Text>().text = "-";
-						}
-						else
-							print("REMOVE ME");
-						break;
-							
-					case "$InspectButton":
-						ForwardMover.inspectButton = _t.GetComponent<Button>();
-						ForwardMover.inspectButton.onClick.AddListener(delegate {
-							
-						});
-
-						if (ForwardMover.inspectButton.onClick.GetPersistentEventCount() == 0)
-						{
-							_t.GetComponentInChildren<Text>().text = "-";
-						}
-						else
-							print("REMOVE ME");
-
-						break;
-
-					case "$ButtonMenuScrollView":
-						abilityMenuScrollView = _t.gameObject;
-						abilityMenuScrollView.transform.SetParent(UICanvas.transform);
-
-						var rectAb = _t.GetComponent<RectTransform>();
-						rectAb.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, rectAb.rect.width);
-
-						break;
-						*/
-					case "$BuffContent":
-						buffContent = _t;
-						buffScrollRect = _t.parent.parent.GetComponent<ScrollRect>();
-						buffScrollImage = buffScrollRect.transform.Find("$BuffScrollbarVertical").GetComponent<Image>();
-						break;
-					case "$GameOverHolder":
-						gameOverHolder = _t.gameObject;
-						foreach (Transform _childGameOver in _t.GetComponentsInChildren<Transform>(true))
-						{
-							if (_childGameOver.name == "$RestartButton")
-							{
-								_childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>();});
-							}
-						}
-						break;
-				}
-			}
-
-			
 
 			UIController.AbilityButton.onClick.AddListener(delegate {
 				//if (/*playerCombatController.CheckIfHasBuff("Busy") ||*/ UIController.LevelUpScreen.activeSelf) return;
@@ -198,18 +95,17 @@ public class CombatController : AbilityScript
 			UIController.FleeButton.onClick.AddListener(delegate {
 
 				//if (LevelUpScreen.levelUpScreen.activeSelf) return;
+				ResetAbilityPick();
 
 				if (turnOrder.Count != 0)
 					if (turnOrder[0] == playerCombatController && !processingAbility)
-					{
-						ResetAbilityPick();
-
-						UIController.AbilityMenuScrollView.gameObject.SetActive(false);
-
-						UIController.FleeSlider.gameObject.SetActive(!UIController.FleeSlider.gameObject.activeSelf);
 						UIController.FleeSlider.GetComponent<FleeLogic>().enabled = true;
-					}
+					else
+						UIController.FleeSlider.gameObject.SetActive(false);
+
 			});
+
+			UIController.InventoryButton.onClick.AddListener(delegate { ResetAbilityPick(); });
 
 			
 
@@ -279,16 +175,15 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public void RefreshAbilityList()
 	{
-		var _children = UIController.AbilityMenuContent.GetComponentsInChildren<Transform>();
+		var _children = UIController.AbilityMenuContent.GetComponentsInChildren<Transform>(); //get all children already here
 
 		for (int i = 1; i < _children.Length; i++) //exclude parent by starting at 1
 		{
-			Destroy(_children[i].gameObject);
+			Destroy(_children[i].gameObject); //and clear all children
 		}
 
-		int _abilityCount = myStats.abilities.Count;
-		for (int i = 0; i < _abilityCount; i++) //for all of my abilities
-
+		int _abilityCount = myStats.abilities.Count; //for each ability the player has
+		for (int i = 0; i < _abilityCount; i++) //go through them
 		{
 			string _s = "";
 			_s = myStats.abilities[i].name;
@@ -296,12 +191,12 @@ public class CombatController : AbilityScript
 
 			GameObject _go = Instantiate(entryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry for each ability
 			//_go.transform.localPosition = Vector3.zero; //new Vector3(350,-10 + -(i + 0.5f) * 170,0); //place it
-			_go.transform.Find("$Text").GetComponent<Text>().text = myStats.abilities[i].name; //write what ability the button selects
+			_go.transform.Find("$Text").GetComponent<Text>().text = _s; //write what ability the button selects
 
-			int _index = i;
+			int _index = i; //store the current index
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
-				UIController.AbilityMenuScrollView.gameObject.SetActive(false);
-				UIController.AbilityButtonText.text = _s;
+				UIController.AbilityMenuScrollView.gameObject.SetActive(false); //deactivate the menu
+				UIController.AbilityButtonText.text = _s; //set the name of the button to the ability
 				selectedAbility = myStats.abilities[_index]; //set ability to this ability
 			});
 
@@ -310,11 +205,11 @@ public class CombatController : AbilityScript
 		//UIController.AbilityMenuContent.sizeDelta = new Vector2(0,(count - 1) * 113 + 10); //set size to fit all entries
 		UIController.AbilityMenuContent.sizeDelta = new Vector2(0, (_abilityCount) * 110 + 10); //set size to fit all entries
 
-		var oMax = UIController.AbilityMenuScrollView.offsetMax;
-		oMax.y = UIController.AbilityMenuScrollView.offsetMin.y + (Mathf.Min(_abilityCount, MAX_ABILITIES_ON_SCREEN)) * 110 + 10;// (count) * 110 + 10;
-		UIController.AbilityMenuScrollView.offsetMax = oMax;
+		var oMax = UIController.AbilityMenuScrollView.offsetMax; //get the height
+		oMax.y = UIController.AbilityMenuScrollView.offsetMin.y + (Mathf.Min(_abilityCount, MAX_ABILITIES_ON_SCREEN)) * 110 + 10; //set height to bottom + maxShowCount * height + offset
+		UIController.AbilityMenuScrollView.offsetMax = oMax; //apply
 
-		UpdateAbilitiesToManaAvailability();
+		UpdateAbilitiesToManaAvailability(); //set colors
 	}
 
 	IEnumerator EndActedLastTick()
@@ -360,7 +255,7 @@ public class CombatController : AbilityScript
 
 			if (turnOrder[0] == playerOwned || turnCounter == 1)
 			{
-				var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UICanvas.transform, (turnCounter == 1) ? new Color(0.8f, 0.4f, 0) : Color.yellow + Color.red, (turnCounter == 1) ? "Combat!" : "Your Turn!", 150);
+				var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UIController.UICanvas, (turnCounter == 1) ? new Color(0.8f, 0.4f, 0) : Color.yellow + Color.red, (turnCounter == 1) ? "Combat!" : "Your Turn!", 150);
 				_playerTurnText.transform.parent.localPosition = Vector3.zero;
 				_playerTurnText.StartCoroutine(EffectTools.ActivateInOrder(_playerTurnText,
 					new List<EffectTools.FunctionAndDelay>()
@@ -447,8 +342,8 @@ public class CombatController : AbilityScript
 	/// </summary>
 	void CheckIfBuffIconsAreCorrect()
 	{
-		List<Text> _buffHolderTurnList = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
-		List<string> _uncheckedBuffs = buffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
+		List<Text> _buffHolderTurnList = UIController.BuffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
+		List<string> _uncheckedBuffs = UIController.BuffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
 		int _amount = _buffHolderTurnList.Count;
 
 		for (int i = 0; i < myStats.buffList.Count; i++)
@@ -465,7 +360,7 @@ public class CombatController : AbilityScript
 			{
 				//create
 				_amount++;
-				var _go = Instantiate(buffEntryPrefab, buffContent);
+				var _go = Instantiate(buffEntryPrefab, UIController.BuffContent);
 				var _children = _go.GetComponentsInChildren<Text>(true);
 				var _info = _go.transform.GetChild(0).GetChild(0).gameObject;
 				var _parent = _go.transform.GetChild(0);
@@ -510,14 +405,14 @@ public class CombatController : AbilityScript
 
 		if (_amount > 8)
 		{
-			buffScrollRect.vertical = true;
-			buffScrollImage.color = Color.white * 0.3f;
+			UIController.BuffScrollRect.vertical = true;
+			UIController.BuffScrollImage.color = Color.white * 0.3f;
 			//EffectTools.BlinkImage(buffScrollImage,Color.white,1,0.5f);
 		}
 		else
 		{
-			buffScrollRect.vertical = false;
-			buffScrollImage.color = Color.clear;
+			UIController.BuffScrollRect.vertical = false;
+			UIController.BuffScrollImage.color = Color.clear;
 		}
 	}
 
@@ -529,7 +424,7 @@ public class CombatController : AbilityScript
 
 		//_playerTurnText.transform.parent.localPosition = Vector3.zero;
 
-		yield return StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UICanvas.transform, myStats, selectedAbility, this));
+		yield return StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UIController.UICanvas, myStats, selectedAbility, this));
 
 		yield return new WaitForSeconds(0.3f);
 
@@ -702,7 +597,7 @@ public class CombatController : AbilityScript
 					Destroy(_cc.gameObject);
 				}
 
-				gameOverHolder.transform.GetChild(0).gameObject.SetActive(true);
+				UIController.GameOverHolder.transform.GetChild(0).gameObject.SetActive(true);
 			}
 
 		}
@@ -772,17 +667,13 @@ public class CombatController : AbilityScript
 		{
 			//print("name: " + _hit.transform.name + " actedLastTick: " + actedLastTick + " selectedAb: " + selectedAbility);
 			
-			if(_hit.transform.CompareTag("AbilityButton"))
-			{
-				return;
-			}
-			else if(_hit.transform.CompareTag("UI"))
+			if(/*_hit.transform.CompareTag("AbilityButton") ||*/ _hit.transform.CompareTag("UI")) //cancel if ui has been hit
 			{
 				return;
 			}
 		}
 
-		if (selectedAbility != null && !UIController.FleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
+		if (selectedAbility != null)// && !UIController.FleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
 		{
 			if (_hit.transform != null) //if something was hit
 			{

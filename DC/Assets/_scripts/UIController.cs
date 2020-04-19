@@ -30,7 +30,15 @@ public class UIController : MonoBehaviour
 
     public static Slider XPSlider { get; private set; }
 
+    
     public static Text TurnOrderText { get; private set; }
+
+    public static GameObject GameOverHolder { get; private set; }
+
+    public static Transform BuffContent { get; private set; }
+    public static ScrollRect BuffScrollRect { get; private set; }
+    public static Image BuffScrollImage { get; private set; }
+
 
     public static Button AbilityButton { get; private set; }
     public static Button FleeButton { get; private set; }
@@ -38,14 +46,18 @@ public class UIController : MonoBehaviour
     public static Button InspectButton { get; private set; }
     public static Button LevelUpButton { get; private set; }
 
+    
     public static RectTransform AbilityMenuScrollView { get; private set; }
     public static RectTransform AbilityMenuContent { get; private set; }
-    public static Slider FleeSlider { get; private set; }
     public static Text AbilityButtonText { get; private set; }
+
+    
+    public static Slider FleeSlider { get; private set; }
 
 
     public static GameObject LevelUpScreen { get; private set; }
 
+    public static Transform UICanvas { get; private set; }
 
     public class MinMax<T>
     {
@@ -53,7 +65,7 @@ public class UIController : MonoBehaviour
         public T maxObject;
     }
 
-    public UIMode currentUIMode;
+    public static UIMode currentUIMode;
     public enum UIMode
     {
         None,
@@ -67,7 +79,7 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //LevelUpButton = CombatController.playerCombatController.GetComponent<Button>();
+        UICanvas = transform.GetChild(0);
 
         var childrenTransforms = GetComponentsInChildren<Transform>(true);
         for (int i = 0; i < childrenTransforms.Length; i++)
@@ -188,6 +200,21 @@ public class UIController : MonoBehaviour
                     break;
                 case "$LevelUpHolder":
                     LevelUpScreen = child.gameObject;
+                    break;
+                case "$BuffContent":
+                    BuffContent = child;
+                    BuffScrollRect = child.parent.parent.GetComponent<ScrollRect>();
+                    BuffScrollImage = BuffScrollRect.transform.Find("$BuffScrollbarVertical").GetComponent<Image>();
+                    break;
+                case "$GameOverHolder":
+                    GameOverHolder = child.gameObject;
+                    foreach (Transform _childGameOver in child.GetComponentsInChildren<Transform>(true))
+                    {
+                        if (_childGameOver.name == "$RestartButton")
+                        {
+                            _childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>(); });
+                        }
+                    }
                     break;
             }
         }

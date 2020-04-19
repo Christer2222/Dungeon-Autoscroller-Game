@@ -55,7 +55,7 @@ public class LevelUpScreen : AbilityClass
 	};
 
 	private int strengthChange, dexterityChange, intelligenceChange, luckChange;
-	public static int traitPointsToSpend = DebugController.bonusAbilityPoints;//, abilityPointsToSpend;
+	public static int traitPointsToSpend = 0;// DebugController.bonusAbilityPoints;// abilityPointsToSpend;
 
 	private Text strengthText, dexterityText, intelligenceText, luckText;
 	private Text traitPointToSpendText, abilityPointsToSpendText;
