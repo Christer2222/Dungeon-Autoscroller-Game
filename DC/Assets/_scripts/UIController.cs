@@ -38,8 +38,8 @@ public class UIController : MonoBehaviour
     public static Button InspectButton { get; private set; }
     public static Button LevelUpButton { get; private set; }
 
-    public static GameObject AbilityMenuScrollView { get; private set; }
-    public static GameObject AbilityMenuContent { get; private set; }
+    public static RectTransform AbilityMenuScrollView { get; private set; }
+    public static RectTransform AbilityMenuContent { get; private set; }
     public static Slider FleeSlider { get; private set; }
     public static Text AbilityButtonText { get; private set; }
 
@@ -154,7 +154,7 @@ public class UIController : MonoBehaviour
 
                     break;
                 case "$ButtonMenuScrollView":
-                    AbilityMenuScrollView = child.gameObject;
+                    AbilityMenuScrollView = child.GetComponent<RectTransform>();
                     break;
                 case "$InspectButton":
                     InspectButton = child.GetComponent<Button>();
@@ -181,7 +181,7 @@ public class UIController : MonoBehaviour
                     AbilityButtonText = child.GetComponent<Text>();
                     break;
                 case "$AbilityContent":
-                    AbilityMenuContent = child.gameObject;
+                    AbilityMenuContent = child.GetComponent<RectTransform>();
                     break;
                 case "$PlayerPortrait":
                     LevelUpButton = child.GetComponent<Button>();
@@ -207,7 +207,7 @@ public class UIController : MonoBehaviour
 
     void UpdateUI()
     {
-        AbilityMenuScrollView.SetActive(false);
+        AbilityMenuScrollView.gameObject.SetActive(false);
         InventoryRootRectTransform.gameObject.SetActive(false);
         FleeSlider.gameObject.SetActive(false);
         //Inspect .setActive false
@@ -216,7 +216,7 @@ public class UIController : MonoBehaviour
         switch(currentUIMode)
         {
             case UIMode.Abilities:
-                AbilityMenuScrollView.SetActive(true);
+                AbilityMenuScrollView.gameObject.SetActive(true);
                 break;
             case UIMode.Inventory:
                 InventoryRootRectTransform.gameObject.SetActive(true);

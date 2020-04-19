@@ -41,6 +41,7 @@ public class CombatController : AbilityScript
 	public static CombatController playerCombatController;
 	private bool isCritted;
 	private Color abilityActiveColor = new Color(0, 0, 0.35f), abilityInactive = Color.gray;
+	private const float MAX_ABILITIES_ON_SCREEN = 6.5f;
 
 	public bool actedLastTick;
 	private bool invokingAbility;
@@ -203,7 +204,7 @@ public class CombatController : AbilityScript
 					{
 						ResetAbilityPick();
 
-						UIController.AbilityMenuScrollView.SetActive(false);
+						UIController.AbilityMenuScrollView.gameObject.SetActive(false);
 
 						UIController.FleeSlider.gameObject.SetActive(!UIController.FleeSlider.gameObject.activeSelf);
 						UIController.FleeSlider.GetComponent<FleeLogic>().enabled = true;
@@ -285,26 +286,33 @@ public class CombatController : AbilityScript
 			Destroy(_children[i].gameObject);
 		}
 
-		for (int i = 0; i < myStats.abilities.Count; i++) //for all of my abilities
+		int _abilityCount = myStats.abilities.Count;
+		for (int i = 0; i < _abilityCount; i++) //for all of my abilities
+
 		{
 			string _s = "";
 			_s = myStats.abilities[i].name;
 
 
-			UIController.AbilityMenuContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0,(myStats.abilities.Count - 1) * 160 + 10); //set size to fit all entries
-
 			GameObject _go = Instantiate(entryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry for each ability
-			_go.transform.localPosition = new Vector3(325,-10 + -(i + 0.5f) * 170,0); //place it
+			//_go.transform.localPosition = Vector3.zero; //new Vector3(350,-10 + -(i + 0.5f) * 170,0); //place it
 			_go.transform.Find("$Text").GetComponent<Text>().text = myStats.abilities[i].name; //write what ability the button selects
 
 			int _index = i;
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
-				UIController.AbilityMenuScrollView.SetActive(false);
+				UIController.AbilityMenuScrollView.gameObject.SetActive(false);
 				UIController.AbilityButtonText.text = _s;
 				selectedAbility = myStats.abilities[_index]; //set ability to this ability
 			});
 
 		}
+
+		//UIController.AbilityMenuContent.sizeDelta = new Vector2(0,(count - 1) * 113 + 10); //set size to fit all entries
+		UIController.AbilityMenuContent.sizeDelta = new Vector2(0, (_abilityCount) * 110 + 10); //set size to fit all entries
+
+		var oMax = UIController.AbilityMenuScrollView.offsetMax;
+		oMax.y = UIController.AbilityMenuScrollView.offsetMin.y + (Mathf.Min(_abilityCount, MAX_ABILITIES_ON_SCREEN)) * 110 + 10;// (count) * 110 + 10;
+		UIController.AbilityMenuScrollView.offsetMax = oMax;
 
 		UpdateAbilitiesToManaAvailability();
 	}
@@ -934,6 +942,6 @@ public class CombatController : AbilityScript
 	{
 		ResetAbilityPick();
 		UIController.FleeSlider.gameObject.SetActive(false);
-		UIController.AbilityMenuScrollView.SetActive(false);
+		UIController.AbilityMenuScrollView.gameObject.SetActive(false);
 	}
 }
