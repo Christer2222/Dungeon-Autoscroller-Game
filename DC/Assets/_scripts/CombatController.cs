@@ -695,12 +695,14 @@ public class CombatController : AbilityScript
 				targetCombatController = null;
 			}
 
+			UIController.currentUIMode = UIController.UIMode.None;
 
 			actedLastTick = true;
 			StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
 
 			if (targetCombatController != null) targetCombatController.isCritted = false;
 			targetCombatController = null;
+
 		}
 	}
 
