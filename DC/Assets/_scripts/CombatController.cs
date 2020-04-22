@@ -304,23 +304,28 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public IEnumerator TickBuffs()
 	{
+		print("tick");
 		targetCombatController = this;
-		var _prevActiveAbility = selectedAbility;
+		//var _prevActiveAbility = selectedAbility;
 
 		for(int i = 0; i < myStats.buffList.Count; i++)
 		{
+
 			var _buff = myStats.buffList[i];
 			for (int j = 0; j < _buff.functions.Count; j++)
 			{
-				selectedAbility = _buff.functions[j];
-				yield return StartCoroutine(InvokeActiveAbility(false,_buff.constant));
+				var td = new TargetData(myStats.buffList[i].functions[j], this, this, (int)myStats.buffList[i].constant, _centerPos: transform.position);
+
+				//selectedAbility = _buff.functions[j];
+				//yield return StartCoroutine(InvokeActiveAbility(false,_buff.constant));
+				yield return StartCoroutine(SimpleInvokeAbility(td, td.ability, false, false, 0, false));
 			}
 			_buff.turns--;
 		}
 
 		myStats.buffList.RemoveAll(x => x.turns <= 0);
 
-		selectedAbility = _prevActiveAbility;//null;
+		//selectedAbility = _prevActiveAbility;//null;
 		targetCombatController = null;
 
 		if (playerOwned)
@@ -706,18 +711,35 @@ public class CombatController : AbilityScript
 		}
 	}
 
-	public IEnumerator SimpleInvokeAbility(TargetData targetData, Ability ability, bool drainMana, bool endsTurn, Action onComplete = null)
+	public IEnumerator SimpleInvokeAbility(TargetData targetData, Ability ability, bool drainMana, bool endsTurn, float minimumUseTime = 0, bool becomesBusy = false, Action onComplete = null)
 	{
-		if (invokingAbility) yield break;
+		print(turnOrder.Count);
+		
+		if (invokingAbility || (turnOrder.Count != 0 && turnOrder[0] != this)) yield break; //if already using an ability or its not this characters turn
+		invokingAbility = true; //signal using an ability
 
-		if (drainMana) AdjustMana(ability.manaCost);
-		AddBusyIfNotInCombat();
+		if (drainMana) AdjustMana(ability.manaCost); //if set to remove mana on use; i.e when using an ability, but not when a buff triggers
+		if (becomesBusy) AddBusyIfNotInCombat(); //if not in combat, give the player the busy status
 
-		yield return StartCoroutine(ability.function(targetData));
+		float orgTime = Time.time; //record when ability started
+		yield return StartCoroutine(ability.function(targetData)); //play animation or whatever
 
-		if (onComplete != null) onComplete.Invoke();
+		if (onComplete != null) onComplete.Invoke(); //if special action is set, invoke it
 
-		if (endsTurn) StartCoroutine(EndTurn());
+		if (minimumUseTime != 0) //if has a minimum time
+		{
+			var wof = new WaitForEndOfFrame();
+
+			while (orgTime + minimumUseTime > Time.time) //wait until time expires
+				yield return wof;
+		}
+
+		invokingAbility = false; //signal done with ability
+		if (endsTurn) //if set to end turn
+		{
+			ForwardMover.shouldMove = true;
+			StartCoroutine(EndTurn());
+		}
 	}
 
 	void AddBusyIfNotInCombat()

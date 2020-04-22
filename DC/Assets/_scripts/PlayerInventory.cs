@@ -95,20 +95,24 @@ public class PlayerInventory : MonoBehaviour
                     case Items.ItemType.Consumable:
                     {
                         UIController.InventoryRootRectTransform.gameObject.SetActive(false);
+                        UIController.InventoryContextMenu.gameObject.SetActive(false);
                         for (int i = 0; i < selectedItem.item.abilities.Count; i++)
                         {
-                            print(selectedItem.item.constant);
+                            var ix = selectedItem.item;
                             //CombatController.playerCombatController.selectedAbility = selectedItem.item.abilities[i];
                             TargetData targetData = new TargetData(
                                 selectedItem.item.abilities[i],
                                 null,
                                 CombatController.playerCombatController, 
-                                selectedItem.item.constant,
+                                selectedItem.item.constants[i],
                                 selectedItem.item.abilities[i].element,
                                 CombatController.playerCombatController.transform.position
                                 );
 
-                            CombatController.playerCombatController.StartCoroutine(CombatController.playerCombatController.SimpleInvokeAbility(targetData, selectedItem.item.abilities[i],false,true));// CombatController.playerCombatController.InvokeActiveAbility(false));
+                            CombatController.playerCombatController.StartCoroutine(
+                                CombatController.playerCombatController.SimpleInvokeAbility(targetData, selectedItem.item.abilities[i],false,true, 1, true, delegate {
+                                    UpdateItemQuantity(selectedItem, -1); 
+                                }));
                         }
                     }
                     break;
@@ -120,17 +124,8 @@ public class PlayerInventory : MonoBehaviour
 
         UIController.InventoryTossButton.onClick.AddListener(() => { 
             if (selectedItem != null) 
-            { 
-                selectedItem.count -= GetTossValue();
-                if (selectedItem.count <= 0)
-                {
-                    Destroy(selectedItem.entryGameObject);
-                    inventory.Remove(selectedItem);
-                    selectedItem = null;
-                    UIController.InventoryContextMenu.gameObject.SetActive(false);
-                    return;
-                }
-                selectedItem.title.text = GetItemText(selectedItem); 
+            {
+                UpdateItemQuantity(selectedItem, -GetTossValue());
             }
         });
         UIController.InventoryTossUp1Button.onClick.AddListener(() => ChangeTossNumber(+1)) ;
@@ -142,6 +137,21 @@ public class PlayerInventory : MonoBehaviour
 
         //debug
         //OpenInventory();
+    }
+
+    void UpdateItemQuantity(ItemQuantity entry, int changeAmount)
+    {
+        entry.count += changeAmount;
+        if (entry.count <= 0)
+        {
+            Destroy(entry.entryGameObject);
+            inventory.Remove(entry);
+            if (entry == selectedItem)
+                selectedItem = null;
+            UIController.InventoryContextMenu.gameObject.SetActive(false);
+            return;
+        }
+        selectedItem.title.text = GetItemText(entry);
     }
 
     string GetItemText(ItemQuantity entry)

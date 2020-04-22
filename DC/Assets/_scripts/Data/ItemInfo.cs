@@ -50,7 +50,7 @@ public class Items : AbilityClass
 	{
 		public string name;
 		public List<Ability> abilities;
-		public int constant;
+		public List<int> constants;
 		public ItemType type;
 		public Sprite sprite;
 		public int price;
@@ -58,23 +58,43 @@ public class Items : AbilityClass
 		public int defense;
 		public int magicDefense;
 
-		public ItemInfo(string _name, int _price, ItemType _type, string _description) : this(_name, _price, new List<Ability>(){}, 0, 0 , 0, _type, _description) { }
-		public ItemInfo(string _name, int _price, int _defense, int _magicDefense, ItemType _type, string _description) : this(_name, _price, new List<Ability>() {}, 0, _defense, _magicDefense, _type, _description) { }
+		/// <summary>
+		/// Usually valuables.
+		/// </summary>
+		public ItemInfo(string _name, int _price, ItemType _type, string _description) : this(_name, _price, new List<Ability>(){}, new List<int> { }, 0 , 0, _type, _description) { }
 
-		public ItemInfo(string _name, int _price, Ability _ability, int _constant,  ItemType _type, string _description) : this(_name, _price, new List<Ability>() { _ability }, 0, 0, _constant, _type, _description) { }
-		public ItemInfo(string _name, int _price, Ability _ability, int _constant, int _defense, int _magicDefense, ItemType _type, string _description) : this(_name, _price, new List<Ability>() { _ability }, _defense, _magicDefense, _constant, _type, _description) { }
+		/// <summary>
+		/// Usually equipment without abilities.
+		/// </summary>
+		public ItemInfo(string _name, int _price, int _defense, int _magicDefense, ItemType _type, string _description) : this(_name, _price, new List<Ability>() {}, new List<int> { }, _defense, _magicDefense, _type, _description) { }
 
-		public ItemInfo(string _name, int _price, List<Ability> _ability, int _constant, int _bonusDefense, int _bonusMagicDefense, ItemType _type, string _description)
+		/// <summary>
+		/// Usually consumables.
+		/// </summary>
+		public ItemInfo(string _name, int _price, Ability _ability, int _constant,  ItemType _type, string _description) : this(_name, _price, new List<Ability>() { _ability }, new List<int> { _constant }, 0, 0, _type, _description) { }
+
+		/// <summary>
+		/// Usually equipment with 1 ability.
+		/// </summary>
+		public ItemInfo(string _name, int _price, Ability _ability, int _constant, int _defense, int _magicDefense, ItemType _type, string _description) : this(_name, _price, new List<Ability>() { _ability }, new List<int> { _constant }, _defense, _magicDefense, _type, _description) { }
+
+		/// <summary>
+		///	Usually equipment with multiple abilities.
+		/// </summary>
+		public ItemInfo(string _name, int _price, List<Ability> _abilities, List<int> _constants, int _bonusDefense, int _bonusMagicDefense, ItemType _type, string _description)
 		{
+
 			name = _name;
 			price = _price;
-			abilities = _ability;
+			abilities = _abilities;
 			defense = _bonusDefense;
 			magicDefense = _bonusMagicDefense;
-			constant = _constant;
+			constants = _constants;
 			type = _type;
 
-			_description = _description.Replace(ITEM_CONSTANT, _constant.ToString());
+			if (abilities.Count != constants.Count) throw new System.ArgumentException("Length of the abilities list is not the same as the length of the constant list on item "+name+".");
+
+			_description = _description.Replace(ITEM_CONSTANT, _constants.ToString());
 			_description = _description.Replace(ITEM_DEFENSE, _bonusDefense.ToString());
 			_description = _description.Replace(ITEM_MAGIC_DEFENSE, _bonusMagicDefense.ToString());
 			_description = _description.Replace(ITEM_ABILITY_LIST, GetAbilityNameList(abilities));
