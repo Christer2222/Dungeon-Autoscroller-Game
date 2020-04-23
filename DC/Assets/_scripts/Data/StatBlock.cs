@@ -6,6 +6,7 @@ public class StatBlock
 {
 	public enum Race
 	{
+		None,
 		Human,
 		Dwarf,
 		Elf,

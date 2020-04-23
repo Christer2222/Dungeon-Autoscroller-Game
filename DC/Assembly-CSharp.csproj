@@ -160,6 +160,7 @@
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\heal_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\fireball_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\druid_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\steel_helmet_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\regeneration_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\EMPTY_poisionous_spider_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\EMPTY_player_a_text.txt" />

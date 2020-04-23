@@ -9,7 +9,9 @@ public class UIController : MonoBehaviour
     public static RectTransform InventoryRootRectTransform { get; private set; }
     public static RectTransform InventoryContextMenu { get; private set; }
     public static Button InventoryUseButton { get; private set; }
+    public static Text InventoryUseButtonText { get; private set; }
     public static Button InventoryEquipButton { get; private set; }
+    public static Text InventoryEquipText { get; private set; }
     public static Button InventoryTossButton { get; private set; }
     public static Button InventoryTossUp1Button { get; private set; }
     public static Button InventoryTossUp10Button { get; private set; }
@@ -18,15 +20,11 @@ public class UIController : MonoBehaviour
     public static InputField InventoryTossInputField { get; private set; }
     public static Button InventoryCloseButton { get; private set; }
 
+    public static MinMax<Slider> HealthSliderPair { get; } = new MinMax<Slider>();
+    public static MinMax<Slider> ManaSliderPair { get; } = new MinMax<Slider>();
 
-    private static MinMax<Slider> healthSliders = new MinMax<Slider>(), manaSliders = new MinMax<Slider>();
-    public static MinMax<Slider> HealthSliderPair { get { return healthSliders; } }
-    public static MinMax<Slider> ManaSliderPair { get { return manaSliders; } }
-
-
-    private static MinMax<Text> healthTexts = new MinMax<Text>(), manaTexts = new MinMax<Text>();
-    public static MinMax<Text> HealthTextPair { get { return healthTexts; } } //Text min, max;
-    public static MinMax<Text> ManaTextPair { get { return manaTexts; } } //Text min, max;
+    public static MinMax<Text> HealthTextPair { get; } = new MinMax<Text>();
+    public static MinMax<Text> ManaTextPair { get; } = new MinMax<Text>();
 
     public static Slider XPSlider { get; private set; }
 
@@ -99,8 +97,14 @@ public class UIController : MonoBehaviour
                 case "$UseButton":
                     InventoryUseButton = child.GetComponent<Button>();
                     break;
+                case "$UseButtonText":
+                    InventoryUseButtonText = child.GetComponent<Text>();
+                    break;
                 case "$EquipButton":
                     InventoryEquipButton = child.GetComponent<Button>();
+                    break;
+                case "$EquipButtonText":
+                    InventoryEquipText = child.GetComponent<Text>();
                     break;
                 case "$TossButton":
                     InventoryTossButton = child.GetComponent<Button>();
@@ -127,16 +131,16 @@ public class UIController : MonoBehaviour
                     InventoryCloseButton = child.GetComponent<Button>();
                     break;
                 case "$HealthSlider":
-                    healthSliders.minObject = child.GetComponent<Slider>();
+                    HealthSliderPair.minObject = child.GetComponent<Slider>();
                     break;
                 case "$HealthSliderSlow":
-                    healthSliders.maxObject = child.GetComponent<Slider>();
+                    HealthSliderPair.maxObject = child.GetComponent<Slider>();
                     break;
                 case "$ManaSlider":
-                    manaSliders.minObject = child.GetComponent<Slider>();
+                    ManaSliderPair.minObject = child.GetComponent<Slider>();
                     break;
                 case "$ManaSliderSlow":
-                    manaSliders.maxObject = child.GetComponent<Slider>();
+                    ManaSliderPair.maxObject = child.GetComponent<Slider>();
                     break;
                 case "$TurnOrderText":
                     TurnOrderText = child.GetComponent<Text>();
@@ -145,16 +149,16 @@ public class UIController : MonoBehaviour
                     XPSlider = child.GetComponent<Slider>();
                     break;
                 case "$CurrentHealthText":
-                    healthTexts.minObject = child.GetComponent<Text>();
+                    HealthTextPair.minObject = child.GetComponent<Text>();
                     break;
                 case "$MaxHealthText":
-                    healthTexts.maxObject = child.GetComponent<Text>();
+                    HealthTextPair.maxObject = child.GetComponent<Text>();
                     break;
                 case "$CurrentManaText":
-                    manaTexts.minObject = child.GetComponent<Text>();
+                    ManaTextPair.minObject = child.GetComponent<Text>();
                     break;
                 case "$MaxManaText":
-                    manaTexts.maxObject = child.GetComponent<Text>();
+                    ManaTextPair.maxObject = child.GetComponent<Text>();
                     break;
                 case "$AbilityButton":
                     AbilityButton = child.GetComponent<Button>();

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,8 @@ public class EffectTools// : MonoBehaviour
 {
 	private static bool initialized;
 	//private static Dictionary<string, Sprite> effectDictionary;
-	private static WaitForEndOfFrame waitForEndOfFrame;
-	private static WaitForSeconds waitForPointOneSeconds;
+	private static readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+	private static readonly WaitForSeconds waitForPointOneSeconds = new WaitForSeconds(0.1f);
 	private static GameObject textHolder;
 	private static Dictionary<string, Sprite[]> effectDictionary = new Dictionary<string, Sprite[]>();
 
@@ -40,8 +41,8 @@ public class EffectTools// : MonoBehaviour
 	{
 		initialized = true;
 
-		if (waitForEndOfFrame == null)
-			waitForEndOfFrame = new WaitForEndOfFrame();
+		//if (waitForEndOfFrame == null)
+		//	waitForEndOfFrame = new WaitForEndOfFrame();
 
 		if (textHolder == null)
 			textHolder = Resources.Load<GameObject>("Prefabs/$TextHolder");
@@ -57,6 +58,16 @@ public class EffectTools// : MonoBehaviour
 		//		effectDictionary.Add(_sprites[i].name, _sprites[i]);
 		//	}
 		//}
+	}
+
+	static IEnumerator Delay(float _sec)
+	{
+		float _timer = 0;
+		while (_timer < _sec)
+		{
+			yield return waitForEndOfFrame;
+			_timer += Time.deltaTime;
+		}
 	}
 
 	public static IEnumerator AnimateSlider(Slider _sliderToMove, Slider _targetSlider, float _speed, float _ratio)
@@ -77,12 +88,17 @@ public class EffectTools// : MonoBehaviour
 		}
 	}
 
+	public static IEnumerator ChangeTextAndReturn(Text _text, string _originalString, string _targetString, float _secToChangeBack)
+	{
+		_text.text = _targetString;
+
+		yield return Delay(_secToChangeBack);
+
+		_text.text = _originalString;
+	}
 
 	public static IEnumerator BlinkText(Text _text, Color _tempColor, float _sec)
 	{
-		if (waitForPointOneSeconds == null)
-			waitForPointOneSeconds = new WaitForSeconds(0.1f);
-
 		Color _orgColor = _text.color;
 
 		while (_sec > 0)

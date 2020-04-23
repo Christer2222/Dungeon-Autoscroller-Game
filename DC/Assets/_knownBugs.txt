@@ -3,3 +3,4 @@ flee twice in a row makes you unable to hit. Turnorder not cleared? Was able to 
 blueball and blueball is able to spawn on top of eachother
 UI need to be updated for weird screen resolutions (add a script that stretches/adds black bars)
 Can act right after acting (you could give yourself a defense buff before enemy attacks)
+blueball can softlock
