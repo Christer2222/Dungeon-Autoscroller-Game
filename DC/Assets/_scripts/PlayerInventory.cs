@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -71,11 +72,36 @@ public class PlayerInventory : MonoBehaviour
             {
             new ItemQuantity() { amount = 5, item = Items.Apple },
             new ItemQuantity() { amount = 5, item = Items.Orange },
-            new ItemQuantity() { amount = 1, item = Items.GoldRing },
+            new ItemQuantity() { amount = 5, item = Items.Banana },
+
+            new ItemQuantity() { amount = 5, item = Items.Stick },
+
+            new ItemQuantity() { amount = 1, item = Items.SteelSword },
+            new ItemQuantity() { amount = 1, item = Items.SteelBroadSword },
+            new ItemQuantity() { amount = 1, item = Items.GoldSword },
+            new ItemQuantity() { amount = 1, item = Items.AdamantineSword },
+            new ItemQuantity() { amount = 1, item = Items.AdamantineBroadSword },
+            new ItemQuantity() { amount = 1, item = Items.PoisonedDagger },
+
+            new ItemQuantity() { amount = 50, item = Items.GoldCoin },
+            new ItemQuantity() { amount = 2, item = Items.Goldbar },
+
             new ItemQuantity() { amount = 1, item = Items.Headband },
             new ItemQuantity() { amount = 1, item = Items.SteelHelmet },
+            new ItemQuantity() { amount = 1, item = Items.GladiatorsHelmet },
 
+            new ItemQuantity() { amount = 1, item = Items.LeatherVest },
+            new ItemQuantity() { amount = 1, item = Items.SteelChestplate },
+            new ItemQuantity() { amount = 1, item = Items.AdamantineChestplate },
 
+            new ItemQuantity() { amount = 1, item = Items.LeatherPants },
+            new ItemQuantity() { amount = 1, item = Items.SteelLeggings },
+            new ItemQuantity() { amount = 1, item = Items.AdamantineLeggings },
+
+            new ItemQuantity() { amount = 1, item = Items.GoldRing },
+            new ItemQuantity() { amount = 1, item = Items.StrikeRing },
+            new ItemQuantity() { amount = 1, item = Items.BoltRing },
+            new ItemQuantity() { amount = 1, item = Items.MeteorRing },
         };
         inventory.AddRange(debugItems);
 
@@ -131,33 +157,128 @@ public class PlayerInventory : MonoBehaviour
 
         });
         //----------EUQIP BUTTON
-        UIController.InventoryEquipButton.onClick.AddListener(() => {
-            
+        UIController.InventoryEquipButton.onClick.AddListener(() => {        
             if ((selectedItem.item.type & Items.ItemType.Equipment) != 0) //equipment has item flag
             {
-                if (selectedItem.item.type == Items.ItemType.Acessory)
-                { }
-                else if (selectedItem.item.type == Items.ItemType.OneHanded)
-                { }
-                else if (selectedItem.item.type == Items.ItemType.TwoHanded)
-                { }
-                else
-                {
-                    var _prevEquiped = equippedItems.Find(x => x.item.type == selectedItem.item.type);
-                    if (_prevEquiped != null)
-                        print($"prevEquip: {_prevEquiped.item.name} selectedItem: {selectedItem.item.name}");
+                ItemQuantity _prevEquiped = null;
+                var _allHanded = equippedItems.FindAll(x => (x.item.type & (Items.ItemType.OneHanded | Items.ItemType.TwoHanded)) != 0); //find all equipped item that is either one handed or twohanded
+                bool _wasDualWielding = false;
+                List<ItemQuantity> _allAccessories = null;
 
-                    if (_prevEquiped != null) //if same type already equipped
+                if ((selectedItem.item.type & Items.ItemType.Acessory) != 0) //if accessory has been set
+                {
+                    _allAccessories = equippedItems.FindAll(x => x.item.type == Items.ItemType.Acessory);
+                    if (_allAccessories.Count == 3)
                     {
-                        AddItemToInventory(_prevEquiped); //add it back to the inventory
-                        print("added to inventory " + _prevEquiped.item.name);
-                        //InstantiateItemToInventory(_prevEquiped);
-                        ChangeItemQuantity(_prevEquiped, 1);
+                        _prevEquiped = _allAccessories[0];
+                        print("removed oldest accessory, TODO: selection");
                     }
-                    
-                    equippedItems.Add(selectedItem); //then add the selected item to equipped items
-                    ChangeItemQuantity(selectedItem, -1); //and remove it from the inventory
                 }
+                else if ((selectedItem.item.type & Items.ItemType.OneHanded) != 0 ) //if onehanded has been set
+                {
+                    //nothing to do if no handedness detected
+                    if (_allHanded.Count == 1) //if already holding one weapon
+                    {
+                        if (_allHanded[0].item.type == Items.ItemType.TwoHanded) //if the previous item was twohanded
+                        {
+                            _prevEquiped = _allHanded[0]; //remove it
+                            _wasDualWielding = true; //clear its sprite
+                        }
+                        //if it wasn't just equip it as if the slot was open
+                    }
+                    else if (_allHanded.Count == 2) //if already dualwielding
+                    {
+                        _prevEquiped = _allHanded[0];
+                        _wasDualWielding = true;
+                        print("removed oldest handed, TODO: selection");
+
+                        //if (a.TrueForAll(x => x.item.type == Items.ItemType.OneHanded) && a.Count == 2)
+                        //{ }
+                    }
+
+                    _prevEquiped = null;
+                }
+                else if ((selectedItem.item.type & Items.ItemType.TwoHanded) != 0) //if two handed has been set
+                { 
+                    equippedItems.RemoveAll(x => _allHanded.Contains(x)); //when equipping a twohanded, remove all other handed
+                    _allHanded.ForEach(x => { AddItemToInventory(x); ChangeItemQuantity(x,1); }); //then add them back to the inventory
+                    //then equip twohanded as normal
+                }
+                else //if a normal item, remove the previous one
+                {
+                    _prevEquiped = equippedItems.Find(x => x.item.type == selectedItem.item.type);
+                }
+
+
+                if (_prevEquiped != null) //if same type already equipped
+                {
+                    AddItemToInventory(_prevEquiped); //add it back to the inventory
+
+                    ChangeItemQuantity(_prevEquiped, 1);
+                }
+
+                equippedItems.Remove(_prevEquiped);
+                equippedItems.Add(selectedItem); //then add the selected item to equipped items
+
+
+                Items.ItemType cleared = selectedItem.item.type & Items.ItemType.Equipment;
+                switch (cleared)
+                {
+                    case Items.ItemType.Helmet:
+                        UIController.CurrentEquippedHelmetImage.sprite = selectedItem.item.sprite;
+                        UIController.CurrentEquippedHelmetImage.gameObject.SetActive(true);
+                        break;
+                    case Items.ItemType.Chestplate:
+                        UIController.CurrentEquippedChestplateImage.sprite = selectedItem.item.sprite;
+                        UIController.CurrentEquippedChestplateImage.gameObject.SetActive(true);
+                        break;
+                    case Items.ItemType.Leggings:
+                        UIController.CurrentEquippedLeggingsImage.sprite = selectedItem.item.sprite;
+                        UIController.CurrentEquippedLeggingsImage.gameObject.SetActive(true);
+                        break;
+                    case Items.ItemType.Boots:
+                        UIController.CurrentEquippedBootsImage.sprite = selectedItem.item.sprite;
+                        UIController.CurrentEquippedBootsImage.gameObject.SetActive(true);
+                        break;
+                    case Items.ItemType.OneHanded:
+                        UIController.CurrentEquippedMainHandImage.sprite = selectedItem.item.sprite;
+                        UIController.CurrentEquippedMainHandImage.gameObject.SetActive(true);
+
+                        if (_wasDualWielding)
+                        {
+                            UIController.CurrentEquippedOffHandImage.sprite = null;
+                            UIController.CurrentEquippedOffHandImage.gameObject.SetActive(true);
+                        }
+
+                        break;
+                    case Items.ItemType.TwoHanded:
+                        UIController.CurrentEquippedMainHandImage.sprite = selectedItem.item.sprite;
+                        UIController.CurrentEquippedOffHandImage.sprite = selectedItem.item.sprite;
+                        UIController.CurrentEquippedMainHandImage.gameObject.SetActive(true);
+                        UIController.CurrentEquippedOffHandImage.gameObject.SetActive(true);
+                        break;
+                    case Items.ItemType.Acessory:
+                        switch (_allAccessories.Count)
+                        {
+                            case 0:
+                                UIController.CurrentEquippedAccessory1Image.sprite = selectedItem.item.sprite;
+                                UIController.CurrentEquippedAccessory1Image.gameObject.SetActive(true);
+                                break;
+                            case 1:
+                                UIController.CurrentEquippedAccessory2Image.sprite = selectedItem.item.sprite;
+                                UIController.CurrentEquippedAccessory2Image.gameObject.SetActive(true);
+                                break;
+                            case 2:
+                                UIController.CurrentEquippedAccessory3Image.sprite = selectedItem.item.sprite;
+                                UIController.CurrentEquippedAccessory3Image.gameObject.SetActive(true);
+                                break;
+
+                        }
+                        break;
+                }
+
+                ChangeItemQuantity(selectedItem, -1); //and remove it from the inventory
+                print($"equip count: {equippedItems.Count} equipped[0]: {equippedItems[0].item.name}");
             }
             else
                StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryEquipText, EQUIP_STRING, IMPOSSIBLE_STRING, 0.5f));
@@ -178,8 +299,6 @@ public class PlayerInventory : MonoBehaviour
 
 
         UIController.InventoryContextMenu.gameObject.SetActive(false);
-		//debug
-		//OpenInventory();
 	}
 
 	void ChangeItemQuantity(ItemQuantity entry, int changeAmount)
@@ -264,7 +383,6 @@ public class PlayerInventory : MonoBehaviour
 
         butt.onClick.AddListener(() => {
             int index = go.transform.GetSiblingIndex();
-            print("i: " +index + " c: " + go.transform.GetSiblingIndex() + inventory.Count);
 
             if (selectedItem != null)
                 selectedItem.selectionBox.color = Color.clear;

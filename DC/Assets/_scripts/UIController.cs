@@ -20,6 +20,18 @@ public class UIController : MonoBehaviour
     public static InputField InventoryTossInputField { get; private set; }
     public static Button InventoryCloseButton { get; private set; }
 
+    public static Image CurrentEquippedHelmetImage { get; private set;}
+    public static Image CurrentEquippedChestplateImage { get; private set; }
+    public static Image CurrentEquippedLeggingsImage { get; private set; }
+    public static Image CurrentEquippedBootsImage { get; private set; }
+    public static Image CurrentEquippedMainHandImage { get; private set; }
+    public static Image CurrentEquippedOffHandImage { get; private set; }
+    public static Image CurrentEquippedAccessory1Image { get; private set; }
+    public static Image CurrentEquippedAccessory2Image { get; private set; }
+    public static Image CurrentEquippedAccessory3Image { get; private set; }
+
+
+
     public static MinMax<Slider> HealthSliderPair { get; } = new MinMax<Slider>();
     public static MinMax<Slider> ManaSliderPair { get; } = new MinMax<Slider>();
 
@@ -219,6 +231,33 @@ public class UIController : MonoBehaviour
                             _childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>(); });
                         }
                     }
+                    break;
+                case "$CurrentEquippedHelmet":
+                    CurrentEquippedHelmetImage = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedChestplate":
+                    CurrentEquippedChestplateImage = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedLeggings":
+                    CurrentEquippedLeggingsImage = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedBoots":
+                    CurrentEquippedBootsImage = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedMainHand":
+                    CurrentEquippedMainHandImage = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedOffHand":
+                    CurrentEquippedOffHandImage = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedAccessory1":
+                    CurrentEquippedAccessory1Image = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedAccessory2":
+                    CurrentEquippedAccessory2Image = child.GetComponent<Image>();
+                    break;
+                case "$CurrentEquippedAccessory3":
+                    CurrentEquippedAccessory3Image = child.GetComponent<Image>();
                     break;
             }
         }
