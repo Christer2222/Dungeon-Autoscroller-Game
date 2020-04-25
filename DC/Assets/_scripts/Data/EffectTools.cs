@@ -133,6 +133,15 @@ public class EffectTools// : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// In x seconds a has changed size to b and back y times.
+	/// </summary>
+	/// <param name="_targetTransform">Target.</param>
+	/// <param name="_startSize">Set size to this.</param>
+	/// <param name="_pongSize">Max size</param>
+	/// <param name="_sec">Time to complete.</param>
+	/// <param name="_times">Ammount of times, floats are accepted and will result in a value between start and end.</param>
+	/// <returns></returns>
 	public static IEnumerator PingPongSize(Transform _targetTransform, Vector3 _startSize, Vector3 _pongSize, float _sec, float _times)
 	{
 		_targetTransform.localScale = _startSize;
@@ -272,6 +281,25 @@ public class EffectTools// : MonoBehaviour
 		{
 			_life -= Time.deltaTime;
 			_t.transform.position += _direction * _speed * Time.deltaTime;
+			yield return waitForEndOfFrame;
+		}
+	}
+
+	public static IEnumerator MoveToPoint(Transform _t, Vector3 _targetPosition, float _timeToComplete)
+	{
+		float _timer = 0;
+		Vector3 _startPos = _t.position;
+		while (_timer < _timeToComplete)
+		{
+			_timer += Time.deltaTime;
+			float _lerp = _timer / _timeToComplete;
+			//_t.position = Vector3.Lerp(_t.position, _targetPosition, _lerp);
+			//Debug.Log(_t.position);
+			_t.position = _startPos * (1 - _lerp) + _targetPosition * _lerp; //Vector3.Lerp(_t.position, _targetPosition, _lerp);
+
+			Debug.Log(_lerp);
+
+
 			yield return waitForEndOfFrame;
 		}
 	}

@@ -6,7 +6,7 @@ public class EnemyMover : MonoBehaviour
 	private CombatController combatController;
 
 	//variables for enemy movement
-	private List<Vector3> localEnemyMovePoints = new List<Vector3>();
+	private readonly List<Vector3> localEnemyMovePoints = new List<Vector3>();
 	private Vector3 home;
 	private int positionIndex;
 	private float moveSpeed;
@@ -34,6 +34,7 @@ public class EnemyMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		/*
 		if(!shouldMove)//!CombatController.turnOrder.Contains(combatController))
 			return;
 		
@@ -44,5 +45,6 @@ public class EnemyMover : MonoBehaviour
 		}
 
 		transform.position = Vector3.MoveTowards(transform.position,localEnemyMovePoints[positionIndex] + home,Time.deltaTime * moveSpeed);
+		*/
 	}
 }

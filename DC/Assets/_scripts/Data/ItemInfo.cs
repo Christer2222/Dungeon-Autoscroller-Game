@@ -19,7 +19,7 @@ public class Items : AbilityClass
 	public static ItemInfo GoldSword { get; } = new ItemInfo("Gold Sword", 35, ItemType.Craftable | ItemType.OneHanded, $"Notvery useful!\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 2);
 	
 	
-	public static ItemInfo SteelSword { get; } = new ItemInfo("Steel Sword", 15, ItemType.OneHanded, $"Sharp\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 3);
+	public static ItemInfo SteelSword { get; } = new ItemInfo("Steel Sword", 15, ItemType.OneHanded, $"Sharp.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 3);
 	public static ItemInfo AdamantineSword { get; } = new ItemInfo("Adamantine Sword", 77, ItemType.OneHanded, $"Like steel, just better!\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 6);
 	public static ItemInfo PoisonedDagger { get; } = new ItemInfo("Poisoned Dagger", 32, ItemType.OneHanded, $"Poison.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", poisionBite, 2);
 
@@ -39,12 +39,12 @@ public class Items : AbilityClass
 
 	public static ItemInfo LeatherVest { get; } = new ItemInfo("Leather Vest", 7, ItemType.Chestplate, 1, 1, $"Bare minimum.\nGives you {ITEM_DEFENSE} defense, and {ITEM_MAGIC_DEFENSE} magic defense.");
 	public static ItemInfo SteelChestplate { get; } = new ItemInfo("Steel Chestplate", 15, ItemType.Chestplate, 3, 0, $"Feels sturdy.\nGives you {ITEM_DEFENSE} defense.");
-	public static ItemInfo AdamantineChestplate { get; } = new ItemInfo("Adamantine Chestplate", 127, ItemType.Chestplate, 5, 0, $"Bare minimum... if you're going to fight a dragon.\nGives you {ITEM_DEFENSE} defense.");
+	public static ItemInfo AdamantineChestplate { get; } = new ItemInfo("Adamantine Chestplate", 127, ItemType.Chestplate, 5, 0, $"Bare minimum. If you're fighting a dragon.\nGives you {ITEM_DEFENSE} defense.");
 
 
-	public static ItemInfo LeatherPants { get; } = new ItemInfo("Leather Pants", 7, ItemType.Chestplate, 1, 1, $"50% better than shorts.\nGives you {ITEM_DEFENSE} defense, and {ITEM_MAGIC_DEFENSE} magic defense.");
-	public static ItemInfo SteelLeggings { get; } = new ItemInfo("Steel Leggings", 14, ItemType.Chestplate, 2, 0, $"Kneecap protectors.\nGives you {ITEM_DEFENSE} defense.");
-	public static ItemInfo AdamantineLeggings { get; } = new ItemInfo("Adamantine Leggings", 117, ItemType.Chestplate, 4, 0, $"Also called ☼Leggings☼.\nGives you {ITEM_DEFENSE} defense.");
+	public static ItemInfo LeatherPants { get; } = new ItemInfo("Leather Pants", 7, ItemType.Leggings, 1, 1, $"50% better than shorts.\nGives you {ITEM_DEFENSE} defense, and {ITEM_MAGIC_DEFENSE} magic defense.");
+	public static ItemInfo SteelLeggings { get; } = new ItemInfo("Steel Leggings", 14, ItemType.Leggings, 2, 0, $"Kneecap protectors.\nGives you {ITEM_DEFENSE} defense.");
+	public static ItemInfo AdamantineLeggings { get; } = new ItemInfo("Adamantine Leggings", 117, ItemType.Leggings, 4, 0, $"Also called ☼Leggings☼.\nGives you {ITEM_DEFENSE} defense.");
 
 	public static ItemInfo GoldRing { get; } = new ItemInfo("Gold Ring", 15,  ItemType.Acessory, 0, 1, $"Fancy.\nGives you {ITEM_MAGIC_DEFENSE} magic defense.");
 	public static ItemInfo StrikeRing { get; } = new ItemInfo("Strike Ring", 35, ItemType.Acessory, $"A magic ring.\nGives you acces to {ITEM_ACTIVE_ABILITY_LIST}.", forcePunch, 1);

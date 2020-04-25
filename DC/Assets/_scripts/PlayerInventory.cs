@@ -70,11 +70,13 @@ public class PlayerInventory : MonoBehaviour
 
         ItemQuantity[] debugItems =
             {
+           // /*
             new ItemQuantity() { amount = 5, item = Items.Apple },
             new ItemQuantity() { amount = 5, item = Items.Orange },
             new ItemQuantity() { amount = 5, item = Items.Banana },
 
             new ItemQuantity() { amount = 5, item = Items.Stick },
+          //  */
 
             new ItemQuantity() { amount = 1, item = Items.SteelSword },
             new ItemQuantity() { amount = 1, item = Items.SteelBroadSword },
@@ -82,7 +84,7 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.AdamantineSword },
             new ItemQuantity() { amount = 1, item = Items.AdamantineBroadSword },
             new ItemQuantity() { amount = 1, item = Items.PoisonedDagger },
-
+            // /*
             new ItemQuantity() { amount = 50, item = Items.GoldCoin },
             new ItemQuantity() { amount = 2, item = Items.Goldbar },
 
@@ -102,6 +104,7 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.StrikeRing },
             new ItemQuantity() { amount = 1, item = Items.BoltRing },
             new ItemQuantity() { amount = 1, item = Items.MeteorRing },
+            //*/
         };
         inventory.AddRange(debugItems);
 
@@ -176,9 +179,13 @@ public class PlayerInventory : MonoBehaviour
                 }
                 else if ((selectedItem.item.type & Items.ItemType.OneHanded) != 0 ) //if onehanded has been set
                 {
+                    print("eq onehand");
                     //nothing to do if no handedness detected
                     if (_allHanded.Count == 1) //if already holding one weapon
                     {
+                        print("1 onehand");
+
+
                         if (_allHanded[0].item.type == Items.ItemType.TwoHanded) //if the previous item was twohanded
                         {
                             _prevEquiped = _allHanded[0]; //remove it
@@ -186,11 +193,14 @@ public class PlayerInventory : MonoBehaviour
                         }
                         //if it wasn't just equip it as if the slot was open
                     }
-                    else if (_allHanded.Count == 2) //if already dualwielding
+                    else if (_allHanded.Count >= 2) //if already dualwielding
                     {
+                        print("2+ onehand");
+
                         _prevEquiped = _allHanded[0];
+
                         _wasDualWielding = true;
-                        print("removed oldest handed, TODO: selection");
+                        //print("removed oldest handed, TODO: selection");
 
                         //if (a.TrueForAll(x => x.item.type == Items.ItemType.OneHanded) && a.Count == 2)
                         //{ }
@@ -217,22 +227,26 @@ public class PlayerInventory : MonoBehaviour
                     ChangeItemQuantity(_prevEquiped, 1);
                 }
 
+                print("prev eq list: " + equippedItems.Contains(_prevEquiped) + " item: " + _prevEquiped);
                 equippedItems.Remove(_prevEquiped);
                 equippedItems.Add(selectedItem); //then add the selected item to equipped items
 
 
-                Items.ItemType cleared = selectedItem.item.type & Items.ItemType.Equipment;
-                switch (cleared)
+                Items.ItemType _cleared = selectedItem.item.type & Items.ItemType.Equipment;
+                switch (_cleared)
                 {
                     case Items.ItemType.Helmet:
                         UIController.CurrentEquippedHelmetImage.sprite = selectedItem.item.sprite;
                         UIController.CurrentEquippedHelmetImage.gameObject.SetActive(true);
                         break;
                     case Items.ItemType.Chestplate:
+                        print("type chest");
+
                         UIController.CurrentEquippedChestplateImage.sprite = selectedItem.item.sprite;
                         UIController.CurrentEquippedChestplateImage.gameObject.SetActive(true);
                         break;
                     case Items.ItemType.Leggings:
+                        print ("type leggings");
                         UIController.CurrentEquippedLeggingsImage.sprite = selectedItem.item.sprite;
                         UIController.CurrentEquippedLeggingsImage.gameObject.SetActive(true);
                         break;
@@ -241,13 +255,25 @@ public class PlayerInventory : MonoBehaviour
                         UIController.CurrentEquippedBootsImage.gameObject.SetActive(true);
                         break;
                     case Items.ItemType.OneHanded:
-                        UIController.CurrentEquippedMainHandImage.sprite = selectedItem.item.sprite;
-                        UIController.CurrentEquippedMainHandImage.gameObject.SetActive(true);
+
+                        bool _didNotHave2HandedWeaponOrNoWeapon = (_allHanded.Count > 0)? (_cleared & Items.ItemType.TwoHanded) != 0: true;
+
+
+                        if (_didNotHave2HandedWeaponOrNoWeapon)
+                        {
+                            UIController.CurrentEquippedMainHandImage.sprite = selectedItem.item.sprite;
+                            UIController.CurrentEquippedMainHandImage.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            UIController.CurrentEquippedOffHandImage.sprite = selectedItem.item.sprite;
+                            UIController.CurrentEquippedOffHandImage.gameObject.SetActive(true);
+                        }
 
                         if (_wasDualWielding)
                         {
-                            UIController.CurrentEquippedOffHandImage.sprite = null;
-                            UIController.CurrentEquippedOffHandImage.gameObject.SetActive(true);
+                            //UIController.CurrentEquippedOffHandImage.sprite = null;
+                            //UIController.CurrentEquippedOffHandImage.gameObject.SetActive(true);
                         }
 
                         break;
@@ -278,7 +304,6 @@ public class PlayerInventory : MonoBehaviour
                 }
 
                 ChangeItemQuantity(selectedItem, -1); //and remove it from the inventory
-                print($"equip count: {equippedItems.Count} equipped[0]: {equippedItems[0].item.name}");
             }
             else
                StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryEquipText, EQUIP_STRING, IMPOSSIBLE_STRING, 0.5f));

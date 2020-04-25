@@ -304,7 +304,6 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public IEnumerator TickBuffs()
 	{
-		print("tick");
 		targetCombatController = this;
 		//var _prevActiveAbility = selectedAbility;
 

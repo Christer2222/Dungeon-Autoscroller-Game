@@ -14,6 +14,7 @@ public class ForwardMover : MonoBehaviour
 
 	public static float encounterTimer = 1;//5;
 	public const float ENEMY_SPAWN_DISTANCE = 5;
+	private const float APPEAR_SPEED = 1.4f;
 
 	private const float DEFAULT_BUFF_TIMER = 5;
 	public static float buffTimer = DEFAULT_BUFF_TIMER;
@@ -50,6 +51,20 @@ public class ForwardMover : MonoBehaviour
 		if (Input.GetKeyDown(Options.inspectHotkey)) UIController.InspectButton.onClick.Invoke();
 		if (Input.GetKeyDown(Options.levelUpHotkey)) UIController.LevelUpButton.onClick.Invoke();
 
+		if (Input.GetMouseButtonDown(0))
+		{
+			RaycastHit2D hit;
+			Vector3 mousePos = Input.mousePosition;
+			mousePos.z = 5;
+			hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), transform.forward);
+			if (hit.transform != null)
+			{
+				print(hit.transform.name);
+				
+			}
+			else
+				print("no hit at: " + mousePos);
+		}
 
 		if (encounterTimer > 0)
 		{
@@ -118,11 +133,20 @@ public class ForwardMover : MonoBehaviour
 	{
 		if (_monstarStat == null) return;
 
-		var _go = Instantiate(enemyPrefab, transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE + EncounterData.offsetTable[_pos], Quaternion.identity);
+		//var _go = Instantiate(enemyPrefab, transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE + EncounterData.offsetTable[_pos], Quaternion.identity);
+		Vector3 _startPos = transform.position + Vector3.forward * ENEMY_SPAWN_DISTANCE;
+		
+		var _go = Instantiate(enemyPrefab, _startPos + EncounterData.offsetTable[_pos] * 0.25f, Quaternion.identity);
+
 		var _cc = _go.GetComponent<CombatController>();
 
 		_cc.myStats = _monstarStat.Clone();
 		_go.name = _monstarStat.name + " " + _pos;
+
+		
+		StartCoroutine(EffectTools.PingPongSize(_go.transform, Vector3.zero, Vector3.one * 0.5f, APPEAR_SPEED, 0.5f));
+		StartCoroutine(EffectTools.MoveToPoint(_go.transform, _startPos + EncounterData.offsetTable[_pos], APPEAR_SPEED));
+		
 		//var _sprite = _monstarStat.name.Replace(" ", "_").ToLower();
 		//_go.GetComponent<SpriteRenderer>().sprite = TryGetEnemySprite(_sprite);
 		CombatController.turnOrder.Add(_cc);
