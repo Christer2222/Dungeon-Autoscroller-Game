@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -65,18 +65,19 @@ public class PlayerInventory : MonoBehaviour
 
             selectedItem = null;
             UIController.InventoryContextMenu.gameObject.SetActive(false);
-            UIController.InventoryRootRectTransform.gameObject.SetActive(false);
+            //UIController.InventoryRootRectTransform.gameObject.SetActive(false);
+            UIController.SetUIMode(UIController.UIMode.None);
         });
 
         ItemQuantity[] debugItems =
             {
-           // /*
+            /*
             new ItemQuantity() { amount = 5, item = Items.Apple },
             new ItemQuantity() { amount = 5, item = Items.Orange },
             new ItemQuantity() { amount = 5, item = Items.Banana },
 
             new ItemQuantity() { amount = 5, item = Items.Stick },
-          //  */
+            */
 
             new ItemQuantity() { amount = 1, item = Items.SteelSword },
             new ItemQuantity() { amount = 1, item = Items.SteelBroadSword },
@@ -84,7 +85,7 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.AdamantineSword },
             new ItemQuantity() { amount = 1, item = Items.AdamantineBroadSword },
             new ItemQuantity() { amount = 1, item = Items.PoisonedDagger },
-            // /*
+             /*
             new ItemQuantity() { amount = 50, item = Items.GoldCoin },
             new ItemQuantity() { amount = 2, item = Items.Goldbar },
 
@@ -104,7 +105,7 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.StrikeRing },
             new ItemQuantity() { amount = 1, item = Items.BoltRing },
             new ItemQuantity() { amount = 1, item = Items.MeteorRing },
-            //*/
+            */
         };
         inventory.AddRange(debugItems);
 
@@ -240,13 +241,10 @@ public class PlayerInventory : MonoBehaviour
                         UIController.CurrentEquippedHelmetImage.gameObject.SetActive(true);
                         break;
                     case Items.ItemType.Chestplate:
-                        print("type chest");
-
                         UIController.CurrentEquippedChestplateImage.sprite = selectedItem.item.sprite;
                         UIController.CurrentEquippedChestplateImage.gameObject.SetActive(true);
                         break;
                     case Items.ItemType.Leggings:
-                        print ("type leggings");
                         UIController.CurrentEquippedLeggingsImage.sprite = selectedItem.item.sprite;
                         UIController.CurrentEquippedLeggingsImage.gameObject.SetActive(true);
                         break;
@@ -256,10 +254,17 @@ public class PlayerInventory : MonoBehaviour
                         break;
                     case Items.ItemType.OneHanded:
 
-                        bool _didNotHave2HandedWeaponOrNoWeapon = (_allHanded.Count > 0)? (_cleared & Items.ItemType.TwoHanded) != 0: true;
+                        bool _hasSlotForWeapon = (_allHanded.Count >= 1)? (_allHanded[0].item.type & Items.ItemType.OneHanded) != 0: true;
+                        
+                        bool _lastHandedWas2Handed = (_allHanded.Count == 1) ? (_allHanded[0].item.type & Items.ItemType.TwoHanded) != 0 : false;
 
-
-                        if (_didNotHave2HandedWeaponOrNoWeapon)
+                        if (_lastHandedWas2Handed)
+                        {
+                            UIController.CurrentEquippedOffHandImage.sprite = null;
+                            UIController.CurrentEquippedOffHandImage.gameObject.SetActive(false);
+                        }
+         
+                        if (_hasSlotForWeapon)
                         {
                             UIController.CurrentEquippedMainHandImage.sprite = selectedItem.item.sprite;
                             UIController.CurrentEquippedMainHandImage.gameObject.SetActive(true);
@@ -324,9 +329,12 @@ public class PlayerInventory : MonoBehaviour
 
 
         UIController.InventoryContextMenu.gameObject.SetActive(false);
-	}
+        
+        ClearInventory();
+        RebuildInventory();
+    }
 
-	void ChangeItemQuantity(ItemQuantity entry, int changeAmount)
+    void ChangeItemQuantity(ItemQuantity entry, int changeAmount)
     {
         entry.amount += changeAmount;
         if (entry.amount <= 0)
@@ -353,8 +361,8 @@ public class PlayerInventory : MonoBehaviour
     void OpenInventory()
     {
         UIController.InventoryRootRectTransform.gameObject.SetActive(true);
-        ClearInventory();
-        RebuildInventory();
+        //ClearInventory();
+        //RebuildInventory();
     }
 
     void ChangeTossNumber(int amount)
@@ -408,14 +416,27 @@ public class PlayerInventory : MonoBehaviour
 
         butt.onClick.AddListener(() => {
             int index = go.transform.GetSiblingIndex();
+            var contextMenu = UIController.InventoryContextMenu; //shortcut
+            bool _wasLastItem = selectedItem == inventory[index];
 
             if (selectedItem != null)
-                selectedItem.selectionBox.color = Color.clear;
+            {
+                selectedItem.selectionBox.color = Color.clear; //clear the previous item
+            }
 
-            selectedItem = inventory[index];
-            selectedItem.selectionBox.color = Color.white;
+            selectedItem = (_wasLastItem)? null: inventory[index]; //check for double clicking
+            if (selectedItem != null) //if not double clicked to remove
+            {
+                selectedItem.selectionBox.color = Color.white; //set the newly selected items color to selected
 
-            var contextMenu = UIController.InventoryContextMenu; //shortcut
+                //set context menus appropriately
+                UIController.WeaponSlotContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.OneHanded) != 0);
+                UIController.AccessoryContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.Acessory) != 0);
+            }
+
+            contextMenu.gameObject.SetActive(!_wasLastItem); //set context menu to wheter double clicking or not
+
+
             Vector3 orgPos = contextMenu.position; //get orgPos position of menu
             Vector3 targetPos = go.transform.position; //where to put this
             targetPos.x = contextMenu.position.x; //keep same x of menu
@@ -425,7 +446,7 @@ public class PlayerInventory : MonoBehaviour
             orgPos.y = Mathf.Clamp(orgPos.y, UIController.InventoryRootRectTransform.rect.y + halfItemContextHeight, -UIController.InventoryRootRectTransform.rect.y - halfItemContextHeight); //clamp within bounds of inventory
             contextMenu.anchoredPosition = orgPos; //update position again
 
-            contextMenu.gameObject.SetActive(true);
+
         });
     }
 
@@ -498,7 +519,7 @@ public class PlayerInventory : MonoBehaviour
                 title = null,
                 entryGameObject = null
             }; 
-            print($"drop [{item.item.name}]  min: {item.minCount} max: {item.maxCount} rolled {drop.amount}");
+            //print($"drop [{item.item.name}]  min: {item.minCount} max: {item.maxCount} rolled {drop.amount}");
 
             AddItemToInventory(drop);
 

@@ -71,7 +71,7 @@ public class LevelUpScreen : AbilityClass
 
 	public void Initialize()
 	{
-		UIController.LevelUpButton.onClick.AddListener(delegate { ToggleLevelUpScreen(); });
+		UIController.LevelUpButton.onClick.AddListener(delegate { UIController.SetUIMode(UIController.UIMode.LevelUp); ToggleLevelUpScreen(); });
 
 		instance = this;
 
@@ -189,7 +189,9 @@ public class LevelUpScreen : AbilityClass
 						traitPointsToSpend = strengthChange + dexterityChange + intelligenceChange + luckChange + traitPointsToSpend;
 						strengthChange = dexterityChange = intelligenceChange = luckChange = 0;
 
-						ToggleLevelUpScreen();
+						UIController.SetUIMode(UIController.UIMode.None);
+
+						//ToggleLevelUpScreen();
 					});
 
 					break;
@@ -271,24 +273,31 @@ public class LevelUpScreen : AbilityClass
 
         traitPointToSpendText.text = TRAIT_POINTS_DEFAULT_STRING + traitPointsToSpend;
         confirmButton.gameObject.SetActive(strengthChange + dexterityChange + intelligenceChange + luckChange > 0);
-        //strengthMinusButton.gameObject.SetActive(_change > 0);
-        ///dexterityMinusButton.gameObject.SetActive(_change > 0);
-        //intelligenceMinusButton.gameObject.SetActive(_change > 0);
-        //luckMinusButton.gameObject.SetActive(_change > 0);
+		//strengthMinusButton.gameObject.SetActive(_change > 0);
+		//dexterityMinusButton.gameObject.SetActive(_change > 0);
+		//intelligenceMinusButton.gameObject.SetActive(_change > 0);
+		//luckMinusButton.gameObject.SetActive(_change > 0);
 
 
-        _textToChange.text = (_traitScore + _change) + ((_change > 0)? "(+" + _change + ")": "");
+		//_textToChange.text = (_traitScore + _change) + ((_change > 0)? "(+" + _change + ")": "");
+		string _changeString = (_change > 0) ? $"(<color=#00AA00>+{_change}</color>)" : string.Empty;
+		_textToChange.text = $"{_changeString} {_traitScore + _change}";// (_traitScore + _change) + ((_change > 0) ? "(+" + _change + ")" : "");
+
 	}
 
 
 	void ToggleLevelUpScreen()
 	{
-        if (CombatController.playerCombatController.actedLastTick) return;
+		if (CombatController.playerCombatController.actedLastTick)
+		{
+			UIController.SetUIMode(UIController.UIMode.None);
+			return;
+		}
 		//if (CombatController.playerCombatController.selectedAbility != string.Empty) return;
 
-		UIController.LevelUpScreen.SetActive(!UIController.LevelUpScreen.activeSelf);
+		//UIController.LevelUpScreen.SetActive(!UIController.LevelUpScreen.activeSelf);
 
-		if (UIController.LevelUpScreen.activeSelf)
+		if (UIController.IsCurrentUIMode(UIController.UIMode.LevelUp))//UIController.LevelUpScreen.activeSelf)
 		{
 			RefreshAbilities();
 

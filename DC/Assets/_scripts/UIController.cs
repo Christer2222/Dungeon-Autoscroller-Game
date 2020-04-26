@@ -8,9 +8,13 @@ public class UIController : MonoBehaviour
     public static RectTransform InventoryItemContent { get; private set; }
     public static RectTransform InventoryRootRectTransform { get; private set; }
     public static RectTransform InventoryContextMenu { get; private set; }
+    public static RectTransform AccessoryContextMenu { get; private set; }
+    public static RectTransform WeaponSlotContextMenu { get; private set; }
     public static Button InventoryUseButton { get; private set; }
     public static Text InventoryUseButtonText { get; private set; }
     public static Button InventoryEquipButton { get; private set; }
+    public static Button InventoryEquipInMainHandButton { get; private set; }
+    public static Button InventoryEquipInOffHandButton { get; private set; }
     public static Text InventoryEquipText { get; private set; }
     public static Button InventoryTossButton { get; private set; }
     public static Button InventoryTossUp1Button { get; private set; }
@@ -78,12 +82,14 @@ public class UIController : MonoBehaviour
     public static UIMode currentUIMode;
     public enum UIMode
     {
-        None,
-        Abilities,
-        Inventory,
-        Flee,
-        Inspect,
-        LevelUp,
+        None = 0,
+        Abilities = 1,
+        Inventory = 2,
+        Flee = 4,
+        Inspect = 8,
+        LevelUp = 16,
+
+        FullScreen = LevelUp | Inventory,
     }
 
     // Start is called before the first frame update
@@ -106,6 +112,12 @@ public class UIController : MonoBehaviour
                 case "$ContextMenu":
                     InventoryContextMenu = child.GetComponent<RectTransform>();
                     break;
+                case "$AccessoryContextMenu":
+                    AccessoryContextMenu = child.GetComponent<RectTransform>();
+                    break;
+                case "$WeaponSlotContextMenu":
+                    WeaponSlotContextMenu = child.GetComponent<RectTransform>();
+                    break;
                 case "$UseButton":
                     InventoryUseButton = child.GetComponent<Button>();
                     break;
@@ -114,6 +126,12 @@ public class UIController : MonoBehaviour
                     break;
                 case "$EquipButton":
                     InventoryEquipButton = child.GetComponent<Button>();
+                    break;
+                case "$EquipInMainHandButton":
+                    InventoryEquipInMainHandButton = child.GetComponent<Button>();
+                    break;
+                case "$InventoryEquipInOffHandButton":
+                    InventoryEquipInOffHandButton = child.GetComponent<Button>();
                     break;
                 case "$EquipButtonText":
                     InventoryEquipText = child.GetComponent<Text>();
@@ -263,7 +281,7 @@ public class UIController : MonoBehaviour
         }
     }
 
-    void SetUIMode(UIMode targetUIMode)
+    public static void SetUIMode(UIMode targetUIMode)
     {
         if (currentUIMode == targetUIMode)
         {
@@ -275,7 +293,7 @@ public class UIController : MonoBehaviour
         UpdateUI();
     }
 
-    void UpdateUI()
+    static void UpdateUI()
     {
         AbilityMenuScrollView.gameObject.SetActive(false);
         InventoryRootRectTransform.gameObject.SetActive(false);
@@ -298,5 +316,15 @@ public class UIController : MonoBehaviour
                 LevelUpScreen.SetActive(true);
                 break;
         }
+    }
+
+    public static bool IsCurrentUIMode(UIMode _toCheck)
+    {
+        return _toCheck == currentUIMode;
+    }
+
+    public static bool IsFullscreenUI()
+    {
+        return (currentUIMode & UIMode.FullScreen) == 0;
     }
 }

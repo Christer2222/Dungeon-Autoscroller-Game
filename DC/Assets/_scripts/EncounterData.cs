@@ -104,7 +104,6 @@ public class EncounterData : AbilityClass
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterBM: druidBlock, _monsterBL: druidBlock),
 		new Encounter(_level: 3, _encounterLocation: EncounterLocation.None, _monsterTM: harpyBlock, _monsterTL: harpyBlock),
 
-
 		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterBM: fleshGolemBlock),
 		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterBM: snowmanBlock, _monsterTM: blueEyeballBlock),
 		new Encounter(_level: 4, _encounterLocation: EncounterLocation.None, _monsterTM: blueEyeballBlock, _monsterTL: blueEyeballBlock),
@@ -134,12 +133,13 @@ public class EncounterData : AbilityClass
 
 	public static readonly Vector3[] offsetTable = new Vector3[]
 	{
-		new Vector3(1.33f,0,0),
-		new Vector3(0,0,0),
-		new Vector3(-1.33f,0,0),
-		new Vector3(1.33f,1,0),
-		new Vector3(1.33f,1,0),
-		new Vector3(-0.33f,1,0),
+		new Vector3(1.33f,0,0), //BR
+		new Vector3(0,0,0), //BM
+		new Vector3(-1.33f,0,0), //BL
+
+		new Vector3(1.33f,1,0), //TR
+		new Vector3(0,1,0), //TM
+		new Vector3(-1.33f,1,0), //TL
 	};
 
 
@@ -166,15 +166,15 @@ public class EncounterData : AbilityClass
 		return _inputEncounter;
 	}
 
-	static List<StatBlock> Shuffle(List<StatBlock> originalList, int _randomizeFactor)
+	static List<StatBlock> Shuffle(List<StatBlock> _originalList, int _randomizeFactor)
 	{
 		for (int i = 0; i < _randomizeFactor; i++) //shuffle around the list equal to the randomize factor
 		{
-			int _index = Random.Range(0, originalList.Count); //take a random selected element
-			originalList.Add(originalList[_index]); //add it to the back
-			originalList.RemoveAt(_index); //then remove it from the original position
+			int _index = Random.Range(0, _originalList.Count); //take a random selected element
+			_originalList.Add(_originalList[_index]); //add it to the back
+			_originalList.RemoveAt(_index); //then remove it from the original position
 		}
 
-		return originalList;
+		return _originalList;
 	}
 }

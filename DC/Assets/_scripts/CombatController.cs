@@ -102,6 +102,8 @@ public class CombatController : AbilityScript
 						UIController.FleeSlider.GetComponent<FleeLogic>().enabled = true;
 					else
 						UIController.FleeSlider.gameObject.SetActive(false);
+				else
+					UIController.SetUIMode(UIController.UIMode.None);
 
 			});
 
@@ -228,7 +230,7 @@ public class CombatController : AbilityScript
 
 		if (turnOrder.Count != 0) //if there are combatants
 		{
-			if (turnOrder[0] == this) //if it is this actors turn
+			if (turnOrder[0] == this && !UIController.IsFullscreenUI()) //if it is this actors turn, and fullscreen is not active
 			{
 				StartCoroutine(StartOfTurnActions());
 			}
@@ -699,7 +701,7 @@ public class CombatController : AbilityScript
 				targetCombatController = null;
 			}
 
-			UIController.currentUIMode = UIController.UIMode.None;
+			UIController.SetUIMode(UIController.UIMode.None);
 
 			actedLastTick = true;
 			StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
@@ -736,7 +738,7 @@ public class CombatController : AbilityScript
 		invokingAbility = false; //signal done with ability
 		if (endsTurn) //if set to end turn
 		{
-			ForwardMover.shouldMove = true;
+			EncounterController.shouldMove = true;
 			StartCoroutine(EndTurn());
 		}
 	}
@@ -747,8 +749,8 @@ public class CombatController : AbilityScript
 		{
 			AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
 
-			ForwardMover.speedBoost = 0;
-			ForwardMover.shouldMove = false;
+			EncounterController.speedBoost = 0;
+			EncounterController.shouldMove = false;
 			CheckIfBuffIconsAreCorrect();
 		}
 	}
@@ -805,7 +807,7 @@ public class CombatController : AbilityScript
 				yield return new WaitForSeconds(0.1f); //wait
 
 			playerCombatController.CheckIfBuffIconsAreCorrect();
-			ForwardMover.shouldMove = true;
+			EncounterController.shouldMove = true;
 
 			yield return new WaitForSeconds( playerOwned? 1:2);
 			StartCoroutine( EndTurn());
@@ -819,7 +821,7 @@ public class CombatController : AbilityScript
 		yield return new WaitForSeconds(_sec);
 		if(turnOrder.Count <= 1)
 		{
-			yield return ForwardMover.DoneWithCombat();
+			yield return EncounterController.DoneWithCombat();
 
 		}
 
@@ -840,7 +842,7 @@ public class CombatController : AbilityScript
 		{
 			UpdateTurnOrderDisplay();
 			//turnorderText.text = string.Empty;
-			yield return ForwardMover.DoneWithCombat();
+			yield return EncounterController.DoneWithCombat();
 		}
 
 		startedTurn = false;

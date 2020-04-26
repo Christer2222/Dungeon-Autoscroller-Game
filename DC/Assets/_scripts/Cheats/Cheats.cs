@@ -47,7 +47,7 @@ public class Cheats : MonoBehaviour
             CombatController.playerCombatController.AdjustPlayerXP(5 * CombatController.playerCombatController.myStats.level);
 
         if (Input.GetKeyDown(KeyCode.Keypad9))
-            ForwardMover.encounterTimer = 0;
+            EncounterController.encounterTimer = 0;
     }
 }
 #endif

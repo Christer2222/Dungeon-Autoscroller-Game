@@ -79,10 +79,10 @@
     <Compile Include="Assets\_scripts\Data\Options.cs" />
     <Compile Include="Assets\_scripts\Data\StatBlock.cs" />
     <Compile Include="Assets\_scripts\EmptyMonoBehaviour.cs" />
+    <Compile Include="Assets\_scripts\EncounterController.cs" />
     <Compile Include="Assets\_scripts\EncounterData.cs" />
     <Compile Include="Assets\_scripts\EnemyMover.cs" />
     <Compile Include="Assets\_scripts\FleeLogic.cs" />
-    <Compile Include="Assets\_scripts\ForwardMover.cs" />
     <Compile Include="Assets\_scripts\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\PlayerInventory.cs" />
     <Compile Include="Assets\_scripts\ResetStaticVariablesManager.cs" />

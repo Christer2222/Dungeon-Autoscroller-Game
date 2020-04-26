@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Boo.Lang;
+using System.Collections;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,12 +44,12 @@ public class FleeLogic : MonoBehaviour
 				print(_hit.transform.name + " tag: " + _hit.transform.tag);
 
 				if (!_hit.transform.CompareTag("UI") && _hit.transform.name != CombatController.playerCombatController.gameObject.name)
-					StartCoroutine(Flee());
+					CombatController.playerCombatController.StartCoroutine(Flee());
 
 			}
 			else
 			{
-				StartCoroutine(Flee());
+				CombatController.playerCombatController.StartCoroutine(Flee());
 			}
 		}
 	}
@@ -59,22 +61,32 @@ public class FleeLogic : MonoBehaviour
 
 		if (Mathf.Abs((fleeSlider.maxValue / 2) - (fleeSlider.value)) <= FleeThreshold) //if the pointer is withing the flee zone, succeed
 		{
-			yield return ForwardMover.DoneWithCombat();
-			var _tempTurnorder = new CombatController[CombatController.turnOrder.Count];
-			CombatController.turnOrder.CopyTo(_tempTurnorder);
+			//var _tempTurnorder = new CombatController[CombatController.turnOrder.Count];
+			//CombatController.turnOrder.CopyTo(_tempTurnorder);
+			List<GameObject> _slatedForRemoval = new List<GameObject>();
 			foreach (CombatController _cc in CombatController.turnOrder)//_tempTurnorder) //for all entries in the temp turn order
 			{
 				if (_cc != CombatController.playerCombatController)
 				{
-					Destroy(_cc.gameObject);
+					_slatedForRemoval.Add(_cc.gameObject);
+					//Destroy(_cc.gameObject, 2);
 				}
 			}
+			yield return EncounterController.DoneWithCombat();
+			
+			foreach(var v in _slatedForRemoval)
+			{
+				Destroy(v,2);
+			}
+
 
 			CombatController.turnOrder.Clear();
 
-			ForwardMover.speedBoost = 3; //run after fleeing
+			EncounterController.speedBoost = 3; //run after fleeing
 
-			gameObject.SetActive(false);
+			if (UIController.IsCurrentUIMode(UIController.UIMode.Flee))
+				UIController.SetUIMode(UIController.UIMode.None);
+			//gameObject.SetActive(false);
 		}
 		else
 		{

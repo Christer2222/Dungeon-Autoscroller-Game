@@ -8,8 +8,8 @@ public class ResetStaticVariablesManager : MonoBehaviour
     {
 		LevelUpScreen.traitPointsToSpend = 0;
 		CombatController.ClearAllValues();
-		ForwardMover.encounterTimer = 2;
-		ForwardMover.buffTimer = 1;
+		EncounterController.encounterTimer = 2;
+		EncounterController.buffTimer = 1;
 
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}

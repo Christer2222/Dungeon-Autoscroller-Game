@@ -297,9 +297,6 @@ public class EffectTools// : MonoBehaviour
 			//Debug.Log(_t.position);
 			_t.position = _startPos * (1 - _lerp) + _targetPosition * _lerp; //Vector3.Lerp(_t.position, _targetPosition, _lerp);
 
-			Debug.Log(_lerp);
-
-
 			yield return waitForEndOfFrame;
 		}
 	}

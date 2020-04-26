@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
-public class ForwardMover : MonoBehaviour
+public class EncounterController : MonoBehaviour
 {
 	private GameObject segmentPrefab;
 	private GameObject enemyPrefab;
@@ -15,6 +15,7 @@ public class ForwardMover : MonoBehaviour
 	public static float encounterTimer = 1;//5;
 	public const float ENEMY_SPAWN_DISTANCE = 5;
 	private const float APPEAR_SPEED = 1.4f;
+	private const float ENCOUNTER_COOLDOWN = 10;
 
 	private const float DEFAULT_BUFF_TIMER = 5;
 	public static float buffTimer = DEFAULT_BUFF_TIMER;
@@ -51,36 +52,24 @@ public class ForwardMover : MonoBehaviour
 		if (Input.GetKeyDown(Options.inspectHotkey)) UIController.InspectButton.onClick.Invoke();
 		if (Input.GetKeyDown(Options.levelUpHotkey)) UIController.LevelUpButton.onClick.Invoke();
 
-		if (Input.GetMouseButtonDown(0))
-		{
-			RaycastHit2D hit;
-			Vector3 mousePos = Input.mousePosition;
-			mousePos.z = 5;
-			hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), transform.forward);
-			if (hit.transform != null)
-			{
-				print(hit.transform.name);
-				
-			}
-			else
-				print("no hit at: " + mousePos);
-		}
 
 		if (encounterTimer > 0)
 		{
-			if (shouldMove)
-			{
-				encounterTimer -= Time.deltaTime;
-				transform.position += Vector3.forward * Time.deltaTime * (5 + speedBoost * 10);
-
-				speedBoost = Mathf.Max(speedBoost - Time.deltaTime,0);
-				buffTimer -= Time.deltaTime;
-				if (buffTimer <= 0)
+			if ((UIController.currentUIMode & (UIController.UIMode.FullScreen)) == 0) //if the current uimode doesn't have the inventory or levelup flag set
+				if (shouldMove)
 				{
-					buffTimer = DEFAULT_BUFF_TIMER;
-					StartCoroutine( CombatController.playerCombatController.TickBuffs());
+					encounterTimer -= Time.deltaTime; //count down for the next encounter
+
+					transform.position += Vector3.forward * Time.deltaTime * (5 + speedBoost * 10);
+
+					speedBoost = Mathf.Max(speedBoost - Time.deltaTime,0);
+					buffTimer -= Time.deltaTime;
+					if (buffTimer <= 0)
+					{
+						buffTimer = DEFAULT_BUFF_TIMER;
+						StartCoroutine( CombatController.playerCombatController.TickBuffs());
+					}
 				}
-			}
 		}
 		else
 		{
@@ -173,9 +162,9 @@ public class ForwardMover : MonoBehaviour
 		yield return new WaitForSeconds(3);
 
 		CombatController.UpdateTurnOrderDisplay();
-		
 
-		encounterTimer = Random.Range(5,10);
+
+		encounterTimer = ENCOUNTER_COOLDOWN;// Random.Range(5,10);
 		finnishingCombat = false;
 	}
 
@@ -184,7 +173,10 @@ public class ForwardMover : MonoBehaviour
 		if (_trig.CompareTag("Segment"))
 		{
 			_trig.enabled = false;
-			segmentList.Add(Instantiate(segmentPrefab,_trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE,Quaternion.identity));
+
+			var _next = Instantiate(segmentPrefab, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
+			segmentList.Add(_next);
+
 
 			if (segmentList.Count > 10)
 			{

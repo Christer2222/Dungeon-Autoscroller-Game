@@ -146,7 +146,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static Vector3 HitPosition
 	{
-		get { return mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, ForwardMover.ENEMY_SPAWN_DISTANCE)); } //store where to click
+		get { return mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, EncounterController.ENEMY_SPAWN_DISTANCE)); } //store where to click
 	}
 
 	protected static Camera mainCamera;
@@ -163,7 +163,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		get
 		{
-			return new Vector3(0, 6, mainCamera.transform.position.z + ForwardMover.ENEMY_SPAWN_DISTANCE);
+			return new Vector3(0, 6, mainCamera.transform.position.z + EncounterController.ENEMY_SPAWN_DISTANCE);
 		}
 	}
 
