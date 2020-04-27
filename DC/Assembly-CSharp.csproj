@@ -123,9 +123,11 @@
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\gold_coin_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\leather_vest_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\smite_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\minor_health_potion_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\light_elemental_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\leather_pants_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\moonman_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\mana_potion_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\keen_sight_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\bolt_ring_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\strike_ring_sprite_index.txt" />
@@ -138,6 +140,7 @@
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\steel_chestplate_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\thunderbolt_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\gold_sword_sprite_index.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\greater_health_potion_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\spot_weakness_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\spot_weakness_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\restore_soul_a_text.txt" />
@@ -155,6 +158,7 @@
     <None Include="Assets\Resources\Sprites\Effects\old\harden_skin_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\poision_tick_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\force_punch_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\greater_mana_potion_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\regeneration_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\poision_tick_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\steel_broad_sword_sprite_index.txt" />
@@ -181,6 +185,7 @@
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\urn_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\double_kick_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\air_elemental_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\health_potion_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\double_kick_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\mana_drain_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\thunderbolt_a_text.txt" />
@@ -192,6 +197,7 @@
     <None Include="Assets\Resources\Sprites\Effects\old\divine_fists_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\freezing_strike_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\crystal_lance_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\minor_mana_potion_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\divine_luck_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\gold_ring_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\magic_shield_a_text.txt" />

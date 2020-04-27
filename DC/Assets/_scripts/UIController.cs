@@ -15,6 +15,9 @@ public class UIController : MonoBehaviour
     public static Button InventoryEquipButton { get; private set; }
     public static Button InventoryEquipInMainHandButton { get; private set; }
     public static Button InventoryEquipInOffHandButton { get; private set; }
+    public static Button InventoryEquipInAccessory1Button { get; private set; }
+    public static Button InventoryEquipInAccessory2Button { get; private set; }
+    public static Button InventoryEquipInAccessory3Button { get; private set; }
     public static Text InventoryEquipText { get; private set; }
     public static Button InventoryTossButton { get; private set; }
     public static Button InventoryTossUp1Button { get; private set; }
@@ -33,6 +36,18 @@ public class UIController : MonoBehaviour
     public static Image CurrentEquippedAccessory1Image { get; private set; }
     public static Image CurrentEquippedAccessory2Image { get; private set; }
     public static Image CurrentEquippedAccessory3Image { get; private set; }
+
+    public static Button UnequipHelmetButton { get; private set; }
+    public static Button UnequipChestplateButton { get; private set; }
+    public static Button UnequipLeggingsButton { get; private set; }
+    public static Button UnequipBootsButton { get; private set; }
+    public static Button UnequipMainHandButton { get; private set; }
+    public static Button UnequipOffHandButton { get; private set; }
+    public static Button UnequipAccessory1Button { get; private set; }
+    public static Button UnequipAccessory2Button { get; private set; }
+    public static Button UnequipAccessory3Button { get; private set; }
+
+
 
 
 
@@ -129,6 +144,15 @@ public class UIController : MonoBehaviour
                     break;
                 case "$EquipInMainHandButton":
                     InventoryEquipInMainHandButton = child.GetComponent<Button>();
+                    break;
+                case "$InventoryEquipInAccessory1Button":
+                    InventoryEquipInAccessory1Button = child.GetComponent<Button>();
+                    break;
+                case "$InventoryEquipInAccessory2Button":
+                    InventoryEquipInAccessory2Button = child.GetComponent<Button>();
+                    break;
+                case "$InventoryEquipInAccessory3Button":
+                    InventoryEquipInAccessory3Button = child.GetComponent<Button>();
                     break;
                 case "$InventoryEquipInOffHandButton":
                     InventoryEquipInOffHandButton = child.GetComponent<Button>();
@@ -252,30 +276,39 @@ public class UIController : MonoBehaviour
                     break;
                 case "$CurrentEquippedHelmet":
                     CurrentEquippedHelmetImage = child.GetComponent<Image>();
+                    UnequipHelmetButton = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedChestplate":
                     CurrentEquippedChestplateImage = child.GetComponent<Image>();
+                    UnequipChestplateButton = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedLeggings":
                     CurrentEquippedLeggingsImage = child.GetComponent<Image>();
+                    UnequipLeggingsButton = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedBoots":
                     CurrentEquippedBootsImage = child.GetComponent<Image>();
+                    UnequipBootsButton = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedMainHand":
                     CurrentEquippedMainHandImage = child.GetComponent<Image>();
+                    UnequipMainHandButton = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedOffHand":
                     CurrentEquippedOffHandImage = child.GetComponent<Image>();
+                    UnequipOffHandButton = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedAccessory1":
                     CurrentEquippedAccessory1Image = child.GetComponent<Image>();
+                    UnequipAccessory1Button = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedAccessory2":
                     CurrentEquippedAccessory2Image = child.GetComponent<Image>();
+                    UnequipAccessory2Button = child.GetComponent<Button>();
                     break;
                 case "$CurrentEquippedAccessory3":
                     CurrentEquippedAccessory3Image = child.GetComponent<Image>();
+                    UnequipAccessory3Button = child.GetComponent<Button>();
                     break;
             }
         }
@@ -325,6 +358,6 @@ public class UIController : MonoBehaviour
 
     public static bool IsFullscreenUI()
     {
-        return (currentUIMode & UIMode.FullScreen) == 0;
+        return (currentUIMode & UIMode.FullScreen) != 0;
     }
 }

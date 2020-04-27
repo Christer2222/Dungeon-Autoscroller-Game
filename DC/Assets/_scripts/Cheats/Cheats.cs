@@ -29,6 +29,9 @@ public class Cheats : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+            CombatController.playerCombatController.AdjustHealth(-2, AbilityInfo.Elementals.None, AbilityInfo.ExtraData.none);
+
         if (Input.GetKeyDown(KeyCode.Keypad5))
             LevelUpScreen.traitPointsToSpend++;
 

@@ -10,9 +10,15 @@ public class Items : AbilityClass
 	private const string ITEM_ACTIVE_ABILITY_LIST = "¹";
 
 	
-	public static ItemInfo Apple { get; } = new ItemInfo("Apple", 4, ItemType.Consumable, $"Apparently wards against doctors.\nHeals {ITEM_ACTIVE_CONSTANT}hp.", heal, 2);
-	public static ItemInfo Orange { get; } = new ItemInfo("Orange", 6, ItemType.Consumable, $"Named after a color, or has a color named after it?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", heal, 4);
-	public static ItemInfo Banana { get; } = new ItemInfo("Banana", 8, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", heal, 6);
+	public static ItemInfo Apple { get; } = new ItemInfo("Apple", 4, ItemType.Consumable, $"Apparently wards against doctors.\nHeals {ITEM_ACTIVE_CONSTANT}hp.", regeneration, 2);
+	public static ItemInfo Orange { get; } = new ItemInfo("Orange", 6, ItemType.Consumable, $"Named after a color, or has a color named after it?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", regeneration, 3);
+	public static ItemInfo Banana { get; } = new ItemInfo("Banana", 8, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", regeneration, 4);
+	public static ItemInfo MinorManaPotion { get; } = new ItemInfo("Minor Mana Potion", 6, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", focus, 3);
+	public static ItemInfo ManaPotion { get; } = new ItemInfo("Mana Potion", 20, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", focus, 10);
+	public static ItemInfo GreaterManaPotion { get; } = new ItemInfo("Greater Mana Potion", 38, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", focus, 19);
+	public static ItemInfo MinorHealthPotion { get; } = new ItemInfo("Minor Health Potion", 7, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", heal, 3);
+	public static ItemInfo HealthPotion { get; } = new ItemInfo("Health Potion", 23, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", heal, 11);
+	public static ItemInfo GreaterHealthPotion { get; } = new ItemInfo("Greater Health Potion", 43, ItemType.Consumable, $"Is this a snack?\nHeals {ITEM_ACTIVE_CONSTANT}hp.", heal, 22);
 
 
 	public static ItemInfo Stick { get; } = new ItemInfo("Stick", 2, ItemType.Craftable, $"En Garde!\nCan be used to craft various items.", punch, 2);

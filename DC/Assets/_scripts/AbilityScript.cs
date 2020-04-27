@@ -772,8 +772,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator Heal(TargetData targetData)
 	{
 		int num = 0;
-		if (targetData.self != null) 
-			num = targetData.self.myStats.Luck;
+		if (!targetData.fromItem)
+			num = 3;//targetData.self.myStats.Luck;
 
 		if (targetData.target != null)
 		{
@@ -890,12 +890,19 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator Regeneration(TargetData targetData)
 	{
-		EffectTools.SpawnEffect(targetData.ability.name,lastClick + Vector3.forward,1);
+		EffectTools.SpawnEffect(targetData.ability.name, targetData.centerPos, 1);// lastClick + Vector3.forward,1);
+
+		int _amount = 0;
+		if (!targetData.fromItem)
+		{
+			_amount = 2;
+		}
+		_amount += targetData.bonus;
 
 		if(targetData.target != null)
 		{
 			//var _buff = new Buff(AbilityClass.regeneration.name, AbilityClass.heal.name,3, BuffIcons.TryGetBuffIcon("yellow_pluss"), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.Luck,0));
-			var _buff = new Buff(AbilityClass.regeneration.name, AbilityClass.heal.name, 3, BuffIcons.TryGetBuffIcon(12), Buff.StackType.Pick_Most_Potent, Mathf.Max(targetData.self.myStats.Luck, 0));
+			var _buff = new Buff(AbilityClass.regeneration.name, AbilityClass.heal.name, 3, BuffIcons.TryGetBuffIcon(12), Buff.StackType.Pick_Most_Potent, Mathf.Max(_amount, 0));
 
 			AddBuff(_buff,targetData.target);
 		}
@@ -921,8 +928,15 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator Focus(TargetData targetData)
 	{
+		int _mana = 0;
+		if (!targetData.fromItem)
+		{
+			_mana = 5;
+		}
+		_mana += targetData.bonus;
+		
 		EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position,1);
-		targetData.self.AdjustMana(Mathf.Max(targetData.self.myStats.Intelligence, 0));
+		targetData.self.AdjustMana(Mathf.Max(_mana, 0));
 		yield return null;
 	}
 
