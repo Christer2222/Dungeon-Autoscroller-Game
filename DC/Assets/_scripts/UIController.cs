@@ -84,7 +84,7 @@ public class UIController : MonoBehaviour
     public static Slider FleeSlider { get; private set; }
 
 
-    public static GameObject LevelUpScreen { get; private set; }
+    public static GameObject LevelUpScreenGameObject { get; private set; }
 
     public static Transform UICanvas { get; private set; }
 
@@ -257,7 +257,7 @@ public class UIController : MonoBehaviour
                     LevelUpButton = child.GetComponent<Button>();
                     break;
                 case "$LevelUpHolder":
-                    LevelUpScreen = child.gameObject;
+                    LevelUpScreenGameObject = child.gameObject;
                     break;
                 case "$BuffContent":
                     BuffContent = child;
@@ -312,6 +312,18 @@ public class UIController : MonoBehaviour
                     break;
             }
         }
+
+        LevelUpScreen.instance = new LevelUpScreen(); //CombatController.playerCombatController.GetComponent<LevelUpScreen>();
+        LevelUpScreen.instance.Initialize();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(Options.abilitiesHotkey)) AbilityButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.fleeHotkey)) FleeButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.itemsHotkey)) InventoryButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.inspectHotkey)) InspectButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.levelUpHotkey)) LevelUpButton.onClick.Invoke();
     }
 
     public static void SetUIMode(UIMode targetUIMode)
@@ -332,7 +344,7 @@ public class UIController : MonoBehaviour
         InventoryRootRectTransform.gameObject.SetActive(false);
         FleeSlider.gameObject.SetActive(false);
         //Inspect .setActive false
-        LevelUpScreen.SetActive(false);
+        LevelUpScreenGameObject.SetActive(false);
 
         switch(currentUIMode)
         {
@@ -346,7 +358,7 @@ public class UIController : MonoBehaviour
                 FleeSlider.gameObject.SetActive(true);
                 break;
             case UIMode.LevelUp:
-                LevelUpScreen.SetActive(true);
+                LevelUpScreenGameObject.SetActive(true);
                 break;
         }
     }

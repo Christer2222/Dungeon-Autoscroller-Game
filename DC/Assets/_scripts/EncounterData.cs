@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AbilityInfo;
 
-public class EncounterData : AbilityClass
+public class EncounterData : AbilityCollection
 {   /* 	/----------------------------\
 	*	| Space to line up abilities |
 	*///\----------------------------/

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using AbilityInfo;
 
-public class LevelUpScreen : AbilityClass
+public class LevelUpScreen : AbilityCollection
 {
 	public static LevelUpScreen instance;
 
@@ -312,7 +312,7 @@ public class LevelUpScreen : AbilityClass
 			abilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + levelUpQue.Count;// + abilityPointsToSpend;
 
 			ToggleArrowButtons();
-			CombatController.playerCombatController.CloseAllCombatUI();
+			//CombatController.playerCombatController.CloseAllCombatUI();
 		}
 	}
 

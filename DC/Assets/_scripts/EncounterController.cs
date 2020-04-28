@@ -12,7 +12,7 @@ public class EncounterController : MonoBehaviour
 	private readonly List<GameObject> segmentList = new List<GameObject>();
 	private const float SEGMENT_DISTANCE = 8;
 
-	public static float encounterTimer = 1;//5;
+	private static float encounterTimer;
 	public const float ENEMY_SPAWN_DISTANCE = 5;
 	private const float APPEAR_SPEED = 1.4f;
 	private const float ENCOUNTER_COOLDOWN = 10;
@@ -21,12 +21,26 @@ public class EncounterController : MonoBehaviour
 	public static float buffTimer = DEFAULT_BUFF_TIMER;
 
 	public static float speedBoost;
-	public static bool shouldMove = true;
 	private static bool finnishingCombat;
+
+	public static GameState currentGameState = GameState.Walking;
+	public enum GameState
+	{
+		None = 1,
+		Walking = 2,
+		Starting_Battle = 4,
+		Battling = 8,
+		//Finishing_Combat = 16,
+		Busy = 16,
+		Realtime = Walking | Busy,
+		In_Battle = Starting_Battle | Battling,
+	}
 
     // Start is called before the first frame update
     void Start()
     {
+		encounterTimer = ENCOUNTER_COOLDOWN;//5;
+
 		segmentPrefab = (GameObject)Resources.Load("Prefabs/Segment");
 		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
 		//var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
@@ -37,86 +51,110 @@ public class EncounterController : MonoBehaviour
 		}
 		*/
 		//playerCombatController = gameObject.GetComponent<CombatController>();
+	}
 
-		
-		LevelUpScreen.instance = new LevelUpScreen(); //CombatController.playerCombatController.GetComponent<LevelUpScreen>();
-		LevelUpScreen.instance.Initialize();
+
+	private static void ResetEncounterTimer()
+	{
+		encounterTimer = ENCOUNTER_COOLDOWN;
 	}
 
 	// Update is called once per frame
 	void Update()
     {
-		if (Input.GetKeyDown(Options.abilitiesHotkey)) UIController.AbilityButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.fleeHotkey)) UIController.FleeButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.itemsHotkey)) UIController.InventoryButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.inspectHotkey)) UIController.InspectButton.onClick.Invoke();
-		if (Input.GetKeyDown(Options.levelUpHotkey)) UIController.LevelUpButton.onClick.Invoke();
-
-
-		if (encounterTimer > 0)
+		print("t: " + (encounterTimer/2).ToString("0") + currentGameState);
+		//print("gs: " + currentGameState);
+		if ((currentGameState & GameState.Realtime) != 0 && !UIController.IsFullscreenUI())
 		{
-			if ((UIController.currentUIMode & (UIController.UIMode.FullScreen)) == 0) //if the current uimode doesn't have the inventory or levelup flag set
-				if (shouldMove)
-				{
-					encounterTimer -= Time.deltaTime; //count down for the next encounter
+			encounterTimer -= Time.deltaTime; //count down for the next encounter
 
+			if (encounterTimer <= 0)
+			{
+				currentGameState = GameState.Starting_Battle;
+				CombatController.playerCombatController.RemoveAllBufsWithName("Busy");
+			}
+			else
+			{
+				buffTimer -= Time.deltaTime;
+				if (buffTimer <= 0)
+				{
+					buffTimer = DEFAULT_BUFF_TIMER;
+					StartCoroutine(CombatController.playerCombatController.TickBuffs());
+				}
+			}
+		}
+
+
+		switch (currentGameState)
+		{
+			case (GameState.Walking)://encounterTimer > 0)
+			{
+				if ((UIController.currentUIMode & (UIController.UIMode.FullScreen)) == 0) //if the current uimode doesn't have the inventory or levelup flag set
+				{
 					transform.position += Vector3.forward * Time.deltaTime * (5 + speedBoost * 10);
 
-					speedBoost = Mathf.Max(speedBoost - Time.deltaTime,0);
-					buffTimer -= Time.deltaTime;
-					if (buffTimer <= 0)
-					{
-						buffTimer = DEFAULT_BUFF_TIMER;
-						StartCoroutine( CombatController.playerCombatController.TickBuffs());
-					}
+					speedBoost = Mathf.Max(speedBoost - Time.deltaTime, 0);
 				}
-		}
-		else
-		{
-			if (CombatController.turnOrder.Count == 0 && !finnishingCombat)
-			{
-				CombatController.turnOrder.Add(CombatController.playerCombatController);
-
-				CombatController.playerCombatController.RemoveAllBufsWithName("busy");
-
-				var _playerStats = CombatController.playerCombatController.myStats;
-
-				var _possibles = EncounterData.encounterTable.Where(x => x.level == _playerStats.level).ToArray(); //find encounter of equal level
-				int _lower = _playerStats.level; //store level
-				while (_possibles.Length == 0) //if no encounters
-				{
-					_lower--; //lower level check by 1
-					_possibles = EncounterData.encounterTable.Where(x => x.level == _lower).ToArray(); //find encounters
-					if (_lower <= 0) //if checking below 0, end search
-					{
-						encounterTimer = 5;
-						return;
-					}
-				}
-
-				if (!Options.finishedTutorial) //if this is the first battle
-					_possibles = EncounterData.encounterTable.Where(x => x.level == 0).ToArray(); //overwrite encounter check for the easiest
-
-				EncounterData.Encounter _selectedEncounter = _possibles[Random.Range(0,_possibles.Length)];
-
-				_selectedEncounter = EncounterData.RandomizeEncounter(_selectedEncounter);
-
-
-				SpawnEnemy(_selectedEncounter.monsterBL, 0);
-				SpawnEnemy(_selectedEncounter.monsterBM, 1);
-				SpawnEnemy(_selectedEncounter.monsterBR, 2);
-				SpawnEnemy(_selectedEncounter.monsterTL, 3);
-				SpawnEnemy(_selectedEncounter.monsterTM, 4);
-				SpawnEnemy(_selectedEncounter.monsterTR, 5);
-
-				CombatController.turnOrder.OrderBy(x => (x.myStats.level * 2 + x.myStats.Luck));
-
 			}
+			break;
+			case (GameState.Starting_Battle):
+			{
+				if (CombatController.turnOrder.Count == 0 && !finnishingCombat)
+				{
+					CombatController.turnOrder.Add(CombatController.playerCombatController);
+
+					CombatController.playerCombatController.RemoveAllBufsWithName("busy");
+
+					var _playerStats = CombatController.playerCombatController.myStats;
+
+					var _possibles = EncounterData.encounterTable.Where(x => x.level == _playerStats.level).ToArray(); //find encounter of equal level
+					int _lower = _playerStats.level; //store level
+					while (_possibles.Length == 0) //if no encounters
+					{
+						_lower--; //lower level check by 1
+						_possibles = EncounterData.encounterTable.Where(x => x.level == _lower).ToArray(); //find encounters
+						if (_lower <= 0) //if checking below 0, end search
+						{
+							ResetEncounterTimer();
+							//encounterTimer = 5;
+							return;
+						}
+					}
+
+					if (!Options.finishedTutorial) //if this is the first battle
+						_possibles = EncounterData.encounterTable.Where(x => x.level == 0).ToArray(); //overwrite encounter check for the easiest
+
+					EncounterData.Encounter _selectedEncounter = _possibles[Random.Range(0, _possibles.Length)];
+
+					_selectedEncounter = EncounterData.RandomizeEncounter(_selectedEncounter);
 
 
-			//DoneWithCombat();
+					SpawnEnemy(_selectedEncounter.monsterBL, 0);
+					SpawnEnemy(_selectedEncounter.monsterBM, 1);
+					SpawnEnemy(_selectedEncounter.monsterBR, 2);
+					SpawnEnemy(_selectedEncounter.monsterTL, 3);
+					SpawnEnemy(_selectedEncounter.monsterTM, 4);
+					SpawnEnemy(_selectedEncounter.monsterTR, 5);
+
+					CombatController.turnOrder.OrderBy(x => (x.myStats.level * 2 + x.myStats.Luck));
+
+					currentGameState = GameState.Battling;
+				}
+
+
+				//DoneWithCombat();
+			}
+			break;
+			case (GameState.Busy):
+			{
+				if (!CombatController.playerCombatController.CheckIfHasBuff("Busy"))
+				{
+					currentGameState = GameState.Walking;
+				}
+			}
+			break;
 		}
-    }
+	}
 
 	void SpawnEnemy(StatBlock _monstarStat, int _pos)
 	{
@@ -150,8 +188,8 @@ public class EncounterController : MonoBehaviour
 
 	public static IEnumerator DoneWithCombat()
 	{
-		finnishingCombat = true;
-
+		//currentGameState = GameState.Finishing_Combat;
+		print("done with combat");
 		if (CombatController.turnOrder.Count >= 1)
 			Options.finishedTutorial = true;
 
@@ -163,9 +201,9 @@ public class EncounterController : MonoBehaviour
 
 		CombatController.UpdateTurnOrderDisplay();
 
+		ResetEncounterTimer();
 
-		encounterTimer = ENCOUNTER_COOLDOWN;// Random.Range(5,10);
-		finnishingCombat = false;
+		currentGameState = GameState.Walking;
 	}
 
 	private void OnTriggerEnter(Collider _trig)

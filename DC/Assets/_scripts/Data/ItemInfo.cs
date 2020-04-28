@@ -2,7 +2,7 @@
 using UnityEngine;
 using AbilityInfo;
 
-public class Items : AbilityClass
+public class Items : AbilityCollection
 {
 	private const string ITEM_ACTIVE_CONSTANT = "½";
 	private const string ITEM_DEFENSE = "¼";

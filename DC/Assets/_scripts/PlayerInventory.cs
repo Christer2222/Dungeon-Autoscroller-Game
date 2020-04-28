@@ -13,6 +13,7 @@ public class PlayerInventory : MonoBehaviour
     public List<ItemQuantity> equippedItems = new List<ItemQuantity>();
 
     private const string USE_STRING = "Use";
+    private const string BUSY_STRING = "Busy";
     private const string CONSUME_STRING = "Consume";
     private const string EQUIP_STRING = "Equip";
     private const string CANT_STRING = "Can't";
@@ -51,7 +52,7 @@ public class PlayerInventory : MonoBehaviour
         public ItemQuantity itemEquipped;
     }
 
-    private static EquipmentSlot 
+    private readonly static EquipmentSlot 
         helmetSlot = new EquipmentSlot(), 
         chestplateSlot = new EquipmentSlot(), 
         leggingsSlot = new EquipmentSlot(), 
@@ -67,8 +68,6 @@ public class PlayerInventory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //allEquipmentSlots.ForEach(x => x = new EquipmentSlot());
-        print(helmetSlot);
         helmetSlot.displayImage = UIController.CurrentEquippedHelmetImage;
         chestplateSlot.displayImage = UIController.CurrentEquippedChestplateImage;
         leggingsSlot.displayImage = UIController.CurrentEquippedLeggingsImage;
@@ -161,21 +160,31 @@ public class PlayerInventory : MonoBehaviour
             itemInfoGameObjects[i] = new ItemInfoGameObject() { icon = child.GetComponentInChildren<Image>(), text = child.GetComponentInChildren<Text>()};
         }
 
-        #region Buttons
-        //----------USE BUTTON
-        UIController.InventoryUseButton.onClick.AddListener(() => {  
+		#region Buttons
+		#region Use Button
+		//----------USE BUTTON
+		UIController.InventoryUseButton.onClick.AddListener(() => {  
             if (selectedItem !=  null)
             {
                 if ((selectedItem.item.type & Items.ItemType.Consumable) != 0) //if item has consumable flag
                 {
                     if (CombatController.turnOrder.Count > 0)
+                    {
                         if (CombatController.turnOrder[0] != CombatController.playerCombatController)
                         {
                             StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryUseButtonText, USE_STRING, WAIT_STRING, 0.5f));
                             return; 
                         }
+                    }
+                    else if (CombatController.playerCombatController.CheckIfHasBuff("Busy"))
+                    {
+                        StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryUseButtonText, USE_STRING, BUSY_STRING, 0.5f));
+                        return;
+                    }
 
-                    UIController.InventoryRootRectTransform.gameObject.SetActive(false);
+                    UIController.SetUIMode(UIController.UIMode.None);
+                    selectedItem.selectionBox.color = Color.clear;
+                    //UIController.InventoryRootRectTransform.gameObject.SetActive(false);
                     UIController.InventoryContextMenu.gameObject.SetActive(false);
                     for (int i = 0; i < selectedItem.item.activeAbilities.Count; i++)
                     {
@@ -186,11 +195,12 @@ public class PlayerInventory : MonoBehaviour
                             selectedItem.item.activeConstants[i], //bonus
                             selectedItem.item.activeAbilities[i].element, //element
                             CombatController.playerCombatController.transform.position, //where to show icon. Broken?
-                            _fromItem: true
+                            _useOwnStats: true
                             );
 
+
                         CombatController.playerCombatController.StartCoroutine(
-                            CombatController.playerCombatController.SimpleInvokeAbility(targetData, selectedItem.item.activeAbilities[i],false,true, 1, true, delegate {
+                            CombatController.playerCombatController.SimpleInvokeAbility(targetData,false,(CombatController.turnOrder.Count > 0)?true:false, 1, true, delegate {
                                 ChangeItemQuantity(selectedItem, -1); //remove an item after it is used
                             }));
                     }
@@ -205,9 +215,10 @@ public class PlayerInventory : MonoBehaviour
             }
 
         });
-
-        //----------EUQIP BUTTON
-        UIController.InventoryEquipButton.onClick.AddListener(() => {
+		#endregion
+		#region Equip Buttons
+		//----------EUQIP BUTTON
+		UIController.InventoryEquipButton.onClick.AddListener(() => {
             if (UIController.WeaponSlotContextMenu.gameObject.activeSelf || UIController.AccessoryContextMenu.gameObject.activeSelf)
             {
                 return;
@@ -248,9 +259,10 @@ public class PlayerInventory : MonoBehaviour
         UIController.InventoryEquipInAccessory1Button.onClick.AddListener(  () => EquipItem(accessory1Slot));
         UIController.InventoryEquipInAccessory2Button.onClick.AddListener(  () => EquipItem(accessory2Slot));
         UIController.InventoryEquipInAccessory3Button.onClick.AddListener(  () => EquipItem(accessory3Slot));
-
-        //-----------UNEQUIP BUTTONS
-        UIController.UnequipHelmetButton.onClick.AddListener(       () => UnequipItem(helmetSlot));
+		#endregion
+		#region Unequip Buttons
+		//-----------UNEQUIP BUTTONS
+		UIController.UnequipHelmetButton.onClick.AddListener(       () => UnequipItem(helmetSlot));
         UIController.UnequipChestplateButton.onClick.AddListener(   () => UnequipItem(chestplateSlot));
         UIController.UnequipLeggingsButton.onClick.AddListener(     () => UnequipItem(leggingsSlot));
         UIController.UnequipBootsButton.onClick.AddListener(        () => UnequipItem(bootsSlot));
@@ -275,9 +287,10 @@ public class PlayerInventory : MonoBehaviour
 
             UnequipItem(offHandSlot); //either way, unequip off hand
         });
-
-        //----------TOSS BUTTONS
-        UIController.InventoryTossButton.onClick.AddListener(() => { 
+		#endregion
+		#region Toss Buttons
+		//----------TOSS BUTTONS
+		UIController.InventoryTossButton.onClick.AddListener(() => { 
             if (selectedItem != null) 
             {
                 ChangeItemQuantity(selectedItem, -GetTossValue());
@@ -287,11 +300,11 @@ public class PlayerInventory : MonoBehaviour
         UIController.InventoryTossUp10Button.onClick.AddListener(   () => ChangeTossNumber(+10));
         UIController.InventoryTossDown1Button.onClick.AddListener(  () => ChangeTossNumber(-1));
         UIController.InventoryTossDown10Button.onClick.AddListener( () => ChangeTossNumber(-10));
-        #endregion
+		#endregion
+		#endregion
 
 
-
-        UIController.InventoryContextMenu.gameObject.SetActive(false);
+		UIController.InventoryContextMenu.gameObject.SetActive(false);
         
         ClearInventory();
         RebuildInventory();

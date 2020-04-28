@@ -74,7 +74,7 @@ public class CombatController : AbilityScript
 				1, 0, //lv, xp
 				1, 1, 1, 1, //str, dex. int, luck
 				//new List<Ability> { AbilityClass.punch});
-				new List<Ability> { AbilityClass.punch },
+				new List<Ability> { AbilityCollection.punch },
 				_drops: DropTable.none
 				);
 
@@ -309,17 +309,17 @@ public class CombatController : AbilityScript
 		targetCombatController = this;
 		//var _prevActiveAbility = selectedAbility;
 
-		for(int i = 0; i < myStats.buffList.Count; i++)
+		for (int i = 0; i < myStats.buffList.Count; i++)
 		{
-
 			var _buff = myStats.buffList[i];
+
 			for (int j = 0; j < _buff.functions.Count; j++)
 			{
-				var td = new TargetData(myStats.buffList[i].functions[j], this, this, (int)myStats.buffList[i].constant, _centerPos: transform.position);
+				var td = new TargetData(myStats.buffList[i].functions[j], this, this, (int)myStats.buffList[i].constant, _centerPos: transform.position, _useOwnStats: false);
 
 				//selectedAbility = _buff.functions[j];
 				//yield return StartCoroutine(InvokeActiveAbility(false,_buff.constant));
-				yield return StartCoroutine(SimpleInvokeAbility(td, td.ability, false, false, 0, false));
+				yield return StartCoroutine(SimpleInvokeAbility(td, false, false, 0, false));
 			}
 			_buff.turns--;
 		}
@@ -333,14 +333,20 @@ public class CombatController : AbilityScript
 			CheckIfBuffIconsAreCorrect();
 	}
 
+	/// <summary>
+	/// Checks wether this combatcontroller has a (ToLowered) buff with same name as (ToLowered) input.
+	/// </summary>
 	public bool CheckIfHasBuff(string _buffName)
 	{
-		return (myStats.buffList.Exists(x => x.name == _buffName));
+		return (myStats.buffList.Exists(x => x.name.ToLower() == _buffName.ToLower()));
 	}
 
+	/// <summary>
+	/// REmoves all (ToLowered) buffs with same name as (ToLowered) input from this combatcontroller.
+	/// </summary>
 	public void RemoveAllBufsWithName(string _buffName)
 	{
-		myStats.buffList.RemoveAll(x => x.name.Contains(_buffName));
+		myStats.buffList.RemoveAll(x => x.name.ToLower() == _buffName.ToLower());// x.name.Contains(_buffName));
 	}
 
 	/// <summary>
@@ -446,8 +452,11 @@ public class CombatController : AbilityScript
 			lastClick = playerCombatController.transform.position;
 		}
 
+		var _targetData = new TargetData(selectedAbility, this, targetCombatController, _centerPos: lastClick);
 
-		yield return StartCoroutine(InvokeActiveAbility());
+		//yield return StartCoroutine(InvokeActiveAbility());
+		yield return StartCoroutine(SimpleInvokeAbility(_targetData,  true, true, 1));// InvokeActiveAbility());
+
 		myEnemyMover.shouldMove = true;
 
 
@@ -704,7 +713,12 @@ public class CombatController : AbilityScript
 			UIController.SetUIMode(UIController.UIMode.None);
 
 			actedLastTick = true;
-			StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
+			//StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
+
+			if ((EncounterController.currentGameState & EncounterController.GameState.Realtime) != 0) { AddBusyIfNotInCombat(); }
+
+			var _targetData = new TargetData(selectedAbility, this, targetCombatController, _centerPos: lastClick);
+			StartCoroutine(SimpleInvokeAbility(_targetData, true, true, 1));
 
 			if (targetCombatController != null) targetCombatController.isCritted = false;
 			targetCombatController = null;
@@ -712,33 +726,35 @@ public class CombatController : AbilityScript
 		}
 	}
 
-	public IEnumerator SimpleInvokeAbility(TargetData targetData, Ability ability, bool drainMana, bool endsTurn, float minimumUseTime = 0, bool becomesBusy = false, Action onComplete = null)
+	public IEnumerator SimpleInvokeAbility(TargetData _targetData, bool _drainMana, bool _endsTurn, float _minimumUseTime = 0, bool _becomesBusy = false, Action _onComplete = null)
 	{
-		print(turnOrder.Count);
-		
+		bool _usedInCombat = (EncounterController.currentGameState & EncounterController.GameState.In_Battle) != 0;
+		print("invoke ability simple");
+
 		if (invokingAbility || (turnOrder.Count != 0 && turnOrder[0] != this)) yield break; //if already using an ability or its not this characters turn
 		invokingAbility = true; //signal using an ability
 
-		if (drainMana) AdjustMana(ability.manaCost); //if set to remove mana on use; i.e when using an ability, but not when a buff triggers
-		if (becomesBusy) AddBusyIfNotInCombat(); //if not in combat, give the player the busy status
+		if (_drainMana) AdjustMana(_targetData.ability.manaCost); //if set to remove mana on use; i.e when using an ability, but not when a buff triggers
+		if (_becomesBusy) AddBusyIfNotInCombat(); //if not in combat, give the player the busy status
 
 		float orgTime = Time.time; //record when ability started
-		yield return StartCoroutine(ability.function(targetData)); //play animation or whatever
+		yield return StartCoroutine(_targetData.ability.function(_targetData)); //play animation or whatever
 
-		if (onComplete != null) onComplete.Invoke(); //if special action is set, invoke it
+		if (_onComplete != null) _onComplete.Invoke(); //if special action is set, invoke it
 
-		if (minimumUseTime != 0) //if has a minimum time
+		if (_minimumUseTime != 0) //if has a minimum time
 		{
 			var wof = new WaitForEndOfFrame();
 
-			while (orgTime + minimumUseTime > Time.time) //wait until time expires
+			while (orgTime + _minimumUseTime > Time.time) //wait until time expires
 				yield return wof;
 		}
 
 		invokingAbility = false; //signal done with ability
-		if (endsTurn) //if set to end turn
+		if (_endsTurn && _usedInCombat)//(EncounterController.currentGameState & (EncounterController.GameState.Realtime | EncounterController.GameState.Busy)) != 0) //if set to end turn
 		{
-			EncounterController.shouldMove = true;
+			print("ended in: " + EncounterController.currentGameState);
+			//EncounterController.shouldMove = true;
 			StartCoroutine(EndTurn());
 		}
 	}
@@ -750,15 +766,19 @@ public class CombatController : AbilityScript
 			AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
 
 			EncounterController.speedBoost = 0;
-			EncounterController.shouldMove = false;
+			EncounterController.currentGameState = EncounterController.GameState.Busy;
+			//EncounterController.shouldMove = false;
 			CheckIfBuffIconsAreCorrect();
 		}
 	}
+
+	/*
 	/// <summary>
 	/// Calls the active ability
 	/// </summary>
 	public IEnumerator InvokeActiveAbility(bool _byUser = true, float? _value = null)
 	{
+		print("invoke ability old");
 		if (invokingAbility || (turnOrder.Count != 0 && turnOrder[0] != this || CheckIfHasBuff("Busy"))) yield break;
 		invokingAbility = true;
 
@@ -807,13 +827,15 @@ public class CombatController : AbilityScript
 				yield return new WaitForSeconds(0.1f); //wait
 
 			playerCombatController.CheckIfBuffIconsAreCorrect();
-			EncounterController.shouldMove = true;
+			//EncounterController.shouldMove = true;
 
 			yield return new WaitForSeconds( playerOwned? 1:2);
-			StartCoroutine( EndTurn());
+			if (EncounterController.currentGameState == EncounterController.GameState.Battling)
+				StartCoroutine( EndTurn());
 		}
 		invokingAbility = false;
 	}
+	*/
 
 	IEnumerator RemoveFromTurnOrder(float _sec, CombatController _target)
 	{
@@ -854,10 +876,12 @@ public class CombatController : AbilityScript
 		selectedAbility = null;// string.Empty;
 	}
 
+	/*
 	public void CloseAllCombatUI()
 	{
 		ResetAbilityPick();
 		UIController.FleeSlider.gameObject.SetActive(false);
 		UIController.AbilityMenuScrollView.gameObject.SetActive(false);
 	}
+	*/
 }

@@ -2,3 +2,4 @@ UI need to be updated for weird screen resolutions (add a script that stretches/
 blueball can softlock
 all spritesheets use sprite[0] in builds
 cant use items outside battle
+items still use user stats

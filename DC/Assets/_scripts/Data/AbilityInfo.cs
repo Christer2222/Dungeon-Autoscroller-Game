@@ -53,7 +53,7 @@ namespace AbilityInfo
 
 	public struct TargetData
 	{
-		public TargetData(Ability _currentAbility, CombatController _self = null, CombatController _target = null, int _bonus = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default, bool _fromItem = false)
+		public TargetData(Ability _currentAbility, CombatController _self = null, CombatController _target = null, int _bonus = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default, bool _useOwnStats = true)
 		{
 			self = _self;
 			target = _target;
@@ -62,7 +62,7 @@ namespace AbilityInfo
 			centerPos = _centerPos;
 			targetRace = _race;
 			ability = _currentAbility;
-			fromItem = _fromItem;
+			useOwnStats = _useOwnStats;
 		}
 
 		public CombatController self;
@@ -72,7 +72,7 @@ namespace AbilityInfo
 		public Vector3 centerPos;
 		public StatBlock.Race targetRace;
 		public Ability ability;
-		public bool fromItem;
+		public bool useOwnStats;
 	}
 
 	public class Ability
@@ -87,6 +87,7 @@ namespace AbilityInfo
 			element = _element;
 			abilityType = _type;
 			extraData = _extraData;
+			abilityClass = _skill;
 
 			string _path = "Assets/Resources/Sprites/Effects/AnimationTexts/";
 			string _standardizedName = _name.Replace(" ", "_").ToLower();

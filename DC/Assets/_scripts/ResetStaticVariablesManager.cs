@@ -8,7 +8,7 @@ public class ResetStaticVariablesManager : MonoBehaviour
     {
 		LevelUpScreen.traitPointsToSpend = 0;
 		CombatController.ClearAllValues();
-		EncounterController.encounterTimer = 2;
+		EncounterController.currentGameState = EncounterController.GameState.Walking;// .ResetEncounterTimer();//encounterTimer = EncounterController.;
 		EncounterController.buffTimer = 1;
 
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

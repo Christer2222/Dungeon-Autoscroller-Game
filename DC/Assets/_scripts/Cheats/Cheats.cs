@@ -22,7 +22,7 @@ public class Cheats : MonoBehaviour
         if (addedDebugAbilities) return;
             addedDebugAbilities = true;
 
-        CombatController.playerCombatController.myStats.abilities.AddRange(AbilityClass.DebugAbilities());
+        CombatController.playerCombatController.myStats.abilities.AddRange(AbilityCollection.DebugAbilities());
         CombatController.playerCombatController.RefreshAbilityList();
     }
 
@@ -50,7 +50,7 @@ public class Cheats : MonoBehaviour
             CombatController.playerCombatController.AdjustPlayerXP(5 * CombatController.playerCombatController.myStats.level);
 
         if (Input.GetKeyDown(KeyCode.Keypad9))
-            EncounterController.encounterTimer = 0;
+            EncounterController.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
     }
 }
 #endif

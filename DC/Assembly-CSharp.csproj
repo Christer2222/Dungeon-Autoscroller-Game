@@ -63,7 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\_scripts\AbilityScript.cs" />
+    <Compile Include="Assets\_scripts\AbilityCollection.cs" />
     <Compile Include="Assets\_scripts\AnimationHandler.cs" />
     <Compile Include="Assets\_scripts\AnimationTextParser.cs" />
     <Compile Include="Assets\_scripts\BlockController.cs" />
