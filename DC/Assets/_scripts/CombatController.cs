@@ -917,7 +917,7 @@ public class CombatController : AbilityScript
 
 	void ResetAbilityPick()
 	{
-		UIController.AbilityButtonText.text = "Abilities";
+		UIController.AbilityButtonText.text = UIController.ABILITIES_BUTTON_STRING;
 		selectedAbility = null;// string.Empty;
 	}
 

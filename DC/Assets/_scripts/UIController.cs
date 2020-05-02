@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    public const string ABILITIES_BUTTON_STRING = "Abilities", ITEMS_BUTTON_STRING = "Items";// ABILITIES_BUTTON_STRING = "";
+
     public static Text InventoryButtonText {get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }

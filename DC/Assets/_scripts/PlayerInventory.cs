@@ -328,6 +328,14 @@ public class PlayerInventory : MonoBehaviour
 
     void EquipItem(EquipmentSlot _slot)
     {
+        if (CombatController.turnOrder.Count > 0) //if there are participants in combat
+            if (CombatController.turnOrder[0] != CombatController.playerCombatController) //if it is not the players turn
+            {
+                StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryEquipText, EQUIP_STRING, WAIT_STRING, 1)); //tell the player they cant
+                return;
+            }
+
+
         bool _wasDualWielding = (((mainHandSlot.itemEquipped != null? mainHandSlot.itemEquipped.item.type : 0) | (offHandSlot.itemEquipped != null? offHandSlot.itemEquipped.item.type : 0)) & Items.ItemType.TwoHanded) != 0;
 
         //remove previous item in same slot
@@ -352,7 +360,13 @@ public class PlayerInventory : MonoBehaviour
         
         ChangeItemQuantity(selectedItem, -1); //finally remove selected item from inventory
 
-        return;
+        if (CombatController.turnOrder.Count > 0) //if there are participants in combat
+            if (CombatController.turnOrder[0] == CombatController.playerCombatController) //if it is the players turn, they was successful
+            {
+                UIController.SetUIMode(UIController.UIMode.None);
+                StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryButtonText, UIController.ITEMS_BUTTON_STRING, "Equip!", 1));
+                StartCoroutine(CombatController.playerCombatController.EndTurn());
+            }
     }
 
     public void ChangeItemQuantity(ItemQuantity entry, int changeAmount)
@@ -550,6 +564,6 @@ public class PlayerInventory : MonoBehaviour
     public void ResetItemButton()
     {
         instance.selectedItem = null;
-        UIController.InventoryButtonText.text = "Items";
+        UIController.InventoryButtonText.text = UIController.ITEMS_BUTTON_STRING;
     }
 }
