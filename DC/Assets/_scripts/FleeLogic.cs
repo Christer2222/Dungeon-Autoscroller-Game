@@ -29,12 +29,6 @@ public class FleeLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (!waiting)
-		{
-			fleeSlider.value = Mathf.PingPong(timer * fleeSlider.maxValue, fleeSlider.maxValue);
-			timer += Time.deltaTime;
-		}
-
 		if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(Options.acceptKey))
 		{
 			prevVal = fleeSlider.value;
@@ -51,6 +45,14 @@ public class FleeLogic : MonoBehaviour
 			{
 				CombatController.playerCombatController.StartCoroutine(Flee());
 			}
+
+			return;
+		}
+
+		if (!waiting)
+		{
+			fleeSlider.value = Mathf.PingPong(timer * fleeSlider.maxValue, fleeSlider.maxValue);
+			timer += Time.deltaTime;
 		}
 	}
 
