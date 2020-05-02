@@ -7,8 +7,8 @@ public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory instance;
 
-    public List<ItemQuantity> inventory = new List<ItemQuantity>();
-    private ItemQuantity selectedItem;
+    private List<ItemQuantity> inventory = new List<ItemQuantity>();
+    public ItemQuantity selectedItem;
 
     public List<ItemQuantity> equippedItems = new List<ItemQuantity>();
 
@@ -18,8 +18,6 @@ public class PlayerInventory : MonoBehaviour
     private const string EQUIP_STRING = "Equip";
     private const string CANT_STRING = "Can't";
     private const string WAIT_STRING = "Wait";
-
-
 
 
     public Transform dropList;
@@ -84,7 +82,7 @@ public class PlayerInventory : MonoBehaviour
         inventoryItemEntryPrefab = Resources.Load<GameObject>("Prefabs/InventoryItemEntry");
         itemDropPrefabHeight = inventoryItemEntryPrefab.GetComponent<RectTransform>().rect.height;
 
-        halfItemContextHeight = UIController.InventoryContextMenu.GetComponentInChildren<Image>().rectTransform.rect.height/2;
+        halfItemContextHeight = UIController.InventoryGeneralContextMenu.GetComponentInChildren<Image>().rectTransform.rect.height/2;
         itemSpacing = UIController.InventoryItemContent.GetComponent<VerticalLayoutGroup>().spacing;
 
         /*
@@ -98,14 +96,15 @@ public class PlayerInventory : MonoBehaviour
                 selectedItem.selectionBox.color = Color.clear;
 
             selectedItem = null;
-            UIController.InventoryContextMenu.gameObject.SetActive(false);
+            UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
             //UIController.InventoryRootRectTransform.gameObject.SetActive(false);
             UIController.SetUIMode(UIController.UIMode.None);
         });
 
         ItemQuantity[] debugItems =
             {
-            
+            new ItemQuantity() { amount = 5, item = Items.Rock },
+
             new ItemQuantity() { amount = 5, item = Items.Apple },
             new ItemQuantity() { amount = 5, item = Items.Orange },
             new ItemQuantity() { amount = 5, item = Items.Banana },
@@ -185,7 +184,7 @@ public class PlayerInventory : MonoBehaviour
                     UIController.SetUIMode(UIController.UIMode.None);
                     selectedItem.selectionBox.color = Color.clear;
                     //UIController.InventoryRootRectTransform.gameObject.SetActive(false);
-                    UIController.InventoryContextMenu.gameObject.SetActive(false);
+                    UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
                     for (int i = 0; i < selectedItem.item.activeAbilities.Count; i++)
                     {
                         AbilityInfo.TargetData targetData = new AbilityInfo.TargetData(
@@ -207,8 +206,10 @@ public class PlayerInventory : MonoBehaviour
                 }
                 else if ((selectedItem.item.type & Items.ItemType.Targetable) != 0) //if item has targetable flag
                 {
-                    //UIController.SetUIMode(UIController.UIMode.None);
-                    //UIController.inventext = item.name;
+                    UIController.SetUIMode(UIController.UIMode.None);
+                    UIController.InventoryButtonText.text = selectedItem.item.name;
+                    selectedItem.selectionBox.color = Color.clear;
+                    UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
                 }
                 else
                    StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryUseButtonText, USE_STRING, CANT_STRING, 0.5f));
@@ -219,7 +220,7 @@ public class PlayerInventory : MonoBehaviour
 		#region Equip Buttons
 		//----------EUQIP BUTTON
 		UIController.InventoryEquipButton.onClick.AddListener(() => {
-            if (UIController.WeaponSlotContextMenu.gameObject.activeSelf || UIController.AccessoryContextMenu.gameObject.activeSelf)
+            if (UIController.InventoryWeaponSlotContextMenu.gameObject.activeSelf || UIController.InventoryAccessoryContextMenu.gameObject.activeSelf)
             {
                 return;
             }
@@ -304,7 +305,7 @@ public class PlayerInventory : MonoBehaviour
 		#endregion
 
 
-		UIController.InventoryContextMenu.gameObject.SetActive(false);
+		UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
         
         ClearInventory();
         RebuildInventory();
@@ -354,7 +355,7 @@ public class PlayerInventory : MonoBehaviour
         return;
     }
 
-    void ChangeItemQuantity(ItemQuantity entry, int changeAmount)
+    public void ChangeItemQuantity(ItemQuantity entry, int changeAmount)
     {
         entry.amount += changeAmount;
         if (entry.amount <= 0)
@@ -363,7 +364,7 @@ public class PlayerInventory : MonoBehaviour
             inventory.Remove(entry);
             if (entry == selectedItem)
                 selectedItem = null;
-            UIController.InventoryContextMenu.gameObject.SetActive(false);
+            UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
             UpdateInventorySize();
             return;
         }
@@ -430,7 +431,7 @@ public class PlayerInventory : MonoBehaviour
 
         butt.onClick.AddListener(() => {
             int index = go.transform.GetSiblingIndex();
-            var contextMenu = UIController.InventoryContextMenu; //shortcut
+            var contextMenu = UIController.InventoryGeneralContextMenu; //shortcut
             bool _wasLastItem = selectedItem == inventory[index];
 
             if (selectedItem != null)
@@ -444,8 +445,8 @@ public class PlayerInventory : MonoBehaviour
                 selectedItem.selectionBox.color = Color.white; //set the newly selected items color to selected
 
                 //set context menus appropriately
-                UIController.WeaponSlotContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.OneHanded) != 0);
-                UIController.AccessoryContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.Acessory) != 0);
+                UIController.InventoryWeaponSlotContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.OneHanded) != 0);
+                UIController.InventoryAccessoryContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.Acessory) != 0);
 
                 if ((selectedItem.item.type & Items.ItemType.Consumable) != 0) UIController.InventoryUseButtonText.text = CONSUME_STRING;
                 else UIController.InventoryUseButtonText.text = USE_STRING;
@@ -544,5 +545,11 @@ public class PlayerInventory : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void ResetItemButton()
+    {
+        instance.selectedItem = null;
+        UIController.InventoryButtonText.text = "Items";
     }
 }

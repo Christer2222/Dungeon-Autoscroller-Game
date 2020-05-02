@@ -4,12 +4,13 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    public static Text InventoryButtonText {get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }
     public static RectTransform InventoryRootRectTransform { get; private set; }
-    public static RectTransform InventoryContextMenu { get; private set; }
-    public static RectTransform AccessoryContextMenu { get; private set; }
-    public static RectTransform WeaponSlotContextMenu { get; private set; }
+    public static RectTransform InventoryGeneralContextMenu { get; private set; }
+    public static RectTransform InventoryAccessoryContextMenu { get; private set; }
+    public static RectTransform InventoryWeaponSlotContextMenu { get; private set; }
     public static Button InventoryUseButton { get; private set; }
     public static Text InventoryUseButtonText { get; private set; }
     public static Button InventoryEquipButton { get; private set; }
@@ -97,12 +98,12 @@ public class UIController : MonoBehaviour
     public static UIMode currentUIMode;
     public enum UIMode
     {
-        None = 0,
-        Abilities = 1,
-        Inventory = 2,
-        Flee = 4,
-        Inspect = 8,
-        LevelUp = 16,
+        None = 1,
+        Abilities = 2,
+        Inventory = 4,
+        Flee = 8,
+        Inspect = 16,
+        LevelUp = 32,
 
         FullScreen = LevelUp | Inventory,
     }
@@ -118,6 +119,9 @@ public class UIController : MonoBehaviour
             Transform child = childrenTransforms[i];
             switch (child.name)
             {
+                case "$InventoryButtonText":
+                    InventoryButtonText = child.GetComponent<Text>();
+                    break;
                 case "$ItemDropList":
                     ItemDropListGameObject = child;
                     break;
@@ -125,13 +129,13 @@ public class UIController : MonoBehaviour
                     InventoryItemContent = child.GetComponent<RectTransform>();
                     break;
                 case "$ContextMenu":
-                    InventoryContextMenu = child.GetComponent<RectTransform>();
+                    InventoryGeneralContextMenu = child.GetComponent<RectTransform>();
                     break;
                 case "$AccessoryContextMenu":
-                    AccessoryContextMenu = child.GetComponent<RectTransform>();
+                    InventoryAccessoryContextMenu = child.GetComponent<RectTransform>();
                     break;
                 case "$WeaponSlotContextMenu":
-                    WeaponSlotContextMenu = child.GetComponent<RectTransform>();
+                    InventoryWeaponSlotContextMenu = child.GetComponent<RectTransform>();
                     break;
                 case "$UseButton":
                     InventoryUseButton = child.GetComponent<Button>();

@@ -122,6 +122,7 @@
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\steel_golem_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\gold_coin_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\leather_vest_sprite_index.txt" />
+    <None Include="Assets\Resources\Sprites\Items\AnimationTexts\rock_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\old\smite_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\minor_health_potion_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\light_elemental_a_text.txt" />

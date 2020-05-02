@@ -62,7 +62,7 @@ public class EncounterController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		print("t: " + (encounterTimer/2).ToString("0") + currentGameState);
+		//print("t: " + (encounterTimer/2).ToString("0") + currentGameState);
 		//print("gs: " + currentGameState);
 		if ((currentGameState & GameState.Realtime) != 0 && !UIController.IsFullscreenUI())
 		{

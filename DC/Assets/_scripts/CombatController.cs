@@ -90,24 +90,32 @@ public class CombatController : AbilityScript
 				//UIController.AbilityMenuScrollView.SetActive(!UIController.AbilityMenuScrollView.activeSelf);
 				//UIController.FleeSlider.gameObject.SetActive(false);
 				playerCombatController.ResetAbilityPick();
+				PlayerInventory.instance.ResetItemButton();
 			});
 
 			UIController.FleeButton.onClick.AddListener(delegate {
 
 				//if (LevelUpScreen.levelUpScreen.activeSelf) return;
 				ResetAbilityPick();
+				PlayerInventory.instance.ResetItemButton();
 
 				if (turnOrder.Count != 0)
 					if (turnOrder[0] == playerCombatController && !processingAbility)
+					{
 						UIController.FleeSlider.GetComponent<FleeLogic>().enabled = true;
+					}
 					else
-						UIController.FleeSlider.gameObject.SetActive(false);
+						UIController.SetUIMode(UIController.UIMode.None);
+				//UIController.FleeSlider.gameObject.SetActive(false);
 				else
 					UIController.SetUIMode(UIController.UIMode.None);
 
 			});
 
-			UIController.InventoryButton.onClick.AddListener(delegate { ResetAbilityPick(); });
+			UIController.InventoryButton.onClick.AddListener(delegate { 
+				ResetAbilityPick(); 
+				PlayerInventory.instance.ResetItemButton();
+			});
 
 			
 
@@ -197,7 +205,8 @@ public class CombatController : AbilityScript
 
 			int _index = i; //store the current index
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
-				UIController.AbilityMenuScrollView.gameObject.SetActive(false); //deactivate the menu
+				UIController.SetUIMode(UIController.UIMode.None);
+				//UIController.AbilityMenuScrollView.gameObject.SetActive(false); //deactivate the menu
 				UIController.AbilityButtonText.text = _s; //set the name of the button to the ability
 				selectedAbility = myStats.abilities[_index]; //set ability to this ability
 			});
@@ -238,7 +247,7 @@ public class CombatController : AbilityScript
 		
 		if (playerOwned)
 		{
-			if(Input.GetMouseButtonDown(0)) Click(); //wait for clicks outside of the players turn
+			if(Input.GetMouseButtonDown(0)) StartCoroutine( Click()); //wait for clicks outside of the players turn
 		}
 	}
 
@@ -672,8 +681,11 @@ public class CombatController : AbilityScript
 		_button.GetComponent<Collider2D>().enabled = _hasEnoughMana;
 	}
 
-	public void Click()
+	public IEnumerator Click()
 	{
+		if (CheckIfHasBuff("busy"))
+			yield break;
+
 		RaycastHit2D _hit = CheckIfHit(HitPosition); //get click info
 		
 		bool _hitSomething = (_hit.collider != null); //store if something was hit
@@ -684,45 +696,78 @@ public class CombatController : AbilityScript
 			
 			if(/*_hit.transform.CompareTag("AbilityButton") ||*/ _hit.transform.CompareTag("UI")) //cancel if ui has been hit
 			{
-				return;
+				yield break;
 			}
 		}
 
-		if (selectedAbility != null)// && !UIController.FleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
+		if (UIController.IsCurrentUIMode(UIController.UIMode.None))
 		{
-			if (_hit.transform != null) //if something was hit
+			if (selectedAbility != null || PlayerInventory.instance.selectedItem != null)// && !UIController.FleeSlider.gameObject.activeSelf) //if not fleeing, but has an ability selected
 			{
-				if(_hit.transform.CompareTag("CritArea")) //if it was a crit area
+				if (_hit.transform != null) //if something was hit
 				{
-					targetCombatController = _hit.transform.GetComponentInParent<CombatController>();
-					targetCombatController.isCritted = true;
+					if (_hit.transform.CompareTag("CritArea")) //if it was a crit area
+					{
+						targetCombatController = _hit.transform.GetComponentInParent<CombatController>();
+						targetCombatController.isCritted = true;
+					}
+					else if (_hit.transform.name == "$PlayerPortrait") //if it was the player itself
+					{
+						//print(selectedAbility.name + " self!");
+						targetCombatController = playerCombatController;
+					}
+					else //if just the normal enemy body was hit
+						targetCombatController = _hit.transform.GetComponent<CombatController>();
 				}
-				else if (_hit.transform.name == "$PlayerPortrait") //if it was the player itself
+				else //if an ability is selected, but the player missed
 				{
-					print(selectedAbility.name + " self!");
-					targetCombatController = playerCombatController;
+					targetCombatController = null;
 				}
-				else //if just the normal enemy body was hit
-					targetCombatController = _hit.transform.GetComponent<CombatController>();
-			}
-			else //if an ability is selected, but the player missed
-			{
+
+				UIController.SetUIMode(UIController.UIMode.None);
+
+				actedLastTick = true;
+				//StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
+
+				if ((EncounterController.currentGameState & EncounterController.GameState.Realtime) != 0) { AddBusyIfNotInCombat(); }
+
+				if (selectedAbility != null)
+				{
+					var _targetData = new TargetData(selectedAbility, this, targetCombatController, _centerPos: lastClick);
+					
+					ResetAbilityPick();
+					processingAbility = true;
+
+					yield return StartCoroutine(SimpleInvokeAbility(_targetData, true, true, 1));
+					processingAbility = false;
+
+				}
+				else if (PlayerInventory.instance.selectedItem != null)
+				{
+					var _item = PlayerInventory.instance.selectedItem;
+					PlayerInventory.instance.ChangeItemQuantity(_item, -1);
+					PlayerInventory.instance.ResetItemButton();
+
+					processingAbility = true;
+
+					for (int i = 0; i < _item.item.activeAbilities.Count; i++)
+					{
+						print("i: " +i);
+						var _targetData = new TargetData(_item.item.activeAbilities[i], this, targetCombatController, _item.item.activeConstants[i], _centerPos: lastClick, _useOwnStats: false);
+						yield return StartCoroutine(SimpleInvokeAbility(_targetData, false, false, 1, false));
+					}
+
+					StartCoroutine(EndTurn());
+
+					processingAbility = false;
+				}
+
+
+
+				if (targetCombatController != null) targetCombatController.isCritted = false;
 				targetCombatController = null;
+
 			}
-
-			UIController.SetUIMode(UIController.UIMode.None);
-
-			actedLastTick = true;
-			//StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
-
-			if ((EncounterController.currentGameState & EncounterController.GameState.Realtime) != 0) { AddBusyIfNotInCombat(); }
-
-			var _targetData = new TargetData(selectedAbility, this, targetCombatController, _centerPos: lastClick);
-			StartCoroutine(SimpleInvokeAbility(_targetData, true, true, 1));
-
-			if (targetCombatController != null) targetCombatController.isCritted = false;
-			targetCombatController = null;
-
 		}
 	}
 

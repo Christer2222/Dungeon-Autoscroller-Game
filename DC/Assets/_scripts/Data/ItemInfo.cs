@@ -24,7 +24,11 @@ public class Items : AbilityCollection
 	public static ItemInfo Stick { get; } = new ItemInfo("Stick", 2, ItemType.Craftable, $"En Garde!\nCan be used to craft various items.", punch, 2);
 	public static ItemInfo GoldSword { get; } = new ItemInfo("Gold Sword", 35, ItemType.Craftable | ItemType.OneHanded, $"Notvery useful!\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 2);
 	
-	
+
+	public static ItemInfo Rock { get; } = new ItemInfo("Rock", 1, ItemType.Targetable, $"About the size of a baseball.\nDeals {ITEM_ACTIVE_CONSTANT} on hit.", punch, 2);
+
+
+
 	public static ItemInfo SteelSword { get; } = new ItemInfo("Steel Sword", 15, ItemType.OneHanded, $"Sharp.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 3);
 	public static ItemInfo AdamantineSword { get; } = new ItemInfo("Adamantine Sword", 77, ItemType.OneHanded, $"Like steel, just better!\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 6);
 	public static ItemInfo PoisonedDagger { get; } = new ItemInfo("Poisoned Dagger", 32, ItemType.OneHanded, $"Poison.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", poisionBite, 2);
