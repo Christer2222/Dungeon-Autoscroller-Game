@@ -5,6 +5,8 @@ using System.Collections;
 
 public class EncounterController : MonoBehaviour
 {
+	public static EncounterController instance;
+
 	private GameObject segmentPrefab;
 	private GameObject enemyPrefab;
 	//private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
@@ -12,18 +14,18 @@ public class EncounterController : MonoBehaviour
 	private readonly List<GameObject> segmentList = new List<GameObject>();
 	private const float SEGMENT_DISTANCE = 8;
 
-	private static float encounterTimer;
+	private float encounterTimer;
 	public const float ENEMY_SPAWN_DISTANCE = 5;
 	private const float APPEAR_SPEED = 1.4f;
 	private const float ENCOUNTER_COOLDOWN = 10;
 
 	private const float DEFAULT_BUFF_TIMER = 5;
-	public static float buffTimer = DEFAULT_BUFF_TIMER;
+	public float buffTimer = DEFAULT_BUFF_TIMER;
 
-	public static float speedBoost;
-	private static bool finnishingCombat;
+	public float speedBoost;
+	private bool finnishingCombat;
 
-	public static GameState currentGameState = GameState.Walking;
+	public GameState currentGameState = GameState.Walking;
 	public enum GameState
 	{
 		None = 1,
@@ -39,6 +41,8 @@ public class EncounterController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		instance = this;
+
 		encounterTimer = ENCOUNTER_COOLDOWN;//5;
 
 		segmentPrefab = (GameObject)Resources.Load("Prefabs/Segment");
@@ -54,7 +58,7 @@ public class EncounterController : MonoBehaviour
 	}
 
 
-	private static void ResetEncounterTimer()
+	private void ResetEncounterTimer()
 	{
 		encounterTimer = ENCOUNTER_COOLDOWN;
 	}
@@ -186,7 +190,7 @@ public class EncounterController : MonoBehaviour
 	}
 	*/
 
-	public static IEnumerator DoneWithCombat()
+	public IEnumerator DoneWithCombat()
 	{
 		//currentGameState = GameState.Finishing_Combat;
 		print("done with combat");

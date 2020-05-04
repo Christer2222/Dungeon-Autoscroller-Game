@@ -243,7 +243,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	}
 
 
-	static CombatController CheckForMultiHit(RaycastHit2D _hit)
+	static CombatController GetHitCombatController(RaycastHit2D _hit)
 	{
 		CombatController _cc = null;
 		if (_hit.transform != null)
@@ -567,7 +567,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			targetData.target = _hit.transform.GetComponent<CombatController>();
 		}
 		*/
-		targetData.target = CheckForMultiHit(_hit);
+		targetData.target = GetHitCombatController(_hit);
 
 		yield return targetData.self.StartCoroutine(AbilityCollection.punch.function(targetData)); //StartCoroutine(Punch(_target,_self.myStats.strength));
 
@@ -579,6 +579,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator WildPunch(TargetData targetData)// (Vector3 _centerPos, CombatController _self)
 	{
 		targetData.target = null;
+		targetData.bonus = 3;
 		var _hit = CheckIfHit(targetData.centerPos + RandomVector3);
 		/*
 		if (_hit.transform != null)
@@ -586,24 +587,31 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			targetData.target = _hit.transform.GetComponent<CombatController>();
 		}
 		*/
-		targetData.target = CheckForMultiHit(_hit);
+		targetData.target = GetHitCombatController(_hit);
 		yield return targetData.self.StartCoroutine(AbilityCollection.punch.function(targetData));// (Punch(_target, targetData._self.myStats.strength + 2));
 		yield return null;
 	}
 
 	public static IEnumerator ForcePunch(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
-		if (targetData.self.myStats.Intelligence > 5) targetData.bonus += 1;
-		yield return targetData.self.StartCoroutine(AbilityCollection.punch.function(targetData));// (Punch(_target, _self.myStats.strength + 2, Elementals.Air));
+		int _num = 0;
+		if (targetData.useOwnStats)
+		{
+			_num = 2;
+			if (targetData.self.myStats.Intelligence > 5) _num += 3; //targetData.bonus += 2;
+		}
+
+
+		yield return targetData.target.AdjustHealth(-_num, targetData.ability.element, targetData.ability.extraData); //targetData.self.StartCoroutine(AbilityCollection.punch.function(targetData));// (Punch(_target, _self.myStats.strength + 2, Elementals.Air));
 		yield return null;
 	}
 
 	public static IEnumerator TiltSwing(TargetData targetData)//(CombatController _target, CombatController _self)
 	{
-		float _randomNumber = Random.Range(0, 2);
-		int _result = (int)((_randomNumber-0.5f) * 2);
+		//float _randomNumber = Random.Range(0, 2);
+		//int _result = (int)((_randomNumber-0.5f) * 2);
 
-		targetData.bonus += _result;
+		targetData.bonus += Random.Range(0, 2) + Random.Range(0, 2); //25%: 0 50%: 1 25%: 2
 
 		yield return targetData.self.StartCoroutine(AbilityCollection.punch.function(targetData));//Punch(_target, _self.myStats.strength + _r));
 		yield return null;
@@ -776,6 +784,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator Heal(TargetData targetData)
 	{
+		print(targetData.useOwnStats);
 		int num = 0;
 		if (targetData.useOwnStats)
 			num = 3;//targetData.self.myStats.Luck;

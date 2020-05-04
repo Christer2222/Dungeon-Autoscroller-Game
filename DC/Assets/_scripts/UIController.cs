@@ -51,7 +51,16 @@ public class UIController : MonoBehaviour
     public static Button UnequipAccessory3Button { get; private set; }
 
 
-
+    public static Text LevelUpAbilityPointsToSpendText { get; private set; }
+    public static Text LevelUpTraitPointsToSpendText { get; private set; }
+    public static Text LevelUpStrengthCurrentTraitText { get; private set; }
+    public static Text LevelUpDexterityCurrentTraitText { get; private set; }
+    public static Text LevelUpIntelligenceCurrentTraitText { get; private set; }
+    public static Text LevelUpLuckCurrentTraitText { get; private set; }
+    public static MinMax<Button> LevelUpStrengthChangeButtons { get; private set; } = new MinMax<Button>();
+    public static MinMax<Button> LevelUpDexterityChangeButtons { get; private set; } = new MinMax<Button>();
+    public static MinMax<Button> LevelUpIntellectChangeButtons { get; private set; } = new MinMax<Button>();
+    public static MinMax<Button> LevelUpLuckChangeButtons { get; private set; } = new MinMax<Button>();
 
 
     public static MinMax<Slider> HealthSliderPair { get; } = new MinMax<Slider>();
@@ -315,6 +324,48 @@ public class UIController : MonoBehaviour
                 case "$CurrentEquippedAccessory3":
                     CurrentEquippedAccessory3Image = child.GetComponent<Image>();
                     UnequipAccessory3Button = child.GetComponent<Button>();
+                    break;
+                case "$TraitPointsToSpendText":
+                    LevelUpTraitPointsToSpendText = child.GetComponent<Text>();
+                    break;
+                case "$StrengthCurrentTraitText":
+                    LevelUpStrengthCurrentTraitText = child.GetComponent<Text>();
+                    break;
+                case "$DexterityCurrentTraitText":
+                    LevelUpDexterityCurrentTraitText = child.GetComponent<Text>();
+                    break;
+                case "$IntelligenceCurrentTraitText":
+                    LevelUpIntelligenceCurrentTraitText = child.GetComponent<Text>();
+                    break;
+                case "$LuckCurrentTraitText":
+                    LevelUpLuckCurrentTraitText = child.GetComponent<Text>();
+                    break;
+                case "$AbilityPointsToSpendText":
+                    LevelUpAbilityPointsToSpendText = child.GetComponent<Text>();
+                    break;
+                case "$StrengthPlusButton":
+                    LevelUpStrengthChangeButtons.maxObject = child.GetComponent<Button>();
+                    break;
+                case "$StrengthMinusButton":
+                    LevelUpStrengthChangeButtons.minObject = child.GetComponent<Button>();
+                    break;
+                case "$DexterityPlusButton":
+                    LevelUpDexterityChangeButtons.maxObject = child.GetComponent<Button>();
+                    break;
+                case "$DexterityMinusButton":
+                    LevelUpDexterityChangeButtons.minObject = child.GetComponent<Button>();
+                    break;
+                case "$IntelligencePlusButton":
+                    LevelUpIntellectChangeButtons.maxObject = child.GetComponent<Button>();
+                    break;
+                case "$IntelligenceMinusButton":
+                    LevelUpIntellectChangeButtons.minObject = child.GetComponent<Button>();
+                    break;
+                case "$LuckPlusButton":
+                    LevelUpLuckChangeButtons.maxObject = child.GetComponent<Button>();
+                    break;
+                case "$LuckMinusButton":
+                    LevelUpLuckChangeButtons.minObject = child.GetComponent<Button>();
                     break;
             }
         }

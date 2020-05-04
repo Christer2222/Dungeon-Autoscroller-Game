@@ -14,7 +14,7 @@ public class Cheats : MonoBehaviour
             AddDebugAbilities();
 
         if (DebugController.useBonusPoints)
-            LevelUpScreen.traitPointsToSpend += 10;
+            LevelUpScreen.instance.traitPointsToSpend += 10;
     }
 
     void AddDebugAbilities()
@@ -33,7 +33,7 @@ public class Cheats : MonoBehaviour
             CombatController.playerCombatController.AdjustHealth(-2, AbilityInfo.Elementals.None, AbilityInfo.ExtraData.none);
 
         if (Input.GetKeyDown(KeyCode.Keypad5))
-            LevelUpScreen.traitPointsToSpend++;
+            LevelUpScreen.instance.traitPointsToSpend++;
 
         if (Input.GetKeyDown(KeyCode.Keypad6))
         {
@@ -50,7 +50,7 @@ public class Cheats : MonoBehaviour
             CombatController.playerCombatController.AdjustPlayerXP(5 * CombatController.playerCombatController.myStats.level);
 
         if (Input.GetKeyDown(KeyCode.Keypad9))
-            EncounterController.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
+            EncounterController.instance.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
     }
 }
 #endif

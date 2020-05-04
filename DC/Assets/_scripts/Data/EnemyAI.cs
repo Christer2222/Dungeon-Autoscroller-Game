@@ -7,10 +7,10 @@ public class EnemyAI
 {
 	public static Ability SelectAbility(StatBlock stats, float currentHealth, float currentMana)
 	{
-		List<Ability> _recoveries = stats.abilities.FindAll(x => x.abilityType == AbilityType.recovery && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y)? y <= currentMana: true)); //find all recoveries. If it has cost, check if has more or equal mana. If no cost, act as if has mana.
+		List<Ability> _recoveries = stats.abilities.FindAll(x => (x.abilityType & AbilityType.recovery) != 0 && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y)? y <= currentMana: true)); //find all recoveries. If it has cost, check if has more or equal mana. If no cost, act as if has mana.
 		List<Ability> _nonRecover = stats.abilities.FindAll(x => x.abilityType != AbilityType.recovery && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
-		List<Ability> _offensive = stats.abilities.FindAll(x => x.abilityType == AbilityType.offensive && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
-		List<Ability> _buffs = stats.abilities.FindAll(x => x.abilityType == AbilityType.buff && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
+		List<Ability> _offensive = stats.abilities.FindAll(x => (x.abilityType & AbilityType.offensive) != 0 && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
+		List<Ability> _buffs = stats.abilities.FindAll(x => (x.abilityType & AbilityType.buff) != 0 && -x.manaCost <= currentMana);// (manaCostDictionary.TryGetValue(x, out int y) ? y <= currentMana : true));
 
 		Ability pickedAbility = null;
 		//AbilityType activeType = AbilityType.none;
@@ -29,15 +29,18 @@ public class EnemyAI
 				}
 				else if (stats.buffList.Count == 0 && _buffs.Count > 0)
 				{
-					pickedAbility = _buffs[Random.Range(0, _offensive.Count)];
+					//pickedAbility = _buffs[Random.Range(0, _offensive.Count)];
+					pickedAbility = _buffs[Random.Range(0, _buffs.Count)];
+
 					//activeType = AbilityType.buff;
 				}
-				else
+				else if (_offensive.Count > 0)
 				{
-					pickedAbility = _offensive[Random.Range(0, stats.abilities.Count)];
+					//pickedAbility = _offensive[Random.Range(0, stats.abilities.Count)];
+					pickedAbility = _offensive[Random.Range(0, _offensive.Count)];
+
 					//activeType = AbilityType.offensive;
 				}
-
 				break;
 			case StatBlock.AIType.Coward:
 
@@ -54,9 +57,12 @@ public class EnemyAI
 				break;
 			case StatBlock.AIType.Sprinter:
 				break;
-			default:
-				pickedAbility = null;
-				break;
+		}
+
+		if (pickedAbility == null)
+		{
+			pickedAbility = stats.abilities[Random.Range(0, stats.abilities.Count)];
+			//Debug.LogWarning($"{stats.name} did not have any offensive abilities.");
 		}
 
 		return pickedAbility;

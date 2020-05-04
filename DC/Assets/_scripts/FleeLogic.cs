@@ -74,7 +74,7 @@ public class FleeLogic : MonoBehaviour
 					//Destroy(_cc.gameObject, 2);
 				}
 			}
-			yield return EncounterController.DoneWithCombat();
+			yield return EncounterController.instance.DoneWithCombat();
 			
 			foreach(var v in _slatedForRemoval)
 			{
@@ -84,7 +84,7 @@ public class FleeLogic : MonoBehaviour
 
 			CombatController.turnOrder.Clear();
 
-			EncounterController.speedBoost = 3; //run after fleeing
+			EncounterController.instance.speedBoost = 3; //run after fleeing
 
 			if (UIController.IsCurrentUIMode(UIController.UIMode.Flee))
 				UIController.SetUIMode(UIController.UIMode.None);

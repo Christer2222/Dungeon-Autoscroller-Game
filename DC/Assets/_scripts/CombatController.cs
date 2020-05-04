@@ -20,7 +20,7 @@ public class CombatController : AbilityScript
 	private const float SLOW_SLIDER_RATIO_TO_NORMAL = 100;
 	private static GameObject buffEntryPrefab;
 	private Text levelUpText;
-	private static int xpPoolToaddAfterCombat;
+	private int xpPoolToaddAfterCombat;
 
 	//game stats that change often
 	public StatBlock myStats;
@@ -49,6 +49,7 @@ public class CombatController : AbilityScript
 		turnOrder.Clear();
 		playerCombatController = null;
 		mainCamera = null;
+		turnCounter = 0;
 		turnCounter = 0;
 	}
 
@@ -121,7 +122,7 @@ public class CombatController : AbilityScript
 
 			#endregion
 
-			CheckIfBuffIconsAreCorrect();
+			RefreshBuffIcons();
 
 #region Stat Reset
 			//get current stats
@@ -330,7 +331,9 @@ public class CombatController : AbilityScript
 				//yield return StartCoroutine(InvokeActiveAbility(false,_buff.constant));
 				yield return StartCoroutine(SimpleInvokeAbility(td, false, false, 0, false));
 			}
-			_buff.turns--;
+
+			if (_buff.turns < 1000)
+				_buff.turns--;
 		}
 
 		myStats.buffList.RemoveAll(x => x.turns <= 0);
@@ -339,7 +342,7 @@ public class CombatController : AbilityScript
 		targetCombatController = null;
 
 		if (playerOwned)
-			CheckIfBuffIconsAreCorrect();
+			RefreshBuffIcons();
 	}
 
 	/// <summary>
@@ -361,7 +364,7 @@ public class CombatController : AbilityScript
 	/// <summary>
 	/// Refreshes the buff sidebar.
 	/// </summary>
-	void CheckIfBuffIconsAreCorrect()
+	void RefreshBuffIcons()
 	{
 		List<Text> _buffHolderTurnList = UIController.BuffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
 		List<string> _uncheckedBuffs = UIController.BuffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
@@ -486,9 +489,17 @@ public class CombatController : AbilityScript
 			Destroy(levelUpText.gameObject,4);
 		}
 
+		bool _leveledUpAtLeastOnce = myStats.xp >= UIController.XPSlider.maxValue;
+
+		bool _atMaxHealth = currentHealth == myStats.maxHealth;
+		bool _atMaxMana = currentMana == myStats.maxMana;
+
 		while (myStats.xp >= UIController.XPSlider.maxValue)
 		{
-			LevelUpScreen.traitPointsToSpend += 1;
+			myStats.maxHealth += LevelUpScreen.instance.currentGroup.healthPerLevel;
+			myStats.maxMana += LevelUpScreen.instance.currentGroup.manaPerLevel;
+
+			LevelUpScreen.instance.traitPointsToSpend += 1;
 
 			if ((myStats.level + 1) % 2 == 0)
 			{
@@ -501,6 +512,38 @@ public class CombatController : AbilityScript
 			UIController.XPSlider.maxValue = myStats.level * 10; //set the next levelup to be at 10 times the level
 
 			MoveXPSlider();
+		}
+
+		if (_leveledUpAtLeastOnce)
+		{
+
+			currentHealth = myStats.maxHealth;
+			currentMana = myStats.maxMana;
+			UIController.HealthTextPair.maxObject.text = UIController.HealthTextPair.minObject.text = myStats.maxHealth.ToString();
+			UIController.ManaTextPair.maxObject.text = UIController.ManaTextPair.minObject.text = myStats.maxMana.ToString();
+
+			UIController.HealthSliderPair.minObject.maxValue = myStats.maxHealth;
+			UIController.ManaSliderPair.minObject.maxValue = myStats.maxMana;
+			//
+			//
+
+			UIController.HealthSliderPair.maxObject.maxValue = UIController.HealthSliderPair.minObject.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
+			UIController.HealthSliderPair.maxObject.value = UIController.HealthSliderPair.maxObject.maxValue;
+			UIController.ManaSliderPair.maxObject.maxValue = UIController.ManaSliderPair.minObject.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
+			UIController.ManaSliderPair.maxObject.value = UIController.ManaSliderPair.maxObject.maxValue;
+
+			if (healthMove != null) StopCoroutine(healthMove);
+			if (manaMove != null) StopCoroutine(manaMove);
+
+			if (_atMaxHealth)
+				UIController.HealthSliderPair.minObject.value = myStats.maxHealth;
+			else
+				healthMove = StartCoroutine(EffectTools.AnimateSlider(UIController.HealthSliderPair.minObject,myStats.maxHealth,1,1));
+
+			if (_atMaxMana)
+				UIController.ManaSliderPair.minObject.value = myStats.maxMana;
+			else
+				manaMove = StartCoroutine(EffectTools.AnimateSlider(UIController.ManaSliderPair.minObject, myStats.maxMana, 1, 1));
 		}
 	}
 
@@ -530,7 +573,7 @@ public class CombatController : AbilityScript
 		int _totalDamage = currentHealth; //store previous health for display text and return value
 
 		if (_amount < 0) //if negative damage
-			_amount += ((isCritted) ? -myStats.Strength : 0); //allow critting
+			_amount += ((isCritted) ? (int)Math.Round(_amount/2f,MidpointRounding.AwayFromZero) : 0); //allow critting
 
 		var _damageCalc = Mathf.RoundToInt(_amount * _amountMultiplier); //round up any damage/healing
 		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.nonPiercing)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? myStats.Defense: myStats.MagicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
@@ -596,13 +639,13 @@ public class CombatController : AbilityScript
 		{
 			if (!playerOwned)
 			{
-				xpPoolToaddAfterCombat += myStats.level * 3;
+				playerCombatController.xpPoolToaddAfterCombat += myStats.level * 3;
 				
 
 				if (turnOrder.Count <= 2) //if this was the last enemy, and the player is left
 				{
-					playerCombatController.AdjustPlayerXP(xpPoolToaddAfterCombat);
-					xpPoolToaddAfterCombat = 0;
+					playerCombatController.AdjustPlayerXP(playerCombatController.xpPoolToaddAfterCombat);
+					playerCombatController.xpPoolToaddAfterCombat = 0;
 
 
 					PlayerInventory.instance.ProcessDrops(myStats.drops);
@@ -729,7 +772,7 @@ public class CombatController : AbilityScript
 				actedLastTick = true;
 				//StartCoroutine(InvokeActiveAbility()); //activate the ability with the information gathered
 
-				if ((EncounterController.currentGameState & EncounterController.GameState.Realtime) != 0) { AddBusyIfNotInCombat(); }
+				if ((EncounterController.instance.currentGameState & EncounterController.GameState.Realtime) != 0) { AddBusyIfNotInCombat(); }
 
 				if (selectedAbility != null)
 				{
@@ -773,7 +816,7 @@ public class CombatController : AbilityScript
 
 	public IEnumerator SimpleInvokeAbility(TargetData _targetData, bool _drainMana, bool _endsTurn, float _minimumUseTime = 0, bool _becomesBusy = false, Action _onComplete = null)
 	{
-		bool _usedInCombat = (EncounterController.currentGameState & EncounterController.GameState.In_Battle) != 0;
+		bool _usedInCombat = (EncounterController.instance.currentGameState & EncounterController.GameState.In_Battle) != 0;
 		print("invoke ability simple");
 
 		if (invokingAbility || (turnOrder.Count != 0 && turnOrder[0] != this)) yield break; //if already using an ability or its not this characters turn
@@ -798,10 +841,12 @@ public class CombatController : AbilityScript
 		invokingAbility = false; //signal done with ability
 		if (_endsTurn && _usedInCombat)//(EncounterController.currentGameState & (EncounterController.GameState.Realtime | EncounterController.GameState.Busy)) != 0) //if set to end turn
 		{
-			print("ended in: " + EncounterController.currentGameState);
+			print("ended in: " + EncounterController.instance.currentGameState);
 			//EncounterController.shouldMove = true;
 			StartCoroutine(EndTurn());
 		}
+
+		RefreshBuffIcons();
 	}
 
 	void AddBusyIfNotInCombat()
@@ -810,10 +855,10 @@ public class CombatController : AbilityScript
 		{
 			AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
 
-			EncounterController.speedBoost = 0;
-			EncounterController.currentGameState = EncounterController.GameState.Busy;
+			EncounterController.instance.speedBoost = 0;
+			EncounterController.instance.currentGameState = EncounterController.GameState.Busy;
 			//EncounterController.shouldMove = false;
-			CheckIfBuffIconsAreCorrect();
+			RefreshBuffIcons();
 		}
 	}
 
@@ -888,7 +933,7 @@ public class CombatController : AbilityScript
 		yield return new WaitForSeconds(_sec);
 		if(turnOrder.Count <= 1)
 		{
-			yield return EncounterController.DoneWithCombat();
+			yield return EncounterController.instance.DoneWithCombat();
 
 		}
 
@@ -909,7 +954,7 @@ public class CombatController : AbilityScript
 		{
 			UpdateTurnOrderDisplay();
 			//turnorderText.text = string.Empty;
-			yield return EncounterController.DoneWithCombat();
+			yield return EncounterController.instance.DoneWithCombat();
 		}
 
 		startedTurn = false;

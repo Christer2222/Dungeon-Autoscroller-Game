@@ -7,7 +7,7 @@ public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory instance;
 
-    private List<ItemQuantity> inventory = new List<ItemQuantity>();
+    private readonly List<ItemQuantity> inventory = new List<ItemQuantity>();
     public ItemQuantity selectedItem;
 
     public List<ItemQuantity> equippedItems = new List<ItemQuantity>();
@@ -50,7 +50,7 @@ public class PlayerInventory : MonoBehaviour
         public ItemQuantity itemEquipped;
     }
 
-    private readonly static EquipmentSlot 
+    private readonly EquipmentSlot 
         helmetSlot = new EquipmentSlot(), 
         chestplateSlot = new EquipmentSlot(), 
         leggingsSlot = new EquipmentSlot(), 
@@ -194,12 +194,12 @@ public class PlayerInventory : MonoBehaviour
                             selectedItem.item.activeConstants[i], //bonus
                             selectedItem.item.activeAbilities[i].element, //element
                             CombatController.playerCombatController.transform.position, //where to show icon. Broken?
-                            _useOwnStats: true
+                            _useOwnStats: false
                             );
 
 
                         CombatController.playerCombatController.StartCoroutine(
-                            CombatController.playerCombatController.SimpleInvokeAbility(targetData,false,(CombatController.turnOrder.Count > 0)?true:false, 1, true, delegate {
+                            CombatController.playerCombatController.SimpleInvokeAbility(targetData,false,(CombatController.turnOrder.Count > 0)? ((i == selectedItem.item.activeAbilities.Count - 1)? true: false) :false, 1, true, delegate {
                                 ChangeItemQuantity(selectedItem, -1); //remove an item after it is used
                             }));
                     }
