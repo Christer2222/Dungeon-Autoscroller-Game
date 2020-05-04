@@ -63,27 +63,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\_scripts\AbilityCollection.cs" />
+    <Compile Include="Assets\_scripts\AbilityScript.cs" />
     <Compile Include="Assets\_scripts\AnimationHandler.cs" />
-    <Compile Include="Assets\_scripts\AnimationTextParser.cs" />
     <Compile Include="Assets\_scripts\BlockController.cs" />
     <Compile Include="Assets\_scripts\Cheats\Cheats.cs" />
     <Compile Include="Assets\_scripts\CombatController.cs" />
+    <Compile Include="Assets\_scripts\Data\AbilityCollection.cs" />
     <Compile Include="Assets\_scripts\Data\AbilityInfo.cs" />
+    <Compile Include="Assets\_scripts\Data\AnimationTextParser.cs" />
     <Compile Include="Assets\_scripts\Data\Buff.cs" />
     <Compile Include="Assets\_scripts\Data\DebugController.cs" />
     <Compile Include="Assets\_scripts\Data\DropTable.cs" />
     <Compile Include="Assets\_scripts\Data\EffectTools.cs" />
+    <Compile Include="Assets\_scripts\Data\EncounterData.cs" />
     <Compile Include="Assets\_scripts\Data\EnemyAI.cs" />
     <Compile Include="Assets\_scripts\Data\ItemInfo.cs" />
+    <Compile Include="Assets\_scripts\Data\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\Data\Options.cs" />
     <Compile Include="Assets\_scripts\Data\StatBlock.cs" />
     <Compile Include="Assets\_scripts\EmptyMonoBehaviour.cs" />
     <Compile Include="Assets\_scripts\EncounterController.cs" />
-    <Compile Include="Assets\_scripts\EncounterData.cs" />
     <Compile Include="Assets\_scripts\EnemyMover.cs" />
     <Compile Include="Assets\_scripts\FleeLogic.cs" />
-    <Compile Include="Assets\_scripts\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\PlayerInventory.cs" />
     <Compile Include="Assets\_scripts\ResetStaticVariablesManager.cs" />
     <Compile Include="Assets\_scripts\UIAspect.cs" />

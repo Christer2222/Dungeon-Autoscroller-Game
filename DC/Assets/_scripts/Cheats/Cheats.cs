@@ -9,7 +9,7 @@ public class Cheats : MonoBehaviour
     {
         string c = "<color=#AA20AA>";
         string cend = "</color>";
-        print($"{c}5:{cend} traitpoints++ | {c}6:{cend} addDebugAbilities() | {c}7:{cend} kill all enemies | {c}8:{cend} playerXP + some | {c}9:{cend} force encounter");
+        print($"{c}3:{cend} add banana:1 | {c}4:{cend} player -2 hp| {c}5:{cend} traitpoints++ | {c}6:{cend} addDebugAbilities() | {c}7:{cend} kill all enemies | {c}8:{cend} playerXP + some | {c}9:{cend} force encounter");
         if (DebugController.debugAbilities)
             AddDebugAbilities();
 
@@ -29,6 +29,9 @@ public class Cheats : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+            PlayerInventory.instance.AddItemToInventory(new PlayerInventory.ItemQuantity() { amount = 1, item = Items.Banana });
+
         if (Input.GetKeyDown(KeyCode.Keypad4))
             CombatController.playerCombatController.AdjustHealth(-2, AbilityInfo.Elementals.None, AbilityInfo.ExtraData.none);
 
@@ -51,6 +54,7 @@ public class Cheats : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Keypad9))
             EncounterController.instance.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
+
     }
 }
 #endif

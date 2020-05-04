@@ -482,15 +482,17 @@ public class PlayerInventory : MonoBehaviour
         });
     }
 
-    void AddItemToInventory(ItemQuantity item)
+    public void AddItemToInventory(ItemQuantity item)
     {
         var duplicate = inventory.Find(x => (Items.ItemType.Equipment & item.item.type) == 0 && x.item.name == item.item.name); //look for  a duplicate, that has none of the equipment flags set
         if (duplicate == null) //if none were found
         {
-            inventory.Add(item); //add to the inventory the rolled one
+            AddItemToInventory(item); //add to the inventory the rolled one 
         }
         else
-            duplicate.amount += item.amount; //add the count to the duplicate
+        {
+            ChangeItemQuantity(duplicate, item.amount); //add the count to the duplicate
+        }
 
         UpdateInventorySize();
         InstantiateItemToInventory(item);

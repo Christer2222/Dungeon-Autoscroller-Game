@@ -68,6 +68,7 @@ public class CombatController : AbilityScript
 		//Set stats for enemies and the player + ui for player
 		if (playerOwned)
 		{
+			
 			myStats = new StatBlock(
 				StatBlock.Race.Human,
 				"Player",

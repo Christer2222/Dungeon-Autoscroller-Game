@@ -2,6 +2,7 @@
 using UnityEngine;
 using AbilityInfo;
 
+
 public class Items : AbilityCollection
 {
 	private const string ITEM_ACTIVE_CONSTANT = "½";
@@ -148,15 +149,22 @@ public class Items : AbilityCollection
 			_description = _description.Replace(ITEM_ACTIVE_ABILITY_LIST, GetAbilityNameList(activeAbilities));
 			description = _description;
 
-			string _path = "Sprites/Items/AnimationTexts/";
+			string _path = "Sprites/Items/AnimationTexts/"; 
 			string _standardizedName = _name.ToLower().Replace(" ", "_");
-			string _extention = "_sprite_index.txt";
-			var textAssetContaintinSpriteData = Resources.Load<TextAsset>(_path + _standardizedName + _extention);
+			string _definition = "_sprite_index";
+			string _extention = ".txt";
+			var textAssetContainingSpriteData = Resources.Load<TextAsset>(_path + _standardizedName + _definition);
 
-			if (textAssetContaintinSpriteData == null)
-				textAssetContaintinSpriteData = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase("Assets/Resources/" + _path + _standardizedName + _extention);
+			if (textAssetContainingSpriteData == null)
+			{
+				GameObject.Find("$DebugText").GetComponent<UnityEngine.UI.Text>().text += "\nSpritedata = Null for: " + name;
+				//null in build?
+				textAssetContainingSpriteData = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase("Assets/Resources/" + _path + _standardizedName + _definition + _extention);
+			}
+			else
+				GameObject.Find("$DebugText").GetComponent<UnityEngine.UI.Text>().text += "\nSpritedata != Null for: " + name;
 
-			var _sprites = AnimationTextParser.ParseDocument(textAssetContaintinSpriteData, AnimationTextParser.Type.Item);
+			Sprite[] _sprites = AnimationTextParser.ParseDocument(textAssetContainingSpriteData, AnimationTextParser.Type.Item);
 			sprite = (_sprites != null)? (_sprites.Length > 0)? _sprites[0]: null: null; //if the spritesheet is found, but no sprites are given
 		}
 
