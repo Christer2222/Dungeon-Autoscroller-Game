@@ -111,8 +111,8 @@ public class StatBlock
 			int _bs = baseStrength;
 			foreach(Buff _b in buffList)
 			{
-				if (_b.traits.Contains("strength_constant")) _bs += (int)_b.constant;
-				else if (_b.traits.Contains("strenght_mutliplier"))
+				if (_b.traits.Contains(Buff.TraitType.Strength_Constant)) _bs += (int)_b.constant;
+				else if (_b.traits.Contains(Buff.TraitType.Strength_Multiplier))
 				{
 					_bs = (int)(_bs * _b.constant);
 					UnityEngine.Debug.Log("base strenght: " + baseStrength + " _bs: " + _bs + " buff constant: " + _b.constant);
@@ -130,8 +130,8 @@ public class StatBlock
 			int _bd = baseDexterity;
 			foreach(Buff _b in buffList)
 			{
-				if(_b.traits.Contains("dexterity_constant")) _bd += (int)_b.constant;
-				else if (_b.traits.Contains("dexterity_multiplier")) _bd = (int)(_bd * _b.constant);
+				if(_b.traits.Contains(Buff.TraitType.Dexterity_Constant)) _bd += (int)_b.constant;
+				else if (_b.traits.Contains(Buff.TraitType.Dexterity_Multiplier)) _bd = (int)(_bd * _b.constant);
 
 			}
 
@@ -146,8 +146,8 @@ public class StatBlock
 			int _bi = baseIntelligence;
 			foreach(Buff _b in buffList)
 			{
-				if(_b.traits.Contains("intelligence_constant")) _bi += (int)_b.constant;
-				else if (_b.traits.Contains("intelligence_multiplier")) _bi = (int)(_bi * _b.constant);
+				if(_b.traits.Contains(Buff.TraitType.Intelligence_Constant)) _bi += (int)_b.constant;
+				else if (_b.traits.Contains(Buff.TraitType.Intelligence_Multiplier)) _bi = (int)(_bi * _b.constant);
 
 			}
 
@@ -162,8 +162,8 @@ public class StatBlock
 			int _bl = baseLuck;
 			foreach(Buff _b in buffList)
 			{
-				if(_b.traits.Contains("luck_constant")) _bl += (int)_b.constant;
-				else if (_b.traits.Contains("luck_multiplier")) _bl = (int)(_bl * _b.constant);
+				if(_b.traits.Contains(Buff.TraitType.Luck_Constant)) _bl += (int)_b.constant;
+				else if (_b.traits.Contains(Buff.TraitType.Luck_Multiplier)) _bl = (int)(_bl * _b.constant);
 
 			}
 
@@ -178,8 +178,8 @@ public class StatBlock
 			int _bd = baseDefense;
 			foreach (Buff _b in buffList)
 			{
-				if (_b.traits.Contains("defense_constant")) _bd += (int)_b.constant;
-				else if (_b.traits.Contains("defense_multiplier")) _bd = (int)(_bd * _b.constant);
+				if (_b.traits.Contains(Buff.TraitType.Physical_Defence_Constant)) _bd += (int)_b.constant;
+				//else if (_b.traits.Contains("defense_multiplier")) _bd = (int)(_bd * _b.constant);
 			}
 			return _bd;
 		}
@@ -192,8 +192,8 @@ public class StatBlock
 			int _bm = baseMagicDefense;
 			foreach (Buff _b in buffList)
 			{
-				if (_b.traits.Contains("magicDefense_constant")) _bm += (int)_b.constant;
-				else if (_b.traits.Contains("magicDefense_multiplier")) _bm = (int)(_bm * _b.constant);
+				if (_b.traits.Contains(Buff.TraitType.Magic_Defence_Constant)) _bm += (int)_b.constant;
+				//else if (_b.traits.Contains("magicDefense_multiplier")) _bm = (int)(_bm * _b.constant);
 			}
 			return _bm;
 		}

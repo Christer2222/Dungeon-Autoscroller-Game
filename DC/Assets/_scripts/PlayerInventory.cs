@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory instance;
@@ -44,38 +43,60 @@ public class PlayerInventory : MonoBehaviour
         public GameObject entryGameObject;
     }
 
-    class EquipmentSlot
+    public class EquipmentSlot
     {
         public Image displayImage;
         public ItemQuantity itemEquipped;
     }
 
-    private readonly EquipmentSlot 
-        helmetSlot = new EquipmentSlot(), 
-        chestplateSlot = new EquipmentSlot(), 
-        leggingsSlot = new EquipmentSlot(), 
-        bootsSlot = new EquipmentSlot(), 
-        mainHandSlot = new EquipmentSlot(), 
-        offHandSlot = new EquipmentSlot(), 
-        accessory1Slot = new EquipmentSlot(), 
-        accessory2Slot = new EquipmentSlot(), 
-        accessory3Slot = new EquipmentSlot();
-    
-    //private static readonly List<EquipmentSlot> allEquipmentSlots = new List<EquipmentSlot>() { helmetSlot, chestplateSlot, leggingsSlot, bootsSlot, mainHandSlot, offHandSlot, accessory1Slot, accessory2Slot, accessory3Slot };
+    public class Reference<T> 
+    { 
+        public T Value { get; set; } //make a property, which is a reference
+        public Reference(T val) //constructor
+        { 
+            Value = val;
+        } 
+    }
 
+    public static Reference<EquipmentSlot> //make all equipment slots references, so they can easier be manipulated in a list
+        helmetSlot = new Reference<EquipmentSlot>(new EquipmentSlot()),
+        chestplateSlot = new Reference<EquipmentSlot>(new EquipmentSlot()), 
+        leggingsSlot = new Reference<EquipmentSlot>(new EquipmentSlot()), 
+        bootsSlot = new Reference<EquipmentSlot>(new EquipmentSlot()), 
+        mainHandSlot = new Reference<EquipmentSlot>(new EquipmentSlot()), 
+        offHandSlot = new Reference<EquipmentSlot>(new EquipmentSlot()), 
+        accessory1Slot = new Reference<EquipmentSlot>(new EquipmentSlot()), 
+        accessory2Slot = new Reference<EquipmentSlot>(new EquipmentSlot()), 
+        accessory3Slot = new Reference<EquipmentSlot>(new EquipmentSlot());
+
+    public static readonly List<Reference<EquipmentSlot>> allEquipmentSlots = new List<Reference<EquipmentSlot>>()
+    { 
+        helmetSlot,
+        chestplateSlot,
+        leggingsSlot,
+        bootsSlot,
+        mainHandSlot,
+        offHandSlot,
+        accessory1Slot,
+        accessory2Slot,
+        accessory3Slot,
+    };
+
+    //private static readonly List<EquipmentSlot> allEquipmentSlots = new List<EquipmentSlot>() { helmetSlot, chestplateSlot, leggingsSlot, bootsSlot, mainHandSlot, offHandSlot, accessory1Slot, accessory2Slot, accessory3Slot };
+    //private readonly List<EquipmentSlot> allEquipmentSlots = new List<EquipmentSlot>() { helmetSlot, chestplateSlot, leggingsSlot, bootsSlot, mainHandSlot, offHandSlot, accessory1Slot, accessory2Slot, accessory3Slot };
+    //private EquipmentSlot[] allEquipmentSlots = new EquipmentSlot[] { helmetSlot, chestplateSlot, leggingsSlot, bootsSlot, mainHandSlot, offHandSlot, accessory1Slot, accessory2Slot, accessory3Slot };
     // Start is called before the first frame update
     void Start()
     {
-        helmetSlot.displayImage = UIController.CurrentEquippedHelmetImage;
-        chestplateSlot.displayImage = UIController.CurrentEquippedChestplateImage;
-        leggingsSlot.displayImage = UIController.CurrentEquippedLeggingsImage;
-        bootsSlot.displayImage = UIController.CurrentEquippedBootsImage;
-        mainHandSlot.displayImage = UIController.CurrentEquippedMainHandImage;
-        offHandSlot.displayImage = UIController.CurrentEquippedOffHandImage;
-        accessory1Slot.displayImage = UIController.CurrentEquippedAccessory1Image;
-        accessory2Slot.displayImage = UIController.CurrentEquippedAccessory2Image;
-        accessory3Slot.displayImage = UIController.CurrentEquippedAccessory3Image;
-
+        helmetSlot.Value.displayImage = UIController.CurrentEquippedHelmetImage;
+        chestplateSlot.Value.displayImage = UIController.CurrentEquippedChestplateImage;
+        leggingsSlot.Value.displayImage = UIController.CurrentEquippedLeggingsImage;
+        bootsSlot.Value.displayImage = UIController.CurrentEquippedBootsImage;
+        mainHandSlot.Value.displayImage = UIController.CurrentEquippedMainHandImage;
+        offHandSlot.Value.displayImage = UIController.CurrentEquippedOffHandImage;
+        accessory1Slot.Value.displayImage = UIController.CurrentEquippedAccessory1Image;
+        accessory2Slot.Value.displayImage = UIController.CurrentEquippedAccessory2Image;
+        accessory3Slot.Value.displayImage = UIController.CurrentEquippedAccessory3Image;
 
 
         instance = this;
@@ -101,11 +122,13 @@ public class PlayerInventory : MonoBehaviour
             UIController.SetUIMode(UIController.UIMode.None);
         });
 
+#if UNITY_EDITOR
         ItemQuantity[] debugItems =
             {
             new ItemQuantity() { amount = 5, item = Items.Rock },
 
             new ItemQuantity() { amount = 5, item = Items.Apple },
+            /*
             new ItemQuantity() { amount = 5, item = Items.Orange },
             new ItemQuantity() { amount = 5, item = Items.Banana },
 
@@ -118,10 +141,11 @@ public class PlayerInventory : MonoBehaviour
 
             new ItemQuantity() { amount = 5, item = Items.Stick },
             
-
+            */
             new ItemQuantity() { amount = 1, item = Items.SteelSword },
             new ItemQuantity() { amount = 1, item = Items.SteelBroadSword },
             new ItemQuantity() { amount = 1, item = Items.GoldSword },
+            /*
             new ItemQuantity() { amount = 1, item = Items.AdamantineSword },
             new ItemQuantity() { amount = 1, item = Items.AdamantineBroadSword },
             new ItemQuantity() { amount = 1, item = Items.PoisonedDagger },
@@ -145,10 +169,11 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.StrikeRing },
             new ItemQuantity() { amount = 1, item = Items.BoltRing },
             new ItemQuantity() { amount = 1, item = Items.MeteorRing },
+            */
             
         };
         inventory.AddRange(debugItems);
-
+#endif
 
         //Info about the drops after battle
         dropList = UIController.ItemDropListGameObject;
@@ -200,9 +225,13 @@ public class PlayerInventory : MonoBehaviour
 
                         CombatController.playerCombatController.StartCoroutine(
                             CombatController.playerCombatController.SimpleInvokeAbility(targetData,false,(CombatController.turnOrder.Count > 0)? ((i == selectedItem.item.activeAbilities.Count - 1)? true: false) :false, 1, true, delegate {
-                                ChangeItemQuantity(selectedItem, -1); //remove an item after it is used
+ 
                             }));
+
                     }
+
+                    ChangeItemQuantity(selectedItem, -1); //remove an item after it is used
+                    selectedItem = null;
                 }
                 else if ((selectedItem.item.type & Items.ItemType.Targetable) != 0) //if item has targetable flag
                 {
@@ -228,24 +257,23 @@ public class PlayerInventory : MonoBehaviour
             Items.ItemType _cleared = (selectedItem.item.type & Items.ItemType.Equipment);
             if (_cleared != 0) //equipment has item flag
             {
-
                 EquipmentSlot _slotToGo = null;
                 switch (_cleared)
                 {
                     case Items.ItemType.Helmet:
-                        _slotToGo = helmetSlot;
+                        _slotToGo = helmetSlot.Value;
                         break;
                     case Items.ItemType.Chestplate:
-                        _slotToGo = chestplateSlot;
+                        _slotToGo = chestplateSlot.Value;
                         break;
                     case Items.ItemType.Leggings:
-                        _slotToGo = leggingsSlot;
+                        _slotToGo = leggingsSlot.Value;
                         break;
                     case Items.ItemType.Boots:
-                        _slotToGo = bootsSlot;
+                        _slotToGo = bootsSlot.Value;
                         break;
                     case Items.ItemType.TwoHanded:
-                        _slotToGo = mainHandSlot;
+                        _slotToGo = mainHandSlot.Value;
                         break;
                 }
                 EquipItem(_slotToGo);
@@ -255,38 +283,38 @@ public class PlayerInventory : MonoBehaviour
         });
 
         //---------SPECIAL EQUIP BUTTONS
-        UIController.InventoryEquipInMainHandButton.onClick.AddListener(    () => EquipItem(mainHandSlot));
-        UIController.InventoryEquipInOffHandButton.onClick.AddListener(     () => EquipItem(offHandSlot));
-        UIController.InventoryEquipInAccessory1Button.onClick.AddListener(  () => EquipItem(accessory1Slot));
-        UIController.InventoryEquipInAccessory2Button.onClick.AddListener(  () => EquipItem(accessory2Slot));
-        UIController.InventoryEquipInAccessory3Button.onClick.AddListener(  () => EquipItem(accessory3Slot));
+        UIController.InventoryEquipInMainHandButton.onClick.AddListener(    () => EquipItem(mainHandSlot.Value));
+        UIController.InventoryEquipInOffHandButton.onClick.AddListener(     () => EquipItem(offHandSlot.Value));
+        UIController.InventoryEquipInAccessory1Button.onClick.AddListener(  () => EquipItem(accessory1Slot.Value));
+        UIController.InventoryEquipInAccessory2Button.onClick.AddListener(  () => EquipItem(accessory2Slot.Value));
+        UIController.InventoryEquipInAccessory3Button.onClick.AddListener(  () => EquipItem(accessory3Slot.Value));
 		#endregion
 		#region Unequip Buttons
 		//-----------UNEQUIP BUTTONS
-		UIController.UnequipHelmetButton.onClick.AddListener(       () => UnequipItem(helmetSlot));
-        UIController.UnequipChestplateButton.onClick.AddListener(   () => UnequipItem(chestplateSlot));
-        UIController.UnequipLeggingsButton.onClick.AddListener(     () => UnequipItem(leggingsSlot));
-        UIController.UnequipBootsButton.onClick.AddListener(        () => UnequipItem(bootsSlot));
-        UIController.UnequipAccessory1Button.onClick.AddListener(   () => UnequipItem(accessory1Slot));
-        UIController.UnequipAccessory2Button.onClick.AddListener(   () => UnequipItem(accessory2Slot));
-        UIController.UnequipAccessory3Button.onClick.AddListener(   () => UnequipItem(accessory3Slot));
+		UIController.UnequipHelmetButton.onClick.AddListener(       () => UnequipItem(helmetSlot.Value));
+        UIController.UnequipChestplateButton.onClick.AddListener(   () => UnequipItem(chestplateSlot.Value));
+        UIController.UnequipLeggingsButton.onClick.AddListener(     () => UnequipItem(leggingsSlot.Value));
+        UIController.UnequipBootsButton.onClick.AddListener(        () => UnequipItem(bootsSlot.Value));
+        UIController.UnequipAccessory1Button.onClick.AddListener(   () => UnequipItem(accessory1Slot.Value));
+        UIController.UnequipAccessory2Button.onClick.AddListener(   () => UnequipItem(accessory2Slot.Value));
+        UIController.UnequipAccessory3Button.onClick.AddListener(   () => UnequipItem(accessory3Slot.Value));
 
         UIController.UnequipMainHandButton.onClick.AddListener(     () => 
         {
-            if (mainHandSlot.itemEquipped != null) //if there is an item in the mainhand 
-                if ((mainHandSlot.itemEquipped.item.type & Items.ItemType.TwoHanded) != 0) //check if it is twohanded
-                    UnequipItem(offHandSlot); //if it is unequip offhand too
+            if (mainHandSlot.Value.itemEquipped != null) //if there is an item in the mainhand 
+                if ((mainHandSlot.Value.itemEquipped.item.type & Items.ItemType.TwoHanded) != 0) //check if it is twohanded
+                    UnequipItem(offHandSlot.Value); //if it is unequip offhand too
 
-            UnequipItem(mainHandSlot); //either way, unequip main hand
+            UnequipItem(mainHandSlot.Value); //either way, unequip main hand
         });
 
         UIController.UnequipOffHandButton.onClick.AddListener(      () => 
         {
-            if (mainHandSlot.itemEquipped != null) //chack if there is an item in mainhand
-                if ((mainHandSlot.itemEquipped.item.type & Items.ItemType.TwoHanded) != 0)  //if it is twohanded
-                    UnequipItem(mainHandSlot); //unequip it, as that was the real item
+            if (mainHandSlot.Value.itemEquipped != null) //chack if there is an item in mainhand
+                if ((mainHandSlot.Value.itemEquipped.item.type & Items.ItemType.TwoHanded) != 0)  //if it is twohanded
+                    UnequipItem(mainHandSlot.Value); //unequip it, as that was the real item
 
-            UnequipItem(offHandSlot); //either way, unequip off hand
+            UnequipItem(offHandSlot.Value); //either way, unequip off hand
         });
 		#endregion
 		#region Toss Buttons
@@ -315,10 +343,13 @@ public class PlayerInventory : MonoBehaviour
     {
         if (_slot.itemEquipped != null) //if same type already equipped
         {
+            CombatController.playerCombatController.RemoveAllBufsWithName(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name);
+            
             //add it back to the inventory
             AddItemToInventory(_slot.itemEquipped);
             ChangeItemQuantity(_slot.itemEquipped, 1);
         }
+
 
         _slot.itemEquipped = null; //set slots item to selected one
 
@@ -336,10 +367,11 @@ public class PlayerInventory : MonoBehaviour
             }
 
 
-        bool _wasDualWielding = (((mainHandSlot.itemEquipped != null? mainHandSlot.itemEquipped.item.type : 0) | (offHandSlot.itemEquipped != null? offHandSlot.itemEquipped.item.type : 0)) & Items.ItemType.TwoHanded) != 0;
+        bool _wasDualWielding = (((mainHandSlot.Value.itemEquipped != null? mainHandSlot.Value.itemEquipped.item.type : 0) | (offHandSlot.Value.itemEquipped != null? offHandSlot.Value.itemEquipped.item.type : 0)) & Items.ItemType.TwoHanded) != 0;
 
         //remove previous item in same slot
-        UnequipItem(_slot);
+        if (_slot.itemEquipped != null)
+            UnequipItem(_slot);
 
         _slot.itemEquipped = selectedItem; //set slots item to selected one
 
@@ -348,16 +380,21 @@ public class PlayerInventory : MonoBehaviour
 
         if ((selectedItem.item.type & Items.ItemType.TwoHanded) != 0) //if item was twohanded
         {
-            UnequipItem(offHandSlot);
+            UnequipItem(offHandSlot.Value);
 
-            offHandSlot.displayImage.gameObject.SetActive(true); //either way, show sprite
-            offHandSlot.displayImage.sprite = _slot.itemEquipped.item.sprite; //then use correct one
+            offHandSlot.Value.displayImage.gameObject.SetActive(true); //either way, show sprite
+            offHandSlot.Value.displayImage.sprite = _slot.itemEquipped.item.sprite; //then use correct one
         }
         else if ((selectedItem.item.type & Items.ItemType.OneHanded) != 0 && _wasDualWielding) //if weapon was one handed instead, AND player was dualwielding
         {
-            UnequipItem(_slot == offHandSlot? mainHandSlot : offHandSlot);
+            UnequipItem(_slot.Equals(offHandSlot.Value) ? mainHandSlot.Value : offHandSlot.Value);
         }
-        
+
+        AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Physical_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.physicalDefense,null,false), CombatController.playerCombatController);
+        AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Magic_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.magicDefense,null,false), CombatController.playerCombatController);
+
+        print(CombatController.playerCombatController.CheckIfHasBuff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name));
+
         ChangeItemQuantity(selectedItem, -1); //finally remove selected item from inventory
 
         if (CombatController.turnOrder.Count > 0) //if there are participants in combat
@@ -450,7 +487,8 @@ public class PlayerInventory : MonoBehaviour
 
             if (selectedItem != null)
             {
-                selectedItem.selectionBox.color = Color.clear; //clear the previous item
+                if (selectedItem.item != null)
+                    selectedItem.selectionBox.color = Color.clear; //clear the previous item
             }
 
             selectedItem = (_wasLastItem)? null: inventory[index]; //check for double clicking
@@ -487,46 +525,51 @@ public class PlayerInventory : MonoBehaviour
         var duplicate = inventory.Find(x => (Items.ItemType.Equipment & item.item.type) == 0 && x.item.name == item.item.name); //look for  a duplicate, that has none of the equipment flags set
         if (duplicate == null) //if none were found
         {
-            AddItemToInventory(item); //add to the inventory the rolled one 
+            //InstantiateItemToInventory(item);
+            //AddItemToInventory(item); //add to the inventory the rolled one 
+            inventory.Add(item);
+            InstantiateItemToInventory(item);
+            UpdateInventorySize();
         }
         else
         {
             ChangeItemQuantity(duplicate, item.amount); //add the count to the duplicate
         }
 
-        UpdateInventorySize();
-        InstantiateItemToInventory(item);
     }
 
-    public void ProcessDrops(List<ItemDrop> drops, bool showDropList = true) 
+    public void ProcessDrops(List<ItemDrop> _drops, bool _showDropList = true) 
     {
-        List<ItemQuantity> dropsProcessed = new List<ItemQuantity>();
+        List<ItemQuantity> _dropsProcessed = new List<ItemQuantity>();
         //Get all items dropped
-        foreach (var v in drops) 
+        foreach (var _val in _drops) 
         {
-            var d = RollForDrop(v); //roll for each individual item on the table
-            if (d != null) dropsProcessed.Add(d); //if successful add item
+            var _gottenDrop = RollForDrop(_val); //roll for each individual item on the table
+            if (_gottenDrop != null) _dropsProcessed.Add(_gottenDrop); //if successful add item
         }
 
+        _dropsProcessed.ForEach(x => AddItemToInventory(x)); //then add the item to inventory
+
         //Show items that rolled a success
-        if (showDropList)
+        if (_showDropList)
         {
             dropList.gameObject.SetActive(true); //show items dropped
-            if (dropsProcessed.Count == 0) //if no item dropped
+            if (_dropsProcessed.Count == 0) //if no item dropped
             {
                 itemInfoGameObjects[0].icon.transform.parent.gameObject.SetActive(true); //activate the first drop
-                itemInfoGameObjects[0].icon.sprite = null; //remove its icon
+                itemInfoGameObjects[0].icon.color = Color.clear;// = null; //remove its icon
                 itemInfoGameObjects[0].text.text = "None"; //then write that no drops were gained
             }
 
             for (int i = 0; i < itemInfoGameObjects.Length; i++)
             {
-                bool inBounds = i < dropsProcessed.Count;
+                bool inBounds = i < _dropsProcessed.Count;
                 itemInfoGameObjects[i].icon.transform.parent.gameObject.SetActive(inBounds);
                 if (inBounds)
                 {
-                    itemInfoGameObjects[i].icon.sprite = dropsProcessed[i].item.sprite;
-                    itemInfoGameObjects[i].text.text = $"{dropsProcessed[i].item.name} x{dropsProcessed[i].amount}";
+                    itemInfoGameObjects[i].icon.color = Color.white;
+                    itemInfoGameObjects[i].icon.sprite = _dropsProcessed[i].item.sprite;
+                    itemInfoGameObjects[i].text.text = $"{_dropsProcessed[i].item.name} x{_dropsProcessed[i].amount}";
                 }
 
 
@@ -554,8 +597,6 @@ public class PlayerInventory : MonoBehaviour
                 entryGameObject = null
             }; 
             //print($"drop [{item.item.name}]  min: {item.minCount} max: {item.maxCount} rolled {drop.amount}");
-
-            AddItemToInventory(drop);
 
             return drop;
         }

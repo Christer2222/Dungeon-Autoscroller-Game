@@ -817,8 +817,9 @@ public class CombatController : AbilityScript
 
 	public IEnumerator SimpleInvokeAbility(TargetData _targetData, bool _drainMana, bool _endsTurn, float _minimumUseTime = 0, bool _becomesBusy = false, Action _onComplete = null)
 	{
+		print("invoke");
+
 		bool _usedInCombat = (EncounterController.instance.currentGameState & EncounterController.GameState.In_Battle) != 0;
-		print("invoke ability simple");
 
 		if (invokingAbility || (turnOrder.Count != 0 && turnOrder[0] != this)) yield break; //if already using an ability or its not this characters turn
 		invokingAbility = true; //signal using an ability
@@ -854,7 +855,7 @@ public class CombatController : AbilityScript
 	{
 		if (turnOrder.Count == 0)
 		{
-			AddBuff(new Buff("Busy", "busy", 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
+			AddBuff(new Buff("Busy", Buff.TraitType.Busy, 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
 
 			EncounterController.instance.speedBoost = 0;
 			EncounterController.instance.currentGameState = EncounterController.GameState.Busy;

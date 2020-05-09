@@ -4,10 +4,27 @@ using AbilityInfo;
 
 public class Buff
 {
-	public Buff(string _name, string _trait, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<string> { _trait }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) { }
+	public enum TraitType
+	{
+		None,
+		Strength_Multiplier,
+		Strength_Constant,
+		Dexterity_Multiplier,
+		Dexterity_Constant,
+		Intelligence_Multiplier,
+		Intelligence_Constant,
+		Luck_Multiplier,
+		Luck_Constant,
+		Extra_Turn,
+		Busy,
+		Magic_Defence_Constant,
+		Physical_Defence_Constant,
+	}
+
+	public Buff(string _name, TraitType _trait, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<TraitType> { _trait }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) { }
 	public Buff(string _name, Ability _function, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true) : this(_name, new List<Ability> { _function }, _turns, _buffIcon, _stackType, _constant, _target, _shouldBeDisplyed) { }
 
-	public Buff(string _name, List<string> _traits, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
+	public Buff(string _name, List<TraitType> _traits, int _turns, Sprite _buffIcon, StackType _stackType, float _constant, CombatController _target = null, bool _shouldBeDisplyed = true)
 	{
 		name = _name;
 		traits = _traits;
@@ -33,7 +50,7 @@ public class Buff
 
 	public string name;
 	public List<Ability> functions = new List<Ability>();
-	public List<string> traits = new List<string>();
+	public List<TraitType> traits = new List<TraitType>();
 	public CombatController target;
 	public float constant;
 	public int turns;

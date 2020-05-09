@@ -97,7 +97,7 @@ public class Items : AbilityCollection
 		public Sprite sprite;
 		public int price;
 		public string description;
-		public int defense;
+		public int physicalDefense;
 		public int magicDefense;
 
 		/// <summary>
@@ -133,7 +133,7 @@ public class Items : AbilityCollection
 			name = _name;
 			price = _price;
 			type = _type;
-			defense = _bonusDefense;
+			physicalDefense = _bonusDefense;
 			magicDefense = _bonusMagicDefense;
 			activeAbilities = _activeAbilities;
 			activeConstants = _activeConstants;
@@ -157,12 +157,9 @@ public class Items : AbilityCollection
 
 			if (textAssetContainingSpriteData == null)
 			{
-				GameObject.Find("$DebugText").GetComponent<UnityEngine.UI.Text>().text += "\nSpritedata = Null for: " + name;
 				//null in build?
 				textAssetContainingSpriteData = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase("Assets/Resources/" + _path + _standardizedName + _definition + _extention);
 			}
-			else
-				GameObject.Find("$DebugText").GetComponent<UnityEngine.UI.Text>().text += "\nSpritedata != Null for: " + name;
 
 			Sprite[] _sprites = AnimationTextParser.ParseDocument(textAssetContainingSpriteData, AnimationTextParser.Type.Item);
 			sprite = (_sprites != null)? (_sprites.Length > 0)? _sprites[0]: null: null; //if the spritesheet is found, but no sprites are given
