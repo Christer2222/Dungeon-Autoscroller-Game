@@ -213,6 +213,8 @@ public class CombatController : AbilityScript
 				selectedAbility = myStats.abilities[_index]; //set ability to this ability
 			});
 
+
+			_go.GetComponent<ToolTip>().ChangeToolTipText(myStats.abilities[i].description);
 		}
 
 		//UIController.AbilityMenuContent.sizeDelta = new Vector2(0,(count - 1) * 113 + 10); //set size to fit all entries

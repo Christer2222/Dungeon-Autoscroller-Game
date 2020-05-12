@@ -1,0 +1,1 @@
+A fireball appears at the targeted location pulsing once and dealing $fire damage to anything in the area.

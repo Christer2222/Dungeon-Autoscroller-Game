@@ -1,0 +1,1 @@
+Deals $unlife damage to you, but you recover mana equal to damage done.

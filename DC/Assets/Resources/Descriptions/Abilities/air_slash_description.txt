@@ -1,0 +1,1 @@
+Sends a gust of wind that moves from left to right, hitting the first target and dealing $air damage.

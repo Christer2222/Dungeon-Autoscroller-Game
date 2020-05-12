@@ -8,7 +8,7 @@ public class AbilityCollection
 	{
 		return new List<Ability>()
 		{
-			poision, poisionBite, airSlash, bubble, crystalLance,
+			poison, poisonBite, airSlash, bubble, crystalLance,
 			eruption, thunderbolt, hardenSkin, magicShield, meteorShower, freezingStrike,
 			chaosThesis, debulk, divineFists, bulkUp, manaDrain, divineLuck, regeneration,
 			restoreSoul, clense, syncSoul, curse, bless, punch, doubleKick, wildPunch, forcePunch,
@@ -49,8 +49,8 @@ public class AbilityCollection
 	public static readonly Ability eruption = new Ability("Eruption", AbilityScript.Eruption, Elementals.Fire, SkillUsed.magic, AbilityType.attack, -5, ExtraData.nonPiercing | ExtraData.magic);
 	public static readonly Ability airSlash = new Ability("Air Slash", AbilityScript.AirSlash, Elementals.Air, SkillUsed.magic, AbilityType.attack, -3, ExtraData.nonPiercing | ExtraData.magic);
 	public static readonly Ability bubble = new Ability("Bubble", AbilityScript.Bubble, Elementals.Water, SkillUsed.magic, AbilityType.attack, -2, ExtraData.nonPiercing | ExtraData.magic);
-	public static readonly Ability poision = new Ability("Poision", AbilityScript.Poision, Elementals.Poision, SkillUsed.light_hits | SkillUsed.magic, AbilityType.attack, -2, ExtraData.none);
-	public static readonly Ability poisionBite = new Ability("Poision Bite", AbilityScript.PoisionBite, Elementals.Physical | Elementals.Poision, SkillUsed.heavy_hits | SkillUsed.light_hits, AbilityType.attack, 0, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
+	public static readonly Ability poison = new Ability("Poison", AbilityScript.Poison, Elementals.Poison, SkillUsed.light_hits | SkillUsed.magic, AbilityType.attack, -2, ExtraData.none);
+	public static readonly Ability poisonBite = new Ability("Poison Bite", AbilityScript.PoisonBite, Elementals.Physical | Elementals.Poison, SkillUsed.heavy_hits | SkillUsed.light_hits, AbilityType.attack, 0, ExtraData.nonPiercing | ExtraData.makes_contact_with_user);
 
 	public static readonly Ability siphonSoul = new Ability("Siphon Soul", AbilityScript.SiphonSoul, Elementals.Unlife, SkillUsed.healing, AbilityType.attack | AbilityType.recovery, -1, ExtraData.magic);
 
@@ -82,5 +82,5 @@ public class AbilityCollection
 	public static readonly Ability syncSoul = new Ability("Sync Soul", AbilityScript.SyncSoul, Elementals.Void, SkillUsed.healing | SkillUsed.magic, AbilityType.misc, -10, ExtraData.magic);
 
 	public static readonly Ability wobble = new Ability("Wobble", AbilityScript.Wobble, Elementals.None, SkillUsed.none, AbilityType.none, 0, ExtraData.none);
-	public static readonly Ability poisionTick = new Ability("Poision Tick", AbilityScript.PoisionTick, Elementals.Poision, SkillUsed.none, AbilityType.none, 0, ExtraData.none);
+	public static readonly Ability poisonTick = new Ability("Poison Tick", AbilityScript.PoisonTick, Elementals.Poison, SkillUsed.none, AbilityType.none, 0, ExtraData.none);
 }

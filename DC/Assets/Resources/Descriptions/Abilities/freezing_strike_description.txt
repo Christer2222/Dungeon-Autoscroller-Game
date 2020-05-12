@@ -1,0 +1,2 @@
+A punch that deals $ice damage to the targeted spot. 
+Also lowers the dexterity of the target for a bit.

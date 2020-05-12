@@ -1,0 +1,1 @@
+Blesses the target, doubling their stats.

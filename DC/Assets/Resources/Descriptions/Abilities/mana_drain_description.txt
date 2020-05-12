@@ -1,0 +1,1 @@
+Saps some mana from the target, transferring it to you.

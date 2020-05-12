@@ -1,0 +1,1 @@
+Deals $unlife damage to the target, healing you the damage dealt.

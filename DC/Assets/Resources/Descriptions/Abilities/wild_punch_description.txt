@@ -1,0 +1,1 @@
+Deals $physical damage to a random spot close to your target.

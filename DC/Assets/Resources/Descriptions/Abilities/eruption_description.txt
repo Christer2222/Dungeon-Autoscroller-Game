@@ -1,0 +1,1 @@
+Make a miniature vulcano that erupts rocks in random archs dealing $fire damage to anything they hit. 

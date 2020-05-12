@@ -1,0 +1,1 @@
+Randomly activates an ability at the targeted spot.

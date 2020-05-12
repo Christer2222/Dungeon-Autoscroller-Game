@@ -43,7 +43,7 @@ namespace AbilityInfo
 		Air = 16,
 		Plasma = 32,
 		Ice = 64,
-		Poision = 128,
+		Poison = 128,
 		Electricity = 256,
 		Steam = 512,
 		Light = 1024,
@@ -89,19 +89,50 @@ namespace AbilityInfo
 			extraData = _extraData;
 			abilityClass = _skill;
 
-			string _path = "Assets/Resources/Sprites/Effects/AnimationTexts/";
+			string _descriptionPath = "Assets/Resources/Descriptions/Abilities/";
+			string _effectPath = "Assets/Resources/Sprites/Effects/AnimationTexts/";
+
 			string _standardizedName = _name.Replace(" ", "_").ToLower();
-			string _extention = "_a_text";
+			string _animationExtention = "_a_text";
+			string _descriptionExtention = "_description";
 
-
-			var _textAsset = Resources.Load<TextAsset>("Sprites/Effects/AnimationTexts/" + _standardizedName + _extention);
-			if (_textAsset == null) //if the text asset wasn't found
+			var _descriptionTextAsset = Resources.Load<TextAsset>("Descriptions/Abilities/" + _standardizedName + _descriptionExtention);
+			if (_descriptionTextAsset == null) //if the text asset wasn't found
 			{
-				_textAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_path + "EMPTY_" + _standardizedName + _extention + ".txt");
+				_descriptionTextAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_descriptionPath + "EMPTY_" + _standardizedName + _descriptionExtention + ".txt");
+			}
+			description = _descriptionTextAsset.text;
+			description = description.Replace("$none", "<color=#333333>none</color>");
+			description = description.Replace("$physical", "<color=#61737d>physical</color>");
+			description = description.Replace("$fire", "<color=#a8270d>fire</color>");
+			description = description.Replace("$water", "<color=#2706bd>water</color>");
+			description = description.Replace("$earth", "<color=#654321>earth</color>");
+			description = description.Replace("$air", "<color=#999999>air</color>");
+			description = description.Replace("$plasma", "<color=#c712db>plasma</color>");
+			description = description.Replace("$ice", "<color=#83d6eb>ice</color>");
+			description = description.Replace("$poison", "<color=#367d49>poison</color>");
+			description = description.Replace("$electricity", "<color=#fff645>electricity</color>");
+			description = description.Replace("$steam", "<color=#b0b1d6>steam</color>");
+			description = description.Replace("$light", "<color=#fffa78>light</color>");
+			description = description.Replace("$unlife", "<color=#4960ab>unlife</color>");
+			description = description.Replace("$void", "<color=#531c59>void</color>");
+
+			/*
+
+
+		Light = 1024,
+		Unlife = 2048,
+		Void = 4096,
+			*/
+
+			var _effectTextAsset = Resources.Load<TextAsset>("Sprites/Effects/AnimationTexts/" + _standardizedName + _animationExtention);
+			if (_effectTextAsset == null) //if the text asset wasn't found
+			{
+				_effectTextAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_effectPath + "EMPTY_" + _standardizedName + _animationExtention + ".txt");
 			}
 
 			//Debug.Log(_standardizedName + " parsed: ");
-			var _spriteArray = AnimationTextParser.ParseDocument(_textAsset, AnimationTextParser.Type.Effect);
+			var _spriteArray = AnimationTextParser.ParseDocument(_effectTextAsset, AnimationTextParser.Type.Effect);
 
 			EffectTools.AddToEffectDictionary(name, _spriteArray);
 	}
@@ -114,7 +145,21 @@ namespace AbilityInfo
 		public AbilityType abilityType;
 		public SkillUsed abilityClass;
 		public ExtraData extraData;
+		public string description;
 	}
+
+	/*
+	TextAsset FindOrMakeText(string _path, string _name, string _extention)
+	{
+		string _standardizedName = _name.Replace(" ", "_").ToLower();
+
+		var _found = Resources.Load<TextAsset>("Sprites/Effects/AnimationTexts/" + _standardizedName + _extention);
+		if (_effectTextAsset == null) //if the text asset wasn't found
+		{
+			_effectTextAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_effectPath + "EMPTY_" + _standardizedName + _animationExtention + ".txt");
+		}
+	}
+	*/
 }
 
 

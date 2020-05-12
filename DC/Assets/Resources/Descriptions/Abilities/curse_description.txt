@@ -1,0 +1,1 @@
+Puts a curse on the target, halving their stats.

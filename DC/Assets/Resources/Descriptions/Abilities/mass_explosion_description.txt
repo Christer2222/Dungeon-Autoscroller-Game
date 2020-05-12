@@ -1,0 +1,2 @@
+Creates a fireball at the target location, and one to the left and right as well.
+They pulse, and deal $fire damage to the target.

@@ -1,0 +1,1 @@
+You make burning rocks fall from the sky, dealing part $fire and $earth damage to anyone they hit.

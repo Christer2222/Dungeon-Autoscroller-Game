@@ -230,16 +230,16 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		}
 	}
 
-	public static IEnumerator PoisionBite(TargetData targetData)
+	public static IEnumerator PoisonBite(TargetData targetData)
 	{
 		targetData.self.StartCoroutine(Punch(targetData));
 		//if (Random.Range(0,2) == 0)
-			targetData.self.StartCoroutine(Poision(targetData));
+			targetData.self.StartCoroutine(Poison(targetData));
 
 		yield return null;
 	}
 
-	public static IEnumerator Poision(TargetData targetData)
+	public static IEnumerator Poison(TargetData targetData)
 	{
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, targetData.centerPos, 1).transform;
 		_t.SetParent(targetData.target.transform);
@@ -247,13 +247,13 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		int _potency = Mathf.Clamp(targetData.self.myStats.Intelligence,1,5);
 
 		//var _buff = new Buff("Poisioned", AbilityClass.poisionTick, _potency, BuffIcons.TryGetBuffIcon("poision"), Buff.StackType.Pick_Most_Turns, _potency);
-		var _buff = new Buff("Poisioned", AbilityCollection.poisionTick, _potency, BuffIcons.TryGetBuffIcon(21), Buff.StackType.Pick_Most_Turns, _potency);
+		var _buff = new Buff("Poisioned", AbilityCollection.poisonTick, _potency, BuffIcons.TryGetBuffIcon(21), Buff.StackType.Pick_Most_Turns, _potency);
 		AddBuff(_buff, targetData.target);
 		
 		yield return null;
 	}
 	
-	public static IEnumerator PoisionTick(TargetData targetData) //only available through the poision ability
+	public static IEnumerator PoisonTick(TargetData targetData) //only available through the poision ability
 	{
 		var _previousBuff = targetData.target.myStats.buffList.Find(x => x.name == "Poisioned");
 		
@@ -262,7 +262,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			_previousBuff.constant = _previousBuff.turns;
 
 			targetData.target.AdjustHealth(-Mathf.Max((int)_previousBuff.constant,0),targetData.element, ExtraData.none);
-			var _t = EffectTools.SpawnEffect(AbilityCollection.poision.name, targetData.target.transform.position,1).transform;
+			var _t = EffectTools.SpawnEffect(AbilityCollection.poison.name, targetData.target.transform.position,1).transform;
 			_t.SetParent(targetData.target.transform);
 		}
 		yield return null;

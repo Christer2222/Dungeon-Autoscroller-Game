@@ -1,0 +1,1 @@
+Kick somewhere, and later kicks there again. Both kicks deals $physical damage.

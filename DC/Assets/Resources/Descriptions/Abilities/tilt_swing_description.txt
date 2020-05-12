@@ -1,0 +1,1 @@
+Lean back and punch with all your might, dealing a random amount of $physical damage to the target.

@@ -32,7 +32,7 @@ public class Items : AbilityCollection
 
 	public static ItemInfo SteelSword { get; } = new ItemInfo("Steel Sword", 15, ItemType.OneHanded, $"Sharp.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 3);
 	public static ItemInfo AdamantineSword { get; } = new ItemInfo("Adamantine Sword", 77, ItemType.OneHanded, $"Like steel, just better!\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 6);
-	public static ItemInfo PoisonedDagger { get; } = new ItemInfo("Poisoned Dagger", 32, ItemType.OneHanded, $"Poison.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", poisionBite, 2);
+	public static ItemInfo PoisonedDagger { get; } = new ItemInfo("Poisoned Dagger", 32, ItemType.OneHanded, $"Poison.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", poisonBite, 2);
 
 
 	public static ItemInfo SteelBroadSword { get; } = new ItemInfo("Steel Broad Sword", 30, ItemType.TwoHanded, $"Big sword.\nDeals {ITEM_ACTIVE_CONSTANT} damage when held and used as a weapon.", punch, 4);

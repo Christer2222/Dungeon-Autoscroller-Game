@@ -1,0 +1,1 @@
+Creates a bubble moving from left to right that deals $water damage to anything it hits.

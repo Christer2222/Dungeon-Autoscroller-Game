@@ -1,0 +1,2 @@
+Sends a crystal projectile at the target, dealing part $earth and $air damage to the target. 
+The magical crystals also increases your physical and magical defense for 1 turn.

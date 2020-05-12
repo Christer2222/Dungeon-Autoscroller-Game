@@ -1,0 +1,2 @@
+You bite the target dealing $poison damage.
+You also poison them, dealing damage every turn.

@@ -26,7 +26,7 @@ public class AnimationTextParser
 		var _storedAsset = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(_pathWithExtention); //figure out if there is an empty
 		if (_storedAsset.Length == 0) //if not create it
 		{
-			Debug.LogWarning("created: " + _pathWithExtention);
+			Debug.LogWarning("created: <color=#AA6000>" + _pathWithExtention + "</color>");
 			UnityEditor.AssetDatabase.CreateAsset(_textAsset, _pathWithExtention);
 			UnityEditor.AssetDatabase.Refresh();
 			Debug.Log(_textAsset);
