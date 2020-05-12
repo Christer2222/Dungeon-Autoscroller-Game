@@ -81,13 +81,13 @@
     <Compile Include="Assets\_scripts\Data\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\Data\Options.cs" />
     <Compile Include="Assets\_scripts\Data\StatBlock.cs" />
-    <Compile Include="Assets\_scripts\DescriptionShower.cs" />
     <Compile Include="Assets\_scripts\EmptyMonoBehaviour.cs" />
     <Compile Include="Assets\_scripts\EncounterController.cs" />
     <Compile Include="Assets\_scripts\EnemyMover.cs" />
     <Compile Include="Assets\_scripts\FleeLogic.cs" />
     <Compile Include="Assets\_scripts\PlayerInventory.cs" />
     <Compile Include="Assets\_scripts\ResetStaticVariablesManager.cs" />
+    <Compile Include="Assets\_scripts\ToolTip.cs" />
     <Compile Include="Assets\_scripts\UIAspect.cs" />
     <Compile Include="Assets\_scripts\UIController.cs" />
     <None Include="Assets\Resources\Sprites\Effects\old\life_tap_a_text.txt" />

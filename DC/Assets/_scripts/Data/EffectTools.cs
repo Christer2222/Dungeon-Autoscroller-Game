@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -121,7 +120,7 @@ public class EffectTools// : MonoBehaviour
 			_counter += Time.deltaTime;
 			yield return new WaitForSeconds(Time.deltaTime);
 
-			float _pingPongTime = Mathf.PingPong((_counter / _sec) * (_times * 2), 1); //goes from 0 to 1 in order to average later. _counter/_sec gives a normalized time, and multiplying that by (times*2) means it will get to 1 "times" times
+			float _pingPongTime = Mathf.PingPong(Mathf.Clamp01(_counter / _sec) * (_times * 2), 1); //goes from 0 to 1 in order to average later. _counter/_sec gives a normalized time, and multiplying that by (times*2) means it will get to 1 "times" times
 
 			//By skew averaging the colors, pingpong from one to the other
 			_targetSprite.color = new Color(
@@ -131,6 +130,31 @@ public class EffectTools// : MonoBehaviour
 				(_orgColor.a * (1 - _pingPongTime) + _pingPongTime * _tempColor.a)
 				);
 		}
+	}
+
+	public static IEnumerator BlinkImage(Image _targetImage, Color _tempColor, float _sec, float _times)
+	{
+		Color _orgColor = _targetImage.color;
+		float _counter = 0;
+
+		while (_counter <= _sec)
+		{
+			_counter += Time.deltaTime;
+			yield return Delay(Time.deltaTime); //null;// new WaitForSeconds(Time.deltaTime);
+
+			float _pingPongTime = Mathf.PingPong(Mathf.Clamp01(_counter / _sec) * (_times * 2), 1); //goes from 0 to 1 in order to average later. _counter/_sec gives a normalized time, and multiplying that by (times*2) means it will get to 1 "times" times
+
+			//By skew averaging the colors, pingpong from one to the other
+			_targetImage.color = new Color(
+				(_orgColor.r * (1 - _pingPongTime) + _pingPongTime * _tempColor.r),
+				(_orgColor.g * (1 - _pingPongTime) + _pingPongTime * _tempColor.g),
+				(_orgColor.b * (1 - _pingPongTime) + _pingPongTime * _tempColor.b),
+				(_orgColor.a * (1 - _pingPongTime) + _pingPongTime * _tempColor.a)
+				);
+		}
+
+		//float _percent = (_times) % 1;
+		//_targetImage.color = _orgColor * (1 -_percent) + _tempColor * _percent;
 	}
 
 	/// <summary>

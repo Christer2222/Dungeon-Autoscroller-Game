@@ -335,7 +335,7 @@ public class PlayerInventory : MonoBehaviour
 
 		UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
         
-        ClearInventory();
+        //ClearInventory();
         RebuildInventory();
     }
 
@@ -480,6 +480,8 @@ public class PlayerInventory : MonoBehaviour
         Button butt = go.GetComponent<Button>();
         butt.onClick.RemoveAllListeners();
 
+        go.GetComponent<ToolTip>().ChangeToolTipText(item.item.description);
+
         butt.onClick.AddListener(() => {
             int index = go.transform.GetSiblingIndex();
             var contextMenu = UIController.InventoryGeneralContextMenu; //shortcut
@@ -500,8 +502,10 @@ public class PlayerInventory : MonoBehaviour
                 UIController.InventoryWeaponSlotContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.OneHanded) != 0);
                 UIController.InventoryAccessoryContextMenu.gameObject.SetActive((selectedItem.item.type & Items.ItemType.Acessory) != 0);
 
-                if ((selectedItem.item.type & Items.ItemType.Consumable) != 0) UIController.InventoryUseButtonText.text = CONSUME_STRING;
-                else UIController.InventoryUseButtonText.text = USE_STRING;
+                if ((selectedItem.item.type & Items.ItemType.Consumable) != 0) 
+                    UIController.InventoryUseButtonText.text = CONSUME_STRING;
+                else 
+                    UIController.InventoryUseButtonText.text = USE_STRING;
             }
 
             contextMenu.gameObject.SetActive(!_wasLastItem); //set context menu to wheter double clicking or not

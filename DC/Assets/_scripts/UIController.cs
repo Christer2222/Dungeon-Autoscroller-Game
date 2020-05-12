@@ -6,7 +6,9 @@ public class UIController : MonoBehaviour
 {
     public const string ABILITIES_BUTTON_STRING = "Abilities", ITEMS_BUTTON_STRING = "Items";// ABILITIES_BUTTON_STRING = "";
 
-    public static Text InventoryButtonText {get; private set; }
+    public static Camera MainCamera { get; private set; }
+
+    public static Text InventoryButtonText { get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }
     public static RectTransform InventoryRootRectTransform { get; private set; }
@@ -30,7 +32,7 @@ public class UIController : MonoBehaviour
     public static InputField InventoryTossInputField { get; private set; }
     public static Button InventoryCloseButton { get; private set; }
 
-    public static Image CurrentEquippedHelmetImage { get; private set;}
+    public static Image CurrentEquippedHelmetImage { get; private set; }
     public static Image CurrentEquippedChestplateImage { get; private set; }
     public static Image CurrentEquippedLeggingsImage { get; private set; }
     public static Image CurrentEquippedBootsImage { get; private set; }
@@ -71,7 +73,7 @@ public class UIController : MonoBehaviour
 
     public static Slider XPSlider { get; private set; }
 
-    
+
     public static Text TurnOrderText { get; private set; }
 
     public static GameObject GameOverHolder { get; private set; }
@@ -87,18 +89,23 @@ public class UIController : MonoBehaviour
     public static Button InspectButton { get; private set; }
     public static Button LevelUpButton { get; private set; }
 
-    
+
     public static RectTransform AbilityMenuScrollView { get; private set; }
     public static RectTransform AbilityMenuContent { get; private set; }
     public static Text AbilityButtonText { get; private set; }
 
-    
+
     public static Slider FleeSlider { get; private set; }
 
 
     public static GameObject LevelUpScreenGameObject { get; private set; }
 
     public static Transform UICanvas { get; private set; }
+
+    public static RectTransform DescriptionBackground {get; private set;}
+    public static Image DescriptionBackgroundImage { get; private set; }
+    public static Text DescriptionText {get; private set;}
+
 
     public class MinMax<T>
     {
@@ -123,6 +130,8 @@ public class UIController : MonoBehaviour
     void Start()
     {
         UICanvas = transform.GetChild(0);
+        MainCamera = Camera.main;
+
 
         var childrenTransforms = GetComponentsInChildren<Transform>(true);
         for (int i = 0; i < childrenTransforms.Length; i++)
@@ -366,6 +375,13 @@ public class UIController : MonoBehaviour
                     break;
                 case "$LuckMinusButton":
                     LevelUpLuckChangeButtons.minObject = child.GetComponent<Button>();
+                    break;
+                case "$DescriptionBackground":
+                    DescriptionBackground = child.GetComponent<RectTransform>();
+                    DescriptionBackgroundImage = child.GetComponent<Image>();
+                    break;
+                case "$DescriptionText":
+                    DescriptionText = child.GetComponent<Text>();
                     break;
             }
         }
