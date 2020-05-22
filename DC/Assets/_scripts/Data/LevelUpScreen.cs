@@ -112,12 +112,6 @@ public class LevelUpScreen : AbilityCollection
 		{
 			switch(_t.name)
 			{
-				case "$ClassChangePossibleButton":
-					changeClassButton = _t.GetComponent<Button>();
-					break;
-				case "$ClassText":
-					classText = _t.GetComponent<Text>();
-					break;
 				case "$AbilityButton1":
 					abilityPickButton1 = _t.GetComponent<Button>();
 					abilityPickText1 = abilityPickButton1.GetComponentInChildren<Text>();

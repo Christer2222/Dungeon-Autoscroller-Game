@@ -53,6 +53,8 @@ public class UIController : MonoBehaviour
     public static Button UnequipAccessory3Button { get; private set; }
 
 
+    public static Text LevelClassText { get; private set; }
+    public static Button ClassChangePossibleButton { get; private set; }
     public static Text LevelUpAbilityPointsToSpendText { get; private set; }
     public static Text LevelUpTraitPointsToSpendText { get; private set; }
     public static Text LevelUpStrengthCurrentTraitText { get; private set; }
@@ -336,6 +338,13 @@ public class UIController : MonoBehaviour
                 case "$CurrentEquippedAccessory3":
                     CurrentEquippedAccessory3Image = child.GetComponent<Image>();
                     UnequipAccessory3Button = child.GetComponent<Button>();
+                    break;
+                case "$LevelClassText":
+                    LevelClassText = child.GetComponent<Text>();
+                    LevelClassText.GetComponent<ToolTip>().ChangeToolTipText("Learns many different abilities.\n\nLevel up bonus:\n+2HP\n+2MP");
+                    break;
+                case "$ClassChangePossibleButton":
+                    ClassChangePossibleButton = child.GetComponent<Button>();
                     break;
                 case "$TraitPointsToSpendText":
                     LevelUpTraitPointsToSpendText = child.GetComponent<Text>();
