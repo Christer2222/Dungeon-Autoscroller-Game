@@ -210,12 +210,14 @@ public class UIController : MonoBehaviour
                     break;
                 case "$HealthSlider":
                     HealthSliderPair.minObject = child.GetComponent<Slider>();
+                    HealthSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Health Points (HP). Keep this above 0.");
                     break;
                 case "$HealthSliderSlow":
                     HealthSliderPair.maxObject = child.GetComponent<Slider>();
                     break;
                 case "$ManaSlider":
                     ManaSliderPair.minObject = child.GetComponent<Slider>();
+                    ManaSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Mana Points (MP). Required for some abilities.");
                     break;
                 case "$ManaSliderSlow":
                     ManaSliderPair.maxObject = child.GetComponent<Slider>();

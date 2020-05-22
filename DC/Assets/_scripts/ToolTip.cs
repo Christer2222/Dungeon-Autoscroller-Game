@@ -32,7 +32,6 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         toolTipString = ProcessString(_target);
 
-
         if (selectedGameObject != null) //if there is a selected gameobject
             if (selectedGameObject.transform == transform) //check if the transform is the same as this transform.  (Apparently gameobjects change?)
             {
