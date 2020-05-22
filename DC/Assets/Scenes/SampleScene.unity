@@ -448,7 +448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1258,7 +1258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1972,7 +1972,7 @@ GameObject:
   - component: {fileID: 237286938}
   - component: {fileID: 237286937}
   m_Layer: 5
-  m_Name: "\xE6"
+  m_Name: text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3055,7 +3055,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -6433,7 +6433,7 @@ GameObject:
   - component: {fileID: 747543694}
   - component: {fileID: 747543693}
   m_Layer: 5
-  m_Name: SplitterText
+  m_Name: SplitterValueImage
   m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6636,7 +6636,7 @@ GameObject:
   - component: {fileID: 753279352}
   - component: {fileID: 753279351}
   m_Layer: 5
-  m_Name: "\xE6"
+  m_Name: text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6752,7 +6752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.7075472, g: 0.29703632, b: 0.29703632, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8109,7 +8109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8429,7 +8429,7 @@ GameObject:
   - component: {fileID: 966636942}
   - component: {fileID: 966636941}
   m_Layer: 5
-  m_Name: "\xE6"
+  m_Name: text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9490,7 +9490,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -12377,7 +12377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -14219,7 +14219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -15019,6 +15019,7 @@ GameObject:
   - component: {fileID: 1921367575}
   - component: {fileID: 1921367576}
   - component: {fileID: 1921367574}
+  - component: {fileID: 1921367577}
   m_Layer: 5
   m_Name: $PlayerPortrait
   m_TagString: Untagged
@@ -15178,6 +15179,18 @@ MonoBehaviour:
   currentHealth: 0
   currentMana: 0
   actedLastTick: 0
+--- !u!114 &1921367577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921367569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a6630e8bf29f040b8ef71ff5053d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1924089349
 GameObject:
   m_ObjectHideFlags: 0
@@ -15536,7 +15549,7 @@ GameObject:
   - component: {fileID: 1963599684}
   - component: {fileID: 1963599683}
   m_Layer: 5
-  m_Name: SplitterText
+  m_Name: SplitterValueImage
   m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16184,6 +16197,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153605756999413036, guid: f409865403353a9478ffef375545390f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f409865403353a9478ffef375545390f, type: 3}

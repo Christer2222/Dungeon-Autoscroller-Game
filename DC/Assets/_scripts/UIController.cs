@@ -281,6 +281,7 @@ public class UIController : MonoBehaviour
                     break;
                 case "$PlayerPortrait":
                     LevelUpButton = child.GetComponent<Button>();
+                    LevelUpButton.GetComponent<ToolTip>().ChangeToolTipText("You. Another target. Click with no ability to open the status screen.");
                     break;
                 case "$LevelUpHolder":
                     LevelUpScreenGameObject = child.gameObject;
