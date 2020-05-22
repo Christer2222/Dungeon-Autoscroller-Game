@@ -102,6 +102,7 @@ namespace AbilityInfo
 				_descriptionTextAsset = AnimationTextParser.GetNewTextAssetOrAddNewToAssetDatabase(_descriptionPath + "EMPTY_" + _standardizedName + _descriptionExtention + ".txt");
 			}
 			description = _descriptionTextAsset.text;
+			/*
 			description = description.Replace("$none", "<color=#333333>none</color>");
 			description = description.Replace("$physical", "<color=#61737d>physical</color>");
 			description = description.Replace("$fire", "<color=#a8270d>fire</color>");
@@ -116,7 +117,7 @@ namespace AbilityInfo
 			description = description.Replace("$light", "<color=#fffa78>light</color>");
 			description = description.Replace("$unlife", "<color=#4960ab>unlife</color>");
 			description = description.Replace("$void", "<color=#531c59>void</color>");
-
+			*/
 			/*
 
 

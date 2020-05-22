@@ -23,7 +23,7 @@ public class EncounterController : MonoBehaviour
 	public float buffTimer = DEFAULT_BUFF_TIMER;
 
 	public float speedBoost;
-	private bool finnishingCombat;
+	//private bool finnishingCombat;
 
 	public GameState currentGameState = GameState.Walking;
 	public enum GameState
@@ -75,7 +75,8 @@ public class EncounterController : MonoBehaviour
 			if (encounterTimer <= 0)
 			{
 				currentGameState = GameState.Starting_Battle;
-				CombatController.playerCombatController.RemoveAllBufsWithName("Busy");
+				//CombatController.playerCombatController.RemoveAllBufsWithName("Busy");
+				
 			}
 			else
 			{
@@ -103,7 +104,7 @@ public class EncounterController : MonoBehaviour
 			break;
 			case (GameState.Starting_Battle):
 			{
-				if (CombatController.turnOrder.Count == 0 && !finnishingCombat)
+				if (CombatController.turnOrder.Count == 0)// && !finnishingCombat)
 				{
 					CombatController.turnOrder.Add(CombatController.playerCombatController);
 

@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 2839443383958744440}
   - component: {fileID: 2839443383958744443}
   - component: {fileID: 4386499201922736084}
+  - component: {fileID: 3966192589091129948}
   m_Layer: 5
   m_Name: BuffIcon
   m_TagString: Untagged
@@ -195,6 +196,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3966192589091129948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2839443383958744437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a6630e8bf29f040b8ef71ff5053d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2839443384245945003
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,7 +366,8 @@ MonoBehaviour:
   m_Text: '1SUPER 2DUPER 3BUFF 4UFF1SUPER 2DUPER 3BUFF 4UFF1SUPER2DUPER 3BUFF 4UFF
 
 
-    1SUPER 2DUPER 3BUFF 4UFF1SUPER 2DUPER 3BUFF 4UFF
+    1SUPER
+    2DUPER 3BUFF 4UFF1SUPER 2DUPER 3BUFF 4UFF
 
     1SUPER 2DUPER 3BUFF 4UFF'
 --- !u!1 &2839443385001831571

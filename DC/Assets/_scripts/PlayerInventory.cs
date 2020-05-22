@@ -47,6 +47,7 @@ public class PlayerInventory : MonoBehaviour
     {
         public Image displayImage;
         public ItemQuantity itemEquipped;
+        public ToolTip toolTip;
     }
 
     public class Reference<T> 
@@ -98,6 +99,15 @@ public class PlayerInventory : MonoBehaviour
         accessory2Slot.Value.displayImage = UIController.CurrentEquippedAccessory2Image;
         accessory3Slot.Value.displayImage = UIController.CurrentEquippedAccessory3Image;
 
+        helmetSlot.Value.toolTip = UIController.CurrentEquippedHelmetImage.GetComponent<ToolTip>();
+        chestplateSlot.Value.toolTip = UIController.CurrentEquippedChestplateImage.GetComponent<ToolTip>();
+        leggingsSlot.Value.toolTip = UIController.CurrentEquippedLeggingsImage.GetComponent<ToolTip>();
+        bootsSlot.Value.toolTip = UIController.CurrentEquippedBootsImage.GetComponent<ToolTip>();
+        mainHandSlot.Value.toolTip = UIController.CurrentEquippedMainHandImage.GetComponent<ToolTip>();
+        offHandSlot.Value.toolTip = UIController.CurrentEquippedOffHandImage.GetComponent<ToolTip>();
+        accessory1Slot.Value.toolTip = UIController.CurrentEquippedAccessory1Image.GetComponent<ToolTip>();
+        accessory2Slot.Value.toolTip = UIController.CurrentEquippedAccessory2Image.GetComponent<ToolTip>();
+        accessory3Slot.Value.toolTip = UIController.CurrentEquippedAccessory3Image.GetComponent<ToolTip>();
 
         instance = this;
         inventoryItemEntryPrefab = Resources.Load<GameObject>("Prefabs/InventoryItemEntry");
@@ -350,11 +360,17 @@ public class PlayerInventory : MonoBehaviour
             ChangeItemQuantity(_slot.itemEquipped, 1);
         }
 
+        _slot.toolTip.ChangeToolTipText(string.Empty);
 
         _slot.itemEquipped = null; //set slots item to selected one
 
         _slot.displayImage.gameObject.SetActive(false); //show it
         _slot.displayImage.sprite = null;// _slot.itemEquipped.item.sprite; //show it
+
+
+
+        _slot.toolTip.OnPointerExit(null);//ChangeToolTipText(string.Empty);
+        //ToolTip.currentToolTip.OnPointerExit(null);
     }
 
     void EquipItem(EquipmentSlot _slot)
@@ -378,12 +394,17 @@ public class PlayerInventory : MonoBehaviour
         _slot.displayImage.gameObject.SetActive(true); //show it
         _slot.displayImage.sprite = _slot.itemEquipped.item.sprite; //show it
 
+        print(_slot.toolTip);
+        _slot.toolTip.ChangeToolTipText(_slot.itemEquipped.item.description);
+
         if ((selectedItem.item.type & Items.ItemType.TwoHanded) != 0) //if item was twohanded
         {
             UnequipItem(offHandSlot.Value);
 
             offHandSlot.Value.displayImage.gameObject.SetActive(true); //either way, show sprite
             offHandSlot.Value.displayImage.sprite = _slot.itemEquipped.item.sprite; //then use correct one
+
+            offHandSlot.Value.toolTip.ChangeToolTipText(_slot.itemEquipped.item.description);
         }
         else if ((selectedItem.item.type & Items.ItemType.OneHanded) != 0 && _wasDualWielding) //if weapon was one handed instead, AND player was dualwielding
         {

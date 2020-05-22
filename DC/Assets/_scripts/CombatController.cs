@@ -44,6 +44,14 @@ public class CombatController : AbilityScript
 	//variables for player ability toggeling
 	private static GameObject entryPrefab;
 
+	class BuffUI
+	{
+		public ToolTip tip;
+		public Buff buff;
+	}
+
+	private readonly List<BuffUI> buffUIs = new List<BuffUI>();
+
 	public static void ClearAllValues()
 	{
 		turnOrder.Clear();
@@ -211,6 +219,7 @@ public class CombatController : AbilityScript
 				//UIController.AbilityMenuScrollView.gameObject.SetActive(false); //deactivate the menu
 				UIController.AbilityButtonText.text = _s; //set the name of the button to the ability
 				selectedAbility = myStats.abilities[_index]; //set ability to this ability
+				_go.GetComponent<ToolTip>().OnPointerExit(null);
 			});
 
 
@@ -239,7 +248,6 @@ public class CombatController : AbilityScript
         {
 			actedLastTick = false;
         }
-
 
 		if (turnOrder.Count != 0) //if there are combatants
 		{
@@ -362,13 +370,95 @@ public class CombatController : AbilityScript
 	public void RemoveAllBufsWithName(string _buffName)
 	{
 		myStats.buffList.RemoveAll(x => x.name.ToLower() == _buffName.ToLower());// x.name.Contains(_buffName));
+		RefreshBuffIcons();
 	}
+
 
 	/// <summary>
 	/// Refreshes the buff sidebar.
 	/// </summary>
 	void RefreshBuffIcons()
 	{
+		print("refersh icons");
+		for (int i = 0; i < myStats.buffList.Count; i++) //find all buffs active, and make ui if none exist
+		{
+			var _current = myStats.buffList[i]; //shortcut for i
+			var _inList = buffUIs.Where(x => x.buff == _current); //find a buff that matches the one in the statblock
+			//var _first = (_inList.ToList().Count != 0) ? _inList.First() : null;
+
+
+			if ((_inList.ToList().Count == 0)) //if none were found
+			{
+				var _go = Instantiate(buffEntryPrefab, UIController.BuffContent); //make a new one and set the parent to the sidebar
+				var _parent = _go.transform.GetChild(0); //get the icon holder
+				_parent.GetComponent<Image>().sprite = myStats.buffList[i].buffIcon; //set the icon to the propper one
+
+				buffUIs.Add(new BuffUI {tip = _go.GetComponentInChildren<ToolTip>(), buff = _current }); //add it to the uis
+			}
+		}
+
+		buffUIs.RemoveAll(x => x.tip == null); //remove all ui with no gameobject
+
+		for (int i = 0; i < buffUIs.Count; i++) //find all ui that is used up, and destroy it
+		{
+			var _current = buffUIs[i]; //shortcut for i
+
+			if (_current.buff.turns <= 0 || !myStats.buffList.Contains(_current.buff)) //if it has no time left
+			{
+				_current.tip.OnPointerExit(null);
+				Destroy(_current.tip.transform.parent.gameObject); //destroy game object
+			}
+
+		}
+
+		//buffUIs.RemoveAll(x => x.tip == null); //remove all ui with no gameobject
+
+		for (int i = 0; i < buffUIs.Count; i++) //update the text for all ui
+		{
+			var _current = buffUIs[i]; //shortcut for i
+
+			string _actionString = string.Empty; //description for all a buff does
+			for (int j = 0; j < _current.buff.functions.Count; j++) //for all functions add them to the description
+			{
+				_actionString += _current.buff.functions[j] + " " + _current.buff.constant;
+				if (j != _current.buff.functions.Count) _actionString += ", ";
+			}
+
+			if (_current.buff.functions.Count != 0 && _current.buff.traits.Count != 0) _actionString += " and ";
+			for (int j = 0; j < _current.buff.traits.Count; j++) //for all traits add them to the description
+			{
+				_actionString += _current.buff.traits[j].ToString().Replace("_", " ") + _current.buff.constant;
+				if (j != _current.buff.traits.Count) _actionString += ", ";
+			}
+
+			//finally update text
+			_current.tip.ChangeToolTipText(
+				$"{_current.buff.name}" +
+				$"\n" +
+				$"\nActivates {_actionString}" +
+				$"\n" +
+				$"Lasts for: {_current.buff.turns} turns."
+				);
+		}
+
+		/*
+		ToolTip[] _buffToolTips = UIController.BuffContent.GetComponentsInChildren<ToolTip>(true);//.Where( x => x.transform.name == "$BuffEntry").ToList();
+
+		for (int i = 0; i < myStats.buffList.Count; i++)
+		{
+
+		}
+
+
+		for (int i = 0; i < _buffToolTips.Count; i++)
+		{
+			_buffToolTips[i].ChangeToolTipText();
+		}
+		*/
+
+
+
+		/*
 		List<Text> _buffHolderTurnList = UIController.BuffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffTurns").ToList();
 		List<string> _uncheckedBuffs = UIController.BuffContent.GetComponentsInChildren<Text>(true).Where(x => x.transform.name == "$BuffName").Select(y => y.text).ToList();
 		int _amount = _buffHolderTurnList.Count;
@@ -441,6 +531,7 @@ public class CombatController : AbilityScript
 			UIController.BuffScrollRect.vertical = false;
 			UIController.BuffScrollImage.color = Color.clear;
 		}
+		*/
 	}
 
 	IEnumerator TakeEnemyTurn()

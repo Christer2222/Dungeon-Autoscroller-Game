@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {    
-    private string toolTipString;
+    private string toolTipString = string.Empty;
 
     private static Transform selectedGameObject;
     private RectTransform descriptionBackgroundParent;
@@ -18,6 +18,9 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     //private Coroutine hoverCoroutine;
     private Coroutine fadeInCoroutine;
+
+    //public static ToolTip currentToolTip;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,14 +31,22 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void ChangeToolTipText(string _target)
     {
         toolTipString = ProcessString(_target);
+
+
+        if (selectedGameObject != null) //if there is a selected gameobject
+            if (selectedGameObject.transform == transform) //check if the transform is the same as this transform.  (Apparently gameobjects change?)
+            {
+                UIController.DescriptionText.text = toolTipString;
+            }
     }
 
-    static string ProcessString(string input)
+    static string ProcessString(string _input)
     {
-        var charInput = input.ToCharArray();
-        int lastSpace = 0;
+        var _charInput = _input.ToCharArray();
+        int _lastSpace = 0;
+        //bool _escaped = false;
         //int potentialSpace = 0;
-        for (int i = 0; i < charInput.Length; i++)
+        for (int i = 0; i < _charInput.Length; i++)
         {
             /*
             if (i > lastSpace + 15)
@@ -45,31 +56,87 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
             */
 
-            if (charInput[i] == '\n')//10)
+                /*
+            if (_charInput[i] == '<')
+                _escaped = true;
+            if (_charInput[i] == '>')
+                _escaped = false;
+                */
+
+            if (_charInput[i] == '\n')//10)
             {
-                lastSpace = i;
-                print("\\n :" + input + lastSpace);
+                _lastSpace = i;
                 //'\n')
             }
 
-            if (i > lastSpace + 20)
+            if (i > _lastSpace + 20)// && !_escaped)
             {
                 //print($"{i}: {(int)charInput[i]}|");
-                if (charInput[i] == ' ')
+                if (_charInput[i] == ' ')
                 {
-                    charInput[i] = '\n';
-                    lastSpace = i;
+                    _charInput[i] = '\n';
+                    _lastSpace = i;
                 }
             }
         }
-        return new string(charInput);
+
+        string _result = new string(_charInput);
+
+        _result = _result.Replace("$none", "<color=#333333>none</color>");
+        _result = _result.Replace("$physical", "<color=#61737d>physical</color>");
+        _result = _result.Replace("$fire", "<color=#a8270d>fire</color>");
+        _result = _result.Replace("$water", "<color=#2706bd>water</color>");
+        _result = _result.Replace("$earth", "<color=#654321>earth</color>");
+        _result = _result.Replace("$air", "<color=#999999>air</color>");
+        _result = _result.Replace("$plasma", "<color=#c712db>plasma</color>");
+        _result = _result.Replace("$ice", "<color=#83d6eb>ice</color>");
+        _result = _result.Replace("$poison", "<color=#367d49>poison</color>");
+        _result = _result.Replace("$electricity", "<color=#fff645>electricity</color>");
+        _result = _result.Replace("$steam", "<color=#b0b1d6>steam</color>");
+        _result = _result.Replace("$light", "<color=#fffa78>light</color>");
+        _result = _result.Replace("$unlife", "<color=#4960ab>unlife</color>");
+        _result = _result.Replace("$void", "<color=#531c59>void</color>");
+
+        return _result;
     }
 
 
     IEnumerator HoverCheck()
     {
+        //if (toolTipString == string.Empty)
+        //    yield break;
+
         while (true)
         {
+            /*
+            if (Input.GetMouseButtonDown(0))
+            {
+
+                UIController.DescriptionBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
+                fadeInCoroutine = null;
+
+                UIController.DescriptionBackgroundImage.color = Color.clear;
+                UIController.DescriptionText.text = toolTipString;
+
+                //hoverCoroutine = StartCoroutine(HoverCheck());
+                SetSize();
+                yield return new WaitForEndOfFrame();
+                StartCoroutine(HoverCheck());
+                yield break;
+
+                OnPointerExit(null);
+                var a = new PointerEventData(EventSystem.current);
+                OnPointerOver(a);//null);
+
+                UIController.DescriptionBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
+                fadeInCoroutine = null;
+                //selectedGameObject = null;
+                StopAllCoroutines();
+                
+                //UIController.DescriptionBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
+            }
+            */
+
             if (selectedGameObject != null)
             {
                 timer = (lastMousePos != Input.mousePosition) ? 0 : timer + Time.deltaTime;
@@ -134,6 +201,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        //currentToolTip = this;
 
         selectedGameObject = eventData.pointerCurrentRaycast.gameObject.transform;//selectedObject.transform;
         //UIController.DescriptionBackground.gameObject.SetActive(true);// EventSystem.current.IsPointerOverGameObject());
@@ -152,10 +220,15 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        UIController.DescriptionBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
-        StopAllCoroutines();
-        fadeInCoroutine = null;
-        selectedGameObject = null;
+        if (selectedGameObject != null)
+            if (selectedGameObject.transform == transform)
+            {
+
+                UIController.DescriptionBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
+                StopAllCoroutines();
+                fadeInCoroutine = null;
+                selectedGameObject = null;
+            }
         //StopCoroutine(hoverCoroutine);
     }
 }
