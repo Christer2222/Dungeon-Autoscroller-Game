@@ -7,7 +7,7 @@ public class LevelUpScreen : AbilityCollection
 {
 	public static LevelUpScreen instance;
 
-	private readonly List<AbilityChoices> levelUpQue = new List<AbilityChoices>();
+	private readonly List<AbilityChoices> levelUpQueue = new List<AbilityChoices>();
 	public LevelGroup currentGroup = adventurerGroup;
 	private static readonly LevelGroup adventurerGroup = new LevelGroup("Adventurer", 2, 2, 
 		new List<AbilityChoices>() {
@@ -56,11 +56,12 @@ public class LevelUpScreen : AbilityCollection
 	public int traitPointsToSpend = 0;// DebugController.bonusAbilityPoints;// abilityPointsToSpend;
 
     private const string TRAIT_POINTS_DEFAULT_STRING = "Trait points: ", ABILITY_POINTS_DEFAULT_STRING = "Ability points: ";
-	private Text classText;
+	//private Text classText;
 
-	private Button changeClassButton;
-	private Button abilityPickButton1, abilityPickButton2, abilityPickButton3;
-	private Text abilityPickText1, abilityPickText2, abilityPickText3;
+	//private Button changeClassButton;
+	//private Button abilityPickButton1, abilityPickButton2, abilityPickButton3;
+	//private Text abilityPickText1, abilityPickText2, abilityPickText3;
+	private ToolTip abilityButton1ToolTip, abilityButton2ToolTip, abilityButton3ToolTip;
 	private Button cancelButton, confirmButton;
 
 	public struct AbilityChoices
@@ -99,8 +100,15 @@ public class LevelUpScreen : AbilityCollection
 		}
 	}
 
+	/// <summary>
+	/// Needs to be initialized as this is not a monobehaviour.
+	/// </summary>
 	public void Initialize()
 	{
+		abilityButton1ToolTip = UIController.LevelUpPickAbilityButton1.GetComponent<ToolTip>();
+		abilityButton2ToolTip = UIController.LevelUpPickAbilityButton2.GetComponent<ToolTip>();
+		abilityButton3ToolTip = UIController.LevelUpPickAbilityButton3.GetComponent<ToolTip>();
+
 		UIController.LevelUpButton.onClick.AddListener(delegate { UIController.SetUIMode(UIController.UIMode.LevelUp); ToggleLevelUpScreen(); });
 
 		instance = this;
@@ -112,31 +120,7 @@ public class LevelUpScreen : AbilityCollection
 		{
 			switch(_t.name)
 			{
-				case "$AbilityButton1":
-					abilityPickButton1 = _t.GetComponent<Button>();
-					abilityPickText1 = abilityPickButton1.GetComponentInChildren<Text>();
 
-					abilityPickButton1.onClick.AddListener(delegate {
-						AddAbility(levelUpQue[0].option1);// abilityPickText1.text);
-					});
-
-					break;
-				case "$AbilityButton2":
-					abilityPickButton2 = _t.GetComponent<Button>();
-					abilityPickText2 = abilityPickButton2.GetComponentInChildren<Text>();
-
-					abilityPickButton2.onClick.AddListener(delegate {
-						AddAbility(levelUpQue[0].option2);
-					});
-					break;
-				case "$AbilityButton3":
-					abilityPickButton3 = _t.GetComponent<Button>();
-					abilityPickText3 = abilityPickButton3.GetComponentInChildren<Text>();
-
-					abilityPickButton3.onClick.AddListener(delegate {
-						AddAbility(levelUpQue[0].option3);
-					});
-					break;
 				case "$CancelButton":
 					cancelButton = _t.GetComponent<Button>();
 					cancelButton.onClick.AddListener(delegate
@@ -173,6 +157,23 @@ public class LevelUpScreen : AbilityCollection
 			}
 		}
 
+		UIController.LevelUpPickAbilityButton1.onClick.AddListener(delegate {
+			Debug.Log("queue count: " + levelUpQueue.Count + " option 1: " + levelUpQueue[0].option1.name);
+
+			AddAbility(levelUpQueue[0].option1);
+		});
+
+		UIController.LevelUpPickAbilityButton2.onClick.AddListener(delegate {
+			Debug.Log("queue count: " + levelUpQueue.Count + " option 2: " + levelUpQueue[0].option2.name);
+
+			AddAbility(levelUpQueue[0].option2);
+		});
+
+		UIController.LevelUpPickAbilityButton3.onClick.AddListener(delegate {
+			Debug.Log("queue count: " + levelUpQueue.Count + " option 3: " + levelUpQueue[0].option3.name);
+			AddAbility(levelUpQueue[0].option3);
+		});
+
 		UIController.LevelUpStrengthChangeButtons.maxObject.onClick.AddListener(delegate {
 			UpdateTraitText(ref strengthChange, 1, CombatController.playerCombatController.myStats.baseStrength, UIController.LevelUpStrengthCurrentTraitText, UIController.LevelUpStrengthChangeButtons.minObject);
 		});
@@ -206,7 +207,7 @@ public class LevelUpScreen : AbilityCollection
 	{
 		if (currentGroup.abilityUnlocks.Count > currentGroup.levels) //if the current unlocks are higher than the level
 		{
-			levelUpQue.Add(currentGroup.abilityUnlocks[currentGroup.levels]); //add the next abilities to the choice pool
+			levelUpQueue.Add(currentGroup.abilityUnlocks[currentGroup.levels]); //add the next abilities to the choice pool
 			currentGroup.levels++; //and increase the level
 		}
 
@@ -221,30 +222,49 @@ public class LevelUpScreen : AbilityCollection
 
 	void AddAbility(Ability _abilityToAdd)
 	{
-		if (levelUpQue.Count <= 0) return;
+		if (levelUpQueue.Count <= 0) return;
 
 		CombatController.playerCombatController.myStats.abilities.Add(_abilityToAdd);
 		CombatController.playerCombatController.RefreshAbilityList();
-		levelUpQue.Remove(levelUpQue[0]);
+		levelUpQueue.Remove(levelUpQueue[0]);
 		RefreshAbilities();
 	}
 
 	void RefreshAbilities()
 	{
-		bool _lc = (levelUpQue.Count > 0);
-		bool _hasOption1 = (_lc) ? (levelUpQue[0].option1 != null): false;
-		bool _hasOption2 = (_lc) ? (levelUpQue[0].option2 != null): false;
-		bool _hasOption3 = (_lc) ? (levelUpQue[0].option3 != null): false;
+		bool _hasAbilityQueue = (levelUpQueue.Count > 0);
+		bool _hasOption1 = (_hasAbilityQueue) ? (levelUpQueue[0].option1 != null): false;
+		bool _hasOption2 = (_hasAbilityQueue) ? (levelUpQueue[0].option2 != null): false;
+		bool _hasOption3 = (_hasAbilityQueue) ? (levelUpQueue[0].option3 != null): false;
 
-		abilityPickButton1.gameObject.SetActive(_hasOption1);
-		abilityPickButton2.gameObject.SetActive(_hasOption2);
-		abilityPickButton3.gameObject.SetActive(_hasOption3);
+		UIController.LevelUpPickAbilityButton1.gameObject.SetActive(_hasOption1);
+		UIController.LevelUpPickAbilityButton2.gameObject.SetActive(_hasOption2);
+		UIController.LevelUpPickAbilityButton3.gameObject.SetActive(_hasOption3);
 
-		if (_lc)
+		if (_hasAbilityQueue)
 		{
-			abilityPickText1.text = (_hasOption1)? levelUpQue[0].option1.name : string.Empty;
-			abilityPickText2.text = (_hasOption2)? levelUpQue[0].option2.name : string.Empty;
-			abilityPickText3.text = (_hasOption3)? levelUpQue[0].option3.name : string.Empty;
+			if (_hasOption1)
+			{
+		 		//UIController.LevelUpPickAbilityButtonText1.text = (_hasOption1)? levelUpQueue[0].option1.name : string.Empty;
+		 		UIController.LevelUpPickAbilityButtonText1.text = levelUpQueue[0].option1.name;
+				abilityButton1ToolTip.ChangeToolTipText(levelUpQueue[0].option1.description);
+			}
+			if (_hasOption2)
+			{
+				UIController.LevelUpPickAbilityButtonText2.text = levelUpQueue[0].option2.name;
+				abilityButton2ToolTip.ChangeToolTipText(levelUpQueue[0].option2.description);
+			}
+			if (_hasOption3)
+			{
+				UIController.LevelUpPickAbilityButtonText3.text = levelUpQueue[0].option3.name;
+				abilityButton3ToolTip.ChangeToolTipText(levelUpQueue[0].option3.description);
+			}
+		}
+		else
+		{
+			abilityButton1ToolTip.OnPointerExit(null);
+			abilityButton2ToolTip.OnPointerExit(null);
+			abilityButton3ToolTip.OnPointerExit(null);
 		}
 	}
 
@@ -300,7 +320,7 @@ public class LevelUpScreen : AbilityCollection
             confirmButton.gameObject.SetActive(false);
 
             UIController.LevelUpTraitPointsToSpendText.text = TRAIT_POINTS_DEFAULT_STRING + traitPointsToSpend;
-			UIController.LevelUpAbilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + levelUpQue.Count;// + abilityPointsToSpend;
+			UIController.LevelUpAbilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + levelUpQueue.Count;// + abilityPointsToSpend;
 
 			ToggleArrowButtons();
 			//CombatController.playerCombatController.CloseAllCombatUI();

@@ -600,7 +600,7 @@ GameObject:
   - component: {fileID: 86455760}
   - component: {fileID: 86455759}
   m_Layer: 5
-  m_Name: Text
+  m_Name: $LevelUpPickAbilityText1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1781,8 +1781,9 @@ GameObject:
   - component: {fileID: 225563395}
   - component: {fileID: 225563394}
   - component: {fileID: 225563393}
+  - component: {fileID: 225563396}
   m_Layer: 5
-  m_Name: $AbilityButton2
+  m_Name: $LevelUpPickAbilityButton2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1887,6 +1888,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 225563391}
   m_CullTransparentMesh: 0
+--- !u!114 &225563396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225563391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a6630e8bf29f040b8ef71ff5053d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &235778384
 GameObject:
   m_ObjectHideFlags: 0
@@ -4787,8 +4800,9 @@ GameObject:
   - component: {fileID: 615508873}
   - component: {fileID: 615508872}
   - component: {fileID: 615508871}
+  - component: {fileID: 615508874}
   m_Layer: 5
-  m_Name: $AbilityButton1
+  m_Name: $LevelUpPickAbilityButton1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4893,6 +4907,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615508869}
   m_CullTransparentMesh: 0
+--- !u!114 &615508874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615508869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a6630e8bf29f040b8ef71ff5053d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &640871636
 GameObject:
   m_ObjectHideFlags: 0
@@ -7404,7 +7430,7 @@ GameObject:
   - component: {fileID: 855429877}
   - component: {fileID: 855429876}
   m_Layer: 5
-  m_Name: Text
+  m_Name: $LevelUpPickAbilityText2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8732,7 +8758,7 @@ GameObject:
   - component: {fileID: 978096915}
   - component: {fileID: 978096914}
   m_Layer: 5
-  m_Name: Text
+  m_Name: $LevelUpPickAbilityText3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12501,8 +12527,9 @@ GameObject:
   - component: {fileID: 1657453043}
   - component: {fileID: 1657453042}
   - component: {fileID: 1657453041}
+  - component: {fileID: 1657453044}
   m_Layer: 5
-  m_Name: $AbilityButton3
+  m_Name: $LevelUpPickAbilityButton3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12607,6 +12634,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1657453039}
   m_CullTransparentMesh: 0
+--- !u!114 &1657453044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657453039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a6630e8bf29f040b8ef71ff5053d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1663512834
 GameObject:
   m_ObjectHideFlags: 0
@@ -15189,8 +15228,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startedTurn: 0
-  currentHealth: 0
-  currentMana: 0
   actedLastTick: 0
 --- !u!114 &1921367577
 MonoBehaviour:

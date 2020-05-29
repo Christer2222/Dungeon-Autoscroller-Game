@@ -25,7 +25,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     void Start()
     {
         //toolTipString = ProcessString(transform.name + " ABCDEFGHIJKLMN OPQRSTUVWXYZ abcdefghijklmn opqrstuvwxyz 1234567890 !?.,:;-_");// " bl afs1 blag h2bls hjah3 vlsf ha4 bad jfg5 alds jfm6 dlst kyafd7 ba skh8 sbs kakds9 1"); // + System.DateTime.Now;
-        descriptionBackgroundParent = UIController.DescriptionBackground.parent.transform as RectTransform;
+        descriptionBackgroundParent = UIController.ToolTipBackground.parent.transform as RectTransform;
     }
 
     public void ChangeToolTipText(string _target)
@@ -37,7 +37,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             print("was this active when updated: " +(selectedGameObject.transform == transform) + " selected: " + selectedGameObject.name + " this: " + transform.name);
             if (selectedGameObject.transform == transform) //check if the transform is the same as this transform.  (Apparently gameobjects change?)
             {
-                UIController.DescriptionText.text = toolTipString;
+                UIController.ToolTipText.text = toolTipString;
             }
 		}
     }
@@ -148,30 +148,30 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 if (timer > MINIMUM_SHOW_TIME)
                 {
                     if (fadeInCoroutine == null)
-                        fadeInCoroutine = StartCoroutine(EffectTools.BlinkImage(UIController.DescriptionBackgroundImage, descriptionOriginalColor, 0.1f,  0.5f));
+                        fadeInCoroutine = StartCoroutine(EffectTools.BlinkImage(UIController.ToolTipBackgroundImage, descriptionOriginalColor, 0.1f,  0.5f));
 
 
-                    UIController.DescriptionBackground.gameObject.SetActive(true);// EventSystem.current.IsPointerOverGameObject());
+                    UIController.ToolTipBackground.gameObject.SetActive(true);// EventSystem.current.IsPointerOverGameObject());
 
                     var res = Screen.safeArea;
                     var _scrn = new Vector2(res.width,res.height)/2;
 
-                    Vector2 _offset = UIController.DescriptionBackground.rect.size / 2 + Vector2.one;
+                    Vector2 _offset = UIController.ToolTipBackground.rect.size / 2 + Vector2.one;
                     _offset.x *= (Input.mousePosition.x > _scrn.x) ? -1 : 1;//mouseHigh ? -1 : 1;
                     _offset.y *= (Input.mousePosition.y > _scrn.y) ? -1 : 1;//mouseRight ? -1 : 1;
 
                     RectTransformUtility.ScreenPointToLocalPointInRectangle(descriptionBackgroundParent, Input.mousePosition, UIController.MainCamera, out outPos);
-                    UIController.DescriptionBackground.position = UIController.DescriptionBackground.parent.transform.TransformPoint(outPos + _offset);
+                    UIController.ToolTipBackground.position = UIController.ToolTipBackground.parent.transform.TransformPoint(outPos + _offset);
                 }
                 else
                 {
-                    UIController.DescriptionBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
+                    UIController.ToolTipBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
                     //break; //yield return null;
                     if (fadeInCoroutine != null)
                     {
                         StopCoroutine(fadeInCoroutine);
                         fadeInCoroutine = null;
-                        UIController.DescriptionBackgroundImage.color = Color.clear;
+                        UIController.ToolTipBackgroundImage.color = Color.clear;
                     }    
                 }            
             }
@@ -182,8 +182,8 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     void SetSize()
     {
-        UIController.DescriptionBackground.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, UIController.DescriptionText.preferredWidth + 40);// 300);
-        UIController.DescriptionBackground.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, UIController.DescriptionText.preferredHeight + 10);
+        UIController.ToolTipBackground.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, UIController.ToolTipText.preferredWidth + 40);// 300);
+        UIController.ToolTipBackground.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, UIController.ToolTipText.preferredHeight + 10);
     }
 
     /*
@@ -207,8 +207,8 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         selectedGameObject = eventData.pointerCurrentRaycast.gameObject.transform;//selectedObject.transform;
         //UIController.DescriptionBackground.gameObject.SetActive(true);// EventSystem.current.IsPointerOverGameObject());
-        UIController.DescriptionBackgroundImage.color = Color.clear;
-        UIController.DescriptionText.text = toolTipString;
+        UIController.ToolTipBackgroundImage.color = Color.clear;
+        UIController.ToolTipText.text = toolTipString;
 
         //hoverCoroutine = StartCoroutine(HoverCheck());
         SetSize();
@@ -217,7 +217,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerOver(PointerEventData eventData)
     {
-        UIController.DescriptionBackground.position = eventData.selectedObject.transform.position; // UIController.MainCamera.ScreenToWorldPoint(_mousePos);
+        UIController.ToolTipBackground.position = eventData.selectedObject.transform.position; // UIController.MainCamera.ScreenToWorldPoint(_mousePos);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -226,7 +226,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             if (selectedGameObject.transform == transform)
             {
 
-                UIController.DescriptionBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
+                UIController.ToolTipBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
                 StopAllCoroutines();
                 fadeInCoroutine = null;
                 selectedGameObject = null;

@@ -6,9 +6,16 @@ public class UIController : MonoBehaviour
 {
     public const string ABILITIES_BUTTON_STRING = "Abilities", ITEMS_BUTTON_STRING = "Items";// ABILITIES_BUTTON_STRING = "";
 
-    public static Camera MainCamera { get; private set; }
+	#region General
+	public static Camera MainCamera { get; private set; }
+    public static Transform UICanvas { get; private set; }
+    public static GameObject GameOverHolder { get; private set; }
+	#endregion
 
-    public static Text InventoryButtonText { get; private set; }
+	//-----------------------Inventory------------------------
+	#region inventory
+	#region general
+	public static Text InventoryButtonText { get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }
     public static RectTransform InventoryRootRectTransform { get; private set; }
@@ -31,8 +38,11 @@ public class UIController : MonoBehaviour
     public static Button InventoryTossDown10Button { get; private set; }
     public static InputField InventoryTossInputField { get; private set; }
     public static Button InventoryCloseButton { get; private set; }
+	#endregion
 
-    public static Image CurrentEquippedHelmetImage { get; private set; }
+	//-------------------Inventory Equipment-----------------------------------
+	#region equipment
+	public static Image CurrentEquippedHelmetImage { get; private set; }
     public static Image CurrentEquippedChestplateImage { get; private set; }
     public static Image CurrentEquippedLeggingsImage { get; private set; }
     public static Image CurrentEquippedBootsImage { get; private set; }
@@ -41,8 +51,9 @@ public class UIController : MonoBehaviour
     public static Image CurrentEquippedAccessory1Image { get; private set; }
     public static Image CurrentEquippedAccessory2Image { get; private set; }
     public static Image CurrentEquippedAccessory3Image { get; private set; }
-
-    public static Button UnequipHelmetButton { get; private set; }
+	#endregion
+	#region unequip
+	public static Button UnequipHelmetButton { get; private set; }
     public static Button UnequipChestplateButton { get; private set; }
     public static Button UnequipLeggingsButton { get; private set; }
     public static Button UnequipBootsButton { get; private set; }
@@ -51,10 +62,20 @@ public class UIController : MonoBehaviour
     public static Button UnequipAccessory1Button { get; private set; }
     public static Button UnequipAccessory2Button { get; private set; }
     public static Button UnequipAccessory3Button { get; private set; }
+	#endregion
+	#endregion
 
-
+	//-----------------------Level Up---------------------------------------------
+	#region LevelUp
+	public static GameObject LevelUpScreenGameObject { get; private set; }
     public static Text LevelClassText { get; private set; }
     public static Button ClassChangePossibleButton { get; private set; }
+    public static Button LevelUpPickAbilityButton1 { get; private set; }
+    public static Button LevelUpPickAbilityButton2 { get; private set; }
+    public static Button LevelUpPickAbilityButton3 { get; private set; }
+    public static Text LevelUpPickAbilityButtonText1 { get; private set; }
+    public static Text LevelUpPickAbilityButtonText2 { get; private set; }
+    public static Text LevelUpPickAbilityButtonText3 { get; private set; }
     public static Text LevelUpAbilityPointsToSpendText { get; private set; }
     public static Text LevelUpTraitPointsToSpendText { get; private set; }
     public static Text LevelUpStrengthCurrentTraitText { get; private set; }
@@ -65,8 +86,9 @@ public class UIController : MonoBehaviour
     public static MinMax<Button> LevelUpDexterityChangeButtons { get; private set; } = new MinMax<Button>();
     public static MinMax<Button> LevelUpIntellectChangeButtons { get; private set; } = new MinMax<Button>();
     public static MinMax<Button> LevelUpLuckChangeButtons { get; private set; } = new MinMax<Button>();
+    #endregion
 
-
+    #region GameView
     public static MinMax<Slider> HealthSliderPair { get; } = new MinMax<Slider>();
     public static MinMax<Slider> ManaSliderPair { get; } = new MinMax<Slider>();
 
@@ -78,38 +100,36 @@ public class UIController : MonoBehaviour
 
     public static Text TurnOrderText { get; private set; }
 
-    public static GameObject GameOverHolder { get; private set; }
+	public static Slider FleeSlider { get; private set; }
 
-    public static Transform BuffContent { get; private set; }
+	#region Buffs
+	public static Transform BuffContent { get; private set; }
     public static ScrollRect BuffScrollRect { get; private set; }
     public static Image BuffScrollImage { get; private set; }
+	#endregion
+	#endregion
 
-
-    public static Button AbilityButton { get; private set; }
+	#region GameButtons
+	public static Button AbilityButton { get; private set; }
     public static Button FleeButton { get; private set; }
     public static Button InventoryButton { get; private set; }
     public static Button InspectButton { get; private set; }
     public static Button LevelUpButton { get; private set; }
+    #endregion
 
-
+    #region AbilitySelection
     public static RectTransform AbilityMenuScrollView { get; private set; }
     public static RectTransform AbilityMenuContent { get; private set; }
     public static Text AbilityButtonText { get; private set; }
+#endregion
 
+    #region ToolTips
+        public static RectTransform ToolTipBackground {get; private set;}
+        public static Image ToolTipBackgroundImage { get; private set; }
+        public static Text ToolTipText {get; private set;}
+    #endregion
 
-    public static Slider FleeSlider { get; private set; }
-
-
-    public static GameObject LevelUpScreenGameObject { get; private set; }
-
-    public static Transform UICanvas { get; private set; }
-
-    public static RectTransform DescriptionBackground {get; private set;}
-    public static Image DescriptionBackgroundImage { get; private set; }
-    public static Text DescriptionText {get; private set;}
-
-
-    public class MinMax<T>
+	public class MinMax<T>
     {
         public T minObject;
         public T maxObject;
@@ -141,7 +161,8 @@ public class UIController : MonoBehaviour
             Transform child = childrenTransforms[i];
             switch (child.name)
             {
-                case "$InventoryButtonText":
+				#region inventory
+				case "$InventoryButtonText":
                     InventoryButtonText = child.GetComponent<Text>();
                     break;
                 case "$ItemDropList":
@@ -210,99 +231,7 @@ public class UIController : MonoBehaviour
                 case "$InventoryCloseButton":
                     InventoryCloseButton = child.GetComponent<Button>();
                     break;
-                case "$HealthSlider":
-                    HealthSliderPair.minObject = child.GetComponent<Slider>();
-                    HealthSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Health Points (HP). Keep this above 0.");
-                    break;
-                case "$HealthSliderSlow":
-                    HealthSliderPair.maxObject = child.GetComponent<Slider>();
-                    break;
-                case "$ManaSlider":
-                    ManaSliderPair.minObject = child.GetComponent<Slider>();
-                    ManaSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Mana Points (MP). Required for some abilities.");
-                    break;
-                case "$ManaSliderSlow":
-                    ManaSliderPair.maxObject = child.GetComponent<Slider>();
-                    break;
-                case "$TurnOrderText":
-                    TurnOrderText = child.GetComponent<Text>();
-                    break;
-                case "$XPSlider":
-                    XPSlider = child.GetComponent<Slider>();
-                    break;
-                case "$CurrentHealthText":
-                    HealthTextPair.minObject = child.GetComponent<Text>();
-                    break;
-                case "$MaxHealthText":
-                    HealthTextPair.maxObject = child.GetComponent<Text>();
-                    break;
-                case "$CurrentManaText":
-                    ManaTextPair.minObject = child.GetComponent<Text>();
-                    break;
-                case "$MaxManaText":
-                    ManaTextPair.maxObject = child.GetComponent<Text>();
-                    break;
-                case "$AbilityButton":
-                    AbilityButton = child.GetComponent<Button>();
-                    AbilityButton.onClick.AddListener(delegate { SetUIMode(UIMode.Abilities); });
-                    break;
-                case "$InventoryButton":
-                    InventoryButton = child.GetComponent<Button>();
-                    InventoryButton.onClick.AddListener(delegate { SetUIMode(UIMode.Inventory); });
-
-                    break;
-                case "$ButtonMenuScrollView":
-                    AbilityMenuScrollView = child.GetComponent<RectTransform>();
-                    break;
-                case "$InspectButton":
-                    InspectButton = child.GetComponent<Button>();
-                    InspectButton.onClick.AddListener(delegate { SetUIMode(UIMode.Inspect); });
-
-                    if (InspectButton.onClick.GetPersistentEventCount() == 0)
-                    {
-                        child.GetComponentInChildren<Text>().text = "-";
-                    }
-                    else
-                        print("REMOVE ME");
-
-                    break;
-                case "$FleeSlider":
-                    FleeSlider = child.GetComponent<Slider>();
-                    break;
-                case "$FleeButton":
-                    //fleeButton = _t.GetComponent<Button>();
-                    FleeButton = child.GetComponent<Button>();
-                    FleeButton.onClick.AddListener(delegate { SetUIMode(UIMode.Flee); });
-
-                    break;
-                case "$AbilityButtonText":
-                    AbilityButtonText = child.GetComponent<Text>();
-                    break;
-                case "$AbilityContent":
-                    AbilityMenuContent = child.GetComponent<RectTransform>();
-                    break;
-                case "$PlayerPortrait":
-                    LevelUpButton = child.GetComponent<Button>();
-                    LevelUpButton.GetComponent<ToolTip>().ChangeToolTipText("You. Another target. Click with no ability to open the status screen.");
-                    break;
-                case "$LevelUpHolder":
-                    LevelUpScreenGameObject = child.gameObject;
-                    break;
-                case "$BuffContent":
-                    BuffContent = child;
-                    BuffScrollRect = child.parent.parent.GetComponent<ScrollRect>();
-                    BuffScrollImage = BuffScrollRect.transform.Find("$BuffScrollbarVertical").GetComponent<Image>();
-                    break;
-                case "$GameOverHolder":
-                    GameOverHolder = child.gameObject;
-                    foreach (Transform _childGameOver in child.GetComponentsInChildren<Transform>(true))
-                    {
-                        if (_childGameOver.name == "$RestartButton")
-                        {
-                            _childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>(); });
-                        }
-                    }
-                    break;
+                #region equipment
                 case "$CurrentEquippedHelmet":
                     CurrentEquippedHelmetImage = child.GetComponent<Image>();
                     UnequipHelmetButton = child.GetComponent<Button>();
@@ -338,6 +267,101 @@ public class UIController : MonoBehaviour
                 case "$CurrentEquippedAccessory3":
                     CurrentEquippedAccessory3Image = child.GetComponent<Image>();
                     UnequipAccessory3Button = child.GetComponent<Button>();
+                    break;
+				#endregion
+				#endregion
+
+				#region GameView
+				case "$HealthSlider":
+                    HealthSliderPair.minObject = child.GetComponent<Slider>();
+                    HealthSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Health Points (HP). Keep this above 0.");
+                    break;
+                case "$HealthSliderSlow":
+                    HealthSliderPair.maxObject = child.GetComponent<Slider>();
+                    break;
+                case "$ManaSlider":
+                    ManaSliderPair.minObject = child.GetComponent<Slider>();
+                    ManaSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Mana Points (MP). Required for some abilities.");
+                    break;
+                case "$ManaSliderSlow":
+                    ManaSliderPair.maxObject = child.GetComponent<Slider>();
+                    break;
+                case "$TurnOrderText":
+                    TurnOrderText = child.GetComponent<Text>();
+                    break;
+                case "$XPSlider":
+                    XPSlider = child.GetComponent<Slider>();
+                    break;
+                case "$CurrentHealthText":
+                    HealthTextPair.minObject = child.GetComponent<Text>();
+                    break;
+                case "$MaxHealthText":
+                    HealthTextPair.maxObject = child.GetComponent<Text>();
+                    break;
+                case "$CurrentManaText":
+                    ManaTextPair.minObject = child.GetComponent<Text>();
+                    break;
+                case "$MaxManaText":
+                    ManaTextPair.maxObject = child.GetComponent<Text>();
+                    break;
+                case "$BuffContent":
+                    BuffContent = child;
+                    BuffScrollRect = child.parent.parent.GetComponent<ScrollRect>();
+                    BuffScrollImage = BuffScrollRect.transform.Find("$BuffScrollbarVertical").GetComponent<Image>();
+                    break;
+                #endregion
+
+                #region GameButtons
+                case "$AbilityButton":
+                    AbilityButton = child.GetComponent<Button>();
+                    AbilityButton.onClick.AddListener(delegate { SetUIMode(UIMode.Abilities); });
+                    break;
+                case "$InventoryButton":
+                    InventoryButton = child.GetComponent<Button>();
+                    InventoryButton.onClick.AddListener(delegate { SetUIMode(UIMode.Inventory); });
+                    break;
+                case "$InspectButton":
+                    InspectButton = child.GetComponent<Button>();
+                    InspectButton.onClick.AddListener(delegate { SetUIMode(UIMode.Inspect); });
+
+                    if (InspectButton.onClick.GetPersistentEventCount() == 0)
+                    {
+                        child.GetComponentInChildren<Text>().text = "-";
+                    }
+                    else
+                        print("REMOVE ME");
+
+                    break;
+                case "$FleeButton":
+                    //fleeButton = _t.GetComponent<Button>();
+                    FleeButton = child.GetComponent<Button>();
+                    FleeButton.onClick.AddListener(delegate { SetUIMode(UIMode.Flee); });
+                    break;
+                case "$PlayerPortrait":
+                    LevelUpButton = child.GetComponent<Button>();
+                    LevelUpButton.GetComponent<ToolTip>().ChangeToolTipText("You. Another target. Click with no ability to open the status screen.");
+                    break;
+                #endregion
+
+                case "$FleeSlider":
+                    FleeSlider = child.GetComponent<Slider>();
+                    break;
+
+				#region AbilityPicking
+				case "$ButtonMenuScrollView":
+                    AbilityMenuScrollView = child.GetComponent<RectTransform>();
+                    break;
+                case "$AbilityButtonText":
+                    AbilityButtonText = child.GetComponent<Text>();
+                    break;
+                case "$AbilityContent":
+                    AbilityMenuContent = child.GetComponent<RectTransform>();
+                    break;
+				#endregion
+
+                #region LevelUp
+                case "$LevelUpHolder":
+                    LevelUpScreenGameObject = child.gameObject;
                     break;
                 case "$LevelClassText":
                     LevelClassText = child.GetComponent<Text>();
@@ -388,15 +412,48 @@ public class UIController : MonoBehaviour
                 case "$LuckMinusButton":
                     LevelUpLuckChangeButtons.minObject = child.GetComponent<Button>();
                     break;
-                case "$DescriptionBackground":
-                    DescriptionBackground = child.GetComponent<RectTransform>();
-                    DescriptionBackgroundImage = child.GetComponent<Image>();
+                case "$LevelUpPickAbilityButton1":
+                    LevelUpPickAbilityButton1 = child.GetComponent<Button>();
+                    break;
+                case "$LevelUpPickAbilityButton2":
+                    LevelUpPickAbilityButton2 = child.GetComponent<Button>();
+                    break;
+                case "$LevelUpPickAbilityButton3":
+                    LevelUpPickAbilityButton3 = child.GetComponent<Button>();
+                    break;
+                case "$LevelUpPickAbilityText1":
+                    LevelUpPickAbilityButtonText1 = child.GetComponent<Text>();
+                    break;
+                case "$LevelUpPickAbilityText2":
+                    LevelUpPickAbilityButtonText2 = child.GetComponent<Text>();
+                    break;
+                case "$LevelUpPickAbilityText3":
+                    LevelUpPickAbilityButtonText3 = child.GetComponent<Text>();
+                    break;
+#endregion
+
+				#region ToolTip
+				case "$DescriptionBackground":
+                    ToolTipBackground = child.GetComponent<RectTransform>();
+                    ToolTipBackgroundImage = child.GetComponent<Image>();
                     break;
                 case "$DescriptionText":
-                    DescriptionText = child.GetComponent<Text>();
+                    ToolTipText = child.GetComponent<Text>();
+                    break;
+                #endregion
+
+                case "$GameOverHolder":
+                    GameOverHolder = child.gameObject;
+                    foreach (Transform _childGameOver in child.GetComponentsInChildren<Transform>(true))
+                    {
+                        if (_childGameOver.name == "$RestartButton")
+                        {
+                            _childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>(); });
+                        }
+                    }
                     break;
             }
-        }
+		}
 
         LevelUpScreen.instance = new LevelUpScreen(); //CombatController.playerCombatController.GetComponent<LevelUpScreen>();
         LevelUpScreen.instance.Initialize();

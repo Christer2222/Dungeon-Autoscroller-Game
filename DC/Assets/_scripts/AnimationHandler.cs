@@ -18,8 +18,6 @@ public class AnimationHandler : MonoBehaviour
 			StartCoroutine(Animate(_img));
 		else if (_rend != null)
 			StartCoroutine(Animate(_rend));
-
-		print(myStats.idleAnimation.Length);
 	}
 
 	/*
@@ -34,7 +32,6 @@ public class AnimationHandler : MonoBehaviour
 
 	IEnumerator Animate(SpriteRenderer _targetRenderer)
 	{
-		print("sprite");
 		int _index = 0;
 		while (true)
 		{
@@ -47,7 +44,6 @@ public class AnimationHandler : MonoBehaviour
 
 	IEnumerator Animate(Image _targetImage)
 	{
-		print("image");
 		int _index = 0;
 		while (true)
 		{
