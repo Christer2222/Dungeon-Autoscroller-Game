@@ -558,7 +558,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator LifeTap(TargetData targetData)
 	{
         EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position, 1);
-		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.currentHealth -1),Elementals.Void, targetData.ability.extraData);
+		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.myStats.currentHealth -1),Elementals.Void, targetData.ability.extraData);
 		targetData.self.AdjustMana(_tapped);
 		yield return null;
 	}

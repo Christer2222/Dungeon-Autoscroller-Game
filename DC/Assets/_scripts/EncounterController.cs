@@ -175,6 +175,7 @@ public class EncounterController : MonoBehaviour
 		_cc.myStats = _monstarStat.Clone();
 		_go.name = _monstarStat.name + " " + _pos;
 
+		_go.GetComponentInChildren<ToolTip>().ChangeToolTipText(_cc.myStats.GetToolTipStats());
 		
 		StartCoroutine(EffectTools.PingPongSize(_go.transform, Vector3.zero, Vector3.one * 0.5f, APPEAR_SPEED, 0.5f));
 		StartCoroutine(EffectTools.MoveToPoint(_go.transform, _startPos + EncounterData.offsetTable[_pos], APPEAR_SPEED));
@@ -194,7 +195,7 @@ public class EncounterController : MonoBehaviour
 	public IEnumerator DoneWithCombat()
 	{
 		//currentGameState = GameState.Finishing_Combat;
-		print("done with combat");
+		//print("done with combat");
 		if (CombatController.turnOrder.Count >= 1)
 			Options.finishedTutorial = true;
 

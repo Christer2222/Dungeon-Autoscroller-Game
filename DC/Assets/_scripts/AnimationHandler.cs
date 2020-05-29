@@ -13,12 +13,16 @@ public class AnimationHandler : MonoBehaviour
 
 		SpriteRenderer _rend = GetComponentInChildren<SpriteRenderer>();
 		Image _img = GetComponentInChildren<Image>();
-		if (_rend != null)
-			StartCoroutine(Animate(_rend));
-		else if (_img != null)
+		
+		if (_img != null)
 			StartCoroutine(Animate(_img));
+		else if (_rend != null)
+			StartCoroutine(Animate(_rend));
+
+		print(myStats.idleAnimation.Length);
 	}
 
+	/*
 	int Counter(int[] _numbers, int index)
 	{
 		index++;
@@ -26,9 +30,11 @@ public class AnimationHandler : MonoBehaviour
 
 		return _numbers[index];
 	}
+	*/
 
 	IEnumerator Animate(SpriteRenderer _targetRenderer)
 	{
+		print("sprite");
 		int _index = 0;
 		while (true)
 		{
@@ -41,6 +47,7 @@ public class AnimationHandler : MonoBehaviour
 
 	IEnumerator Animate(Image _targetImage)
 	{
+		print("image");
 		int _index = 0;
 		while (true)
 		{

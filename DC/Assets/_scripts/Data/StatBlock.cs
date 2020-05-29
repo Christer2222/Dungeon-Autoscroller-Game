@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AbilityInfo;
 using UnityEngine;
 
@@ -49,8 +50,8 @@ public class StatBlock
 		immunities = _immunities;
 		absorbs = _absorbs;
 
-		maxHealth = _maxHealth;
-		maxMana = _maxMana;
+		maxHealth = currentHealth = _maxHealth;
+		maxMana = currentMana = _maxMana;
 
 		level = _level;
 		xp = _xp;
@@ -90,6 +91,7 @@ public class StatBlock
 	public string name;
 	public Elementals resistances, weaknesses, immunities, absorbs;
 	public int maxHealth, maxMana;
+	public int currentHealth, currentMana;
 	public int level, xp;
 
 	public int baseStrength, baseDexterity, baseIntelligence, baseLuck;
@@ -197,6 +199,32 @@ public class StatBlock
 			}
 			return _bm;
 		}
+	}
+
+	public string GetToolTipStats()
+	{
+		string _green = "<color=#00FF00>";
+		string _red = "<color=#FF0000>";
+		string _end = "</color>";
+
+		bool _alteredDefense = Defense != baseDefense;
+		bool _alteredMagicDefense = MagicDefense != baseMagicDefense;
+
+
+		string _defenseString = (_alteredDefense?((Defense > baseDefense)?_green:_red):string.Empty) + Defense + ((_alteredDefense)? _end: string.Empty);
+		string _magicDefenseString = (_alteredMagicDefense?((MagicDefense > baseMagicDefense)?_green:_red):string.Empty) + Defense + ((_alteredDefense)? _end: string.Empty);
+
+
+		string moves = string.Join(", ", abilities.Select(x => x.name));// abilities.Aggregate
+		//string moves = abilities.Select(x => x.name).Aggregate((x, y) => x + ", " + y);
+		return $"{name}" +
+			$"\n" +
+			$"\nHP: {currentHealth}/{maxHealth}" +
+			$"\nMP: {currentMana}/{maxMana}" +
+			$"\nPhysical Defense: {_defenseString}" +
+			$"\nMagic Defense: {_magicDefenseString}" +
+			$"\n" +
+			$"\nMoves: {moves}";
 	}
 
 	public StatBlock Clone()
