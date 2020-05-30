@@ -411,8 +411,8 @@ public class PlayerInventory : MonoBehaviour
             UnequipItem(_slot.Equals(offHandSlot.Value) ? mainHandSlot.Value : offHandSlot.Value);
         }
 
-        AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Physical_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.physicalDefense,null,false), CombatController.playerCombatController);
-        AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Magic_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.magicDefense,null,false), CombatController.playerCombatController);
+        AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Physical_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.physicalDefense,null,false), CombatController.playerCombatController.MyStats);
+        AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Magic_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.magicDefense,null,false), CombatController.playerCombatController.MyStats);
 
         print(CombatController.playerCombatController.CheckIfHasBuff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name));
 

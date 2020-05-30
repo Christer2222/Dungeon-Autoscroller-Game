@@ -77,6 +77,7 @@
     <Compile Include="Assets\_scripts\Data\EffectTools.cs" />
     <Compile Include="Assets\_scripts\Data\EncounterData.cs" />
     <Compile Include="Assets\_scripts\Data\EnemyAI.cs" />
+    <Compile Include="Assets\_scripts\Data\IAbilityInterractible.cs" />
     <Compile Include="Assets\_scripts\Data\ItemInfo.cs" />
     <Compile Include="Assets\_scripts\Data\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\Data\Options.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Assets\_scripts\OLD\UIAspect.cs" />
     <Compile Include="Assets\_scripts\PlayerInventory.cs" />
     <Compile Include="Assets\_scripts\ResetStaticVariablesManager.cs" />
+    <Compile Include="Assets\_scripts\TerrainInterractible.cs" />
     <Compile Include="Assets\_scripts\ToolTip.cs" />
     <Compile Include="Assets\_scripts\UIController.cs" />
     <None Include="Assets\Resources\Sprites\Effects\old\life_tap_a_text.txt" />

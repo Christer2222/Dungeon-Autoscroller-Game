@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AbilityInfo;
+using System.Runtime.InteropServices;
 
 public class AbilityScript : MonoBehaviour// : AbilityData
 {
@@ -94,11 +95,11 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	/// <summary>
 	/// Adds a buff to the target (checks if target is null)
 	/// </summary>
-	public static void AddBuff(Buff _buff, CombatController _target)
+	public static void AddBuff(Buff _buff, StatBlock _target)
 	{
 		if (_target == null) return;
 
-		var _same = _target.myStats.buffList.Find(x => x.name == _buff.name);
+		var _same = _target.buffList.Find(x => x.name == _buff.name);
 		switch(_buff.stackType)
 		{
 			case Buff.StackType.Pick_Most_Potent:
@@ -106,12 +107,12 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 				{
 					if(_same.constant < _buff.constant || (_same.constant == _buff.constant && _same.turns < _buff.turns))
 					{
-						_target.myStats.buffList.Remove(_same);
-						_target.myStats.buffList.Add(_buff);
+						_target.buffList.Remove(_same);
+						_target.buffList.Add(_buff);
 					}
 				}
 				else
-					_target.myStats.buffList.Add(_buff);
+					_target.buffList.Add(_buff);
 
 				break;
 			case Buff.StackType.Pick_Most_Turns:
@@ -119,15 +120,15 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 				{
 					if(_same.turns < _buff.turns || (_same.turns == _buff.turns && _same.constant < _buff.constant))
 					{
-						_target.myStats.buffList.Remove(_same);
-						_target.myStats.buffList.Add(_buff);
+						_target.buffList.Remove(_same);
+						_target.buffList.Add(_buff);
 					}
 				}
 				else
-					_target.myStats.buffList.Add(_buff);
+					_target.buffList.Add(_buff);
 				break;
 			case Buff.StackType.Add_Duplicate:
-				_target.myStats.buffList.Add(_buff);
+				_target.buffList.Add(_buff);
 				break;
 			case Buff.StackType.Add_One_Duration_Add_All_Potency:
 				if(_same != null)
@@ -136,7 +137,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 					_same.constant += _buff.constant;
 				}
 				else
-					_target.myStats.buffList.Add(_buff);
+					_target.buffList.Add(_buff);
 				break;
 			case Buff.StackType.Add_One_Duration_And_One_Potency:
 				if (_same != null)
@@ -145,10 +146,10 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 					_same.constant += 1 * Mathf.Sign(_same.constant);
 				}
 				else
-					_target.myStats.buffList.Add(_buff);
+					_target.buffList.Add(_buff);
 				break;
 			default:
-				Debug.LogError("ERROR when adding buff: " + _buff.name + " to: " + _target.transform.name);
+				Debug.LogError("ERROR when adding buff: " + _buff.name + " to: " + _target.name);
 				break;
 
 		}
@@ -165,11 +166,27 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		RaycastHit2D _hit = Physics2D.Raycast(_clickPos,Vector2.zero,0.01f);
 
 		/*
+		 * Get Pixel Test
+		 * 
 		if (_hit.transform != null)
-			print(_hit);
+		{
+			//print(_hit);
+			var localPos = ((Vector2)_hit.transform.position) - _hit.point;
+			localPos = localPos*(2 / 2.56f * 256) - Vector2.one * 128;
+			localPos *= -1;
+			//print(-localPos);
+
+
+			Vector2Int intPos = new Vector2Int((int)localPos.x, (int)localPos.y); //(Vector2Int)localPos;
+
+
+			print(_hit.transform.GetComponentInChildren<UnityEngine.UI.Image>().sprite.texture.GetPixel(intPos.x,intPos.y));
+		}
 		*/
+
 		return _hit;
 	}
+
 
 
 	static CombatController GetHitCombatController(RaycastHit2D _hit)
@@ -254,28 +271,28 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator Poison(TargetData targetData)
 	{
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, targetData.centerPos, 1).transform;
-		_t.SetParent(targetData.target.transform);
+		_t.SetParent(targetData.target.MyMono.transform);
 
-		int _potency = Mathf.Clamp(targetData.self.myStats.Intelligence,1,5);
+		int _potency = Mathf.Clamp(targetData.self.MyStats.Intelligence,1,5);
 
 		//var _buff = new Buff("Poisioned", AbilityClass.poisionTick, _potency, BuffIcons.TryGetBuffIcon("poision"), Buff.StackType.Pick_Most_Turns, _potency);
 		var _buff = new Buff("Poisioned", AbilityCollection.poisonTick, _potency, BuffIcons.TryGetBuffIcon(21), Buff.StackType.Pick_Most_Turns, _potency);
-		AddBuff(_buff, targetData.target);
+		AddBuff(_buff, targetData.target.MyStats);
 		
 		yield return null;
 	}
 	
 	public static IEnumerator PoisonTick(TargetData targetData) //only available through the poision ability
 	{
-		var _previousBuff = targetData.target.myStats.buffList.Find(x => x.name == "Poisioned");
+		var _previousBuff = targetData.target.MyStats.buffList.Find(x => x.name == "Poisioned");
 		
 		if (_previousBuff != null)
 		{
 			_previousBuff.constant = _previousBuff.turns;
 
 			targetData.target.AdjustHealth(-Mathf.Max((int)_previousBuff.constant,0),targetData.element, ExtraData.none);
-			var _t = EffectTools.SpawnEffect(AbilityCollection.poison.name, targetData.target.transform.position,1).transform;
-			_t.SetParent(targetData.target.transform);
+			var _t = EffectTools.SpawnEffect(AbilityCollection.poison.name, targetData.target.MyMono.transform.position,1).transform;
+			_t.SetParent(targetData.target.MyMono.transform);
 		}
 		yield return null;
 	}
@@ -311,7 +328,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		_mono.StartCoroutine(CircleCollision(_bolt.transform,0.1f, 0.1f,
 			delegate (CombatController _cc) //check for collisions, when found...
 			{
-				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.Intelligence, 0), targetData.element, targetData.ability.extraData); //change health
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.MyStats.Intelligence, 0), targetData.element, targetData.ability.extraData); //change health
 				GameObject _orgHit = _cc.gameObject;
 				
 				var _hits = Physics2D.OverlapCircleAll(_bolt.transform.position, 1f); //check for nearby colliders
@@ -336,7 +353,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 					{
 						if (_cc2.gameObject != _orgHit) //if the hit is not the original one
 						{
-							_cc2.AdjustHealth(-Mathf.Max(Mathf.CeilToInt((float)targetData.self.myStats.Intelligence/2), 0), targetData.element, targetData.ability.extraData);
+							_cc2.AdjustHealth(-Mathf.Max(Mathf.CeilToInt((float)targetData.self.MyStats.Intelligence/2), 0), targetData.element, targetData.ability.extraData);
 							Destroy(_spawnedBolt.gameObject);
 						}
 					}));
@@ -368,7 +385,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator CrystalLance(TargetData targetData)
 	{
 		var _buff = new Buff("Crystalized", new List<Buff.TraitType> { Buff.TraitType.Physical_Defence_Constant, Buff.TraitType.Magic_Defence_Constant }, 1, BuffIcons.TryGetBuffIcon(17), Buff.StackType.Pick_Most_Turns, 99);
-		AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self.MyStats);
 
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position,10).transform;
 		_t.SetParent(targetData.self.transform);
@@ -379,7 +396,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			if (_cc.transform != targetData.self.transform)
 			{
 				print(_cc.transform.name +  " " + _t.name);
-				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.Strength, 0), targetData.element, targetData.ability.extraData);
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.MyStats.Strength, 0), targetData.element, targetData.ability.extraData);
 				Destroy(_t.gameObject);
 			}
 		}));
@@ -399,7 +416,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//var _buff = new Buff("Hardened Skin","defense_constant",3, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Pick_Most_Turns, 2);
 		var _buff = new Buff("Hardened Skin", Buff.TraitType.Physical_Defence_Constant, 3, BuffIcons.TryGetBuffIcon(15), Buff.StackType.Pick_Most_Turns, 2);
 
-		AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self.MyStats);
 		yield return null;
 	}
 
@@ -414,7 +431,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//var _buff = new Buff("Magic Shield", "magicDefense_constant", 3, BuffIcons.TryGetBuffIcon("MagicShielded"), Buff.StackType.Pick_Most_Turns, 2);
 		var _buff = new Buff("Magic Shield", Buff.TraitType.Magic_Defence_Constant, 3, BuffIcons.TryGetBuffIcon(14), Buff.StackType.Pick_Most_Turns, 2);
 
-		AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self.MyStats);
+		//print(targetData.self.name + " has now buffs: " + targetData.self.MyStats.buffList.Count);
 		yield return null;
 	}
 
@@ -425,7 +443,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		_mono.StartCoroutine(EffectTools.MoveDirection(_t,Vector3.right,0.4f,10));
 		_mono.StartCoroutine(CircleCollision(_t, 0.2f, 0.5f, delegate (CombatController _cc) {
-			_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.Intelligence,0),targetData.element, targetData.ability.extraData);
+			_cc.AdjustHealth(-Mathf.Max(targetData.self.MyStats.Intelligence,0),targetData.element, targetData.ability.extraData);
 		}));
 
 		_mono.StartCoroutine(EffectTools.Wobble(_t,0.75f, 0.75f, 10));
@@ -439,7 +457,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		var _mono = _t.gameObject.AddComponent<EmptyMonoBehaviour>();
 		_mono.StartCoroutine(EffectTools.MoveDirection(_t,Vector3.left,5,1) );
 		_mono.StartCoroutine(CircleCollision(_t,0.05f,0.5f, delegate (CombatController cc) {
-			cc.AdjustHealth(-Mathf.Clamp(targetData.self.myStats.Intelligence * 2 ,0 , 10),targetData.element, targetData.ability.extraData);
+			cc.AdjustHealth(-Mathf.Clamp(targetData.self.MyStats.Intelligence * 2 ,0 , 10),targetData.element, targetData.ability.extraData);
 			Destroy(_t.gameObject);
 		}));
 
@@ -463,7 +481,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		var _t = EffectTools.SpawnEffect(targetData.ability.name, lastClick, 1).transform;
 		if (targetData.target != null)
 		{
-			_t.SetParent(targetData.target.transform);
+			_t.SetParent(targetData.target.MyMono.transform);
 
 			targetData.target.AdjustHealth(-Mathf.Max(_num, 0), targetData.element, targetData.ability.extraData);
 		}
@@ -479,7 +497,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		var _buff = new Buff("Frozen", new List<Buff.TraitType> { Buff.TraitType.Dexterity_Constant, }, 2, BuffIcons.TryGetBuffIcon(18), Buff.StackType.Add_One_Duration_And_One_Potency, -1);
 		//var _buff2 = new Buff("Hardened Skin", "defense_constant", 2, BuffIcons.TryGetBuffIcon("Hardened"), Buff.StackType.Add_One_Duration_And_One_Potency, 1, _shouldBeDisplyed: false);
 
-		AddBuff(_buff, targetData.target);
+		AddBuff(_buff, targetData.target.MyStats);
 		//targetData.self.AddBuff(_buff, targetData.target);
 	}
 
@@ -527,7 +545,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		if (targetData.useOwnStats)
 		{
 			_num = 2;
-			if (targetData.self.myStats.Intelligence > 5) _num += 3; //targetData.bonus += 2;
+			if (targetData.self.MyStats.Intelligence > 5) _num += 3; //targetData.bonus += 2;
 		}
 
 
@@ -570,7 +588,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator LifeTap(TargetData targetData)
 	{
         EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position, 1);
-		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.myStats.currentHealth -1),Elementals.Void, targetData.ability.extraData);
+		int _tapped = targetData.self.AdjustHealth(-Mathf.Min(5, targetData.self.MyStats.currentHealth -1),Elementals.Void, targetData.ability.extraData);
 		targetData.self.AdjustMana(_tapped);
 		yield return null;
 	}
@@ -579,7 +597,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if(targetData.target != null)
 		{
-			int _hpRecover = targetData.target.AdjustHealth(-Mathf.Max(targetData.self.myStats.Luck,0),Elementals.Unlife, targetData.ability.extraData);
+			int _hpRecover = targetData.target.AdjustHealth(-Mathf.Max(targetData.self.MyStats.Luck,0),Elementals.Unlife, targetData.ability.extraData);
 
 			targetData.self.AdjustHealth(Mathf.Max(_hpRecover,0), targetData.element, targetData.ability.extraData);
 		}
@@ -595,7 +613,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 			//_self.AdjustMana(-manaCostDictionary["smite unlife"]);
 			//EffectTools.SpawnEffect("punch",lastClick,1);
-			int _smiteDamage = (targetData.target.myStats.race.HasFlag(targetData.targetRace)) ? 2 : 0;
+			int _smiteDamage = (targetData.target.MyStats.race.HasFlag(targetData.targetRace)) ? 2 : 0;
 			targetData.bonus += _smiteDamage;
 			if (_smiteDamage > 0)
 				targetData.element = Elementals.None;
@@ -612,7 +630,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		List<EmptyMonoBehaviour> _meteors = new List<EmptyMonoBehaviour>();
 
 		//Spawn meteors
-		int _totalBalls = 4 + (targetData.self.myStats.Intelligence/2);
+		int _totalBalls = 4 + (targetData.self.MyStats.Intelligence/2);
 		for (int i = 0; i < _totalBalls; i++)
 		{
 			Vector3 _randomDir = Vector3.right * Random.Range(-0.7f,0.7f);
@@ -630,7 +648,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			_meteors[i].StartCoroutine(CircleCollision(_meteors[i].transform, 0.25f, 1f,
 				delegate (CombatController _cc)
 				{
-					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.Intelligence, 0), targetData.element, targetData.ability.extraData);
+					_cc.AdjustHealth(-Mathf.Max(targetData.self.MyStats.Intelligence, 0), targetData.element, targetData.ability.extraData);
 				}
 			));
 		}
@@ -657,7 +675,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator Eruption(TargetData targetData)
 	{
-		for (int i = 0; i < targetData.self.myStats.Intelligence; i++)
+		for (int i = 0; i < targetData.self.MyStats.Intelligence; i++)
 		{
 			var _rock =	EffectTools.SpawnEffect(targetData.ability.name,targetData.self.transform.position + Vector3.up,5);
 			var _rockMono = _rock.gameObject.AddComponent<EmptyMonoBehaviour>();
@@ -666,7 +684,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			_rockMono.StartCoroutine(CircleCollision(_rock.transform, 0.1f, 0.3f, delegate (CombatController _cc)
 			{
 				if (_cc.gameObject != targetData.self.gameObject)
-					_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.Intelligence,0), targetData.element, targetData.ability.extraData);
+					_cc.AdjustHealth(-Mathf.Max(targetData.self.MyStats.Intelligence,0), targetData.element, targetData.ability.extraData);
 			}));
 
 			yield return new WaitForSeconds(Random.Range(0.2f,0.5f));
@@ -689,7 +707,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			var _cc = _col.GetComponent<CombatController>();
 			if (_cc != null)
 			{
-				_cc.AdjustHealth(-Mathf.Max(targetData.self.myStats.Intelligence,0), targetData.element, targetData.ability.extraData);
+				_cc.AdjustHealth(-Mathf.Max(targetData.self.MyStats.Intelligence,0), targetData.element, targetData.ability.extraData);
 			}
 		}
 
@@ -721,7 +739,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		{
 			targetData.target.AdjustHealth(Mathf.CeilToInt(Mathf.Max(num + targetData.bonus,0)),Elementals.Light, targetData.ability.extraData);
 
-			EffectTools.SpawnEffect(targetData.ability.name, targetData.target.transform.position, 1).transform.SetParent(targetData.target.transform);
+			EffectTools.SpawnEffect(targetData.ability.name, targetData.target.MyMono.transform.position, 1).transform.SetParent(targetData.target.MyMono.transform);
 		}
 		else if (lastClick != null)
 			EffectTools.SpawnEffect(targetData.ability.name, lastClick, 1);
@@ -735,7 +753,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		{
 			int _manaRecover = 0;
 
-			_manaRecover = targetData.target.AdjustMana(-Mathf.Max((Mathf.CeilToInt((float)targetData.self.myStats.Luck/2) + targetData.bonus),0));
+			_manaRecover = targetData.target.AdjustMana(-Mathf.Max((Mathf.CeilToInt((float)targetData.self.MyStats.Luck/2) + targetData.bonus),0));
 
 			targetData.self.AdjustMana(Mathf.Max(_manaRecover,0));
 
@@ -747,15 +765,15 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator RestoreSoul(TargetData targetData)//(CombatController _self)
 	{
-		targetData.self.myStats.buffList.Clear();
+		targetData.self.MyStats.buffList.Clear();
 		yield return null;
 	}
 
 	public static IEnumerator Clense(TargetData targetData)//(CombatController _self)
 	{
-		if (targetData.self.myStats.buffList.Count > 0)
+		if (targetData.self.MyStats.buffList.Count > 0)
 		{
-			targetData.self.myStats.buffList.RemoveAt(Random.Range(0, targetData.self.myStats.buffList.Count));
+			targetData.self.MyStats.buffList.RemoveAt(Random.Range(0, targetData.self.MyStats.buffList.Count));
 			EffectTools.SpawnEffect(targetData.ability.name, targetData.self.transform.position,1);
 		}
 		yield return null;
@@ -765,8 +783,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			targetData.self.myStats.buffList.Clear();
-			targetData.self.myStats.buffList.AddRange(targetData.target.myStats.buffList);
+			targetData.self.MyStats.buffList.Clear();
+			targetData.self.MyStats.buffList.AddRange(targetData.target.MyStats.buffList);
 		}
 		yield return null;
 	}
@@ -778,7 +796,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//var _buff = new Buff(AbilityClass.bless.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("bless"), Buff.StackType.Pick_Most_Turns, 2);
 		var _buff = new Buff(AbilityCollection.bless.name, new List<Buff.TraitType> { Buff.TraitType.Strength_Multiplier, Buff.TraitType.Dexterity_Multiplier, Buff.TraitType.Intelligence_Multiplier, Buff.TraitType.Luck_Multiplier }, 3, BuffIcons.TryGetBuffIcon(22), Buff.StackType.Pick_Most_Turns, 2);
 
-		AddBuff(_buff, targetData.target);
+		AddBuff(_buff, targetData.target.MyStats);
 
 		yield return null;
 	}
@@ -790,7 +808,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//var _buff = new Buff(AbilityClass.curse.name, new List<string> { "strenght_mutliplier", "dexterity_multiplier", "intelligence_multiplier", "luck_multiplier" }, 3, BuffIcons.TryGetBuffIcon("curse"), Buff.StackType.Pick_Most_Turns, 0.5f);
 		var _buff = new Buff(AbilityCollection.curse.name, new List<Buff.TraitType> { Buff.TraitType.Strength_Multiplier, Buff.TraitType.Dexterity_Multiplier, Buff.TraitType.Intelligence_Multiplier, Buff.TraitType.Luck_Constant }, 3, BuffIcons.TryGetBuffIcon(23), Buff.StackType.Pick_Most_Turns, 0.5f);
 
-		AddBuff(_buff, targetData.target);
+		AddBuff(_buff, targetData.target.MyStats);
 
 		yield return null;
 	}
@@ -802,7 +820,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//var _buff = new Buff(AbilityClass.bulkUp.name,"strength_constant",2, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Add_One_Duration_Add_All_Potency,1);
 		var _buff = new Buff(AbilityCollection.bulkUp.name, Buff.TraitType.Strength_Constant, 2, BuffIcons.TryGetBuffIcon(3), Buff.StackType.Add_One_Duration_Add_All_Potency, 1);
 
-		AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self.MyStats);
 
 		yield return null;
 	}
@@ -814,7 +832,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			//var _buff = new Buff(AbilityClass.debulk.name, "strength_constant", 3, BuffIcons.TryGetBuffIcon("pluss_strength"), Buff.StackType.Pick_Most_Potent, -2);
 			var _buff = new Buff(AbilityCollection.debulk.name, Buff.TraitType.Strength_Constant, 3, BuffIcons.TryGetBuffIcon(4), Buff.StackType.Pick_Most_Potent, -2);
 
-			AddBuff(_buff, targetData.target);
+			AddBuff(_buff, targetData.target.MyStats);
 		}
 
 		yield return null;
@@ -827,7 +845,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//var _buff = new Buff(AbilityClass.divineLuck.name, "luck_constant", 3, BuffIcons.TryGetBuffIcon("divine_luck"), Buff.StackType.Pick_Most_Potent,2);
 		var _buff = new Buff(AbilityCollection.divineLuck.name, Buff.TraitType.Luck_Constant, 3, BuffIcons.TryGetBuffIcon(9), Buff.StackType.Pick_Most_Potent, 2);
 
-		AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self.MyStats);
 		yield return null;
 	}
 
@@ -848,7 +866,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			//var _buff = new Buff(AbilityCollection.regeneration.name, AbilityCollection.heal.name, 3, BuffIcons.TryGetBuffIcon(12), Buff.StackType.Pick_Most_Potent, Mathf.Max(_amount, 0));
 			var _buff = new Buff(AbilityCollection.regeneration.name, AbilityCollection.heal, 3, BuffIcons.TryGetBuffIcon(12), Buff.StackType.Pick_Most_Potent, Mathf.Max(_amount, 0));
 
-			AddBuff(_buff,targetData.target);
+			AddBuff(_buff,targetData.target.MyStats);
 		}
 		yield return null;
 	}
@@ -888,7 +906,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	{
 		if (targetData.target != null)
 		{
-			targetData.target.StartCoroutine(AbilityCollection.keenSight.function(targetData));// displayCritAreas.function(targetData));
+			targetData.target.MyMono.StartCoroutine(AbilityCollection.keenSight.function(targetData));// displayCritAreas.function(targetData));
 		}
 
 		yield return null;
@@ -900,7 +918,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		//var _buff = new Buff(AbilityClass.timeWarp.name,"extra turn",2, BuffIcons.TryGetBuffIcon("pluss_time"), Buff.StackType.Add_Duplicate,1);
 		var _buff = new Buff(AbilityCollection.timeWarp.name, Buff.TraitType.Extra_Turn, 2, BuffIcons.TryGetBuffIcon(11), Buff.StackType.Add_Duplicate, 1);
 
-		AddBuff(_buff, targetData.self);
+		AddBuff(_buff, targetData.self.MyStats);
 		yield return null;
 	}
 
@@ -917,9 +935,9 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			_self.AdjustMana(_manacost);
 		*/
 
-		var _checks = (targetData.target == null)? CombatController.turnOrder: new List<CombatController>() { targetData.target };
+		//var _checks = (targetData.target == null)? CombatController.turnOrder: new List<CombatController>() { targetData.target.MyMono };
 
-		foreach (CombatController _cc in _checks)
+		foreach (CombatController _cc in CombatController.turnOrder)//_checks)
 		{
 			var _critArea = _cc.transform.Find("$CritArea");
 			print("area: " + _critArea);
@@ -927,7 +945,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 			{
 				var _critImage = _critArea.GetComponent<SpriteRenderer>();
 				if (_critImage != null)
-					targetData.target.StartCoroutine(EffectTools.BlinkImage(_critImage,Color.white,5.5f,10));
+					targetData.target.MyMono.StartCoroutine(EffectTools.BlinkImage(_critImage,Color.white,5.5f,10));
 			}
 		}
 
@@ -950,7 +968,16 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	public static IEnumerator Spook(TargetData targetData)//(CombatController _target,CombatController _self)
 	{
 		yield return targetData.self.StartCoroutine(EffectTools.BlinkImage(targetData.self.transform.GetComponent<SpriteRenderer>(),new Color(1,1,1,0),1,1));
-		targetData.target.AdjustHealth(-targetData.self.myStats.Intelligence, Elementals.Unlife, targetData.ability.extraData);
-
+		targetData.target.AdjustHealth(-targetData.self.MyStats.Intelligence, Elementals.Unlife, targetData.ability.extraData);
 	}
 }
+
+/*
+public static class Vector2Extentions
+{
+	public static Vector2Int ToVector2Int(this Vector2 v2)
+	{
+		return new Vector2Int((int)v2.x, (int)v2.y);
+	}
+}
+*/

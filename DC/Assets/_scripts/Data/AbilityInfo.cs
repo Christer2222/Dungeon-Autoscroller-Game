@@ -53,7 +53,7 @@ namespace AbilityInfo
 
 	public struct TargetData
 	{
-		public TargetData(Ability _currentAbility, CombatController _self = null, CombatController _target = null, int _bonus = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default, bool _useOwnStats = true)
+		public TargetData(Ability _currentAbility, CombatController _self = null, IAbilityInterractible _target = null, int _bonus = 0, Elementals _element = default, Vector3 _centerPos = default, StatBlock.Race _race = default, bool _useOwnStats = true)
 		{
 			self = _self;
 			target = _target;
@@ -66,7 +66,7 @@ namespace AbilityInfo
 		}
 
 		public CombatController self;
-		public CombatController target;
+		public IAbilityInterractible target; //CombatController target;
 		public int bonus;
 		public Elementals element;
 		public Vector3 centerPos;

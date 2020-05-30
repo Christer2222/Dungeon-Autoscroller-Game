@@ -7,7 +7,8 @@ public class EncounterController : MonoBehaviour
 {
 	public static EncounterController instance;
 
-	private GameObject segmentPrefab;
+	private GameObject[] segments;
+	private GameObject segmentPrefabEmpty;
 	private GameObject enemyPrefab;
 	//private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
@@ -45,7 +46,10 @@ public class EncounterController : MonoBehaviour
 
 		encounterTimer = ENCOUNTER_COOLDOWN;//5;
 
-		segmentPrefab = (GameObject)Resources.Load("Prefabs/Segment");
+		segmentPrefabEmpty = (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Empty");
+		segments = Resources.LoadAll<GameObject>("Prefabs/Segments/");
+		print(segments.Length);
+
 		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
 		//var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
 		/*
@@ -110,7 +114,7 @@ public class EncounterController : MonoBehaviour
 
 					CombatController.playerCombatController.RemoveAllBufsWithName("busy");
 
-					var _playerStats = CombatController.playerCombatController.myStats;
+					var _playerStats = CombatController.playerCombatController.MyStats;
 
 					var _possibles = EncounterData.encounterTable.Where(x => x.level == _playerStats.level).ToArray(); //find encounter of equal level
 					int _lower = _playerStats.level; //store level
@@ -141,7 +145,7 @@ public class EncounterController : MonoBehaviour
 					SpawnEnemy(_selectedEncounter.monsterTM, 4);
 					SpawnEnemy(_selectedEncounter.monsterTR, 5);
 
-					CombatController.turnOrder.OrderBy(x => (x.myStats.level * 2 + x.myStats.Luck));
+					CombatController.turnOrder.OrderBy(x => (x.MyStats.level * 2 + x.MyStats.Luck));
 
 					currentGameState = GameState.Battling;
 				}
@@ -172,10 +176,10 @@ public class EncounterController : MonoBehaviour
 
 		var _cc = _go.GetComponent<CombatController>();
 
-		_cc.myStats = _monstarStat.Clone();
+		_cc.MyStats = _monstarStat.Clone();
 		_go.name = _monstarStat.name + " " + _pos;
 
-		_go.GetComponentInChildren<ToolTip>().ChangeToolTipText(_cc.myStats.GetToolTipStats());
+		_go.GetComponentInChildren<ToolTip>().ChangeToolTipText(_cc.MyStats.GetToolTipStats());
 		
 		StartCoroutine(EffectTools.PingPongSize(_go.transform, Vector3.zero, Vector3.one * 0.5f, APPEAR_SPEED, 0.5f));
 		StartCoroutine(EffectTools.MoveToPoint(_go.transform, _startPos + EncounterData.offsetTable[_pos], APPEAR_SPEED));
@@ -218,7 +222,8 @@ public class EncounterController : MonoBehaviour
 		{
 			_trig.enabled = false;
 
-			var _next = Instantiate(segmentPrefab, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
+			//var _next = Instantiate(segmentPrefabEmpty, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
+			var _next = Instantiate(segments[Random.Range(0,segments.Length)], _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
 			segmentList.Add(_next);
 
 

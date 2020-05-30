@@ -16,7 +16,7 @@ public class FleeLogic : MonoBehaviour
 	{
 		get
 		{
-			return 5 + CombatController.playerCombatController.myStats.Dexterity;
+			return 5 + CombatController.playerCombatController.MyStats.Dexterity;
 		}
 	}
 

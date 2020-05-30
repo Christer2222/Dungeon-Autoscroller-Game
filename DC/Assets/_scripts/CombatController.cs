@@ -8,7 +8,7 @@ using System;
 using Boo.Lang.Environments;
 using UnityEditor;
 
-public class CombatController : AbilityScript
+public class CombatController : AbilityScript, IAbilityInterractible
 {
 	//Keeps track of whos turn it is, and switching
 	public static List<CombatController> turnOrder = new List<CombatController>();
@@ -26,14 +26,13 @@ public class CombatController : AbilityScript
 	private int xpPoolToaddAfterCombat;
 
 	//game stats that change often
-	public StatBlock myStats;
-	//public int currentHealth;
-	//public int currentMana;
+	public StatBlock MyStats { get; set; }
+	public MonoBehaviour MyMono { get; set; }
 
-	//Gameover variables
+	//Enemy Stuff
 	private EnemyMover myEnemyMover;
-
 	private ToolTip myToolTip; 
+
 
 	//Variables for targeting, and using abilities
 	public Ability selectedAbility;
@@ -49,6 +48,7 @@ public class CombatController : AbilityScript
 
 	//variables for player ability toggeling
 	private static GameObject entryPrefab;
+
 
 	class BuffUI
 	{
@@ -69,6 +69,7 @@ public class CombatController : AbilityScript
 
 	private void Start()
 	{
+		MyMono = this;
         if (playerCombatController == null)
         {
             playerCombatController = GameObject.Find("$PlayerPortrait").GetComponent<CombatController>();
@@ -83,7 +84,7 @@ public class CombatController : AbilityScript
 		if (playerOwned)
 		{
 			
-			myStats = new StatBlock(
+			MyStats = new StatBlock(
 				StatBlock.Race.Human,
 				"Player",
 #if UNITY_EDITOR
@@ -150,21 +151,21 @@ public class CombatController : AbilityScript
 
 			RefreshAbilityList();
 
-			UIController.XPSlider.maxValue = myStats.level * 10;
+			UIController.XPSlider.maxValue = MyStats.level * 10;
 
 			//set the normal bars to their max value
-			UIController.HealthSliderPair.minObject.maxValue = myStats.maxHealth;
-			UIController.ManaSliderPair.minObject.maxValue = myStats.maxMana;
+			UIController.HealthSliderPair.minObject.maxValue = MyStats.maxHealth;
+			UIController.ManaSliderPair.minObject.maxValue = MyStats.maxMana;
 
 			//show values are at current status
-			UIController.HealthSliderPair.minObject.value = myStats.currentHealth;
-			UIController.ManaSliderPair.minObject.value = myStats.currentMana;
+			UIController.HealthSliderPair.minObject.value = MyStats.currentHealth;
+			UIController.ManaSliderPair.minObject.value = MyStats.currentMana;
 
 			//update texts to min/max status
-			UIController.HealthTextPair.minObject.text = myStats.currentHealth.ToString();
-			UIController.HealthTextPair.maxObject.text = myStats.maxHealth.ToString();
-			UIController.ManaTextPair.minObject.text = myStats.currentMana.ToString();
-			UIController.ManaTextPair.maxObject.text = myStats.maxMana.ToString();
+			UIController.HealthTextPair.minObject.text = MyStats.currentHealth.ToString();
+			UIController.HealthTextPair.maxObject.text = MyStats.maxHealth.ToString();
+			UIController.ManaTextPair.minObject.text = MyStats.currentMana.ToString();
+			UIController.ManaTextPair.maxObject.text = MyStats.maxMana.ToString();
 
 			//update slow sliders
 			UIController.HealthSliderPair.maxObject.maxValue = UIController.HealthSliderPair.minObject.maxValue * SLOW_SLIDER_RATIO_TO_NORMAL;
@@ -173,7 +174,7 @@ public class CombatController : AbilityScript
 			UIController.ManaSliderPair.maxObject.value = UIController.ManaSliderPair.maxObject.maxValue;
 
 
-			UIController.XPSlider.value = myStats.xp;
+			UIController.XPSlider.value = MyStats.xp;
 #endregion
 
 			if (BuffIcons.buffIconDictionary == null)
@@ -196,7 +197,7 @@ public class CombatController : AbilityScript
 			//currentMana = myStats.maxMana;
 		}
 
-		if (myStats.idleAnimation != null && !playerOwned)
+		if (MyStats.idleAnimation != null && !playerOwned)
 		{
 			gameObject.AddComponent<AnimationHandler>();
 		}
@@ -214,11 +215,11 @@ public class CombatController : AbilityScript
 			Destroy(_children[i].gameObject); //and clear all children
 		}
 
-		int _abilityCount = myStats.abilities.Count; //for each ability the player has
+		int _abilityCount = MyStats.abilities.Count; //for each ability the player has
 		for (int i = 0; i < _abilityCount; i++) //go through them
 		{
 			string _s = "";
-			_s = myStats.abilities[i].name;
+			_s = MyStats.abilities[i].name;
 
 
 			GameObject _go = Instantiate(entryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry for each ability
@@ -230,12 +231,12 @@ public class CombatController : AbilityScript
 				UIController.SetUIMode(UIController.UIMode.None);
 				//UIController.AbilityMenuScrollView.gameObject.SetActive(false); //deactivate the menu
 				UIController.AbilityButtonText.text = _s; //set the name of the button to the ability
-				selectedAbility = myStats.abilities[_index]; //set ability to this ability
+				selectedAbility = MyStats.abilities[_index]; //set ability to this ability
 				_go.GetComponent<ToolTip>().OnPointerExit(null);
 			});
 
 
-			_go.GetComponent<ToolTip>().ChangeToolTipText(myStats.abilities[i].description);
+			_go.GetComponent<ToolTip>().ChangeToolTipText(MyStats.abilities[i].description);
 		}
 
 		//UIController.AbilityMenuContent.sizeDelta = new Vector2(0,(count - 1) * 113 + 10); //set size to fit all entries
@@ -311,7 +312,7 @@ public class CombatController : AbilityScript
 			{
 				yield return new WaitForEndOfFrame();
 				myEnemyMover.shouldMove = false;
-				if (myStats.currentHealth > 0)
+				if (MyStats.currentHealth > 0)
 					StartCoroutine(TakeEnemyTurn());
 			}
 		}
@@ -330,7 +331,7 @@ public class CombatController : AbilityScript
 		if (turnOrder.Count > 1)
 			for (int i = 0; i < turnOrder.Count; i++)
 			{
-				UIController.TurnOrderText.text += turnOrder[i].myStats.name + " | ";
+				UIController.TurnOrderText.text += turnOrder[i].MyStats.name + " | ";
 			}
 	}
 	
@@ -342,13 +343,13 @@ public class CombatController : AbilityScript
 		targetCombatController = this;
 		//var _prevActiveAbility = selectedAbility;
 
-		for (int i = 0; i < myStats.buffList.Count; i++)
+		for (int i = 0; i < MyStats.buffList.Count; i++)
 		{
-			var _buff = myStats.buffList[i];
+			var _buff = MyStats.buffList[i];
 
 			for (int j = 0; j < _buff.functions.Count; j++)
 			{
-				var td = new TargetData(myStats.buffList[i].functions[j], this, this, (int)myStats.buffList[i].constant, _centerPos: transform.position, _useOwnStats: false);
+				var td = new TargetData(MyStats.buffList[i].functions[j], this, this, (int)MyStats.buffList[i].constant, _centerPos: transform.position, _useOwnStats: false);
 
 				//selectedAbility = _buff.functions[j];
 				//yield return StartCoroutine(InvokeActiveAbility(false,_buff.constant));
@@ -359,7 +360,7 @@ public class CombatController : AbilityScript
 				_buff.turns--;
 		}
 
-		myStats.buffList.RemoveAll(x => x.turns <= 0);
+		MyStats.buffList.RemoveAll(x => x.turns <= 0);
 
 		//selectedAbility = _prevActiveAbility;//null;
 		targetCombatController = null;
@@ -373,7 +374,7 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public bool CheckIfHasBuff(string _buffName)
 	{
-		return (myStats.buffList.Exists(x => x.name.ToLower() == _buffName.ToLower()));
+		return (MyStats.buffList.Exists(x => x.name.ToLower() == _buffName.ToLower()));
 	}
 
 	/// <summary>
@@ -381,7 +382,7 @@ public class CombatController : AbilityScript
 	/// </summary>
 	public void RemoveAllBufsWithName(string _buffName)
 	{
-		myStats.buffList.RemoveAll(x => x.name.ToLower() == _buffName.ToLower());// x.name.Contains(_buffName));
+		MyStats.buffList.RemoveAll(x => x.name.ToLower() == _buffName.ToLower());// x.name.Contains(_buffName));
 		RefreshBuffIcons();
 	}
 
@@ -391,9 +392,12 @@ public class CombatController : AbilityScript
 	/// </summary>
 	void RefreshBuffIcons()
 	{
-		for (int i = 0; i < myStats.buffList.Count; i++) //find all buffs active, and make ui if none exist
+		if (!playerOwned)
+			return;
+
+		for (int i = 0; i < MyStats.buffList.Count; i++) //find all buffs active, and make ui if none exist
 		{
-			var _current = myStats.buffList[i]; //shortcut for i
+			var _current = MyStats.buffList[i]; //shortcut for i
 			var _inList = buffUIs.Where(x => x.buff == _current); //find a buff that matches the one in the statblock
 			//var _first = (_inList.ToList().Count != 0) ? _inList.First() : null;
 
@@ -402,7 +406,7 @@ public class CombatController : AbilityScript
 			{
 				var _go = Instantiate(buffEntryPrefab, UIController.BuffContent); //make a new one and set the parent to the sidebar
 				var _parent = _go.transform.GetChild(0); //get the icon holder
-				_parent.GetComponent<Image>().sprite = myStats.buffList[i].buffIcon; //set the icon to the propper one
+				_parent.GetComponent<Image>().sprite = MyStats.buffList[i].buffIcon; //set the icon to the propper one
 
 				buffUIs.Add(new BuffUI {tip = _go.GetComponentInChildren<ToolTip>(), buff = _current }); //add it to the uis
 			}
@@ -414,7 +418,7 @@ public class CombatController : AbilityScript
 		{
 			var _current = buffUIs[i]; //shortcut for i
 
-			if (_current.buff.turns <= 0 || !myStats.buffList.Contains(_current.buff)) //if it has no time left
+			if (_current.buff.turns <= 0 || !MyStats.buffList.Contains(_current.buff)) //if it has no time left
 			{
 				_current.tip.OnPointerExit(null);
 				Destroy(_current.tip.transform.parent.gameObject); //destroy game object
@@ -549,11 +553,11 @@ public class CombatController : AbilityScript
 	{
 		yield return new WaitForSeconds(1);
 
-		selectedAbility = EnemyAI.SelectAbility(myStats, myStats.currentHealth, myStats.currentMana);
+		selectedAbility = EnemyAI.SelectAbility(MyStats, MyStats.currentHealth, MyStats.currentMana);
 
 		//_playerTurnText.transform.parent.localPosition = Vector3.zero;
 
-		yield return StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UIController.UICanvas, myStats, selectedAbility, this));
+		yield return StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UIController.UICanvas, MyStats, selectedAbility, this));
 
 		yield return new WaitForSeconds(0.3f);
 
@@ -569,12 +573,13 @@ public class CombatController : AbilityScript
 			lastClick = playerCombatController.transform.position;
 		}
 
+		//print(MyStats.name + " used ability: " + selectedAbility.name + " on " + targetCombatController.MyStats.name + " Ability is of type: " + selectedAbility.abilityType + " (type & selfuse): " + ((AbilityType.buff | AbilityType.defensive | AbilityType.recovery | AbilityType.misc) & (selectedAbility.abilityType)));
 		var _targetData = new TargetData(selectedAbility, this, targetCombatController, _centerPos: lastClick);
 
 		//yield return StartCoroutine(InvokeActiveAbility());
 		yield return StartCoroutine(SimpleInvokeAbility(_targetData,  true, true, 1));// InvokeActiveAbility());
 
-		myToolTip.ChangeToolTipText(myStats.GetToolTipStats());
+		myToolTip.ChangeToolTipText(MyStats.GetToolTipStats());
 
 		myEnemyMover.shouldMove = true;
 
@@ -583,12 +588,12 @@ public class CombatController : AbilityScript
 
 	public void AdjustPlayerXP(int _amount)
 	{
-		myStats.xp += _amount;
+		MyStats.xp += _amount;
 
 		MoveXPSlider();
 
 		//xpSlider.value = myStats.xp;
-		if (levelUpText == null && myStats.xp >= UIController.XPSlider.maxValue)
+		if (levelUpText == null && MyStats.xp >= UIController.XPSlider.maxValue)
 		{
 			levelUpText = EffectTools.SpawnText(transform.position, transform, Color.yellow, "LEVEL UP!");
 			levelUpText.StartCoroutine(EffectTools.MoveDirection(levelUpText.transform, Vector3.up, 1, 2));
@@ -596,27 +601,27 @@ public class CombatController : AbilityScript
 			Destroy(levelUpText.gameObject,4);
 		}
 
-		bool _leveledUpAtLeastOnce = myStats.xp >= UIController.XPSlider.maxValue;
+		bool _leveledUpAtLeastOnce = MyStats.xp >= UIController.XPSlider.maxValue;
 
-		bool _atMaxHealth = myStats.currentHealth == myStats.maxHealth;
-		bool _atMaxMana = myStats.currentMana == myStats.maxMana;
+		bool _atMaxHealth = MyStats.currentHealth == MyStats.maxHealth;
+		bool _atMaxMana = MyStats.currentMana == MyStats.maxMana;
 
-		while (myStats.xp >= UIController.XPSlider.maxValue)
+		while (MyStats.xp >= UIController.XPSlider.maxValue)
 		{
-			myStats.maxHealth += LevelUpScreen.instance.currentGroup.healthPerLevel;
-			myStats.maxMana += LevelUpScreen.instance.currentGroup.manaPerLevel;
+			MyStats.maxHealth += LevelUpScreen.instance.currentGroup.healthPerLevel;
+			MyStats.maxMana += LevelUpScreen.instance.currentGroup.manaPerLevel;
 
 			LevelUpScreen.instance.traitPointsToSpend += 1;
 
-			if ((myStats.level + 1) % 2 == 0)
+			if ((MyStats.level + 1) % 2 == 0)
 			{
 				LevelUpScreen.instance.AddNextChoicesToQue();
 			}
 
-			myStats.level++;
-			myStats.xp -= (int)UIController.XPSlider.maxValue; //subtract this levels xp requirement
-			UIController.XPSlider.value = myStats.xp; //then set the xp bar to show the current xp (which might be over the requirement for a levelup)
-			UIController.XPSlider.maxValue = myStats.level * 10; //set the next levelup to be at 10 times the level
+			MyStats.level++;
+			MyStats.xp -= (int)UIController.XPSlider.maxValue; //subtract this levels xp requirement
+			UIController.XPSlider.value = MyStats.xp; //then set the xp bar to show the current xp (which might be over the requirement for a levelup)
+			UIController.XPSlider.maxValue = MyStats.level * 10; //set the next levelup to be at 10 times the level
 
 			MoveXPSlider();
 		}
@@ -624,13 +629,13 @@ public class CombatController : AbilityScript
 		if (_leveledUpAtLeastOnce)
 		{
 
-			myStats.currentHealth = myStats.maxHealth;
-			myStats.currentMana = myStats.maxMana;
-			UIController.HealthTextPair.maxObject.text = UIController.HealthTextPair.minObject.text = myStats.maxHealth.ToString();
-			UIController.ManaTextPair.maxObject.text = UIController.ManaTextPair.minObject.text = myStats.maxMana.ToString();
+			MyStats.currentHealth = MyStats.maxHealth;
+			MyStats.currentMana = MyStats.maxMana;
+			UIController.HealthTextPair.maxObject.text = UIController.HealthTextPair.minObject.text = MyStats.maxHealth.ToString();
+			UIController.ManaTextPair.maxObject.text = UIController.ManaTextPair.minObject.text = MyStats.maxMana.ToString();
 
-			UIController.HealthSliderPair.minObject.maxValue = myStats.maxHealth;
-			UIController.ManaSliderPair.minObject.maxValue = myStats.maxMana;
+			UIController.HealthSliderPair.minObject.maxValue = MyStats.maxHealth;
+			UIController.ManaSliderPair.minObject.maxValue = MyStats.maxMana;
 			//
 			//
 
@@ -643,14 +648,14 @@ public class CombatController : AbilityScript
 			if (manaMove != null) StopCoroutine(manaMove);
 
 			if (_atMaxHealth)
-				UIController.HealthSliderPair.minObject.value = myStats.maxHealth;
+				UIController.HealthSliderPair.minObject.value = MyStats.maxHealth;
 			else
-				healthMove = StartCoroutine(EffectTools.AnimateSlider(UIController.HealthSliderPair.minObject,myStats.maxHealth,1,1));
+				healthMove = StartCoroutine(EffectTools.AnimateSlider(UIController.HealthSliderPair.minObject,MyStats.maxHealth,1,1));
 
 			if (_atMaxMana)
-				UIController.ManaSliderPair.minObject.value = myStats.maxMana;
+				UIController.ManaSliderPair.minObject.value = MyStats.maxMana;
 			else
-				manaMove = StartCoroutine(EffectTools.AnimateSlider(UIController.ManaSliderPair.minObject, myStats.maxMana, 1, 1));
+				manaMove = StartCoroutine(EffectTools.AnimateSlider(UIController.ManaSliderPair.minObject, MyStats.maxMana, 1, 1));
 		}
 	}
 
@@ -662,28 +667,28 @@ public class CombatController : AbilityScript
 			StopCoroutine(xpMove);
 		}
 
-		xpMove = StartCoroutine(EffectTools.AnimateSlider(UIController.XPSlider, myStats.xp, 1, 1));
+		xpMove = StartCoroutine(EffectTools.AnimateSlider(UIController.XPSlider, MyStats.xp, 1, 1));
 	}
 
 	public int AdjustHealth(int _amount, Elementals _elementals, ExtraData _extraData)
 	{
-		if (myStats.currentHealth <= 0) return 0;
+		if (MyStats.currentHealth <= 0) return 0;
 
 		float _amountMultiplier = 1;
 
-		if ((myStats.weaknesses & _elementals) != 0) _amountMultiplier += 0.5f; //multiplier is booseted if weakness
-		if ((myStats.resistances & _elementals) != 0) _amountMultiplier -= 0.5f; //multiplier is halfed if resist
-		if ((myStats.immunities & _elementals) != 0) _amountMultiplier = 0; //multiplier is set to 0 if immune
-		if ((myStats.absorbs & _elementals) != 0) _amount = Mathf.Abs(_amount); //always heal if absorb
+		if ((MyStats.weaknesses & _elementals) != 0) _amountMultiplier += 0.5f; //multiplier is booseted if weakness
+		if ((MyStats.resistances & _elementals) != 0) _amountMultiplier -= 0.5f; //multiplier is halfed if resist
+		if ((MyStats.immunities & _elementals) != 0) _amountMultiplier = 0; //multiplier is set to 0 if immune
+		if ((MyStats.absorbs & _elementals) != 0) _amount = Mathf.Abs(_amount); //always heal if absorb
 		
 
-		int _totalDamage = myStats.currentHealth; //store previous health for display text and return value
+		int _totalDamage = MyStats.currentHealth; //store previous health for display text and return value
 
 		if (_amount < 0) //if negative damage
 			_amount += ((isCritted) ? (int)Math.Round(_amount/2f,MidpointRounding.AwayFromZero) : 0); //allow critting
 
 		var _damageCalc = Mathf.RoundToInt(_amount * _amountMultiplier); //round up any damage/healing
-		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.nonPiercing)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? myStats.Defense: myStats.MagicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
+		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.nonPiercing)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? MyStats.Defense: MyStats.MagicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
 
 		//if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
 		if (Mathf.Sign(_amount) != Mathf.Sign(_damageCalc)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
@@ -700,8 +705,8 @@ public class CombatController : AbilityScript
 		_spawnedTextParent.transform.position = transform.position + Vector3.up;
 		Destroy(_spawnedText.transform.parent.gameObject,5);
 
-		myStats.currentHealth = Mathf.Clamp(myStats.currentHealth + _damageCalc, 0, myStats.maxHealth);
-		_totalDamage -= myStats.currentHealth;
+		MyStats.currentHealth = Mathf.Clamp(MyStats.currentHealth + _damageCalc, 0, MyStats.maxHealth);
+		_totalDamage -= MyStats.currentHealth;
 
 		if (_damageCalc < 0)
 		{
@@ -723,7 +728,7 @@ public class CombatController : AbilityScript
 
 		if(playerOwned)
 		{
-			UIController.HealthTextPair.minObject.text = myStats.currentHealth.ToString();
+			UIController.HealthTextPair.minObject.text = MyStats.currentHealth.ToString();
 
 			if (healthMove != null)
 			{
@@ -732,12 +737,12 @@ public class CombatController : AbilityScript
 
 			if (_damageCalc < 0)
 			{
-				UIController.HealthSliderPair.minObject.value = myStats.currentHealth;
+				UIController.HealthSliderPair.minObject.value = MyStats.currentHealth;
 				healthMove = StartCoroutine(EffectTools.AnimateSlider(UIController.HealthSliderPair.maxObject, UIController.HealthSliderPair.minObject, 3, SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 			else
 			{
-				UIController.HealthSliderPair.maxObject.value = myStats.currentHealth * SLOW_SLIDER_RATIO_TO_NORMAL;
+				UIController.HealthSliderPair.maxObject.value = MyStats.currentHealth * SLOW_SLIDER_RATIO_TO_NORMAL;
 				healthMove = StartCoroutine(EffectTools.AnimateSlider(UIController.HealthSliderPair.minObject, UIController.HealthSliderPair.maxObject, 1, 1/SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 		}
@@ -745,15 +750,15 @@ public class CombatController : AbilityScript
 		{
 			print("not player took damage");
 			print(myToolTip);
-			print(myStats);
-			myToolTip.ChangeToolTipText(myStats.GetToolTipStats());
+			print(MyStats);
+			myToolTip.ChangeToolTipText(MyStats.GetToolTipStats());
 		}
 
-		if (myStats.currentHealth <= 0)
+		if (MyStats.currentHealth <= 0)
 		{
 			if (!playerOwned)
 			{
-				playerCombatController.xpPoolToaddAfterCombat += myStats.level * 3;
+				playerCombatController.xpPoolToaddAfterCombat += MyStats.level * 3;
 				myToolTip.OnPointerExit(null);
 
 				if (turnOrder.Count <= 2) //if this was the last enemy, and the player is left
@@ -762,7 +767,7 @@ public class CombatController : AbilityScript
 					playerCombatController.xpPoolToaddAfterCombat = 0;
 
 
-					PlayerInventory.instance.ProcessDrops(myStats.drops);
+					PlayerInventory.instance.ProcessDrops(MyStats.drops);
 				}
 
 				myEnemyMover.shouldMove = false;
@@ -788,25 +793,25 @@ public class CombatController : AbilityScript
 
 	public int AdjustMana(int _amount)
 	{
-		var _manaLost = myStats.currentMana;
-		myStats.currentMana = Mathf.Clamp(myStats.currentMana + _amount,0,myStats.maxMana);
-		_manaLost -= myStats.currentMana;
+		var _manaLost = MyStats.currentMana;
+		MyStats.currentMana = Mathf.Clamp(MyStats.currentMana + _amount,0,MyStats.maxMana);
+		_manaLost -= MyStats.currentMana;
 
 		if(playerOwned)
 		{
-			UIController.ManaTextPair.minObject.text = myStats.currentMana.ToString();
+			UIController.ManaTextPair.minObject.text = MyStats.currentMana.ToString();
 
 			if (manaMove != null)
 				StopCoroutine(manaMove);
 
 			if (_manaLost > 0)
 			{
-				UIController.ManaSliderPair.minObject.value = myStats.currentMana;
+				UIController.ManaSliderPair.minObject.value = MyStats.currentMana;
 				manaMove = StartCoroutine(EffectTools.AnimateSlider(UIController.ManaSliderPair.maxObject, UIController.ManaSliderPair.minObject, 1, SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 			else
 			{
-				UIController.ManaSliderPair.maxObject.value = myStats.currentMana * SLOW_SLIDER_RATIO_TO_NORMAL;
+				UIController.ManaSliderPair.maxObject.value = MyStats.currentMana * SLOW_SLIDER_RATIO_TO_NORMAL;
 				manaMove = StartCoroutine(EffectTools.AnimateSlider(UIController.ManaSliderPair.minObject, UIController.ManaSliderPair.maxObject, 0.3f, 1 / SLOW_SLIDER_RATIO_TO_NORMAL));
 			}
 
@@ -831,7 +836,7 @@ public class CombatController : AbilityScript
 	{
 		string _buttonText = _button.GetComponentInChildren<Text>().text;//.ToLower(); //text of the button, to get the ability
 
-		bool _hasEnoughMana = playerCombatController.myStats.currentMana >= -myStats.abilities.Find(x => x.name == _buttonText).manaCost; //playerCombatController.selectedAbility.manaCost;
+		bool _hasEnoughMana = playerCombatController.MyStats.currentMana >= -MyStats.abilities.Find(x => x.name == _buttonText).manaCost; //playerCombatController.selectedAbility.manaCost;
 
 		_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? abilityActiveColor: abilityInactive;
 		_button.GetComponent<Button>().enabled = _hasEnoughMana;
@@ -966,7 +971,7 @@ public class CombatController : AbilityScript
 	{
 		if (turnOrder.Count == 0)
 		{
-			AddBuff(new Buff("Busy", Buff.TraitType.Busy, 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), this);
+			AddBuff(new Buff("Busy", Buff.TraitType.Busy, 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), MyStats);
 
 			EncounterController.instance.speedBoost = 0;
 			EncounterController.instance.currentGameState = EncounterController.GameState.Busy;

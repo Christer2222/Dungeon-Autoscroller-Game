@@ -137,17 +137,17 @@ public class LevelUpScreen : AbilityCollection
 				case "$ConfirmButton":
 					confirmButton = _t.GetComponent<Button>();
 					confirmButton.onClick.AddListener(delegate {
-                        CombatController.playerCombatController.myStats.baseStrength += strengthChange;
-                        CombatController.playerCombatController.myStats.baseDexterity += dexterityChange;
-                        CombatController.playerCombatController.myStats.baseIntelligence += intelligenceChange;
-                        CombatController.playerCombatController.myStats.baseLuck += luckChange;
+                        CombatController.playerCombatController.MyStats.baseStrength += strengthChange;
+                        CombatController.playerCombatController.MyStats.baseDexterity += dexterityChange;
+                        CombatController.playerCombatController.MyStats.baseIntelligence += intelligenceChange;
+                        CombatController.playerCombatController.MyStats.baseLuck += luckChange;
 
 						strengthChange = dexterityChange = intelligenceChange = luckChange = 0;
 
-						UIController.LevelUpStrengthCurrentTraitText.text = CombatController.playerCombatController.myStats.baseStrength.ToString();
-						UIController.LevelUpDexterityCurrentTraitText.text = CombatController.playerCombatController.myStats.baseDexterity.ToString();
-						UIController.LevelUpIntelligenceCurrentTraitText.text = CombatController.playerCombatController.myStats.baseIntelligence.ToString();
-						UIController.LevelUpLuckCurrentTraitText.text = CombatController.playerCombatController.myStats.baseLuck.ToString();
+						UIController.LevelUpStrengthCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseStrength.ToString();
+						UIController.LevelUpDexterityCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseDexterity.ToString();
+						UIController.LevelUpIntelligenceCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseIntelligence.ToString();
+						UIController.LevelUpLuckCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseLuck.ToString();
 
                         confirmButton.gameObject.SetActive(false);
 
@@ -175,31 +175,31 @@ public class LevelUpScreen : AbilityCollection
 		});
 
 		UIController.LevelUpStrengthChangeButtons.maxObject.onClick.AddListener(delegate {
-			UpdateTraitText(ref strengthChange, 1, CombatController.playerCombatController.myStats.baseStrength, UIController.LevelUpStrengthCurrentTraitText, UIController.LevelUpStrengthChangeButtons.minObject);
+			UpdateTraitText(ref strengthChange, 1, CombatController.playerCombatController.MyStats.baseStrength, UIController.LevelUpStrengthCurrentTraitText, UIController.LevelUpStrengthChangeButtons.minObject);
 		});
 		UIController.LevelUpStrengthChangeButtons.minObject.onClick.AddListener(delegate {
-			UpdateTraitText(ref strengthChange, -1, CombatController.playerCombatController.myStats.baseStrength, UIController.LevelUpStrengthCurrentTraitText, UIController.LevelUpStrengthChangeButtons.minObject);
+			UpdateTraitText(ref strengthChange, -1, CombatController.playerCombatController.MyStats.baseStrength, UIController.LevelUpStrengthCurrentTraitText, UIController.LevelUpStrengthChangeButtons.minObject);
 		});
 		UIController.LevelUpDexterityChangeButtons.maxObject.onClick.AddListener(delegate {
-			UpdateTraitText(ref dexterityChange, 1, CombatController.playerCombatController.myStats.baseDexterity, UIController.LevelUpDexterityCurrentTraitText, UIController.LevelUpDexterityChangeButtons.minObject);
+			UpdateTraitText(ref dexterityChange, 1, CombatController.playerCombatController.MyStats.baseDexterity, UIController.LevelUpDexterityCurrentTraitText, UIController.LevelUpDexterityChangeButtons.minObject);
 		});
 		UIController.LevelUpDexterityChangeButtons.minObject.onClick.AddListener(delegate
 		{
-			UpdateTraitText(ref dexterityChange, -1, CombatController.playerCombatController.myStats.baseDexterity, UIController.LevelUpDexterityCurrentTraitText, UIController.LevelUpDexterityChangeButtons.minObject);
+			UpdateTraitText(ref dexterityChange, -1, CombatController.playerCombatController.MyStats.baseDexterity, UIController.LevelUpDexterityCurrentTraitText, UIController.LevelUpDexterityChangeButtons.minObject);
 		});
 		UIController.LevelUpIntellectChangeButtons.maxObject.onClick.AddListener(delegate {
-			UpdateTraitText(ref intelligenceChange, 1, CombatController.playerCombatController.myStats.baseIntelligence, UIController.LevelUpIntelligenceCurrentTraitText, UIController.LevelUpIntellectChangeButtons.minObject);
+			UpdateTraitText(ref intelligenceChange, 1, CombatController.playerCombatController.MyStats.baseIntelligence, UIController.LevelUpIntelligenceCurrentTraitText, UIController.LevelUpIntellectChangeButtons.minObject);
 		});
 		UIController.LevelUpIntellectChangeButtons.minObject.onClick.AddListener(delegate
 		{
-			UpdateTraitText(ref intelligenceChange, -1, CombatController.playerCombatController.myStats.baseIntelligence, UIController.LevelUpIntelligenceCurrentTraitText, UIController.LevelUpIntellectChangeButtons.minObject);
+			UpdateTraitText(ref intelligenceChange, -1, CombatController.playerCombatController.MyStats.baseIntelligence, UIController.LevelUpIntelligenceCurrentTraitText, UIController.LevelUpIntellectChangeButtons.minObject);
 		});
 		UIController.LevelUpLuckChangeButtons.maxObject.onClick.AddListener(delegate {
-			UpdateTraitText(ref luckChange, 1, CombatController.playerCombatController.myStats.baseLuck, UIController.LevelUpLuckCurrentTraitText, UIController.LevelUpLuckChangeButtons.minObject);
+			UpdateTraitText(ref luckChange, 1, CombatController.playerCombatController.MyStats.baseLuck, UIController.LevelUpLuckCurrentTraitText, UIController.LevelUpLuckChangeButtons.minObject);
 		});
 		UIController.LevelUpLuckChangeButtons.minObject.onClick.AddListener(delegate
 		{
-			UpdateTraitText(ref luckChange, -1, CombatController.playerCombatController.myStats.baseLuck, UIController.LevelUpLuckCurrentTraitText, UIController.LevelUpLuckChangeButtons.minObject);
+			UpdateTraitText(ref luckChange, -1, CombatController.playerCombatController.MyStats.baseLuck, UIController.LevelUpLuckCurrentTraitText, UIController.LevelUpLuckChangeButtons.minObject);
 		});
 	}
 
@@ -224,7 +224,7 @@ public class LevelUpScreen : AbilityCollection
 	{
 		if (levelUpQueue.Count <= 0) return;
 
-		CombatController.playerCombatController.myStats.abilities.Add(_abilityToAdd);
+		CombatController.playerCombatController.MyStats.abilities.Add(_abilityToAdd);
 		CombatController.playerCombatController.RefreshAbilityList();
 		levelUpQueue.Remove(levelUpQueue[0]);
 		RefreshAbilities();
@@ -312,10 +312,10 @@ public class LevelUpScreen : AbilityCollection
 		{
 			RefreshAbilities();
 
-			UIController.LevelUpStrengthCurrentTraitText.text = CombatController.playerCombatController.myStats.baseStrength.ToString();
-			UIController.LevelUpDexterityCurrentTraitText.text = CombatController.playerCombatController.myStats.baseDexterity.ToString();
-			UIController.LevelUpIntelligenceCurrentTraitText.text = CombatController.playerCombatController.myStats.baseIntelligence.ToString();
-			UIController.LevelUpLuckCurrentTraitText.text = CombatController.playerCombatController.myStats.baseLuck.ToString();
+			UIController.LevelUpStrengthCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseStrength.ToString();
+			UIController.LevelUpDexterityCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseDexterity.ToString();
+			UIController.LevelUpIntelligenceCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseIntelligence.ToString();
+			UIController.LevelUpLuckCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseLuck.ToString();
 
             confirmButton.gameObject.SetActive(false);
 

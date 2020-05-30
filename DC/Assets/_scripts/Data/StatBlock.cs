@@ -3,6 +3,7 @@ using System.Linq;
 using AbilityInfo;
 using UnityEngine;
 
+
 public class StatBlock
 {
 	public enum Race
@@ -212,7 +213,7 @@ public class StatBlock
 
 
 		string _defenseString = (_alteredDefense?((Defense > baseDefense)?_green:_red):string.Empty) + Defense + ((_alteredDefense)? _end: string.Empty);
-		string _magicDefenseString = (_alteredMagicDefense?((MagicDefense > baseMagicDefense)?_green:_red):string.Empty) + Defense + ((_alteredDefense)? _end: string.Empty);
+		string _magicDefenseString = (_alteredMagicDefense?((MagicDefense > baseMagicDefense)?_green:_red):string.Empty) + MagicDefense + ((_alteredMagicDefense)? _end: string.Empty);
 
 
 		string moves = string.Join(", ", abilities.Select(x => x.name));// abilities.Aggregate

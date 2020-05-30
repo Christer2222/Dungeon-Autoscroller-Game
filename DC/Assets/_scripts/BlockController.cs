@@ -41,10 +41,10 @@ public class BlockController : MonoBehaviour
     {
         EffectTools.SpawnEffect(blockSprite, transform.position, blockTimer).transform.SetParent(transform);
         
-        CombatController.playerCombatController.myStats.baseDefense++;
-        CombatController.playerCombatController.myStats.baseMagicDefense++;
+        CombatController.playerCombatController.MyStats.baseDefense++;
+        CombatController.playerCombatController.MyStats.baseMagicDefense++;
         yield return new WaitForSeconds(blockTimer);
-        CombatController.playerCombatController.myStats.baseDefense--;
-        CombatController.playerCombatController.myStats.baseMagicDefense--;
+        CombatController.playerCombatController.MyStats.baseDefense--;
+        CombatController.playerCombatController.MyStats.baseMagicDefense--;
     }
 }

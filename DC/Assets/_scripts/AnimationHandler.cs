@@ -9,7 +9,7 @@ public class AnimationHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		myStats = GetComponent<CombatController>().myStats;
+		myStats = GetComponent<CombatController>().MyStats;
 
 		SpriteRenderer _rend = GetComponentInChildren<SpriteRenderer>();
 		Image _img = GetComponentInChildren<Image>();
