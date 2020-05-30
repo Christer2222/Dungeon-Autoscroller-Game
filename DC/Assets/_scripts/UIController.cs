@@ -8,7 +8,7 @@ public class UIController : MonoBehaviour
 
 	#region General
 	public static Camera MainCamera { get; private set; }
-    public static Transform UICanvas { get; private set; }
+    public static RectTransform UICanvas { get; private set; }
     public static GameObject GameOverHolder { get; private set; }
 	#endregion
 
@@ -151,7 +151,7 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UICanvas = transform.GetChild(0);
+        UICanvas = transform.GetChild(0).GetComponent<RectTransform>();
         MainCamera = Camera.main;
 
 

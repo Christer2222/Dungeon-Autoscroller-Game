@@ -86,7 +86,11 @@ public class CombatController : AbilityScript
 			myStats = new StatBlock(
 				StatBlock.Race.Human,
 				"Player",
-				10, 15, //hp, mp
+#if UNITY_EDITOR
+				10, 1, //hp, mp
+#else
+				10, 1, //hp, mp
+#endif
 				1, 0, //lv, xp
 				1, 1, 1, 1, //str, dex. int, luck
 				//new List<Ability> { AbilityClass.punch});
@@ -135,7 +139,7 @@ public class CombatController : AbilityScript
 
 			
 
-			#endregion
+#endregion
 
 			RefreshBuffIcons();
 

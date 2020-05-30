@@ -63,7 +63,14 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static Vector3 HitPosition
 	{
-		get { return mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, EncounterController.ENEMY_SPAWN_DISTANCE)); } //store where to click
+		get 
+		{
+			Vector3 outPos = Vector3.zero;
+			RectTransformUtility.ScreenPointToWorldPointInRectangle(UIController.UICanvas, Input.mousePosition, UIController.MainCamera, out outPos);
+			//print(outPos);
+			//return mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, EncounterController.ENEMY_SPAWN_DISTANCE)); 
+			return outPos;// mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, EncounterController.ENEMY_SPAWN_DISTANCE));
+		} //store where to click
 	}
 
 	protected static Camera mainCamera;
@@ -156,6 +163,11 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		lastClick = _clickPos;
 
 		RaycastHit2D _hit = Physics2D.Raycast(_clickPos,Vector2.zero,0.01f);
+
+		/*
+		if (_hit.transform != null)
+			print(_hit);
+		*/
 		return _hit;
 	}
 
