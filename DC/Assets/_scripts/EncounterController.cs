@@ -48,7 +48,6 @@ public class EncounterController : MonoBehaviour
 
 		segmentPrefabEmpty = (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Empty");
 		segments = Resources.LoadAll<GameObject>("Prefabs/Segments/");
-		print(segments.Length);
 
 		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
 		//var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");

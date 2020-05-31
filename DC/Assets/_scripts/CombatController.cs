@@ -36,7 +36,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 	//Variables for targeting, and using abilities
 	public Ability selectedAbility;
-	private CombatController targetCombatController;
+	private IAbilityInterractible targetCombatController;
 	public static CombatController playerCombatController;
 	private bool isCritted;
 	private Color abilityActiveColor = new Color(0, 0, 0.35f), abilityInactive = Color.gray;
@@ -264,7 +264,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 		if (turnOrder.Count != 0) //if there are combatants
 		{
-			if (turnOrder[0] == this && !UIController.IsFullscreenUI()) //if it is this actors turn, and fullscreen is not active
+			if (turnOrder[0] == this && !UIController.IsFullscreenUI() && !startedTurn) //if it is this actors turn, and fullscreen is not active
 			{
 				StartCoroutine(StartOfTurnActions());
 			}
@@ -280,6 +280,8 @@ public class CombatController : AbilityScript, IAbilityInterractible
 	{
 		if (!startedTurn)
 		{
+			isCritted = false;
+
 			startedTurn = true;
 			turnCounter++;
 
@@ -748,9 +750,6 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		}
 		else
 		{
-			print("not player took damage");
-			print(myToolTip);
-			print(MyStats);
 			myToolTip.ChangeToolTipText(MyStats.GetToolTipStats());
 		}
 
@@ -845,6 +844,37 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 	public IEnumerator Click()
 	{
+		/*
+		Debug.DrawRay(HitPosition,Vector3.forward * 10, Color.cyan,5,false);
+		RaycastHit _h;
+		if (Physics.Raycast(HitPosition,Vector3.forward, out _h, 10))
+		{
+			print(_h.transform.name);
+		}
+		else
+		{
+			print("no hit");
+		}
+		*/
+
+		/*
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		var _h = Physics2D.GetRayIntersection(ray, 150);
+		if (_h.transform != null)
+		{
+			print("hit: " + _h.transform.name);//Instantiate(particle, transform.position, transform.rotation);
+		}
+
+		Debug.DrawRay(ray.origin,ray.direction * 200,Color.cyan,5,false);
+	
+		*/
+		//if (Physics.Raycast(ray))
+	
+
+
+
+
+
 		if (CheckIfHasBuff("busy"))
 			yield break;
 
@@ -870,8 +900,9 @@ public class CombatController : AbilityScript, IAbilityInterractible
 				{
 					if (_hit.transform.CompareTag("CritArea")) //if it was a crit area
 					{
-						targetCombatController = _hit.transform.GetComponentInParent<CombatController>();
-						targetCombatController.isCritted = true;
+						targetCombatController = _hit.transform.GetComponentInParent<IAbilityInterractible>();
+						//targetCombatController.isCritted = true;
+						_hit.transform.GetComponentInParent<CombatController>().isCritted = true;
 					}
 					else if (_hit.transform.name == "$PlayerPortrait") //if it was the player itself
 					{
@@ -879,7 +910,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 						targetCombatController = playerCombatController;
 					}
 					else //if just the normal enemy body was hit
-						targetCombatController = _hit.transform.GetComponent<CombatController>();
+						targetCombatController = _hit.transform.GetComponent<IAbilityInterractible>();
 				}
 				else //if an ability is selected, but the player missed
 				{
@@ -926,7 +957,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 
 
-				if (targetCombatController != null) targetCombatController.isCritted = false;
+				//if (targetCombatController != null) targetCombatController.isCritted = false;
 				targetCombatController = null;
 
 			}

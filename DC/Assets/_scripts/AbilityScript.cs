@@ -163,7 +163,18 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 		lastClick = _clickPos;
 
-		RaycastHit2D _hit = Physics2D.Raycast(_clickPos,Vector2.zero,0.01f);
+		//RaycastHit2D _hit = Physics2D.Raycast(_clickPos,Vector2.zero,0.01f);
+
+
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		var _screenRayHit = Physics2D.GetRayIntersection(ray, 75);
+		
+		if (_screenRayHit.transform != null)
+		{
+			print("hot: " + _screenRayHit.transform.name + " at dist: " + _screenRayHit.distance);//Instantiate(particle, transform.position, transform.rotation);
+		}
+		
+		Debug.DrawRay(ray.origin, ray.direction * 200, Color.cyan, 5, false);
 
 		/*
 		 * Get Pixel Test
@@ -182,9 +193,10 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 			print(_hit.transform.GetComponentInChildren<UnityEngine.UI.Image>().sprite.texture.GetPixel(intPos.x,intPos.y));
 		}
+		print(_screenRayHit.transform);
 		*/
-
-		return _hit;
+		return _screenRayHit;
+		//return _hit;
 	}
 
 
