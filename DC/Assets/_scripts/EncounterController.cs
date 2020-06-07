@@ -225,6 +225,11 @@ public class EncounterController : MonoBehaviour
 			var _next = Instantiate(segments[Random.Range(0,segments.Length)], _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
 			segmentList.Add(_next);
 
+			var _enviromentInteractibles = _next.GetComponentsInChildren<TerrainInterractible>();
+			foreach (var v in _enviromentInteractibles)
+			{
+				v.SetStatBlock(EncounterData.urnEnvironmentBlock);
+			}
 
 			if (segmentList.Count > 10)
 			{

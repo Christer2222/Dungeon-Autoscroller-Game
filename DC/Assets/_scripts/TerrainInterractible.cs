@@ -11,10 +11,17 @@ public class TerrainInterractible : MonoBehaviour, IAbilityInterractible
 
 	//public A aefv = new A();
 
+
+	/*
 	void Start()
 	{
-		MyStats = EncounterData.urnBlock.Clone();
+		MyStats = EncounterData.urnEnvironmentBlock.Clone();
 		//aefv.sb = MyStats;
+	}
+	*/
+	public void SetStatBlock(StatBlock statBlock)
+	{
+		MyStats = statBlock;
 	}
 
 	public int AdjustHealth(int _amount, Elementals _elementals, ExtraData _extraData)

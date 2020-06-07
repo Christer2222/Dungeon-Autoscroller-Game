@@ -839,7 +839,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 		_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? abilityActiveColor: abilityInactive;
 		_button.GetComponent<Button>().enabled = _hasEnoughMana;
-		_button.GetComponent<Collider2D>().enabled = _hasEnoughMana;
+		//_button.GetComponent<Collider2D>().enabled = _hasEnoughMana;
 	}
 
 	public IEnumerator Click()

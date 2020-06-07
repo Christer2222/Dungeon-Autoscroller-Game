@@ -41,7 +41,7 @@ public class StatBlock
 		Elementals _weaknesses = default, Elementals _resistances = default, Elementals _immunities = default, Elementals _absorbs = default,
 		AIType _aiType = default,
 		List<Buff> _buffs = default,
-		int _defense = 0, int _magicDefense = 0
+		int _baseDefense = 0, int _baseMagicDefense = 0
 		)
 	{
 		race = _race;
@@ -71,8 +71,8 @@ public class StatBlock
 
 		aiType = _aiType;
 
-		baseDefense = _defense;
-		baseMagicDefense = _magicDefense;
+		baseDefense = _baseDefense;
+		baseMagicDefense = _baseMagicDefense;
 
 		string _path = "Assets/Resources/Sprites/Enemies/AnimationTexts/";
 		string _standardizedName = _name.Replace(" ", "_").ToLower();
