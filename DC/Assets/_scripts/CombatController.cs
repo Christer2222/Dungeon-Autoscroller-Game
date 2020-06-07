@@ -296,10 +296,10 @@ public class CombatController : AbilityScript, IAbilityInterractible
 				var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UIController.UICanvas, (turnCounter == 1) ? new Color(0.8f, 0.4f, 0) : Color.yellow + Color.red, (turnCounter == 1) ? "Combat!" : "Your Turn!", 150);
 				_playerTurnText.transform.parent.localPosition = Vector3.zero;
 				_playerTurnText.StartCoroutine(EffectTools.ActivateInOrder(_playerTurnText,
-					new List<EffectTools.FunctionAndDelay>()
+					new List<EffectTools.FunctionGroup>()
 					{
-									new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(_playerTurnText.transform, new Vector3(2, 0, 0), Vector3.one, 1f),   0),
-									new EffectTools.FunctionAndDelay(new List<IEnumerator>()
+									new EffectTools.FunctionGroup(EffectTools.StretchFromTo(_playerTurnText.transform, new Vector3(2, 0, 0), Vector3.one, 1f),   0),
+									new EffectTools.FunctionGroup(new List<IEnumerator>()
 										{
 											EffectTools.MoveDirection(_playerTurnText.transform,Vector3.right,100,5),
 											EffectTools.StretchFromTo(_playerTurnText.transform, _playerTurnText.transform.localScale, new Vector3(2, 1, 0), 2f),
@@ -720,10 +720,10 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			else
 			{
 				Vector3 _orgScale = transform.localScale;
-				StartCoroutine(EffectTools.ActivateInOrder(this, new List<EffectTools.FunctionAndDelay>()
+				StartCoroutine(EffectTools.ActivateInOrder(this, new List<EffectTools.FunctionGroup>()
 				{
-					new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform,_orgScale,_orgScale * 0.9f, 0.1f),0),
-					new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _orgScale, 0.1f), UnityEngine.Random.Range(0.1f,0.2f))
+					new EffectTools.FunctionGroup(EffectTools.StretchFromTo(transform,_orgScale,_orgScale * 0.9f, 0.1f),0),
+					new EffectTools.FunctionGroup(EffectTools.StretchFromTo(transform, transform.localScale, _orgScale, 0.1f), UnityEngine.Random.Range(0.1f,0.2f))
 				}));
 			}
 		}

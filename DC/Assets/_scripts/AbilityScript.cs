@@ -322,18 +322,18 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		_spawnedMonos.Add(_mono.gameObject);
 		Destroy(_bolt.gameObject, 3);
 
-		_mono.StartCoroutine(EffectTools.ActivateInOrder(_mono, new List<EffectTools.FunctionAndDelay>()
+		_mono.StartCoroutine(EffectTools.ActivateInOrder(_mono, new List<EffectTools.FunctionGroup>()
 		{
-				new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_bolt.transform, Vector3.down,2,0.1f),0), //move effect
+				new EffectTools.FunctionGroup(EffectTools.MoveDirection(_bolt.transform, Vector3.down,2,0.1f),0), //move effect
 		}));
 
 		//var _moDel = new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_bolt.transform, Vector3.down + Vector3.right * randomVector3.x, 2, 0.1f), 0);
 		for (int i = 1; i < 100; i++)
 		{
 			//_moDel._secToStart = i * 0.1f;
-			_mono.StartCoroutine(EffectTools.ActivateInOrder(_mono, new List<EffectTools.FunctionAndDelay>() {
+			_mono.StartCoroutine(EffectTools.ActivateInOrder(_mono, new List<EffectTools.FunctionGroup>() {
 				//_moDel,
-				new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_bolt.transform, Vector3.down + Vector3.right * RandomVector3.x,2,0.1f),i * 0.1f), //move effect
+				new EffectTools.FunctionGroup(EffectTools.MoveDirection(_bolt.transform, Vector3.down + Vector3.right * RandomVector3.x,2,0.1f),i * 0.1f), //move effect
 			}));
 		}
 
@@ -355,8 +355,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 					_spawnedMonos.Add(_spawnedMono.gameObject);
 					_spawnedBolt.name = "spawnBolt " + i;
 
-					_spawnedMono.StartCoroutine(EffectTools.ActivateInOrder(_spawnedMono, new List<EffectTools.FunctionAndDelay>() {
-						new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_spawnedBolt.transform, _hits[i].transform.position - _spawnedBolt.transform.position,2,2f),0.5f), //move effect
+					_spawnedMono.StartCoroutine(EffectTools.ActivateInOrder(_spawnedMono, new List<EffectTools.FunctionGroup>() {
+						new EffectTools.FunctionGroup(EffectTools.MoveDirection(_spawnedBolt.transform, _hits[i].transform.position - _spawnedBolt.transform.position,2,2f),0.5f), //move effect
 					}));
 					//_spawnedMono.StartCoroutine(EffectTools.MoveDirection(_spawnedBolt.transform, _hits[i].transform.position - _spawnedBolt.transform.position,2,2)); //move effect 2
 
@@ -967,11 +967,11 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 	public static IEnumerator Wobble(TargetData targetData)
 	{		
-		targetData.self.StartCoroutine(EffectTools.ActivateInOrder(targetData.self, new List<EffectTools.FunctionAndDelay>()
+		targetData.self.StartCoroutine(EffectTools.ActivateInOrder(targetData.self, new List<EffectTools.FunctionGroup>()
 		{
-			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(targetData.self.transform,Vector3.right,1,0.2f), 0),
-			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(targetData.self.transform,Vector3.left,1,0.3f), 0.2f),
-			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(targetData.self.transform,Vector3.right,1,0.1f), 0.3f),
+			new EffectTools.FunctionGroup(EffectTools.MoveDirection(targetData.self.transform,Vector3.right,1,0.2f), 0),
+			new EffectTools.FunctionGroup(EffectTools.MoveDirection(targetData.self.transform,Vector3.left,1,0.3f), 0.2f),
+			new EffectTools.FunctionGroup(EffectTools.MoveDirection(targetData.self.transform,Vector3.right,1,0.1f), 0.3f),
 		}));
 		yield return null;
 	}

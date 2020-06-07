@@ -7,12 +7,12 @@ public class EncounterController : MonoBehaviour
 {
 	public static EncounterController instance;
 
-	private GameObject[] segments;
-	private GameObject segmentPrefabEmpty;
+	private GameObject[] segmentPrefabs;
+	private GameObject segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, segmentPrefabStalagmite;
 	private GameObject enemyPrefab;
 	//private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
-	private readonly List<GameObject> segmentList = new List<GameObject>();
+	private readonly List<GameObject> segmentsInMap = new List<GameObject>();
 	private const float SEGMENT_DISTANCE = 8;
 
 	private float encounterTimer;
@@ -46,10 +46,16 @@ public class EncounterController : MonoBehaviour
 
 		encounterTimer = ENCOUNTER_COOLDOWN;//5;
 
-		segmentPrefabEmpty = (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Empty");
-		segments = Resources.LoadAll<GameObject>("Prefabs/Segments/");
+		segmentPrefabEmpty		= (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Empty");
+		segmentPrefabTorch		= (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Torch");
+		segmentPrefabUrn		= (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Urn");
+		segmentPrefabStalagmite = (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Stalagmite");
 
-		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/Enemy");
+		segmentPrefabs = new GameObject[] { segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, segmentPrefabStalagmite };
+
+		//segments = Resources.LoadAll<GameObject>("Prefabs/Segments/");
+
+		enemyPrefab = (GameObject)Resources.Load("Prefabs/Enemies/$EnemyCanvas");
 		//var enemySprites = Resources.LoadAll<Sprite>("Sprites/Enemies");
 		/*
 		for (int i = 0; i < enemySprites.Length; i++)
@@ -219,22 +225,52 @@ public class EncounterController : MonoBehaviour
 	{
 		if (_trig.CompareTag("Segment"))
 		{
+			
+			var _enviromentInteractibles = _trig.GetComponentsInChildren<TerrainInterractible>();
+			foreach (var v in _enviromentInteractibles)
+			{
+				v.StartCoroutine(v.trapTriggered());//.Invoke();
+			}
+			
+
 			_trig.enabled = false;
 
 			//var _next = Instantiate(segmentPrefabEmpty, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
-			var _next = Instantiate(segments[Random.Range(0,segments.Length)], _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
-			segmentList.Add(_next);
+			GameObject _chosenPrefab = segmentPrefabs[Random.Range(0, segmentPrefabs.Length)];
+			var _next = Instantiate(_chosenPrefab, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
+			segmentsInMap.Add(_next);
 
-			var _enviromentInteractibles = _next.GetComponentsInChildren<TerrainInterractible>();
-			foreach (var v in _enviromentInteractibles)
+			
+			var _newEnviromentInteractibles = _next.GetComponentsInChildren<TerrainInterractible>();
+			foreach (var v in _newEnviromentInteractibles)
 			{
-				v.SetStatBlock(EncounterData.urnEnvironmentBlock);
+				if (_chosenPrefab == segmentPrefabStalagmite)
+				{
+					v.SetStatBlock(EncounterData.stalagmiteEnvironmentBlock);
+					v.trapTriggered = v.StalagmiteTrap;
+				}
+				else// (_next == segmentPrefabUrn)
+				{
+					v.SetStatBlock(EncounterData.urnEnvironmentBlock);
+					v.trapTriggered = v.PrintName;
+				}
+
+				/*
+				if (v.MyStats == EncounterData.stalagmiteEnvironmentBlock)
+				{
+					print("stalag create");
+				}
+				else
+				{
+					print("urn create");
+				}
+				*/
 			}
-
-			if (segmentList.Count > 10)
+			
+			if (segmentsInMap.Count > 10)
 			{
-				Destroy(segmentList[0]);
-				segmentList.Remove(segmentList[0]);
+				Destroy(segmentsInMap[0]);
+				segmentsInMap.Remove(segmentsInMap[0]);
 			}
 		}
 	}

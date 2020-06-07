@@ -166,6 +166,7 @@
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\spot_weakness_a_text.txt" />
     <None Include="Assets\Resources\Descriptions\Abilities\mana_drain_description.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\restore_soul_a_text.txt" />
+    <None Include="Assets\Resources\Sprites\Enemies\AnimationTexts\stalagmite_a_text.txt" />
     <None Include="Assets\Resources\Sprites\Items\AnimationTexts\orange_sprite_index.txt" />
     <None Include="Assets\Resources\Sprites\Effects\AnimationTexts\poison_tick_a_text.txt" />
     <None Include="Assets\Resources\Descriptions\Abilities\mass_heal_description.txt" />

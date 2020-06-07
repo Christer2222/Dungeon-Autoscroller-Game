@@ -22,13 +22,13 @@ public class EffectTools// : MonoBehaviour
 			Debug.LogWarning("The effectDictionary already contains the key: " + _key);
 	}
 
-	public struct FunctionAndDelay
+	public struct FunctionGroup
 	{
-		public FunctionAndDelay(IEnumerator _funtion, float _delay) : this(new List<IEnumerator>() { _funtion }, _delay) { }
+		public FunctionGroup(IEnumerator _singleFunction, float _delay) : this(new List<IEnumerator>() { _singleFunction }, _delay) { }
 
-		public FunctionAndDelay(List<IEnumerator> _funtions, float _delay)
+		public FunctionGroup(List<IEnumerator> _functionList, float _delay)
 		{
-			functions = _funtions;
+			functions = _functionList;
 			_secToStart = _delay;
 		}
 
@@ -59,7 +59,7 @@ public class EffectTools// : MonoBehaviour
 		//}
 	}
 
-	static IEnumerator Delay(float _sec)
+	public static IEnumerator Delay(float _sec)
 	{
 		float _timer = 0;
 		while (_timer < _sec)
@@ -237,11 +237,14 @@ public class EffectTools// : MonoBehaviour
 		return null;
 	}
 
-	public static IEnumerator ActivateInOrder(MonoBehaviour _holder, List<FunctionAndDelay> _functionAndDelay)
+	/// <summary>
+	/// Activates one functionGroup after another. A delay between functions can be specified. If set to 0, the functions will happen at the same time.
+	/// </summary>
+	public static IEnumerator ActivateInOrder(MonoBehaviour _holder, List<FunctionGroup> _functionAndDelay)
 	{
 		for (int i = 0; i < _functionAndDelay.Count; i++)
 		{
-			yield return new WaitForSeconds(_functionAndDelay[i]._secToStart);
+			yield return Delay(_functionAndDelay[i]._secToStart); //new WaitForSeconds(_functionAndDelay[i]._secToStart);
 			for (int j = 0; j < _functionAndDelay[i].functions.Count; j++)
 			{
 				_holder.StartCoroutine(_functionAndDelay[i].functions[j]);

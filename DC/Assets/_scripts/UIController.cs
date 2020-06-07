@@ -345,6 +345,7 @@ public class UIController : MonoBehaviour
 
                 case "$FleeSlider":
                     FleeSlider = child.GetComponent<Slider>();
+                    //FleeSlider.transform.parent.SetParent(UICanvas.parent);
                     break;
 
 				#region AbilityPicking

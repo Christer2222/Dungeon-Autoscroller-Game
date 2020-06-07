@@ -78,16 +78,16 @@ public class EnemyAI
 
 		float _turnDelay = 1f / ((float)CombatController.turnOrder.Count / 5);
 		holder.StartCoroutine(
-		EffectTools.ActivateInOrder(_abilityUsedText, new List<EffectTools.FunctionAndDelay>()
+		EffectTools.ActivateInOrder(_abilityUsedText, new List<EffectTools.FunctionGroup>()
 		{
-			new EffectTools.FunctionAndDelay(EffectTools.MoveDirection(_abilityUsedText.transform,Vector3.right,100,5),_turnDelay),
+			new EffectTools.FunctionGroup(EffectTools.MoveDirection(_abilityUsedText.transform,Vector3.right,100,5),_turnDelay),
 		}));
 
 		yield return holder.StartCoroutine(
-		EffectTools.ActivateInOrder(holder, new List<EffectTools.FunctionAndDelay>()
+		EffectTools.ActivateInOrder(holder, new List<EffectTools.FunctionGroup>()
 		{
-			new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, _startScale, _startScale * 1.5f, 0.2f), _turnDelay + 0.5f),
-			new EffectTools.FunctionAndDelay(EffectTools.StretchFromTo(transform, transform.localScale, _startScale, 0.2f), 0.2f),
+			new EffectTools.FunctionGroup(EffectTools.StretchFromTo(transform, _startScale, _startScale * 1.5f, 0.2f), _turnDelay + 0.5f),
+			new EffectTools.FunctionGroup(EffectTools.StretchFromTo(transform, transform.localScale, _startScale, 0.2f), 0.2f),
 		}));
 	}
 }
