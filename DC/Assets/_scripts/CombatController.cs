@@ -41,6 +41,8 @@ public class CombatController : AbilityScript, IAbilityInterractible
 	private Color abilityActiveColor = new Color(0, 0, 0.35f), abilityInactive = Color.gray;
 	private const float MAX_ABILITIES_ON_SCREEN = 6.5f;
 
+	private List<AbilitInField> listedAbilityObjects = new List<AbilitInField>();
+
 	[HideInInspector]
 	public bool actedLastTick;
 	private bool invokingAbility;
@@ -201,17 +203,73 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		}
 	}
 
+	private class AbilitInField
+	{
+		public Ability ability;
+		public GameObject gameObject;
+	}
+
+	public void RefreshAbilityList()
+	{
+		for (int i = 0; i < MyStats.abilities.Count; i++) //go through all abilities the player has
+		{
+			var _currentAbility = MyStats.abilities[i]; //shortcut
+
+			var _foundAbilityObject = listedAbilityObjects.Find(x => x.ability == _currentAbility); //look for an instantiated gameobject with the checked ability
+			if (_foundAbilityObject == null) //if none was found
+			{
+				GameObject _go = Instantiate(abilityEntryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry of it
+				var _newAbilityObject = new AbilitInField { ability = MyStats.abilities[i], gameObject = _go };
+				listedAbilityObjects.Add(_newAbilityObject); //add it to the list of abilities in the scene
+
+				_go.transform.Find("$Text").GetComponent<Text>().text = _currentAbility.name; //name the button the name of the ability
+				var rectTrans = _go.transform as RectTransform;
+				rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 600); //set it to the right size
+
+				int _index = i; //store the current index
+				_go.GetComponent<Button>().onClick.AddListener(delegate {
+					UIController.SetUIMode(UIController.UIMode.None); //when an ability is selected, hide all UI
+					UIController.AbilityButtonText.text = _currentAbility.name; //set the name of the button to the ability
+					selectedAbility = MyStats.abilities[_index]; //set ability to this ability
+					_go.GetComponent<ToolTip>().OnPointerExit(null); //hide the current tooltip if it was hovering this
+				});
+
+
+				_go.GetComponent<ToolTip>().ChangeToolTipText(MyStats.abilities[i].description); //give the spawned game object the correct tooltip
+			}
+		}
+
+		for (int i = 0; i < listedAbilityObjects.Count; i++)
+		{
+			var _currentCheck = listedAbilityObjects[i];
+			_currentCheck.gameObject.SetActive(MyStats.abilities.Find(x => x == _currentCheck.ability) != null); //if the ability isn't null, leave it active. If it is null, deactivate it.
+			/*
+			if (MyStats.abilities.Find(x => x == _currentCheck.ability) == null)
+			{
+				_currentCheck.gameObject.SetActive(false);
+			}
+			*/
+		}
+
+		UIController.AbilityMenuContent.sizeDelta = new Vector2(0, (listedAbilityObjects.Count) * 110 + 10); //set size of content to fit all entries
+
+		var oMax = UIController.AbilityMenuScrollView.offsetMax; //shortcut for height
+		oMax.y = UIController.AbilityMenuScrollView.offsetMin.y + (Mathf.Min(listedAbilityObjects.Count, MAX_ABILITIES_ON_SCREEN)) * 110 + 10; //set height to bottom + maxShowCount * height + offset
+		UIController.AbilityMenuScrollView.offsetMax = oMax; //apply
+
+		UpdateAbilitiesToManaAvailability(); //set colors
+	}
+
 	/// <summary>
 	/// Update available buttons
 	/// </summary>
-	public void RefreshAbilityList()
+	public void RefreshAbilityListOld()
 	{
 		var _children = UIController.AbilityMenuContent.GetComponentsInChildren<Transform>(); //get all children already here
 
-		for (int i = 1; i < _children.Length; i++) //exclude parent by starting at 1
-		{
-			Destroy(_children[i].gameObject); //and clear all children
-		}
+		ClearAbilityList();
+
+		listedAbilityObjects.Clear();
 
 		int _abilityCount = MyStats.abilities.Count; //for each ability the player has
 		for (int i = 0; i < _abilityCount; i++) //go through them
@@ -221,8 +279,12 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 
 			GameObject _go = Instantiate(abilityEntryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry for each ability
+			//listedAbilityObjects.Add(_go);
+
 			//_go.transform.localPosition = Vector3.zero; //new Vector3(350,-10 + -(i + 0.5f) * 170,0); //place it
 			_go.transform.Find("$Text").GetComponent<Text>().text = _s; //write what ability the button selects
+			var rectTrans = _go.transform as RectTransform;
+			rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 600);
 
 			int _index = i; //store the current index
 			_go.GetComponent<Button>().onClick.AddListener(delegate {
@@ -245,6 +307,14 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		UIController.AbilityMenuScrollView.offsetMax = oMax; //apply
 
 		UpdateAbilitiesToManaAvailability(); //set colors
+	}
+
+	void ClearAbilityList()
+	{
+		for (int i = 0; i < listedAbilityObjects.Count; i++)
+		{
+			Destroy(listedAbilityObjects[i].gameObject);
+		}
 	}
 
 	IEnumerator EndActedLastTick()
