@@ -8,6 +8,8 @@ public class LevelUpScreen : AbilityCollection
 {
 	public static LevelUpScreen instance;
 
+	private static GameObject abilityEntryPrefab;
+
 	private readonly List<AbilityChoices> levelUpQueue = new List<AbilityChoices>();
 	public LevelGroup currentGroup = adventurerGroup;
 	private static readonly LevelGroup adventurerGroup = new LevelGroup("Adventurer", 2, 2, 
@@ -106,6 +108,8 @@ public class LevelUpScreen : AbilityCollection
 	/// </summary>
 	public void Initialize()
 	{
+		abilityEntryPrefab = Resources.Load<GameObject>("Prefabs/$AbilityEntry");
+
 		abilityButton1ToolTip = UIController.LevelUpPickAbilityButton1.GetComponent<ToolTip>();
 		abilityButton2ToolTip = UIController.LevelUpPickAbilityButton2.GetComponent<ToolTip>();
 		abilityButton3ToolTip = UIController.LevelUpPickAbilityButton3.GetComponent<ToolTip>();

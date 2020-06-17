@@ -469,13 +469,26 @@ public class UIController : MonoBehaviour
         LevelUpScreen.instance.Initialize();
     }
 
-    int frames = 0;
-    int totalFps = 0;
-    int min = int.MaxValue;
-    int max = int.MinValue;
+
     private void Update()
     {
-        if (frames == 100)
+        UpdateFpsCounter();
+
+        if (Input.GetKeyDown(Options.abilitiesHotkey)) AbilityButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.fleeHotkey)) FleeButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.itemsHotkey)) InventoryButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.inspectHotkey)) InspectButton.onClick.Invoke();
+        if (Input.GetKeyDown(Options.levelUpHotkey)) LevelUpButton.onClick.Invoke();
+    }
+
+    private int frames = 0;
+    private int totalFps = 0;
+    private int min = int.MaxValue;
+    private int max = int.MinValue;
+
+    void UpdateFpsCounter()
+	{
+        if (frames == 100) //reset every 100 frames
         {
             frames = 0;
             totalFps = 0;
@@ -487,17 +500,11 @@ public class UIController : MonoBehaviour
         int fps = (int)(1f / Time.deltaTime);
         totalFps += fps;
         frames++;
-        min = Math.Min(fps,min);
-        max = Math.Max(fps,max);
+        min = Math.Min(fps, min);
+        max = Math.Max(fps, max);
 
 
-        FpsText.text = "min: " + min + "\nmax:" + max + "\navg:" + (totalFps/frames);
-
-        if (Input.GetKeyDown(Options.abilitiesHotkey)) AbilityButton.onClick.Invoke();
-        if (Input.GetKeyDown(Options.fleeHotkey)) FleeButton.onClick.Invoke();
-        if (Input.GetKeyDown(Options.itemsHotkey)) InventoryButton.onClick.Invoke();
-        if (Input.GetKeyDown(Options.inspectHotkey)) InspectButton.onClick.Invoke();
-        if (Input.GetKeyDown(Options.levelUpHotkey)) LevelUpButton.onClick.Invoke();
+        FpsText.text = "min: " + min + "\nmax:" + max + "\navg:" + (totalFps / frames);
     }
 
     public static void SetUIMode(UIMode targetUIMode)
