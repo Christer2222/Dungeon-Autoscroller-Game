@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using System.Linq;
 using AbilityInfo;
 using System;
-using Boo.Lang.Environments;
 using UnityEditor;
 
 public class CombatController : AbilityScript, IAbilityInterractible
@@ -47,16 +46,15 @@ public class CombatController : AbilityScript, IAbilityInterractible
 	private bool invokingAbility;
 
 	//variables for player ability toggeling
-	private static GameObject entryPrefab;
+	private static GameObject abilityEntryPrefab;
 
+	private readonly List<BuffUI> buffUIs = new List<BuffUI>();
 
 	class BuffUI
 	{
 		public ToolTip tip;
 		public Buff buff;
 	}
-
-	private readonly List<BuffUI> buffUIs = new List<BuffUI>();
 
 	public static void ClearAllValues()
 	{
@@ -99,7 +97,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 				_drops: DropTable.none
 				);
 
-			entryPrefab = Resources.Load<GameObject>("Prefabs/$Entry");
+			abilityEntryPrefab = Resources.Load<GameObject>("Prefabs/$AbilityEntry");
 			buffEntryPrefab = Resources.Load<GameObject>("Prefabs/$BuffEntry");
 
 #region UI Assignment
@@ -222,7 +220,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			_s = MyStats.abilities[i].name;
 
 
-			GameObject _go = Instantiate(entryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry for each ability
+			GameObject _go = Instantiate(abilityEntryPrefab, UIController.AbilityMenuContent.transform); //spawn a new entry for each ability
 			//_go.transform.localPosition = Vector3.zero; //new Vector3(350,-10 + -(i + 0.5f) * 170,0); //place it
 			_go.transform.Find("$Text").GetComponent<Text>().text = _s; //write what ability the button selects
 
@@ -624,12 +622,13 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			MyStats.xp -= (int)UIController.XPSlider.maxValue; //subtract this levels xp requirement
 			UIController.XPSlider.value = MyStats.xp; //then set the xp bar to show the current xp (which might be over the requirement for a levelup)
 			UIController.XPSlider.maxValue = MyStats.level * 10; //set the next levelup to be at 10 times the level
-
+			
 			MoveXPSlider();
 		}
 
 		if (_leveledUpAtLeastOnce)
 		{
+			LevelUpScreen.instance.SetLeftoverPointsText();
 
 			MyStats.currentHealth = MyStats.maxHealth;
 			MyStats.currentMana = MyStats.maxMana;

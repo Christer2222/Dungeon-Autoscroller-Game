@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 
@@ -10,6 +11,7 @@ public class UIController : MonoBehaviour
 	public static Camera MainCamera { get; private set; }
     public static RectTransform UICanvas { get; private set; }
     public static GameObject GameOverHolder { get; private set; }
+    public static Text FpsText { get; private set; }
 	#endregion
 
 	//-----------------------Inventory------------------------
@@ -67,8 +69,10 @@ public class UIController : MonoBehaviour
 
 	//-----------------------Level Up---------------------------------------------
 	#region LevelUp
+
 	public static GameObject LevelUpScreenGameObject { get; private set; }
     public static Text LevelClassText { get; private set; }
+	public static Text LevelUpLeftoverPointsText { get; private set; }
     public static Button ClassChangePossibleButton { get; private set; }
     public static Button LevelUpPickAbilityButton1 { get; private set; }
     public static Button LevelUpPickAbilityButton2 { get; private set; }
@@ -364,6 +368,9 @@ public class UIController : MonoBehaviour
                 case "$LevelUpHolder":
                     LevelUpScreenGameObject = child.gameObject;
                     break;
+                case "$LeftoverPointsText":
+                    LevelUpLeftoverPointsText = child.GetComponent<Text>();
+                    break;
                 case "$LevelClassText":
                     LevelClassText = child.GetComponent<Text>();
                     LevelClassText.GetComponent<ToolTip>().ChangeToolTipText("Learns many different abilities.\n\nLevel up bonus:\n+2HP\n+2MP");
@@ -442,7 +449,9 @@ public class UIController : MonoBehaviour
                     ToolTipText = child.GetComponent<Text>();
                     break;
                 #endregion
-
+                case "$FpsText":
+                    FpsText = child.GetComponent<Text>();
+                    break;
                 case "$GameOverHolder":
                     GameOverHolder = child.gameObject;
                     foreach (Transform _childGameOver in child.GetComponentsInChildren<Transform>(true))
@@ -460,8 +469,30 @@ public class UIController : MonoBehaviour
         LevelUpScreen.instance.Initialize();
     }
 
+    int frames = 0;
+    int totalFps = 0;
+    int min = int.MaxValue;
+    int max = int.MinValue;
     private void Update()
     {
+        if (frames == 100)
+        {
+            frames = 0;
+            totalFps = 0;
+            min = int.MaxValue;
+            max = int.MinValue;
+        }
+
+
+        int fps = (int)(1f / Time.deltaTime);
+        totalFps += fps;
+        frames++;
+        min = Math.Min(fps,min);
+        max = Math.Max(fps,max);
+
+
+        FpsText.text = "min: " + min + "\nmax:" + max + "\navg:" + (totalFps/frames);
+
         if (Input.GetKeyDown(Options.abilitiesHotkey)) AbilityButton.onClick.Invoke();
         if (Input.GetKeyDown(Options.fleeHotkey)) FleeButton.onClick.Invoke();
         if (Input.GetKeyDown(Options.itemsHotkey)) InventoryButton.onClick.Invoke();

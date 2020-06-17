@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using AbilityInfo;
+using System.Xml.Serialization;
 
 public class LevelUpScreen : AbilityCollection
 {
@@ -130,6 +131,7 @@ public class LevelUpScreen : AbilityCollection
 
 						UIController.SetUIMode(UIController.UIMode.None);
 
+						SetLeftoverPointsText();
 						//ToggleLevelUpScreen();
 					});
 
@@ -152,6 +154,7 @@ public class LevelUpScreen : AbilityCollection
                         confirmButton.gameObject.SetActive(false);
 
 						ToggleArrowButtons();
+						SetLeftoverPointsText();
 					});
 					break;
 			}
@@ -341,4 +344,9 @@ public class LevelUpScreen : AbilityCollection
 		UIController.LevelUpIntellectChangeButtons.minObject.gameObject.SetActive(intelligenceChange > 0);
 		UIController.LevelUpLuckChangeButtons.minObject.gameObject.SetActive(luckChange > 0);
     }
+
+	public void SetLeftoverPointsText()
+	{
+		UIController.LevelUpLeftoverPointsText.gameObject.SetActive(traitPointsToSpend > 0 || levelUpQueue.Count > 0);
+	}
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2137681073940169636}
   - component: {fileID: 5162864427298738407}
   m_Layer: 5
-  m_Name: $Entry
+  m_Name: $AbilityEntry
   m_TagString: AbilityButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

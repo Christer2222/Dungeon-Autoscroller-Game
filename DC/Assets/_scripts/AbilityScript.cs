@@ -62,6 +62,8 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 	*/
 	protected static Vector3 lastClick;
 
+	private const float CURSOR_HIT_DISTANCE = 90;
+
 	public static Vector3 HitPosition
 	{
 		get 
@@ -167,7 +169,7 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 
 
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		var _screenRayHit = Physics2D.GetRayIntersection(ray, 75);
+		var _screenRayHit = Physics2D.GetRayIntersection(ray, CURSOR_HIT_DISTANCE);
 		
 		if (_screenRayHit.transform != null)
 		{
