@@ -157,6 +157,8 @@ public class LevelUpScreen : AbilityCollection
 
                         confirmButton.gameObject.SetActive(false);
 
+						PlayerInventory.instance.SetInventorySlotText();
+
 						ToggleArrowButtons();
 						SetLeftoverPointsText();
 					});

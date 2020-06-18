@@ -202,6 +202,22 @@ public class StatBlock
 		}
 	}
 
+	public int CarryingSlots
+	{
+		get
+		{
+			return Mathf.CeilToInt((baseStrength-1)/3f) + 2;
+		}
+	}
+
+	public int AbilitySlots
+	{
+		get
+		{
+			return Mathf.CeilToInt((baseIntelligence-1) / 3f) + 2;
+		}
+	}
+
 	public string GetToolTipStats()
 	{
 		string _green = "<color=#00FF00>";

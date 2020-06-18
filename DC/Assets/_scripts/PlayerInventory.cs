@@ -668,16 +668,22 @@ public class PlayerInventory : MonoBehaviour
             }
 
         };
-        
+
         //_dropsProcessed.ForEach(x => AddItemToInventory(x)); //then add the item to inventory
 
         //StartCoroutine(EffectTools.DeactivateGameObject(dropList.gameObject, 3));
-        
+
+        SetInventorySlotText();
+
         UIController.ItemDropListConfirmButton.onClick.AddListener(addToInventoryAction);
 
         EncounterController.instance.currentGameState = EncounterController.GameState.ConfirmingDrops;
     }
 
+    public void SetInventorySlotText()
+	{
+        UIController.InventorySlotSizeText.text = $"Slots: {inventory.Count}/{CombatController.playerCombatController.MyStats.CarryingSlots}";
+    }
 
     /// <summary>
     /// Rolls for an item, then adds it to the inventory.

@@ -20,6 +20,7 @@ public class UIController : MonoBehaviour
 	public static Text InventoryButtonText { get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static Button ItemDropListConfirmButton { get; private set; }
+    public static Text InventorySlotSizeText { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }
     public static RectTransform InventoryRootRectTransform { get; private set; }
     public static RectTransform InventoryGeneralContextMenu { get; private set; }
@@ -178,6 +179,9 @@ public class UIController : MonoBehaviour
                     break;
                 case "$ItemDropListConfirmButton":
                     ItemDropListConfirmButton = child.GetComponent<Button>();
+                    break;
+                case "$InventorySlotSizeText":
+                    InventorySlotSizeText = child.GetComponent<Text>();
                     break;
                 case "$ItemListContent":
                     InventoryItemContent = child.GetComponent<RectTransform>();
@@ -511,7 +515,7 @@ public class UIController : MonoBehaviour
         max = Math.Max(fps, max);
 
 
-        FpsText.text = "min: " + min + "\nmax:" + max + "\navg:" + (totalFps / frames);
+        FpsText.text = "low: " + min.ToString("000") + "\nhi: " + max.ToString("000") + "\navg: " + (totalFps / frames).ToString("000");
     }
 
     public static void SetUIMode(UIMode targetUIMode)
