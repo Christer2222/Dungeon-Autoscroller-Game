@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class PlayerInventory : MonoBehaviour
@@ -19,6 +19,7 @@ public class PlayerInventory : MonoBehaviour
     private const string CANT_STRING = "Can't";
     private const string WAIT_STRING = "Wait";
 
+	private readonly Color dropListAddColor = new Color(0, 1, 0, 0.5f), dropListDontAddColor = new Color(0.25f, 0.25f, 0.25f, 0.5f);
 
     public Transform dropList;
     private ItemInfoGameObject[] itemInfoGameObjects;
@@ -35,6 +36,8 @@ public class PlayerInventory : MonoBehaviour
         public Text text;
         public Image background;
         public ToolTip toolTip;
+        public Button button;
+        public bool selected = true;
     }
 
     public class ItemQuantity
@@ -86,6 +89,8 @@ public class PlayerInventory : MonoBehaviour
         accessory3Slot,
     };
 
+
+    private UnityAction addToInventoryAction;
     //private static readonly List<EquipmentSlot> allEquipmentSlots = new List<EquipmentSlot>() { helmetSlot, chestplateSlot, leggingsSlot, bootsSlot, mainHandSlot, offHandSlot, accessory1Slot, accessory2Slot, accessory3Slot };
     //private readonly List<EquipmentSlot> allEquipmentSlots = new List<EquipmentSlot>() { helmetSlot, chestplateSlot, leggingsSlot, bootsSlot, mainHandSlot, offHandSlot, accessory1Slot, accessory2Slot, accessory3Slot };
     //private EquipmentSlot[] allEquipmentSlots = new EquipmentSlot[] { helmetSlot, chestplateSlot, leggingsSlot, bootsSlot, mainHandSlot, offHandSlot, accessory1Slot, accessory2Slot, accessory3Slot };
@@ -195,7 +200,21 @@ public class PlayerInventory : MonoBehaviour
         for (int i = 0; i < dropList.childCount; i++)
         {
             var child = dropList.GetChild(i);
-            itemInfoGameObjects[i] = new ItemInfoGameObject() { icon = child.Find("$Icon").GetComponent<Image>(), text = child.GetComponentInChildren<Text>(), background = child.Find("$Background").GetComponent<Image>(), toolTip = child.GetComponentInChildren<ToolTip>() };
+            itemInfoGameObjects[i] = new ItemInfoGameObject() {
+                icon = child.Find("$Icon").GetComponent<Image>(),
+                text = child.GetComponentInChildren<Text>(),
+                background = child.Find("$Background").GetComponent<Image>(),
+                toolTip = child.GetComponentInChildren<ToolTip>(),
+                button = child.GetComponent<Button>(),
+            };
+
+            int _index = i;
+            itemInfoGameObjects[_index].background.color = (itemInfoGameObjects[_index].selected) ? dropListAddColor : dropListDontAddColor;
+
+            itemInfoGameObjects[i].button.onClick.AddListener(delegate { 
+                itemInfoGameObjects[_index].selected = !itemInfoGameObjects[_index].selected;
+                itemInfoGameObjects[_index].background.color = (itemInfoGameObjects[_index].selected) ? dropListAddColor : dropListDontAddColor;
+            });
         }
 
 		#region Buttons
@@ -331,10 +350,10 @@ public class PlayerInventory : MonoBehaviour
 
             UnequipItem(offHandSlot.Value); //either way, unequip off hand
         });
-		#endregion
-		#region Toss Buttons
-		//----------TOSS BUTTONS
-		UIController.InventoryTossButton.onClick.AddListener(() => { 
+        #endregion
+        #region Toss Buttons
+        //----------TOSS BUTTONS
+        UIController.InventoryTossButton.onClick.AddListener(() => { 
             if (selectedItem != null) 
             {
                 ChangeItemQuantity(selectedItem, -GetTossValue());
@@ -345,6 +364,7 @@ public class PlayerInventory : MonoBehaviour
         UIController.InventoryTossDown1Button.onClick.AddListener(  () => ChangeTossNumber(-1));
         UIController.InventoryTossDown10Button.onClick.AddListener( () => ChangeTossNumber(-10));
         #endregion
+    
         UIController.ItemDropListConfirmButton.onClick.AddListener(delegate { EncounterController.instance.SetGameState(EncounterController.GameState.Walking); UIController.ItemDropListGameObject.parent.gameObject.SetActive(false); });
 		#endregion
 
@@ -354,6 +374,7 @@ public class PlayerInventory : MonoBehaviour
         //ClearInventory();
         RebuildInventory();
     }
+
 
     void UnequipItem(EquipmentSlot _slot)
     {
@@ -378,6 +399,7 @@ public class PlayerInventory : MonoBehaviour
         _slot.toolTip.OnPointerExit(null);//ChangeToolTipText(string.Empty);
         //ToolTip.currentToolTip.OnPointerExit(null);
     }
+
 
     void EquipItem(EquipmentSlot _slot)
     {
@@ -433,6 +455,7 @@ public class PlayerInventory : MonoBehaviour
             }
     }
 
+
     public void ChangeItemQuantity(ItemQuantity entry, int changeAmount)
     {
         entry.amount += changeAmount;
@@ -450,6 +473,7 @@ public class PlayerInventory : MonoBehaviour
         entry.title.text = GetItemText(entry);
     }
 
+
     string GetItemText(ItemQuantity entry)
     {
         if ((entry.item.type & Items.ItemType.Equipment) == 0)
@@ -458,17 +482,20 @@ public class PlayerInventory : MonoBehaviour
             return $"{entry.item.name}";
     }
 
-    void ChangeTossNumber(int amount)
+
+	void ChangeTossNumber(int amount)
     {
         int newNum = Mathf.Clamp(GetTossValue() + amount, 0, 99);
         UIController.InventoryTossInputField.text = newNum.ToString("00");
     }
 
-    int GetTossValue()
+
+	int GetTossValue()
     {
         int newNum = int.TryParse(UIController.InventoryTossInputField.text, out newNum) ? newNum : 0;
         return newNum;
     }
+
 
     void ClearInventory()
     {
@@ -484,6 +511,7 @@ public class PlayerInventory : MonoBehaviour
         UIController.InventoryItemContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (itemDropPrefabHeight + itemSpacing) * inventory.Count - 5);
     }
 
+
     void RebuildInventory()
     {
         ClearInventory();
@@ -493,6 +521,7 @@ public class PlayerInventory : MonoBehaviour
             InstantiateItemToInventory(inventory[i]);
         }
     }
+
 
     void InstantiateItemToInventory(ItemQuantity item)
     {
@@ -553,6 +582,7 @@ public class PlayerInventory : MonoBehaviour
         });
     }
 
+
     public void AddItemToInventory(ItemQuantity item)
     {
         var duplicate = inventory.Find(x => (Items.ItemType.Equipment & item.item.type) == 0 && x.item.name == item.item.name); //look for  a duplicate, that has none of the equipment flags set
@@ -571,9 +601,11 @@ public class PlayerInventory : MonoBehaviour
 
     }
 
+
     public void ProcessDrops(List<ItemDrop> _drops, bool _showDropList = true) 
     {
         List<ItemQuantity> _dropsProcessed = new List<ItemQuantity>();
+
         //Get all items dropped
         foreach (var _val in _drops) 
         {
@@ -581,7 +613,6 @@ public class PlayerInventory : MonoBehaviour
             if (_gottenDrop != null) _dropsProcessed.Add(_gottenDrop); //if successful add item
         }
 
-        _dropsProcessed.ForEach(x => AddItemToInventory(x)); //then add the item to inventory
 
         //Show items that rolled a success
         if (_showDropList)
@@ -593,11 +624,19 @@ public class PlayerInventory : MonoBehaviour
                 itemInfoGameObjects[0].icon.color = Color.clear;// = null; //remove its icon
                 itemInfoGameObjects[0].text.text = "None"; //then write that no drops were gained
                 itemInfoGameObjects[0].toolTip.SetToolTipText("No drops were found.");
+                itemInfoGameObjects[0].button.enabled = false;
+
             }
 
             for (int i = 0; i < itemInfoGameObjects.Length; i++)
             {
                 bool inBounds = i < _dropsProcessed.Count;
+
+                itemInfoGameObjects[i].selected = inBounds;
+                itemInfoGameObjects[i].button.enabled = true;
+
+                itemInfoGameObjects[i].background.color = dropListAddColor;
+
                 itemInfoGameObjects[i].icon.transform.parent.gameObject.SetActive(inBounds);
                 if (inBounds)
                 {
@@ -611,8 +650,32 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        EncounterController.instance.currentGameState = EncounterController.GameState.ConfirmingDrops;
+        
+        if (addToInventoryAction != null)
+            UIController.ItemDropListConfirmButton.onClick.RemoveListener(addToInventoryAction);//RemoveAllListeners();
+
+
+        addToInventoryAction = delegate
+        {
+            print(_dropsProcessed.Count);
+            for (int i = 0; i < itemInfoGameObjects.Length; i++)
+            {
+                print("i: " + i + " selecte: " + itemInfoGameObjects[i].selected + " drop i: " + _dropsProcessed);
+                if (itemInfoGameObjects[i].selected)
+                {
+                    AddItemToInventory(_dropsProcessed[i]);
+                }
+            }
+
+        };
+        
+        //_dropsProcessed.ForEach(x => AddItemToInventory(x)); //then add the item to inventory
+
         //StartCoroutine(EffectTools.DeactivateGameObject(dropList.gameObject, 3));
+        
+        UIController.ItemDropListConfirmButton.onClick.AddListener(addToInventoryAction);
+
+        EncounterController.instance.currentGameState = EncounterController.GameState.ConfirmingDrops;
     }
 
 
@@ -639,6 +702,7 @@ public class PlayerInventory : MonoBehaviour
 
         return null;
     }
+
 
     public void ResetItemButton()
     {
