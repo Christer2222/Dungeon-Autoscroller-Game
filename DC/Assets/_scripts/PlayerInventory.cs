@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,17 +29,19 @@ public class PlayerInventory : MonoBehaviour
 
     private float halfItemContextHeight;
 
-    class ItemInfoGameObject
+    private class ItemInfoGameObject
     {
         public Image icon;
         public Text text;
+        public Image background;
+        public ToolTip toolTip;
     }
 
     public class ItemQuantity
     {
         public int amount;
         public Items.ItemInfo item;
-        public RawImage selectionBox;
+        public Image selectionBox;
         public Text title;
         public GameObject entryGameObject;
     }
@@ -108,6 +111,7 @@ public class PlayerInventory : MonoBehaviour
         accessory1Slot.Value.toolTip = UIController.CurrentEquippedAccessory1Image.GetComponent<ToolTip>();
         accessory2Slot.Value.toolTip = UIController.CurrentEquippedAccessory2Image.GetComponent<ToolTip>();
         accessory3Slot.Value.toolTip = UIController.CurrentEquippedAccessory3Image.GetComponent<ToolTip>();
+
 
         instance = this;
         inventoryItemEntryPrefab = Resources.Load<GameObject>("Prefabs/InventoryItemEntry");
@@ -191,7 +195,7 @@ public class PlayerInventory : MonoBehaviour
         for (int i = 0; i < dropList.childCount; i++)
         {
             var child = dropList.GetChild(i);
-            itemInfoGameObjects[i] = new ItemInfoGameObject() { icon = child.GetComponentInChildren<Image>(), text = child.GetComponentInChildren<Text>()};
+            itemInfoGameObjects[i] = new ItemInfoGameObject() { icon = child.Find("$Icon").GetComponent<Image>(), text = child.GetComponentInChildren<Text>(), background = child.Find("$Background").GetComponent<Image>(), toolTip = child.GetComponentInChildren<ToolTip>() };
         }
 
 		#region Buttons
@@ -200,7 +204,8 @@ public class PlayerInventory : MonoBehaviour
 		UIController.InventoryUseButton.onClick.AddListener(() => {  
             if (selectedItem !=  null)
             {
-                if ((selectedItem.item.type & Items.ItemType.Consumable) != 0) //if item has consumable flag
+                				
+                if ((selectedItem.item.type & Items.ItemType.Consumable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) == 0)) //if item has consumable flag
                 {
                     if (CombatController.turnOrder.Count > 0)
                     {
@@ -243,7 +248,7 @@ public class PlayerInventory : MonoBehaviour
                     ChangeItemQuantity(selectedItem, -1); //remove an item after it is used
                     selectedItem = null;
                 }
-                else if ((selectedItem.item.type & Items.ItemType.Targetable) != 0) //if item has targetable flag
+                else if ((selectedItem.item.type & Items.ItemType.Targetable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) == 0)) //if item has targetable flag
                 {
                     UIController.SetUIMode(UIController.UIMode.None);
                     UIController.InventoryButtonText.text = selectedItem.item.name;
@@ -339,7 +344,8 @@ public class PlayerInventory : MonoBehaviour
         UIController.InventoryTossUp10Button.onClick.AddListener(   () => ChangeTossNumber(+10));
         UIController.InventoryTossDown1Button.onClick.AddListener(  () => ChangeTossNumber(-1));
         UIController.InventoryTossDown10Button.onClick.AddListener( () => ChangeTossNumber(-10));
-		#endregion
+        #endregion
+        UIController.ItemDropListConfirmButton.onClick.AddListener(delegate { EncounterController.instance.SetGameState(EncounterController.GameState.Walking); UIController.ItemDropListGameObject.parent.gameObject.SetActive(false); });
 		#endregion
 
 
@@ -360,7 +366,7 @@ public class PlayerInventory : MonoBehaviour
             ChangeItemQuantity(_slot.itemEquipped, 1);
         }
 
-        _slot.toolTip.ChangeToolTipText(string.Empty);
+        _slot.toolTip.SetToolTipText(string.Empty);
 
         _slot.itemEquipped = null; //set slots item to selected one
 
@@ -395,7 +401,7 @@ public class PlayerInventory : MonoBehaviour
         _slot.displayImage.sprite = _slot.itemEquipped.item.sprite; //show it
 
         print(_slot.toolTip);
-        _slot.toolTip.ChangeToolTipText(_slot.itemEquipped.item.description);
+        _slot.toolTip.SetToolTipText(_slot.itemEquipped.item.description);
 
         if ((selectedItem.item.type & Items.ItemType.TwoHanded) != 0) //if item was twohanded
         {
@@ -404,7 +410,7 @@ public class PlayerInventory : MonoBehaviour
             offHandSlot.Value.displayImage.gameObject.SetActive(true); //either way, show sprite
             offHandSlot.Value.displayImage.sprite = _slot.itemEquipped.item.sprite; //then use correct one
 
-            offHandSlot.Value.toolTip.ChangeToolTipText(_slot.itemEquipped.item.description);
+            offHandSlot.Value.toolTip.SetToolTipText(_slot.itemEquipped.item.description);
         }
         else if ((selectedItem.item.type & Items.ItemType.OneHanded) != 0 && _wasDualWielding) //if weapon was one handed instead, AND player was dualwielding
         {
@@ -492,16 +498,18 @@ public class PlayerInventory : MonoBehaviour
     {
         GameObject go = Instantiate(inventoryItemEntryPrefab, UIController.InventoryItemContent);
         go.name = item.item.name;
-        go.GetComponentInChildren<Image>().sprite = item.item.sprite;
+        go.transform.Find("$Icon").GetComponent<Image>().sprite = item.item.sprite;
         item.title = go.GetComponentInChildren<Text>();
         item.title.text = GetItemText(item);
-        item.selectionBox = go.GetComponent<RawImage>();
+        item.selectionBox = go.transform.Find("$Background").GetComponent<Image>();//.GetComponent<RawImage>();
         item.entryGameObject = go;
+
+        item.selectionBox.color = Color.clear;
 
         Button butt = go.GetComponent<Button>();
         butt.onClick.RemoveAllListeners();
 
-        go.GetComponent<ToolTip>().ChangeToolTipText(item.item.description);
+        go.GetComponent<ToolTip>().SetToolTipText(item.item.description);
 
         butt.onClick.AddListener(() => {
             int index = go.transform.GetSiblingIndex();
@@ -578,12 +586,13 @@ public class PlayerInventory : MonoBehaviour
         //Show items that rolled a success
         if (_showDropList)
         {
-            dropList.gameObject.SetActive(true); //show items dropped
+            dropList.parent.gameObject.SetActive(true); //show items dropped
             if (_dropsProcessed.Count == 0) //if no item dropped
             {
                 itemInfoGameObjects[0].icon.transform.parent.gameObject.SetActive(true); //activate the first drop
                 itemInfoGameObjects[0].icon.color = Color.clear;// = null; //remove its icon
                 itemInfoGameObjects[0].text.text = "None"; //then write that no drops were gained
+                itemInfoGameObjects[0].toolTip.SetToolTipText("No drops were found.");
             }
 
             for (int i = 0; i < itemInfoGameObjects.Length; i++)
@@ -595,13 +604,15 @@ public class PlayerInventory : MonoBehaviour
                     itemInfoGameObjects[i].icon.color = Color.white;
                     itemInfoGameObjects[i].icon.sprite = _dropsProcessed[i].item.sprite;
                     itemInfoGameObjects[i].text.text = $"{_dropsProcessed[i].item.name} x{_dropsProcessed[i].amount}";
+                    itemInfoGameObjects[i].toolTip.SetToolTipText(_dropsProcessed[i].item.description);
                 }
 
 
             }
         }
 
-        StartCoroutine(EffectTools.DeactivateGameObject(dropList.gameObject, 3));
+        EncounterController.instance.currentGameState = EncounterController.GameState.ConfirmingDrops;
+        //StartCoroutine(EffectTools.DeactivateGameObject(dropList.gameObject, 3));
     }
 
 

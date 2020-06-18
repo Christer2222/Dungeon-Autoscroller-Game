@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class EncounterController : MonoBehaviour
 {
@@ -29,14 +30,21 @@ public class EncounterController : MonoBehaviour
 	public GameState currentGameState = GameState.Walking;
 	public enum GameState
 	{
-		None = 1,
-		Walking = 2,
-		Starting_Battle = 4,
-		Battling = 8,
-		//Finishing_Combat = 16,
-		Busy = 16,
+		None = 0x01,
+		Walking = 0x02,
+		Starting_Battle = 0x04,
+		Battling = 0x8,
+		//Finishing_Combat = 0x10,
+		Busy = 0x20,
+		ConfirmingDrops = 0x40,
 		Realtime = Walking | Busy,
 		In_Battle = Starting_Battle | Battling,
+	}
+
+
+	public void SetGameState(GameState state)
+	{
+		currentGameState = state;
 	}
 
     // Start is called before the first frame update
@@ -161,9 +169,10 @@ public class EncounterController : MonoBehaviour
 			break;
 			case (GameState.Busy):
 			{
-				if (!CombatController.playerCombatController.CheckIfHasBuff("Busy"))
+				if (!CombatController.playerCombatController.CheckIfHasBuff("Busy") && currentGameState != GameState.ConfirmingDrops)
 				{
-					currentGameState = GameState.Walking;
+					SetGameState(GameState.Walking);
+					//currentGameState = GameState.Walking;
 				}
 			}
 			break;
@@ -184,7 +193,7 @@ public class EncounterController : MonoBehaviour
 		_cc.MyStats = _monstarStat.Clone();
 		_go.name = _monstarStat.name + " " + _pos;
 
-		_go.GetComponentInChildren<ToolTip>().ChangeToolTipText(_cc.MyStats.GetToolTipStats());
+		_go.GetComponentInChildren<ToolTip>().SetToolTipText(_cc.MyStats.GetToolTipStats());
 		
 		StartCoroutine(EffectTools.PingPongSize(_go.transform, Vector3.zero, Vector3.one * 0.5f, APPEAR_SPEED, 0.5f));
 		StartCoroutine(EffectTools.MoveToPoint(_go.transform, _startPos + EncounterData.offsetTable[_pos], APPEAR_SPEED));
@@ -218,7 +227,8 @@ public class EncounterController : MonoBehaviour
 
 		ResetEncounterTimer();
 
-		currentGameState = GameState.Walking;
+		//SetGameState(GameState.Walking);
+		//currentGameState = GameState.Walking;
 	}
 
 	private void OnTriggerEnter(Collider _trig)

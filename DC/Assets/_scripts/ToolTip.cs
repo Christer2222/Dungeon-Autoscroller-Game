@@ -28,7 +28,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         descriptionBackgroundParent = UIController.ToolTipBackground.parent.transform as RectTransform;
     }
 
-    public void ChangeToolTipText(string _target)
+    public void SetToolTipText(string _target)
     {
         toolTipString = ProcessString(_target);
 
@@ -110,6 +110,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         while (true)
         {
+            
             /*
             if (Input.GetMouseButtonDown(0))
             {
@@ -222,12 +223,14 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        StopAllCoroutines();
+
         if (selectedGameObject != null)
             if (selectedGameObject.transform == transform)
             {
 
                 UIController.ToolTipBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
-                StopAllCoroutines();
+                //StopAllCoroutines();
                 fadeInCoroutine = null;
                 selectedGameObject = null;
             }

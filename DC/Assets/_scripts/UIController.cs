@@ -19,6 +19,7 @@ public class UIController : MonoBehaviour
 	#region general
 	public static Text InventoryButtonText { get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
+    public static Button ItemDropListConfirmButton { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }
     public static RectTransform InventoryRootRectTransform { get; private set; }
     public static RectTransform InventoryGeneralContextMenu { get; private set; }
@@ -158,10 +159,13 @@ public class UIController : MonoBehaviour
         UICanvas = transform.GetChild(0).GetComponent<RectTransform>();
         MainCamera = Camera.main;
 
+        //float progress = 0;
 
         var childrenTransforms = GetComponentsInChildren<Transform>(true);
         for (int i = 0; i < childrenTransforms.Length; i++)
         {
+            //progress = i / (float)childrenTransforms.Length;
+
             Transform child = childrenTransforms[i];
             switch (child.name)
             {
@@ -171,6 +175,9 @@ public class UIController : MonoBehaviour
                     break;
                 case "$ItemDropList":
                     ItemDropListGameObject = child;
+                    break;
+                case "$ItemDropListConfirmButton":
+                    ItemDropListConfirmButton = child.GetComponent<Button>();
                     break;
                 case "$ItemListContent":
                     InventoryItemContent = child.GetComponent<RectTransform>();
@@ -278,14 +285,14 @@ public class UIController : MonoBehaviour
 				#region GameView
 				case "$HealthSlider":
                     HealthSliderPair.minObject = child.GetComponent<Slider>();
-                    HealthSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Health Points (HP). Keep this above 0.");
+                    HealthSliderPair.minObject.GetComponent<ToolTip>().SetToolTipText("Your Health Points (HP). Keep this above 0.");
                     break;
                 case "$HealthSliderSlow":
                     HealthSliderPair.maxObject = child.GetComponent<Slider>();
                     break;
                 case "$ManaSlider":
                     ManaSliderPair.minObject = child.GetComponent<Slider>();
-                    ManaSliderPair.minObject.GetComponent<ToolTip>().ChangeToolTipText("Your Mana Points (MP). Required for some abilities.");
+                    ManaSliderPair.minObject.GetComponent<ToolTip>().SetToolTipText("Your Mana Points (MP). Required for some abilities.");
                     break;
                 case "$ManaSliderSlow":
                     ManaSliderPair.maxObject = child.GetComponent<Slider>();
@@ -343,7 +350,7 @@ public class UIController : MonoBehaviour
                     break;
                 case "$PlayerPortrait":
                     LevelUpButton = child.GetComponent<Button>();
-                    LevelUpButton.GetComponent<ToolTip>().ChangeToolTipText("You. Another target. Click with no ability to open the status screen.");
+                    LevelUpButton.GetComponent<ToolTip>().SetToolTipText("You. Another target. Click with no ability to open the status screen.");
                     break;
                 #endregion
 
@@ -373,7 +380,7 @@ public class UIController : MonoBehaviour
                     break;
                 case "$LevelClassText":
                     LevelClassText = child.GetComponent<Text>();
-                    LevelClassText.GetComponent<ToolTip>().ChangeToolTipText("Learns many different abilities.\n\nLevel up bonus:\n+2HP\n+2MP");
+                    LevelClassText.GetComponent<ToolTip>().SetToolTipText("Learns many different abilities.\n\nLevel up bonus:\n+2HP\n+2MP");
                     break;
                 case "$ClassChangePossibleButton":
                     ClassChangePossibleButton = child.GetComponent<Button>();

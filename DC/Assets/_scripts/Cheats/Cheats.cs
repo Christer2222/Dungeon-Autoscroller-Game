@@ -56,7 +56,8 @@ public class Cheats : MonoBehaviour
             CombatController.playerCombatController.AdjustPlayerXP(5 * CombatController.playerCombatController.MyStats.level);
 
         if (Input.GetKeyDown(KeyCode.Keypad9))
-            EncounterController.instance.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
+            EncounterController.instance.SetGameState(EncounterController.GameState.Starting_Battle);
+            //EncounterController.instance.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
 
     }
 }

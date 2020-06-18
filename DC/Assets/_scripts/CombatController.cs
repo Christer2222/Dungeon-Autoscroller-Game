@@ -107,6 +107,8 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 			UIController.AbilityButton.onClick.AddListener(delegate {
 				//if (/*playerCombatController.CheckIfHasBuff("Busy") ||*/ UIController.LevelUpScreen.activeSelf) return;
+				if ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) != 0)
+					UIController.SetUIMode(UIController.UIMode.None);
 
 				//UIController.AbilityMenuScrollView.SetActive(!UIController.AbilityMenuScrollView.activeSelf);
 				//UIController.FleeSlider.gameObject.SetActive(false);
@@ -235,7 +237,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 				});
 
 
-				_go.GetComponent<ToolTip>().ChangeToolTipText(MyStats.abilities[i].description); //give the spawned game object the correct tooltip
+				_go.GetComponent<ToolTip>().SetToolTipText(MyStats.abilities[i].description); //give the spawned game object the correct tooltip
 			}
 		}
 
@@ -296,7 +298,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			});
 
 
-			_go.GetComponent<ToolTip>().ChangeToolTipText(MyStats.abilities[i].description);
+			_go.GetComponent<ToolTip>().SetToolTipText(MyStats.abilities[i].description);
 		}
 
 		//UIController.AbilityMenuContent.sizeDelta = new Vector2(0,(count - 1) * 113 + 10); //set size to fit all entries
@@ -517,7 +519,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			}
 
 			//finally update text
-			_current.tip.ChangeToolTipText(
+			_current.tip.SetToolTipText(
 				$"{_current.buff.name}" +
 				$"\n" +
 				$"\nActivates {_actionString}" +
@@ -649,7 +651,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		//yield return StartCoroutine(InvokeActiveAbility());
 		yield return StartCoroutine(SimpleInvokeAbility(_targetData,  true, true, 1));// InvokeActiveAbility());
 
-		myToolTip.ChangeToolTipText(MyStats.GetToolTipStats());
+		myToolTip.SetToolTipText(MyStats.GetToolTipStats());
 
 		myEnemyMover.shouldMove = true;
 
@@ -819,7 +821,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		}
 		else
 		{
-			myToolTip.ChangeToolTipText(MyStats.GetToolTipStats());
+			myToolTip.SetToolTipText(MyStats.GetToolTipStats());
 		}
 
 		if (MyStats.currentHealth <= 0)
@@ -1074,7 +1076,8 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			AddBuff(new Buff("Busy", Buff.TraitType.Busy, 1, BuffIcons.TryGetBuffIcon(13), Buff.StackType.Add_Duplicate, 1), MyStats);
 
 			EncounterController.instance.speedBoost = 0;
-			EncounterController.instance.currentGameState = EncounterController.GameState.Busy;
+			//EncounterController.instance.currentGameState = EncounterController.GameState.Busy;
+			EncounterController.instance.SetGameState(EncounterController.GameState.Busy);
 			//EncounterController.shouldMove = false;
 			RefreshBuffIcons();
 		}

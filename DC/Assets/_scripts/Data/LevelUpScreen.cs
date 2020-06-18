@@ -254,17 +254,17 @@ public class LevelUpScreen : AbilityCollection
 			{
 		 		//UIController.LevelUpPickAbilityButtonText1.text = (_hasOption1)? levelUpQueue[0].option1.name : string.Empty;
 		 		UIController.LevelUpPickAbilityButtonText1.text = levelUpQueue[0].option1.name;
-				abilityButton1ToolTip.ChangeToolTipText(levelUpQueue[0].option1.description);
+				abilityButton1ToolTip.SetToolTipText(levelUpQueue[0].option1.description);
 			}
 			if (_hasOption2)
 			{
 				UIController.LevelUpPickAbilityButtonText2.text = levelUpQueue[0].option2.name;
-				abilityButton2ToolTip.ChangeToolTipText(levelUpQueue[0].option2.description);
+				abilityButton2ToolTip.SetToolTipText(levelUpQueue[0].option2.description);
 			}
 			if (_hasOption3)
 			{
 				UIController.LevelUpPickAbilityButtonText3.text = levelUpQueue[0].option3.name;
-				abilityButton3ToolTip.ChangeToolTipText(levelUpQueue[0].option3.description);
+				abilityButton3ToolTip.SetToolTipText(levelUpQueue[0].option3.description);
 			}
 		}
 		else
