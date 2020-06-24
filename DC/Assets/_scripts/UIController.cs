@@ -7,17 +7,18 @@ public class UIController : MonoBehaviour
 {
     public const string ABILITIES_BUTTON_STRING = "Abilities", ITEMS_BUTTON_STRING = "Items";// ABILITIES_BUTTON_STRING = "";
 
-	#region General
-	public static Camera MainCamera { get; private set; }
+    #region General
+    public static MonoBehaviour instance { get; private set; }
+    public static Camera MainCamera { get; private set; }
     public static RectTransform UICanvas { get; private set; }
     public static GameObject GameOverHolder { get; private set; }
     public static Text FpsText { get; private set; }
-	#endregion
+    #endregion
 
-	//-----------------------Inventory------------------------
-	#region inventory
-	#region general
-	public static Text InventoryButtonText { get; private set; }
+    //-----------------------Inventory------------------------
+    #region inventory
+    #region general
+    public static Text InventoryButtonText { get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static Button ItemDropListConfirmButton { get; private set; }
     public static Text InventorySlotSizeText { get; private set; }
@@ -42,11 +43,11 @@ public class UIController : MonoBehaviour
     public static Button InventoryTossDown10Button { get; private set; }
     public static InputField InventoryTossInputField { get; private set; }
     public static Button InventoryCloseButton { get; private set; }
-	#endregion
+    #endregion
 
-	//-------------------Inventory Equipment-----------------------------------
-	#region equipment
-	public static Image CurrentEquippedHelmetImage { get; private set; }
+    //-------------------Inventory Equipment-----------------------------------
+    #region equipment
+    public static Image CurrentEquippedHelmetImage { get; private set; }
     public static Image CurrentEquippedChestplateImage { get; private set; }
     public static Image CurrentEquippedLeggingsImage { get; private set; }
     public static Image CurrentEquippedBootsImage { get; private set; }
@@ -55,9 +56,9 @@ public class UIController : MonoBehaviour
     public static Image CurrentEquippedAccessory1Image { get; private set; }
     public static Image CurrentEquippedAccessory2Image { get; private set; }
     public static Image CurrentEquippedAccessory3Image { get; private set; }
-	#endregion
-	#region unequip
-	public static Button UnequipHelmetButton { get; private set; }
+    #endregion
+    #region unequip
+    public static Button UnequipHelmetButton { get; private set; }
     public static Button UnequipChestplateButton { get; private set; }
     public static Button UnequipLeggingsButton { get; private set; }
     public static Button UnequipBootsButton { get; private set; }
@@ -66,16 +67,17 @@ public class UIController : MonoBehaviour
     public static Button UnequipAccessory1Button { get; private set; }
     public static Button UnequipAccessory2Button { get; private set; }
     public static Button UnequipAccessory3Button { get; private set; }
-	#endregion
-	#endregion
+    #endregion
+    #endregion
 
-	//-----------------------Level Up---------------------------------------------
-	#region LevelUp
+    //-----------------------Level Up---------------------------------------------
+    #region LevelUp
 
-	public static GameObject LevelUpScreenGameObject { get; private set; }
+    public static GameObject LevelUpScreenGameObject { get; private set; }
     public static Text LevelClassText { get; private set; }
-	public static Text LevelUpLeftoverPointsText { get; private set; }
+    public static Text LevelUpLeftoverPointsText { get; private set; }
     public static Button ClassChangePossibleButton { get; private set; }
+    public static RectTransform SpawnedAbilityToggleContent {get; private set;}
     public static Button LevelUpPickAbilityButton1 { get; private set; }
     public static Button LevelUpPickAbilityButton2 { get; private set; }
     public static Button LevelUpPickAbilityButton3 { get; private set; }
@@ -157,6 +159,7 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        instance = this;
         UICanvas = transform.GetChild(0).GetComponent<RectTransform>();
         MainCamera = Camera.main;
 
@@ -388,6 +391,9 @@ public class UIController : MonoBehaviour
                     break;
                 case "$ClassChangePossibleButton":
                     ClassChangePossibleButton = child.GetComponent<Button>();
+                    break;
+                case "$SpawnedAbilityToggleContent":
+                    SpawnedAbilityToggleContent = child as RectTransform;
                     break;
                 case "$TraitPointsToSpendText":
                     LevelUpTraitPointsToSpendText = child.GetComponent<Text>();

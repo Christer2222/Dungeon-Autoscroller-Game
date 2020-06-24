@@ -213,6 +213,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 	public void RefreshAbilityList()
 	{
+		//Spawn abilities if they aren't already
 		for (int i = 0; i < MyStats.abilities.Count; i++) //go through all abilities the player has
 		{
 			var _currentAbility = MyStats.abilities[i]; //shortcut
@@ -241,10 +242,17 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			}
 		}
 
+		//set active if they are in known abilities
 		for (int i = 0; i < listedAbilityObjects.Count; i++)
 		{
 			var _currentCheck = listedAbilityObjects[i];
-			_currentCheck.gameObject.SetActive(MyStats.abilities.Find(x => x == _currentCheck.ability) != null); //if the ability isn't null, leave it active. If it is null, deactivate it.
+			//bool _inKnown = MyStats.abilities.Find(x => x == _currentCheck.ability) != null;
+			//_currentCheck.gameObject.SetActive(_inKnown); //if the ability isn't null, leave it active. If it is null, deactivate it.
+
+			var _listedObject = LevelUpScreen.instance.spawnedAbilities.Find(x => x.ability == _currentCheck.ability);
+			if (_listedObject != null)
+				_currentCheck.gameObject.SetActive(_listedObject.enabled); //if the ability is active in the levelup screen
+
 			/*
 			if (MyStats.abilities.Find(x => x == _currentCheck.ability) == null)
 			{
@@ -253,10 +261,14 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			*/
 		}
 
-		UIController.AbilityMenuContent.sizeDelta = new Vector2(0, (listedAbilityObjects.Count) * 110 + 10); //set size of content to fit all entries
-
+		//UIController.AbilityMenuContent.sizeDelta = new Vector2(0, (listedAbilityObjects.Count) * 110 + 10); //set size of content to fit all entries
+		int _activeCount = (listedAbilityObjects.FindAll(x => x.gameObject.activeSelf).Count);
+		print(_activeCount);
+		UIController.AbilityMenuContent.sizeDelta = new Vector2(0, (_activeCount) * 110 + 10); //set size of content to fit all entries
+		
 		var oMax = UIController.AbilityMenuScrollView.offsetMax; //shortcut for height
-		oMax.y = UIController.AbilityMenuScrollView.offsetMin.y + (Mathf.Min(listedAbilityObjects.Count, MAX_ABILITIES_ON_SCREEN)) * 110 + 10; //set height to bottom + maxShowCount * height + offset
+		//oMax.y = UIController.AbilityMenuScrollView.offsetMin.y + (Mathf.Min(listedAbilityObjects.Count, MAX_ABILITIES_ON_SCREEN)) * 110 + 10; //set height to bottom + maxShowCount * height + offset
+		oMax.y = UIController.AbilityMenuScrollView.offsetMin.y + (Mathf.Min(_activeCount, MAX_ABILITIES_ON_SCREEN)) * 110 + 10; //set height to bottom + maxShowCount * height + offset
 		UIController.AbilityMenuScrollView.offsetMax = oMax; //apply
 
 		UpdateAbilitiesToManaAvailability(); //set colors

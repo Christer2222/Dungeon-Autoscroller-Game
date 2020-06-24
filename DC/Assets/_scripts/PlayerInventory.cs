@@ -613,7 +613,7 @@ public class PlayerInventory : MonoBehaviour
             if (_gottenDrop != null) _dropsProcessed.Add(_gottenDrop); //if successful add item
         }
 
-
+        // TODO: for each  selected item add it to the text temp
         //Show items that rolled a success
         if (_showDropList)
         {

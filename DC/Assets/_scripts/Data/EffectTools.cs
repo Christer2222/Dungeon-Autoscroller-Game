@@ -69,6 +69,19 @@ public class EffectTools// : MonoBehaviour
 		}
 	}
 
+
+	/*
+	public static void SetIenumeratorNull(ref IEnumerator _method, float _sec)
+	{
+
+	}
+
+	public static void SetBool(MonoBehaviour _owner, ref bool _bool, float _sec)
+	{
+		_owner.s
+		yield return Delay(_sec);
+	}
+	*/
 	public static IEnumerator AnimateSlider(Slider _sliderToMove, Slider _targetSlider, float _speed, float _ratio)
 	{
 		yield return AnimateSlider(_sliderToMove, _targetSlider.value, _speed, _ratio);
@@ -238,7 +251,10 @@ public class EffectTools// : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Activates one functionGroup after another. A delay between functions can be specified. If set to 0, the functions will happen at the same time.
+	/// Activates one functionGroup after another. A delay between functions can be specified. 
+	/// If set to 0, the functions will happen at the same time. 
+	/// The delay is since the last function set.
+	/// Function does not wait for the previous functions to finish.
 	/// </summary>
 	public static IEnumerator ActivateInOrder(MonoBehaviour _holder, List<FunctionGroup> _functionAndDelay)
 	{

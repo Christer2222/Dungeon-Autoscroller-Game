@@ -3,12 +3,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using AbilityInfo;
 using System.Xml.Serialization;
+using UnityEditor;
+using System.Collections;
 
 public class LevelUpScreen : AbilityCollection
 {
 	public static LevelUpScreen instance;
 
 	private static GameObject abilityEntryPrefab;
+
+	private static Color enabledAbilityColor = new Color(1,1,0.7f,1), disabledAbilityColor = Color.gray, canNotEnableAbilityColor = new Color(1,0.5f,0.5f,1);
+
 
 	private readonly List<AbilityChoices> levelUpQueue = new List<AbilityChoices>();
 	public LevelGroup currentGroup = adventurerGroup;
@@ -210,6 +215,139 @@ public class LevelUpScreen : AbilityCollection
 		{
 			UpdateTraitText(ref luckChange, -1, CombatController.playerCombatController.MyStats.baseLuck, UIController.LevelUpLuckCurrentTraitText, UIController.LevelUpLuckChangeButtons.minObject);
 		});
+
+		/*
+		for (int i = 0; i < CombatController.playerCombatController.MyStats.abilities.Count; i++)
+		{
+			SpawnAbilityToggle(CombatController.playerCombatController.MyStats.abilities[i]);
+		}
+		*/
+		
+		UIController.instance.StartCoroutine(SpawnInitialAbilities());
+	}
+
+	IEnumerator SpawnInitialAbilities()
+	{
+		yield return null;// EffectTools.Delay(1f);
+		for (int i = 0; i < CombatController.playerCombatController.MyStats.abilities.Count; i++)
+		{
+			SpawnAbilityToggle(CombatController.playerCombatController.MyStats.abilities[i]);
+		}
+	}
+
+	void SpawnAbilityToggle(Ability _ability)
+	{
+		var _spawnedAbility = new SpawnedAbilityToggle(_ability);
+
+		/*
+		var _go = Object.Instantiate(abilityEntryPrefab, UIController.SpawnedAbilityToggleContent);
+		var _spawnedAbility = new SpawnedAbilityToggle() { 
+			go = _go,
+			
+			background = _go.transform.Find("$Background").GetComponent<Image>(),
+			text = _go.transform.Find("$Text").GetComponent<Text>(),
+			button = _go.transform.GetComponent<Button>(),
+
+			ability = ability,
+
+			enabled = (spawnedAbilities.FindAll(x => x.enabled).Count < CombatController.playerCombatController.MyStats.AbilitySlots),
+		};
+		*/
+		spawnedAbilities.Add(_spawnedAbility);
+	}
+
+	public List<SpawnedAbilityToggle> spawnedAbilities = new List<SpawnedAbilityToggle>();
+
+	public class SpawnedAbilityToggle
+	{
+		public SpawnedAbilityToggle(Ability _ability)
+		{
+			go = Object.Instantiate(abilityEntryPrefab, UIController.SpawnedAbilityToggleContent);
+
+			background = go.transform.Find("$Background").GetComponent<Image>();
+			text = go.transform.Find("$Text").GetComponent<Text>();
+			button = go.transform.GetComponent<Button>();
+			toolTip = go.GetComponent<ToolTip>();
+
+			ability = _ability;
+
+
+			//int _enabledAbilities = instance.spawnedAbilities.FindAll(x => x.enabled).Count;
+			//enabled = (_enabledAbilities < CombatController.playerCombatController.MyStats.AbilitySlots);
+			enabled = (instance.spawnedAbilities.FindAll(x => x.enabled).Count < CombatController.playerCombatController.MyStats.AbilitySlots);
+			UpdateColor();
+			(go.transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 720);
+
+			text.text = _ability.name;
+
+			button.onClick.AddListener(delegate {
+				if (enabled || instance.spawnedAbilities.FindAll(x => x.enabled).Count < CombatController.playerCombatController.MyStats.AbilitySlots)//get the non stored count of enabled abilities, check vs slots
+				{
+					enabled = !enabled;
+					UpdateColor();
+
+					CombatController.playerCombatController.RefreshAbilityList();
+				}
+				else if (blinkRutine == null)
+				{
+					blinkRutine = CombatController.playerCombatController.StartCoroutine(EffectTools.BlinkImage(background,canNotEnableAbilityColor,0.2f,2));
+					CombatController.playerCombatController.StartCoroutine(NullRutine(0.3f));
+					//blinkRutine = EffectTools.BlinkImage(background, canNotEnableAbilityColor, 0.2f, 2);
+					//CombatController.playerCombatController.StartCoroutine(blinkRutine);
+
+					/*
+					CombatController.playerCombatController.StartCoroutine(
+						EffectTools.ActivateInOrder(CombatController.playerCombatController, new List<EffectTools.FunctionGroup>()
+						{
+							//new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,Color.green,Time.deltaTime,0.5f),0),
+							new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,canNotEnableAbilityColor, 0.2f, 2),0f),
+							new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,disabledAbilityColor,Time.deltaTime,0.5f),0.3f)
+						}
+						//EffectTools.BlinkImage(background,canNotEnableAbilityColor, 0.2f, 2)
+						));
+					*/
+					/*
+					void NullRoutine()
+					{
+						Debug.Log("Nulled");
+						blinkRutine = null;
+					}
+					*/
+
+					IEnumerator NullRutine(float _sec)
+					{
+						yield return CombatController.playerCombatController.StartCoroutine(EffectTools.Delay(_sec));
+						blinkRutine = null;
+					}
+				}
+			});
+
+			toolTip.SetToolTipText(_ability.description);
+
+
+			UIController.SpawnedAbilityToggleContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 110 * instance.spawnedAbilities.Count + 120);
+
+			void UpdateColor()
+			{
+				background.color = enabled ? enabledAbilityColor : disabledAbilityColor;
+			}
+		}
+
+
+
+
+		public GameObject go;
+		
+		public Image background;
+		public Text text;
+		public Button button;
+		public ToolTip toolTip;
+
+		public Ability ability;
+
+		private Coroutine blinkRutine;
+
+		public bool enabled;
 	}
 
 	public void AddNextChoicesToQue()
@@ -233,13 +371,16 @@ public class LevelUpScreen : AbilityCollection
 	{
 		if (levelUpQueue.Count <= 0) return;
 
+		levelUpQueue.Remove(levelUpQueue[0]);
+
+		SpawnAbilityToggle(_abilityToAdd);
+		RefreshAbilityPicks();
+		
 		CombatController.playerCombatController.MyStats.abilities.Add(_abilityToAdd);
 		CombatController.playerCombatController.RefreshAbilityList();
-		levelUpQueue.Remove(levelUpQueue[0]);
-		RefreshAbilities();
 	}
 
-	void RefreshAbilities()
+	void RefreshAbilityPicks()
 	{
 		bool _hasAbilityQueue = (levelUpQueue.Count > 0);
 		bool _hasOption1 = (_hasAbilityQueue) ? (levelUpQueue[0].option1 != null): false;
@@ -319,7 +460,7 @@ public class LevelUpScreen : AbilityCollection
 
 		if (UIController.IsCurrentUIMode(UIController.UIMode.LevelUp))//UIController.LevelUpScreen.activeSelf)
 		{
-			RefreshAbilities();
+			RefreshAbilityPicks();
 
 			UIController.LevelUpStrengthCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseStrength.ToString();
 			UIController.LevelUpDexterityCurrentTraitText.text = CombatController.playerCombatController.MyStats.baseDexterity.ToString();
