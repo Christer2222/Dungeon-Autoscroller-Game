@@ -7840,7 +7840,7 @@ GameObject:
   - component: {fileID: 907610114}
   - component: {fileID: 907610113}
   m_Layer: 5
-  m_Name: text
+  m_Name: AbilitySlotText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15181,7 +15181,7 @@ GameObject:
   - component: {fileID: 1838046420}
   - component: {fileID: 1838046419}
   m_Layer: 5
-  m_Name: text (1)
+  m_Name: $AbilitySlotCountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

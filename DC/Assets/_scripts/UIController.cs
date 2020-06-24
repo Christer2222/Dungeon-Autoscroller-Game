@@ -78,6 +78,7 @@ public class UIController : MonoBehaviour
     public static Text LevelUpLeftoverPointsText { get; private set; }
     public static Button ClassChangePossibleButton { get; private set; }
     public static RectTransform SpawnedAbilityToggleContent {get; private set;}
+    public static Text AbilitySlotCountText { get; private set; }
     public static Button LevelUpPickAbilityButton1 { get; private set; }
     public static Button LevelUpPickAbilityButton2 { get; private set; }
     public static Button LevelUpPickAbilityButton3 { get; private set; }
@@ -394,6 +395,9 @@ public class UIController : MonoBehaviour
                     break;
                 case "$SpawnedAbilityToggleContent":
                     SpawnedAbilityToggleContent = child as RectTransform;
+                    break;
+                case "$AbilitySlotCountText":
+                    AbilitySlotCountText = child.GetComponent<Text>();
                     break;
                 case "$TraitPointsToSpendText":
                     LevelUpTraitPointsToSpendText = child.GetComponent<Text>();

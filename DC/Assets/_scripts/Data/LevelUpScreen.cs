@@ -166,6 +166,8 @@ public class LevelUpScreen : AbilityCollection
 
 						ToggleArrowButtons();
 						SetLeftoverPointsText();
+
+						UpdateSlotText();
 					});
 					break;
 			}
@@ -233,6 +235,8 @@ public class LevelUpScreen : AbilityCollection
 		{
 			SpawnAbilityToggle(CombatController.playerCombatController.MyStats.abilities[i]);
 		}
+
+		UpdateSlotText();
 	}
 
 	void SpawnAbilityToggle(Ability _ability)
@@ -281,12 +285,16 @@ public class LevelUpScreen : AbilityCollection
 			text.text = _ability.name;
 
 			button.onClick.AddListener(delegate {
-				if (enabled || instance.spawnedAbilities.FindAll(x => x.enabled).Count < CombatController.playerCombatController.MyStats.AbilitySlots)//get the non stored count of enabled abilities, check vs slots
+				int _activeCount = instance.spawnedAbilities.FindAll(x => x.enabled).Count;
+				Debug.Log(_activeCount);
+				if (enabled || _activeCount < CombatController.playerCombatController.MyStats.AbilitySlots)//get the non stored count of enabled abilities, check vs slots
 				{
 					enabled = !enabled;
 					UpdateColor();
 
 					CombatController.playerCombatController.RefreshAbilityList();
+
+					UpdateSlotText();
 				}
 				else if (blinkRutine == null)
 				{
@@ -350,6 +358,12 @@ public class LevelUpScreen : AbilityCollection
 		public bool enabled;
 	}
 
+	static void UpdateSlotText()
+	{
+		UIController.AbilitySlotCountText.text = instance.spawnedAbilities.FindAll(x => x.enabled).Count + "/" + CombatController.playerCombatController.MyStats.AbilitySlots;
+
+	}
+
 	public void AddNextChoicesToQue()
 	{
 		if (currentGroup.abilityUnlocks.Count > currentGroup.levels) //if the current unlocks are higher than the level
@@ -375,7 +389,9 @@ public class LevelUpScreen : AbilityCollection
 
 		SpawnAbilityToggle(_abilityToAdd);
 		RefreshAbilityPicks();
-		
+
+		UpdateSlotText();
+
 		CombatController.playerCombatController.MyStats.abilities.Add(_abilityToAdd);
 		CombatController.playerCombatController.RefreshAbilityList();
 	}
