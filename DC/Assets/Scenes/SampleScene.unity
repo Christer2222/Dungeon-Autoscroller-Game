@@ -4608,6 +4608,16 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7498687341293177514, guid: 03e7b7667506b904f80e1db7faa14721,
+        type: 3}
+      propertyPath: m_Inertia
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7498687341293177514, guid: 03e7b7667506b904f80e1db7faa14721,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03e7b7667506b904f80e1db7faa14721, type: 3}
 --- !u!1001 &569972775
@@ -18219,7 +18229,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 135130819}
   m_HandleRect: {fileID: 135130818}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

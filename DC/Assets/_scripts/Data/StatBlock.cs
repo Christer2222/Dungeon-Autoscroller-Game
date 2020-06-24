@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AbilityInfo;
 using UnityEngine;
@@ -174,7 +175,7 @@ public class StatBlock
 		}
 	}
 
-	public int Defense
+	public int PhysicalDefense
 	{
 		get
 		{
@@ -218,17 +219,33 @@ public class StatBlock
 		}
 	}
 
+	public int PhysicalBlockAmount
+	{
+		get
+		{
+			return Mathf.Max(0, Mathf.CeilToInt((Dexterity - 1) / 3f) + 1);
+		}
+	}
+
+	public int MagicBlockAmount
+	{
+		get
+		{
+			return Math.Max(0, Mathf.CeilToInt((Luck - 1) / 3f) + 1);
+		}
+	}
+
 	public string GetToolTipStats()
 	{
 		string _green = "<color=#00FF00>";
 		string _red = "<color=#FF0000>";
 		string _end = "</color>";
 
-		bool _alteredDefense = Defense != baseDefense;
+		bool _alteredDefense = PhysicalDefense != baseDefense;
 		bool _alteredMagicDefense = MagicDefense != baseMagicDefense;
 
 
-		string _defenseString = (_alteredDefense?((Defense > baseDefense)?_green:_red):string.Empty) + Defense + ((_alteredDefense)? _end: string.Empty);
+		string _defenseString = (_alteredDefense?((PhysicalDefense > baseDefense)?_green:_red):string.Empty) + PhysicalDefense + ((_alteredDefense)? _end: string.Empty);
 		string _magicDefenseString = (_alteredMagicDefense?((MagicDefense > baseMagicDefense)?_green:_red):string.Empty) + MagicDefense + ((_alteredMagicDefense)? _end: string.Empty);
 
 

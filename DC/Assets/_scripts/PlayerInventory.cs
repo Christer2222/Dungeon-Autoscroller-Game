@@ -657,7 +657,6 @@ public class PlayerInventory : MonoBehaviour
 
         addToInventoryAction = delegate
         {
-            print(_dropsProcessed.Count);
             for (int i = 0; i < itemInfoGameObjects.Length; i++)
             {
                 print("i: " + i + " selecte: " + itemInfoGameObjects[i].selected + " drop i: " + _dropsProcessed);

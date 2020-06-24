@@ -7,7 +7,7 @@ public class BlockController : MonoBehaviour
     private Sprite blockSprite;
     private const float BLOCKING_COOLDOWN = 1f;
     private bool isUnderCooldown;
-    private float blockTimer = 0.2f;
+    private float blockTimer = 0.3f;
 
     // Start is called before the first frame update
     void Start()
@@ -40,11 +40,26 @@ public class BlockController : MonoBehaviour
     IEnumerator BlockBonus()
     {
         EffectTools.SpawnEffect(blockSprite, transform.position, blockTimer).transform.SetParent(transform);
-        
-        CombatController.playerCombatController.MyStats.baseDefense++;
-        CombatController.playerCombatController.MyStats.baseMagicDefense++;
+        /*
+        print(
+            "P.Block(DEX): " + CombatController.playerCombatController.MyStats.PhysicalBlockAmount +
+            " M.Block(LUC): " + CombatController.playerCombatController.MyStats.MagicBlockAmount + 
+
+            " Base P.Defense: " + CombatController.playerCombatController.MyStats.baseDefense +
+            " Base M.Defense: " + CombatController.playerCombatController.MyStats.baseMagicDefense +
+
+            " P.Defense Total: " + CombatController.playerCombatController.MyStats.PhysicalDefense +
+            " M.Defense Total: " + CombatController.playerCombatController.MyStats.MagicDefense
+
+            );
+        */
+        CombatController.playerCombatController.MyStats.baseDefense += CombatController.playerCombatController.MyStats.PhysicalBlockAmount;
+        CombatController.playerCombatController.MyStats.baseMagicDefense += CombatController.playerCombatController.MyStats.MagicBlockAmount;
+
+
         yield return new WaitForSeconds(blockTimer);
-        CombatController.playerCombatController.MyStats.baseDefense--;
-        CombatController.playerCombatController.MyStats.baseMagicDefense--;
+        CombatController.playerCombatController.MyStats.baseDefense -= CombatController.playerCombatController.MyStats.PhysicalBlockAmount;
+        CombatController.playerCombatController.MyStats.baseMagicDefense -= CombatController.playerCombatController.MyStats.MagicBlockAmount;
+
     }
 }

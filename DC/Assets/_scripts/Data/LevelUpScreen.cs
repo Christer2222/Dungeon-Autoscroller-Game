@@ -283,6 +283,7 @@ public class LevelUpScreen : AbilityCollection
 			(go.transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 720);
 
 			text.text = _ability.name;
+			text.color = Color.black;
 
 			button.onClick.AddListener(delegate {
 				int _activeCount = instance.spawnedAbilities.FindAll(x => x.enabled).Count;
@@ -465,6 +466,7 @@ public class LevelUpScreen : AbilityCollection
 
 	void ToggleLevelUpScreen()
 	{
+		Debug.Log(CombatController.playerCombatController.actedLastTick);
 		if (CombatController.playerCombatController.actedLastTick)
 		{
 			UIController.SetUIMode(UIController.UIMode.None);

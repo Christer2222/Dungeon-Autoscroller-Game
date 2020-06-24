@@ -171,11 +171,12 @@ public class AbilityScript : MonoBehaviour// : AbilityData
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		var _screenRayHit = Physics2D.GetRayIntersection(ray, CURSOR_HIT_DISTANCE);
 		
+		/*
 		if (_screenRayHit.transform != null)
 		{
 			print("hot: " + _screenRayHit.transform.name + " at dist: " + _screenRayHit.distance);//Instantiate(particle, transform.position, transform.rotation);
 		}
-		
+		*/
 		Debug.DrawRay(ray.origin, ray.direction * 200, Color.cyan, 5, false);
 
 		/*

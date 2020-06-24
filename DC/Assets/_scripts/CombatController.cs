@@ -641,7 +641,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 		//_playerTurnText.transform.parent.localPosition = Vector3.zero;
 
-		yield return StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UIController.UICanvas, MyStats, selectedAbility, this));
+		yield return playerCombatController.StartCoroutine(EnemyAI.SpawnAbilityTextUsed(transform, UIController.UICanvas, MyStats, selectedAbility, this));
 
 		yield return new WaitForSeconds(0.3f);
 
@@ -773,7 +773,9 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			_amount += ((isCritted) ? (int)Math.Round(_amount/2f,MidpointRounding.AwayFromZero) : 0); //allow critting
 
 		var _damageCalc = Mathf.RoundToInt(_amount * _amountMultiplier); //round up any damage/healing
-		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.nonPiercing)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? MyStats.Defense: MyStats.MagicDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
+		if (_damageCalc < 0 && _extraData.HasFlag(ExtraData.nonPiercing)) _damageCalc = Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic))? MyStats.MagicDefense: MyStats.PhysicalDefense), 0); //if value is blockable and is under 0, reduce damage by defense or magicDefense depending on if the move makes contact
+
+		//print("_damage: " + _damageCalc + " has nonP: " + _extraData.HasFlag(ExtraData.nonPiercing) + " typeBlock: " + ((_extraData.HasFlag(ExtraData.magic)) ? MyStats.MagicDefense : MyStats.PhysicalDefense) + " total damage: " + Mathf.Min(_damageCalc + ((_extraData.HasFlag(ExtraData.magic)) ? MyStats.MagicDefense : MyStats.PhysicalDefense), 0));
 
 		//if ((_amount > 0 && _damageCalc < 0) || (_amount < 0 && _damageCalc > 0)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
 		if (Mathf.Sign(_amount) != Mathf.Sign(_damageCalc)) _damageCalc = 0; //if the damage shifts sign somehow, set it to 0
@@ -1058,7 +1060,10 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		if (_becomesBusy) AddBusyIfNotInCombat(); //if not in combat, give the player the busy status
 
 		float orgTime = Time.time; //record when ability started
+		actedLastTick = true;
+		//yield return new WaitForSeconds(0.1f);
 		yield return StartCoroutine(_targetData.ability.function(_targetData)); //play animation or whatever
+		actedLastTick = false;
 
 		if (_onComplete != null) _onComplete.Invoke(); //if special action is set, invoke it
 
