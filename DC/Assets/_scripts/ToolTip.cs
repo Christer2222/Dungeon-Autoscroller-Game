@@ -14,7 +14,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private const float MINIMUM_SHOW_TIME = 1.0f;
     private float timer;
 
-    private readonly Color descriptionOriginalColor = new Color(0.25f,0.25f,0.25f);
+    //private readonly Color descriptionOriginalColor = new Color(0.25f,0.25f,0.25f);
 
     //private Coroutine hoverCoroutine;
     private Coroutine fadeInCoroutine;
@@ -149,7 +149,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 if (timer > MINIMUM_SHOW_TIME)
                 {
                     if (fadeInCoroutine == null)
-                        fadeInCoroutine = StartCoroutine(EffectTools.BlinkImage(UIController.ToolTipBackgroundImage, descriptionOriginalColor, 0.1f,  0.5f));
+                        fadeInCoroutine = StartCoroutine(EffectTools.BlinkImage(UIController.ToolTipBackgroundImage, ColorScheme.descriptionBackgroundColor, 0.1f,  0.5f));
 
 
                     UIController.ToolTipBackground.gameObject.SetActive(true);// EventSystem.current.IsPointerOverGameObject());

@@ -21,7 +21,9 @@ public class UIController : MonoBehaviour
     public static Text InventoryButtonText { get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static Button ItemDropListConfirmButton { get; private set; }
-    public static Text InventorySlotSizeText { get; private set; }
+    public static Image ItemDropListConfirmButtonImage { get; private set; }
+    public static Text DropSlotSizeText { get; private set; }
+    public static Text InventorySlotText { get; private set; }
     public static RectTransform InventoryItemContent { get; private set; }
     public static RectTransform InventoryRootRectTransform { get; private set; }
     public static RectTransform InventoryGeneralContextMenu { get; private set; }
@@ -183,9 +185,13 @@ public class UIController : MonoBehaviour
                     break;
                 case "$ItemDropListConfirmButton":
                     ItemDropListConfirmButton = child.GetComponent<Button>();
+                    ItemDropListConfirmButtonImage = child.GetComponent<Image>();
                     break;
-                case "$InventorySlotSizeText":
-                    InventorySlotSizeText = child.GetComponent<Text>();
+                case "$DropSlotSizeText":
+                    DropSlotSizeText = child.GetComponent<Text>();
+                    break;
+                case "$InventorySlotText":
+                    InventorySlotText = child.GetComponent<Text>();
                     break;
                 case "$ItemListContent":
                     InventoryItemContent = child.GetComponent<RectTransform>();

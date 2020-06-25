@@ -71,7 +71,7 @@ public class EnemyAI
 	public static IEnumerator SpawnAbilityTextUsed(Transform transform, Transform uiCanvasTransform, StatBlock myStats, Ability selectedAbility, MonoBehaviour holder)
 	{
 		var _startScale = transform.localScale;
-		var _abilityUsedText = EffectTools.SpawnText(Vector3.zero, uiCanvasTransform, new Color(0.7f, 0, 0), myStats.name + " used " + selectedAbility.name, 90);
+		var _abilityUsedText = EffectTools.SpawnText(Vector3.zero, uiCanvasTransform, ColorScheme.abilityUsedTextColor, myStats.name + " used " + selectedAbility.name, 90);
 
 		_abilityUsedText.transform.parent.localPosition = Vector3.zero + Vector3.up * 400;
 		Object.Destroy(_abilityUsedText.transform.parent.gameObject, 6);

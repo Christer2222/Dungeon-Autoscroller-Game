@@ -72,6 +72,7 @@
     <Compile Include="Assets\_scripts\Data\AbilityInfo.cs" />
     <Compile Include="Assets\_scripts\Data\AnimationTextParser.cs" />
     <Compile Include="Assets\_scripts\Data\Buff.cs" />
+    <Compile Include="Assets\_scripts\Data\ColorScheme.cs" />
     <Compile Include="Assets\_scripts\Data\DebugController.cs" />
     <Compile Include="Assets\_scripts\Data\DropTable.cs" />
     <Compile Include="Assets\_scripts\Data\EffectTools.cs" />

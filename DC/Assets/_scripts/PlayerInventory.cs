@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -30,6 +31,27 @@ public class PlayerInventory : MonoBehaviour
 
     private float halfItemContextHeight;
 
+    private Coroutine confirmDropsButtonBlink;
+    private int ItemsToPickUp
+    {
+        get
+        {
+            int _nonDuplicates = 0;
+
+
+            foreach (var v in itemInfoGameObjects)
+			{
+                if (v.item == null) continue;
+                if (v.selected)
+				{
+                    _nonDuplicates += (FindDuplicateInInventoryOf(v.item) == null)? 1: 0; 
+				}
+			}
+
+            return _nonDuplicates; // itemInfoGameObjects.Count(x => x.selected);
+        }
+    }
+
     private class ItemInfoGameObject
     {
         public Image icon;
@@ -37,6 +59,9 @@ public class PlayerInventory : MonoBehaviour
         public Image background;
         public ToolTip toolTip;
         public Button button;
+
+        public ItemQuantity item;
+
         public bool selected = true;
     }
 
@@ -122,7 +147,7 @@ public class PlayerInventory : MonoBehaviour
         inventoryItemEntryPrefab = Resources.Load<GameObject>("Prefabs/InventoryItemEntry");
         itemDropPrefabHeight = inventoryItemEntryPrefab.GetComponent<RectTransform>().rect.height;
 
-        halfItemContextHeight = UIController.InventoryGeneralContextMenu.GetComponentInChildren<Image>().rectTransform.rect.height/2;
+        halfItemContextHeight = UIController.InventoryGeneralContextMenu.GetComponentInChildren<Image>().rectTransform.rect.height / 2;
         itemSpacing = UIController.InventoryItemContent.GetComponent<VerticalLayoutGroup>().spacing;
 
         /*
@@ -187,9 +212,9 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.GoldRing },
             new ItemQuantity() { amount = 1, item = Items.StrikeRing },
             new ItemQuantity() { amount = 1, item = Items.BoltRing },
-            new ItemQuantity() { amount = 1, item = Items.MeteorRing },
             */
-            
+            new ItemQuantity() { amount = 1, item = Items.MeteorRing },
+
         };
         inventory.AddRange(debugItems);
 #endif
@@ -211,19 +236,21 @@ public class PlayerInventory : MonoBehaviour
             int _index = i;
             itemInfoGameObjects[_index].background.color = (itemInfoGameObjects[_index].selected) ? dropListAddColor : dropListDontAddColor;
 
-            itemInfoGameObjects[i].button.onClick.AddListener(delegate { 
+            itemInfoGameObjects[i].button.onClick.AddListener(delegate {
                 itemInfoGameObjects[_index].selected = !itemInfoGameObjects[_index].selected;
                 itemInfoGameObjects[_index].background.color = (itemInfoGameObjects[_index].selected) ? dropListAddColor : dropListDontAddColor;
+
+                CalculateAndSetInventorySlotTexts();
             });
         }
 
-		#region Buttons
-		#region Use Button
-		//----------USE BUTTON
-		UIController.InventoryUseButton.onClick.AddListener(() => {  
-            if (selectedItem !=  null)
+        #region Buttons
+        #region Use Button
+        //----------USE BUTTON
+        UIController.InventoryUseButton.onClick.AddListener(() => {
+            if (selectedItem != null)
             {
-                				
+
                 if ((selectedItem.item.type & Items.ItemType.Consumable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) == 0)) //if item has consumable flag
                 {
                     if (CombatController.turnOrder.Count > 0)
@@ -231,7 +258,7 @@ public class PlayerInventory : MonoBehaviour
                         if (CombatController.turnOrder[0] != CombatController.playerCombatController)
                         {
                             StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryUseButtonText, USE_STRING, WAIT_STRING, 0.5f));
-                            return; 
+                            return;
                         }
                     }
                     else if (CombatController.playerCombatController.CheckIfHasBuff("Busy"))
@@ -256,10 +283,11 @@ public class PlayerInventory : MonoBehaviour
                             _useOwnStats: false
                             );
 
-
+                        bool _isLastAbility = ((i == selectedItem.item.activeAbilities.Count - 1) ? true : false);
+                        bool _endsTurn = (CombatController.turnOrder.Count > 0) ? _isLastAbility : false; //if in combat, check if this is the last ability cast. If not (either) do not end turn.
                         CombatController.playerCombatController.StartCoroutine(
-                            CombatController.playerCombatController.SimpleInvokeAbility(targetData,false,(CombatController.turnOrder.Count > 0)? ((i == selectedItem.item.activeAbilities.Count - 1)? true: false) :false, 1, true, delegate {
- 
+                            CombatController.playerCombatController.SimpleInvokeAbility(targetData, false, _endsTurn, 1, true, delegate {
+
                             }));
 
                     }
@@ -275,14 +303,14 @@ public class PlayerInventory : MonoBehaviour
                     UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
                 }
                 else
-                   StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryUseButtonText, USE_STRING, CANT_STRING, 0.5f));
+                    StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryUseButtonText, USE_STRING, CANT_STRING, 0.5f));
             }
 
         });
-		#endregion
-		#region Equip Buttons
-		//----------EUQIP BUTTON
-		UIController.InventoryEquipButton.onClick.AddListener(() => {
+        #endregion
+        #region Equip Buttons
+        //----------EUQIP BUTTON
+        UIController.InventoryEquipButton.onClick.AddListener(() => {
             if (UIController.InventoryWeaponSlotContextMenu.gameObject.activeSelf || UIController.InventoryAccessoryContextMenu.gameObject.activeSelf)
             {
                 return;
@@ -311,27 +339,28 @@ public class PlayerInventory : MonoBehaviour
                         break;
                 }
                 EquipItem(_slotToGo);
+                CalculateAndSetInventorySlotTexts();
             }
             else
-               StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryEquipText, EQUIP_STRING, CANT_STRING, 0.5f));
+                StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryEquipText, EQUIP_STRING, CANT_STRING, 0.5f));
         });
 
         //---------SPECIAL EQUIP BUTTONS
-        UIController.InventoryEquipInMainHandButton.onClick.AddListener(    () => EquipItem(mainHandSlot.Value));
-        UIController.InventoryEquipInOffHandButton.onClick.AddListener(     () => EquipItem(offHandSlot.Value));
-        UIController.InventoryEquipInAccessory1Button.onClick.AddListener(  () => EquipItem(accessory1Slot.Value));
-        UIController.InventoryEquipInAccessory2Button.onClick.AddListener(  () => EquipItem(accessory2Slot.Value));
-        UIController.InventoryEquipInAccessory3Button.onClick.AddListener(  () => EquipItem(accessory3Slot.Value));
+        UIController.InventoryEquipInMainHandButton.onClick.AddListener(() => { EquipItem(mainHandSlot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.InventoryEquipInOffHandButton.onClick.AddListener(     () => { EquipItem(offHandSlot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.InventoryEquipInAccessory1Button.onClick.AddListener(  () => { EquipItem(accessory1Slot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.InventoryEquipInAccessory2Button.onClick.AddListener(  () => { EquipItem(accessory2Slot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.InventoryEquipInAccessory3Button.onClick.AddListener(  () => { EquipItem(accessory3Slot.Value); CalculateAndSetInventorySlotTexts(); });
 		#endregion
 		#region Unequip Buttons
 		//-----------UNEQUIP BUTTONS
-		UIController.UnequipHelmetButton.onClick.AddListener(       () => UnequipItem(helmetSlot.Value));
-        UIController.UnequipChestplateButton.onClick.AddListener(   () => UnequipItem(chestplateSlot.Value));
-        UIController.UnequipLeggingsButton.onClick.AddListener(     () => UnequipItem(leggingsSlot.Value));
-        UIController.UnequipBootsButton.onClick.AddListener(        () => UnequipItem(bootsSlot.Value));
-        UIController.UnequipAccessory1Button.onClick.AddListener(   () => UnequipItem(accessory1Slot.Value));
-        UIController.UnequipAccessory2Button.onClick.AddListener(   () => UnequipItem(accessory2Slot.Value));
-        UIController.UnequipAccessory3Button.onClick.AddListener(   () => UnequipItem(accessory3Slot.Value));
+		UIController.UnequipHelmetButton.onClick.AddListener(       () => {UnequipItem(helmetSlot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.UnequipChestplateButton.onClick.AddListener(   () => {UnequipItem(chestplateSlot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.UnequipLeggingsButton.onClick.AddListener(     () => {UnequipItem(leggingsSlot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.UnequipBootsButton.onClick.AddListener(        () => {UnequipItem(bootsSlot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.UnequipAccessory1Button.onClick.AddListener(   () => {UnequipItem(accessory1Slot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.UnequipAccessory2Button.onClick.AddListener(   () => {UnequipItem(accessory2Slot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.UnequipAccessory3Button.onClick.AddListener(   () => { UnequipItem(accessory3Slot.Value); CalculateAndSetInventorySlotTexts(); });
 
         UIController.UnequipMainHandButton.onClick.AddListener(     () => 
         {
@@ -340,6 +369,7 @@ public class PlayerInventory : MonoBehaviour
                     UnequipItem(offHandSlot.Value); //if it is unequip offhand too
 
             UnequipItem(mainHandSlot.Value); //either way, unequip main hand
+            CalculateAndSetInventorySlotTexts();
         });
 
         UIController.UnequipOffHandButton.onClick.AddListener(      () => 
@@ -349,6 +379,7 @@ public class PlayerInventory : MonoBehaviour
                     UnequipItem(mainHandSlot.Value); //unequip it, as that was the real item
 
             UnequipItem(offHandSlot.Value); //either way, unequip off hand
+            CalculateAndSetInventorySlotTexts();
         });
         #endregion
         #region Toss Buttons
@@ -357,6 +388,7 @@ public class PlayerInventory : MonoBehaviour
             if (selectedItem != null) 
             {
                 ChangeItemQuantity(selectedItem, -GetTossValue());
+                CalculateAndSetInventorySlotTexts();
             }
         });
         UIController.InventoryTossUp1Button.onClick.AddListener(    () => ChangeTossNumber(+1)) ;
@@ -365,7 +397,42 @@ public class PlayerInventory : MonoBehaviour
         UIController.InventoryTossDown10Button.onClick.AddListener( () => ChangeTossNumber(-10));
         #endregion
     
-        UIController.ItemDropListConfirmButton.onClick.AddListener(delegate { EncounterController.instance.SetGameState(EncounterController.GameState.Walking); UIController.ItemDropListGameObject.parent.gameObject.SetActive(false); });
+        UIController.ItemDropListConfirmButton.onClick.AddListener(delegate {
+        
+            print("items confirmed");
+            if (CombatController.playerCombatController.MyStats.CarryingSlots >= inventory.Count + ItemsToPickUp)
+			{
+                print("ADDED ITEMS");
+                EncounterController.instance.SetGameState(EncounterController.GameState.Walking); 
+                UIController.ItemDropListGameObject.parent.gameObject.SetActive(false);
+
+                print(itemInfoGameObjects);
+                for (int i = 0; i < itemInfoGameObjects.Length; i++)
+                {
+                    if (itemInfoGameObjects[i].item != null)
+                    if (itemInfoGameObjects[i].selected)
+                    {
+                        AddItemToInventory(itemInfoGameObjects[i].item);
+                    }
+                }
+                //addToInventoryAction.Invoke();
+			}
+            else if (confirmDropsButtonBlink == null)
+			{
+                print("TOO MANY ITEMS");
+                Color _orgColor = UIController.ItemDropListConfirmButtonImage.color;
+                confirmDropsButtonBlink = StartCoroutine( EffectTools.BlinkImage(UIController.ItemDropListConfirmButtonImage,ColorScheme.blockedUseColor,0.2f,2));
+                StartCoroutine(NullCoroutine(0.3f));
+
+                IEnumerator NullCoroutine(float _sec)
+				{
+                    yield return StartCoroutine(EffectTools.Delay(_sec));
+                    confirmDropsButtonBlink = null;
+                    UIController.ItemDropListConfirmButtonImage.color = _orgColor;
+				}
+            }
+
+        });
 		#endregion
 
 
@@ -373,6 +440,8 @@ public class PlayerInventory : MonoBehaviour
         
         //ClearInventory();
         RebuildInventory();
+
+        UpdateSlotTexts(inventory.Count,CombatController.playerCombatController.MyStats.CarryingSlots);
     }
 
 
@@ -466,7 +535,7 @@ public class PlayerInventory : MonoBehaviour
             if (entry == selectedItem)
                 selectedItem = null;
             UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
-            UpdateInventorySize();
+            UpdateInventoryContentSize();
             return;
         }
 
@@ -482,8 +551,26 @@ public class PlayerInventory : MonoBehaviour
             return $"{entry.item.name}";
     }
 
+    public void CalculateAndSetInventorySlotTexts()
+    {
+        int _toPickUp = ItemsToPickUp;// 0;
+        //try { _toPickUp = ItemsToPickUp; }
+        //catch { };
+        int _newInvSize = inventory.Count + _toPickUp;
+        int _slots = CombatController.playerCombatController.MyStats.CarryingSlots;
 
-	void ChangeTossNumber(int amount)
+        UpdateSlotTexts(_newInvSize, _slots);
+    }
+
+    void UpdateSlotTexts(int _currentAmount, int _totalSlots)
+	{
+        UIController.InventorySlotText.text = UIController.DropSlotSizeText.text = $"Slots: {_currentAmount}/{_totalSlots}";
+
+        UIController.InventorySlotText.color = UIController.DropSlotSizeText.color = (_currentAmount > _totalSlots) ? Color.red : Color.black;
+    }
+
+
+    void ChangeTossNumber(int amount)
     {
         int newNum = Mathf.Clamp(GetTossValue() + amount, 0, 99);
         UIController.InventoryTossInputField.text = newNum.ToString("00");
@@ -506,7 +593,7 @@ public class PlayerInventory : MonoBehaviour
     }
 
 
-    void UpdateInventorySize()
+    void UpdateInventoryContentSize()
     {
         UIController.InventoryItemContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (itemDropPrefabHeight + itemSpacing) * inventory.Count - 5);
     }
@@ -515,7 +602,7 @@ public class PlayerInventory : MonoBehaviour
     void RebuildInventory()
     {
         ClearInventory();
-        UpdateInventorySize();
+        UpdateInventoryContentSize();
         for (int i = 0; i < inventory.Count; i++)
         {
             InstantiateItemToInventory(inventory[i]);
@@ -583,16 +670,21 @@ public class PlayerInventory : MonoBehaviour
     }
 
 
+    ItemQuantity FindDuplicateInInventoryOf(ItemQuantity item)
+	{
+        return inventory.Find(x => (Items.ItemType.Equipment & item.item.type) == 0 && x.item.name == item.item.name);
+    }
+
     public void AddItemToInventory(ItemQuantity item)
     {
-        var duplicate = inventory.Find(x => (Items.ItemType.Equipment & item.item.type) == 0 && x.item.name == item.item.name); //look for  a duplicate, that has none of the equipment flags set
+        var duplicate = FindDuplicateInInventoryOf(item); //look for  a duplicate, that has none of the equipment flags set
         if (duplicate == null) //if none were found
         {
             //InstantiateItemToInventory(item);
             //AddItemToInventory(item); //add to the inventory the rolled one 
             inventory.Add(item);
             InstantiateItemToInventory(item);
-            UpdateInventorySize();
+            UpdateInventoryContentSize();
         }
         else
         {
@@ -640,6 +732,8 @@ public class PlayerInventory : MonoBehaviour
                 itemInfoGameObjects[i].icon.transform.parent.gameObject.SetActive(inBounds);
                 if (inBounds)
                 {
+                    itemInfoGameObjects[i].item = _dropsProcessed[i];
+
                     itemInfoGameObjects[i].icon.color = Color.white;
                     itemInfoGameObjects[i].icon.sprite = _dropsProcessed[i].item.sprite;
                     itemInfoGameObjects[i].text.text = $"{_dropsProcessed[i].item.name} x{_dropsProcessed[i].amount}";
@@ -648,18 +742,19 @@ public class PlayerInventory : MonoBehaviour
 
 
             }
+
+            CalculateAndSetInventorySlotTexts();
         }
 
         
-        if (addToInventoryAction != null)
-            UIController.ItemDropListConfirmButton.onClick.RemoveListener(addToInventoryAction);//RemoveAllListeners();
-
+        //if (addToInventoryAction != null)
+        //    UIController.ItemDropListConfirmButton.onClick.RemoveListener(addToInventoryAction);//RemoveAllListeners();
+        /*
 
         addToInventoryAction = delegate
         {
             for (int i = 0; i < itemInfoGameObjects.Length; i++)
             {
-                print("i: " + i + " selecte: " + itemInfoGameObjects[i].selected + " drop i: " + _dropsProcessed);
                 if (itemInfoGameObjects[i].selected)
                 {
                     AddItemToInventory(_dropsProcessed[i]);
@@ -667,21 +762,16 @@ public class PlayerInventory : MonoBehaviour
             }
 
         };
-
+        */
         //_dropsProcessed.ForEach(x => AddItemToInventory(x)); //then add the item to inventory
 
         //StartCoroutine(EffectTools.DeactivateGameObject(dropList.gameObject, 3));
 
-        SetInventorySlotText();
+        CalculateAndSetInventorySlotTexts();
 
-        UIController.ItemDropListConfirmButton.onClick.AddListener(addToInventoryAction);
+        //UIController.ItemDropListConfirmButton.onClick.AddListener(addToInventoryAction);
 
         EncounterController.instance.currentGameState = EncounterController.GameState.ConfirmingDrops;
-    }
-
-    public void SetInventorySlotText()
-	{
-        UIController.InventorySlotSizeText.text = $"Slots: {inventory.Count}/{CombatController.playerCombatController.MyStats.CarryingSlots}";
     }
 
     /// <summary>

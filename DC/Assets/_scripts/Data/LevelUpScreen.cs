@@ -162,7 +162,7 @@ public class LevelUpScreen : AbilityCollection
 
                         confirmButton.gameObject.SetActive(false);
 
-						PlayerInventory.instance.SetInventorySlotText();
+						PlayerInventory.instance.CalculateAndSetInventorySlotTexts();
 
 						ToggleArrowButtons();
 						SetLeftoverPointsText();
@@ -299,6 +299,7 @@ public class LevelUpScreen : AbilityCollection
 				}
 				else if (blinkRutine == null)
 				{
+					Color _orgColor = background.color;
 					blinkRutine = CombatController.playerCombatController.StartCoroutine(EffectTools.BlinkImage(background,canNotEnableAbilityColor,0.2f,2));
 					CombatController.playerCombatController.StartCoroutine(NullRutine(0.3f));
 					//blinkRutine = EffectTools.BlinkImage(background, canNotEnableAbilityColor, 0.2f, 2);
@@ -327,6 +328,7 @@ public class LevelUpScreen : AbilityCollection
 					{
 						yield return CombatController.playerCombatController.StartCoroutine(EffectTools.Delay(_sec));
 						blinkRutine = null;
+						background.color = _orgColor;
 					}
 				}
 			});
@@ -399,6 +401,8 @@ public class LevelUpScreen : AbilityCollection
 
 	void RefreshAbilityPicks()
 	{
+		UpdateAbilityPointsText();
+
 		bool _hasAbilityQueue = (levelUpQueue.Count > 0);
 		bool _hasOption1 = (_hasAbilityQueue) ? (levelUpQueue[0].option1 != null): false;
 		bool _hasOption2 = (_hasAbilityQueue) ? (levelUpQueue[0].option2 != null): false;
@@ -487,12 +491,22 @@ public class LevelUpScreen : AbilityCollection
 
             confirmButton.gameObject.SetActive(false);
 
-            UIController.LevelUpTraitPointsToSpendText.text = TRAIT_POINTS_DEFAULT_STRING + traitPointsToSpend;
-			UIController.LevelUpAbilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + levelUpQueue.Count;// + abilityPointsToSpend;
+			UpdateTraitPointsText();
+			UpdateAbilityPointsText();
 
 			ToggleArrowButtons();
 			//CombatController.playerCombatController.CloseAllCombatUI();
 		}
+	}
+
+	void UpdateTraitPointsText()
+	{
+		UIController.LevelUpTraitPointsToSpendText.text = TRAIT_POINTS_DEFAULT_STRING + traitPointsToSpend; 
+	}
+
+	void UpdateAbilityPointsText()
+	{
+		UIController.LevelUpAbilityPointsToSpendText.text = ABILITY_POINTS_DEFAULT_STRING + levelUpQueue.Count;// + abilityPointsToSpend;
 	}
 
 	void ToggleArrowButtons()

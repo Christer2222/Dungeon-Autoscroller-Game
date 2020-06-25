@@ -38,10 +38,10 @@ public class CombatController : AbilityScript, IAbilityInterractible
 	private IAbilityInterractible targetCombatController;
 	public static CombatController playerCombatController;
 	private bool isCritted;
-	private Color abilityActiveColor = new Color(0, 0, 0.35f), abilityInactive = Color.gray;
+	//private Color abilityActiveColor = new Color(0, 0, 0.35f), abilityInactive = Color.gray;
 	private const float MAX_ABILITIES_ON_SCREEN = 6.5f;
 
-	private List<AbilitInField> listedAbilityObjects = new List<AbilitInField>();
+	private readonly List<AbilitInField> listedAbilityObjects = new List<AbilitInField>();
 
 	[HideInInspector]
 	public bool actedLastTick;
@@ -375,7 +375,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 			if (turnOrder[0] == playerOwned || turnCounter == 1)
 			{
-				var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UIController.UICanvas, (turnCounter == 1) ? new Color(0.8f, 0.4f, 0) : Color.yellow + Color.red, (turnCounter == 1) ? "Combat!" : "Your Turn!", 150);
+				var _playerTurnText = EffectTools.SpawnText(Vector3.zero, UIController.UICanvas, (turnCounter == 1) ? ColorScheme.combatStartTextColor: ColorScheme.playerTurnTextColor, (turnCounter == 1) ? "Combat!" : "Your Turn!", 150);
 				_playerTurnText.transform.parent.localPosition = Vector3.zero;
 				_playerTurnText.StartCoroutine(EffectTools.ActivateInOrder(_playerTurnText,
 					new List<EffectTools.FunctionGroup>()
@@ -922,7 +922,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 		bool _hasEnoughMana = playerCombatController.MyStats.currentMana >= -MyStats.abilities.Find(x => x.name == _buttonText).manaCost; //playerCombatController.selectedAbility.manaCost;
 
-		_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? abilityActiveColor: abilityInactive;
+		_button.GetComponentInChildren<Image>().color = (_hasEnoughMana)? ColorScheme.activeAbilityColor: ColorScheme.inactiveAbilityColor;
 		_button.GetComponent<Button>().enabled = _hasEnoughMana;
 		//_button.GetComponent<Collider2D>().enabled = _hasEnoughMana;
 	}
@@ -1060,10 +1060,8 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		if (_becomesBusy) AddBusyIfNotInCombat(); //if not in combat, give the player the busy status
 
 		float orgTime = Time.time; //record when ability started
-		actedLastTick = true;
-		//yield return new WaitForSeconds(0.1f);
+
 		yield return StartCoroutine(_targetData.ability.function(_targetData)); //play animation or whatever
-		actedLastTick = false;
 
 		if (_onComplete != null) _onComplete.Invoke(); //if special action is set, invoke it
 
