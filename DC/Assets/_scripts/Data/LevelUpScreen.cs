@@ -5,6 +5,7 @@ using AbilityInfo;
 using System.Xml.Serialization;
 using UnityEditor;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class LevelUpScreen : AbilityCollection
 {
@@ -115,9 +116,9 @@ public class LevelUpScreen : AbilityCollection
 	{
 		abilityEntryPrefab = Resources.Load<GameObject>("Prefabs/$AbilityEntry");
 
-		abilityButton1ToolTip = UIController.LevelUpPickAbilityButton1.GetComponent<ToolTip>();
-		abilityButton2ToolTip = UIController.LevelUpPickAbilityButton2.GetComponent<ToolTip>();
-		abilityButton3ToolTip = UIController.LevelUpPickAbilityButton3.GetComponent<ToolTip>();
+		abilityButton1ToolTip = UIController.LevelUpPickAbilityButton1.GetComponentInChildren<ToolTip>();
+		abilityButton2ToolTip = UIController.LevelUpPickAbilityButton2.GetComponentInChildren<ToolTip>();
+		abilityButton3ToolTip = UIController.LevelUpPickAbilityButton3.GetComponentInChildren<ToolTip>();
 
 		UIController.LevelUpButton.onClick.AddListener(delegate { UIController.SetUIMode(UIController.UIMode.LevelUp); ToggleLevelUpScreen(); });
 
@@ -177,17 +178,26 @@ public class LevelUpScreen : AbilityCollection
 			Debug.Log("queue count: " + levelUpQueue.Count + " option 1: " + levelUpQueue[0].option1.name);
 
 			AddAbility(levelUpQueue[0].option1);
+			abilityButton1ToolTip.SetSize();
+			//abilityButton1ToolTip.OnPointerExit(null);
 		});
 
 		UIController.LevelUpPickAbilityButton2.onClick.AddListener(delegate {
 			Debug.Log("queue count: " + levelUpQueue.Count + " option 2: " + levelUpQueue[0].option2.name);
 
 			AddAbility(levelUpQueue[0].option2);
+			abilityButton2ToolTip.SetSize();
+			//abilityButton2ToolTip.OnPointerExit(null);
+
 		});
 
 		UIController.LevelUpPickAbilityButton3.onClick.AddListener(delegate {
 			Debug.Log("queue count: " + levelUpQueue.Count + " option 3: " + levelUpQueue[0].option3.name);
+
 			AddAbility(levelUpQueue[0].option3);
+			abilityButton3ToolTip.SetSize();
+			//abilityButton3ToolTip.OnPointerExit(null);
+
 		});
 
 		UIController.LevelUpStrengthChangeButtons.maxObject.onClick.AddListener(delegate {
@@ -271,7 +281,7 @@ public class LevelUpScreen : AbilityCollection
 			background = go.transform.Find("$Background").GetComponent<Image>();
 			text = go.transform.Find("$Text").GetComponent<Text>();
 			button = go.transform.GetComponent<Button>();
-			toolTip = go.GetComponent<ToolTip>();
+			toolTip = go.GetComponentInChildren<ToolTip>();
 
 			ability = _ability;
 
@@ -414,10 +424,13 @@ public class LevelUpScreen : AbilityCollection
 
 		if (_hasAbilityQueue)
 		{
+			Debug.Log("has ab queue");
 			if (_hasOption1)
 			{
-		 		//UIController.LevelUpPickAbilityButtonText1.text = (_hasOption1)? levelUpQueue[0].option1.name : string.Empty;
-		 		UIController.LevelUpPickAbilityButtonText1.text = levelUpQueue[0].option1.name;
+				Debug.Log("has op1");
+
+				//UIController.LevelUpPickAbilityButtonText1.text = (_hasOption1)? levelUpQueue[0].option1.name : string.Empty;
+				UIController.LevelUpPickAbilityButtonText1.text = levelUpQueue[0].option1.name;
 				abilityButton1ToolTip.SetToolTipText(levelUpQueue[0].option1.description);
 			}
 			if (_hasOption2)
@@ -433,6 +446,8 @@ public class LevelUpScreen : AbilityCollection
 		}
 		else
 		{
+			Debug.Log("NO queue");
+
 			abilityButton1ToolTip.OnPointerExit(null);
 			abilityButton2ToolTip.OnPointerExit(null);
 			abilityButton3ToolTip.OnPointerExit(null);

@@ -234,11 +234,13 @@ public class CombatController : AbilityScript, IAbilityInterractible
 					UIController.SetUIMode(UIController.UIMode.None); //when an ability is selected, hide all UI
 					UIController.AbilityButtonText.text = _currentAbility.name; //set the name of the button to the ability
 					selectedAbility = MyStats.abilities[_index]; //set ability to this ability
-					_go.GetComponent<ToolTip>().OnPointerExit(null); //hide the current tooltip if it was hovering this
+
+					var _toolTip = _go.GetComponent<ToolTip>();
+					_toolTip.OnPointerExit(null); //hide the current tooltip if it was hovering this
 				});
 
 
-				_go.GetComponent<ToolTip>().SetToolTipText(MyStats.abilities[i].description); //give the spawned game object the correct tooltip
+				_go.GetComponentInChildren<ToolTip>().SetToolTipText(MyStats.abilities[i].description); //give the spawned game object the correct tooltip
 			}
 		}
 
@@ -274,6 +276,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		UpdateAbilitiesToManaAvailability(); //set colors
 	}
 
+	/*
 	/// <summary>
 	/// Update available buttons
 	/// </summary>
@@ -322,6 +325,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 		UpdateAbilitiesToManaAvailability(); //set colors
 	}
+	*/
 
 	void ClearAbilityList()
 	{

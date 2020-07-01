@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AbilityInfo;
-using System.Runtime.InteropServices;
 
 public class AbilityScript : MonoBehaviour// : AbilityData
 {

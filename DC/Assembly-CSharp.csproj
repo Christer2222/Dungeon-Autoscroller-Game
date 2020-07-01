@@ -78,7 +78,7 @@
     <Compile Include="Assets\_scripts\Data\EffectTools.cs" />
     <Compile Include="Assets\_scripts\Data\EncounterData.cs" />
     <Compile Include="Assets\_scripts\Data\EnemyAI.cs" />
-    <Compile Include="Assets\_scripts\Data\IAbilityInterractible.cs" />
+    <Compile Include="Assets\_scripts\Data\Interfaces\IAbilityInterractible.cs" />
     <Compile Include="Assets\_scripts\Data\ItemInfo.cs" />
     <Compile Include="Assets\_scripts\Data\LevelUpScreen.cs" />
     <Compile Include="Assets\_scripts\Data\Options.cs" />

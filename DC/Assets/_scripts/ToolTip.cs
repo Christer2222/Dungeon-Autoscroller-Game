@@ -181,7 +181,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    void SetSize()
+    public void SetSize()
     {
         UIController.ToolTipBackground.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, UIController.ToolTipText.preferredWidth + 40);// 300);
         UIController.ToolTipBackground.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, UIController.ToolTipText.preferredHeight + 10);
@@ -223,17 +223,21 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        StopAllCoroutines();
+        print("should close menu. selectedGameObject != null " + (selectedGameObject != null));
 
+        StopAllCoroutines();
         if (selectedGameObject != null)
+		{
+            print("this: "+ transform+"selectedGameObject: " + selectedGameObject + " is this: " + (selectedGameObject == transform));
+
             if (selectedGameObject.transform == transform)
             {
-
                 UIController.ToolTipBackground.gameObject.SetActive(false);// EventSystem.current.IsPointerOverGameObject());
                 //StopAllCoroutines();
                 fadeInCoroutine = null;
                 selectedGameObject = null;
             }
+		}
         //StopCoroutine(hoverCoroutine);
     }
 }
