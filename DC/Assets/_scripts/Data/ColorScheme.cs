@@ -8,5 +8,5 @@ public class ColorScheme
 	public static Color combatStartTextColor = new Color(0.9f,0.9f,0.2f);
 	public static Color abilityUsedTextColor = new Color(0.7f,0,0);
 	public static Color blockedUseColor = new Color(1,0.5f,0.5f);
-	public static Color descriptionBackgroundColor = new Color(0.25f,0.25f,0.25f);
+	public static Color descriptionBackgroundColor = Color.black; //new Color(0.25f,0.25f,0.25f);
 }

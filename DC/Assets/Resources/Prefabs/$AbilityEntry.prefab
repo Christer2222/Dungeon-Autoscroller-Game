@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8515340199079984957}
   - component: {fileID: 4261479745169521520}
   m_Layer: 5
-  m_Name: PortraitTypeMM
+  m_Name: $PortraitTypeMM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 3197976993997325110}
   - component: {fileID: 8113763583364510871}
   m_Layer: 5
-  m_Name: PortraitTypeTR
+  m_Name: $PortraitTypeTR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 2170879861927375028}
   - component: {fileID: 3277731599244793571}
   m_Layer: 5
-  m_Name: PortraitTypeMR
+  m_Name: $PortraitTypeMR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -487,7 +487,7 @@ GameObject:
   - component: {fileID: 6365685125524768776}
   - component: {fileID: 2132377948548190508}
   m_Layer: 5
-  m_Name: PortraitTypeTL
+  m_Name: $PortraitTypeTL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -561,7 +561,7 @@ GameObject:
   - component: {fileID: 304073477538873415}
   - component: {fileID: 865293443429571590}
   m_Layer: 5
-  m_Name: PortraitTypeML
+  m_Name: $PortraitTypeML
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -635,7 +635,7 @@ GameObject:
   - component: {fileID: 5876281857007061153}
   - component: {fileID: 4888058618446900321}
   m_Layer: 5
-  m_Name: PortraitTypeBR
+  m_Name: $PortraitTypeBR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -709,7 +709,7 @@ GameObject:
   - component: {fileID: 546759168289892024}
   - component: {fileID: 2898174846377780909}
   m_Layer: 5
-  m_Name: PortraitTypeBL
+  m_Name: $PortraitTypeBL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -782,7 +782,7 @@ GameObject:
   - component: {fileID: 4615076410967694021}
   - component: {fileID: 1870856186058232330}
   m_Layer: 5
-  m_Name: PortraitTypeBM
+  m_Name: $PortraitTypeBM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -856,7 +856,7 @@ GameObject:
   - component: {fileID: 3748169661954268441}
   - component: {fileID: 4371423183864903259}
   m_Layer: 5
-  m_Name: PortraitTypeTM
+  m_Name: $PortraitTypeTM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

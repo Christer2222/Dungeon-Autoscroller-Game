@@ -2,10 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using AbilityInfo;
-using System.Xml.Serialization;
-using UnityEditor;
 using System.Collections;
-using System.Runtime.InteropServices;
+using System.Linq;
 
 public class LevelUpScreen : AbilityCollection
 {
@@ -73,6 +71,8 @@ public class LevelUpScreen : AbilityCollection
 	private ToolTip abilityButton1ToolTip, abilityButton2ToolTip, abilityButton3ToolTip;
 	private Button cancelButton, confirmButton;
 
+	private static Sprite[] abilityInfoIcons;
+
 	public struct AbilityChoices
 	{
 		public AbilityChoices(Ability _option1) : this(_option1, null, null) { }
@@ -109,6 +109,126 @@ public class LevelUpScreen : AbilityCollection
 		}
 	}
 
+	public class SpawnedAbilityToggle
+	{
+		public SpawnedAbilityToggle(Ability _ability)
+		{
+			go = Object.Instantiate(abilityEntryPrefab, UIController.SpawnedAbilityToggleContent);
+
+			background = go.transform.Find("$Background").GetComponent<Image>();
+			text = go.transform.Find("$Text").GetComponent<Text>();
+			button = go.transform.GetComponent<Button>();
+			toolTip = go.GetComponentInChildren<ToolTip>();
+
+			ability = _ability;
+
+			var _images = go.GetComponentsInChildren<Image>(true).Where(x => x.name.StartsWith("$PortraitType")).ToArray();
+			icons = new Image[_images.Length];
+
+			for (int i = 0; i < _images.Length; i++)
+			{
+				icons[i] = _images[i];
+			}
+
+			UpdateIconsOnAbilitySelectionButton(ability, icons);
+
+			/*
+			icons[0].sprite = ability.extraData.HasFlag(ExtraData.magic)? abilityInfoIcons[4]: abilityInfoIcons[5]; //.gameObject.SetActive(false);
+			icons[1].sprite = ability.extraData.HasFlag(ExtraData.makes_contact_with_user)? abilityInfoIcons[2]: abilityInfoIcons[3]; //.gameObject.SetActive(false);
+			icons[2].sprite = ability.extraData.HasFlag(ExtraData.nonPiercing)? abilityInfoIcons[0]: abilityInfoIcons[1]; //.gameObject.SetActive(false);
+
+			for (int i = 3; i < icons.Length; i++)
+			{
+				icons[i].gameObject.SetActive(false);
+			}
+			*/
+
+			//int _enabledAbilities = instance.spawnedAbilities.FindAll(x => x.enabled).Count;
+			//enabled = (_enabledAbilities < CombatController.playerCombatController.MyStats.AbilitySlots);
+			enabled = (instance.spawnedAbilities.FindAll(x => x.enabled).Count < CombatController.playerCombatController.MyStats.AbilitySlots);
+			UpdateColor();
+			(go.transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 720);
+
+			text.text = _ability.name;
+			text.color = Color.black;
+
+			button.onClick.AddListener(delegate {
+				int _activeCount = instance.spawnedAbilities.FindAll(x => x.enabled).Count;
+				Debug.Log(_activeCount);
+				if (enabled || _activeCount < CombatController.playerCombatController.MyStats.AbilitySlots)//get the non stored count of enabled abilities, check vs slots
+				{
+					enabled = !enabled;
+					UpdateColor();
+
+					CombatController.playerCombatController.RefreshAbilityList();
+
+					UpdateSlotText();
+				}
+				else if (blinkRutine == null)
+				{
+					Color _orgColor = background.color;
+					blinkRutine = CombatController.playerCombatController.StartCoroutine(EffectTools.BlinkImage(background, canNotEnableAbilityColor, 0.2f, 2));
+					CombatController.playerCombatController.StartCoroutine(NullRutine(0.3f));
+					//blinkRutine = EffectTools.BlinkImage(background, canNotEnableAbilityColor, 0.2f, 2);
+					//CombatController.playerCombatController.StartCoroutine(blinkRutine);
+
+					/*
+					CombatController.playerCombatController.StartCoroutine(
+						EffectTools.ActivateInOrder(CombatController.playerCombatController, new List<EffectTools.FunctionGroup>()
+						{
+							//new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,Color.green,Time.deltaTime,0.5f),0),
+							new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,canNotEnableAbilityColor, 0.2f, 2),0f),
+							new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,disabledAbilityColor,Time.deltaTime,0.5f),0.3f)
+						}
+						//EffectTools.BlinkImage(background,canNotEnableAbilityColor, 0.2f, 2)
+						));
+					*/
+					/*
+					void NullRoutine()
+					{
+						Debug.Log("Nulled");
+						blinkRutine = null;
+					}
+					*/
+
+					IEnumerator NullRutine(float _sec)
+					{
+						yield return CombatController.playerCombatController.StartCoroutine(EffectTools.Delay(_sec));
+						blinkRutine = null;
+						background.color = _orgColor;
+					}
+				}
+			});
+
+			toolTip.SetToolTipText(_ability.description);
+
+
+			UIController.SpawnedAbilityToggleContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 110 * instance.spawnedAbilities.Count + 120);
+
+			void UpdateColor()
+			{
+				background.color = enabled ? enabledAbilityColor : disabledAbilityColor;
+			}
+		}
+
+
+
+
+		public GameObject go;
+
+		public Image background;
+		public Text text;
+		public Button button;
+		public ToolTip toolTip;
+
+		public Ability ability;
+		private Image[] icons;
+
+		private Coroutine blinkRutine;
+
+		public bool enabled;
+	}
+
 	/// <summary>
 	/// Needs to be initialized as this is not a monobehaviour.
 	/// </summary>
@@ -123,6 +243,8 @@ public class LevelUpScreen : AbilityCollection
 		UIController.LevelUpButton.onClick.AddListener(delegate { UIController.SetUIMode(UIController.UIMode.LevelUp); ToggleLevelUpScreen(); });
 
 		instance = this;
+
+		abilityInfoIcons = Resources.LoadAll<Sprite>("Sprites/UI/AbilityInfoSpriteSheet");
 
 		//playerCombatController = CombatController.playerCombatController;//GameObject.Find("$Player").GetComponent<CombatController>();
 
@@ -272,105 +394,6 @@ public class LevelUpScreen : AbilityCollection
 
 	public List<SpawnedAbilityToggle> spawnedAbilities = new List<SpawnedAbilityToggle>();
 
-	public class SpawnedAbilityToggle
-	{
-		public SpawnedAbilityToggle(Ability _ability)
-		{
-			go = Object.Instantiate(abilityEntryPrefab, UIController.SpawnedAbilityToggleContent);
-
-			background = go.transform.Find("$Background").GetComponent<Image>();
-			text = go.transform.Find("$Text").GetComponent<Text>();
-			button = go.transform.GetComponent<Button>();
-			toolTip = go.GetComponentInChildren<ToolTip>();
-
-			ability = _ability;
-
-
-			//int _enabledAbilities = instance.spawnedAbilities.FindAll(x => x.enabled).Count;
-			//enabled = (_enabledAbilities < CombatController.playerCombatController.MyStats.AbilitySlots);
-			enabled = (instance.spawnedAbilities.FindAll(x => x.enabled).Count < CombatController.playerCombatController.MyStats.AbilitySlots);
-			UpdateColor();
-			(go.transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 720);
-
-			text.text = _ability.name;
-			text.color = Color.black;
-
-			button.onClick.AddListener(delegate {
-				int _activeCount = instance.spawnedAbilities.FindAll(x => x.enabled).Count;
-				Debug.Log(_activeCount);
-				if (enabled || _activeCount < CombatController.playerCombatController.MyStats.AbilitySlots)//get the non stored count of enabled abilities, check vs slots
-				{
-					enabled = !enabled;
-					UpdateColor();
-
-					CombatController.playerCombatController.RefreshAbilityList();
-
-					UpdateSlotText();
-				}
-				else if (blinkRutine == null)
-				{
-					Color _orgColor = background.color;
-					blinkRutine = CombatController.playerCombatController.StartCoroutine(EffectTools.BlinkImage(background,canNotEnableAbilityColor,0.2f,2));
-					CombatController.playerCombatController.StartCoroutine(NullRutine(0.3f));
-					//blinkRutine = EffectTools.BlinkImage(background, canNotEnableAbilityColor, 0.2f, 2);
-					//CombatController.playerCombatController.StartCoroutine(blinkRutine);
-
-					/*
-					CombatController.playerCombatController.StartCoroutine(
-						EffectTools.ActivateInOrder(CombatController.playerCombatController, new List<EffectTools.FunctionGroup>()
-						{
-							//new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,Color.green,Time.deltaTime,0.5f),0),
-							new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,canNotEnableAbilityColor, 0.2f, 2),0f),
-							new EffectTools.FunctionGroup(EffectTools.BlinkImage(background,disabledAbilityColor,Time.deltaTime,0.5f),0.3f)
-						}
-						//EffectTools.BlinkImage(background,canNotEnableAbilityColor, 0.2f, 2)
-						));
-					*/
-					/*
-					void NullRoutine()
-					{
-						Debug.Log("Nulled");
-						blinkRutine = null;
-					}
-					*/
-
-					IEnumerator NullRutine(float _sec)
-					{
-						yield return CombatController.playerCombatController.StartCoroutine(EffectTools.Delay(_sec));
-						blinkRutine = null;
-						background.color = _orgColor;
-					}
-				}
-			});
-
-			toolTip.SetToolTipText(_ability.description);
-
-
-			UIController.SpawnedAbilityToggleContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 110 * instance.spawnedAbilities.Count + 120);
-
-			void UpdateColor()
-			{
-				background.color = enabled ? enabledAbilityColor : disabledAbilityColor;
-			}
-		}
-
-
-
-
-		public GameObject go;
-		
-		public Image background;
-		public Text text;
-		public Button button;
-		public ToolTip toolTip;
-
-		public Ability ability;
-
-		private Coroutine blinkRutine;
-
-		public bool enabled;
-	}
-
 	static void UpdateSlotText()
 	{
 		UIController.AbilitySlotCountText.text = instance.spawnedAbilities.FindAll(x => x.enabled).Count + "/" + CombatController.playerCombatController.MyStats.AbilitySlots;
@@ -424,33 +447,42 @@ public class LevelUpScreen : AbilityCollection
 
 		if (_hasAbilityQueue)
 		{
-			Debug.Log("has ab queue");
 			if (_hasOption1)
 			{
-				Debug.Log("has op1");
-
-				//UIController.LevelUpPickAbilityButtonText1.text = (_hasOption1)? levelUpQueue[0].option1.name : string.Empty;
 				UIController.LevelUpPickAbilityButtonText1.text = levelUpQueue[0].option1.name;
 				abilityButton1ToolTip.SetToolTipText(levelUpQueue[0].option1.description);
+				UpdateIconsOnAbilitySelectionButton(levelUpQueue[0].option1, UIController.LevelUpPickAbilityInfoImages1);
 			}
 			if (_hasOption2)
 			{
 				UIController.LevelUpPickAbilityButtonText2.text = levelUpQueue[0].option2.name;
 				abilityButton2ToolTip.SetToolTipText(levelUpQueue[0].option2.description);
+				UpdateIconsOnAbilitySelectionButton(levelUpQueue[0].option2, UIController.LevelUpPickAbilityInfoImages2);
 			}
 			if (_hasOption3)
 			{
 				UIController.LevelUpPickAbilityButtonText3.text = levelUpQueue[0].option3.name;
 				abilityButton3ToolTip.SetToolTipText(levelUpQueue[0].option3.description);
+				UpdateIconsOnAbilitySelectionButton(levelUpQueue[0].option3, UIController.LevelUpPickAbilityInfoImages3);
 			}
 		}
 		else
 		{
-			Debug.Log("NO queue");
-
 			abilityButton1ToolTip.OnPointerExit(null);
 			abilityButton2ToolTip.OnPointerExit(null);
 			abilityButton3ToolTip.OnPointerExit(null);
+		}
+	}
+
+	public static void UpdateIconsOnAbilitySelectionButton(Ability _newAbility, Image[] _imageGroup)
+	{
+		_imageGroup[0].sprite = _newAbility.extraData.HasFlag(ExtraData.magic) ? abilityInfoIcons[4] : abilityInfoIcons[5]; //.gameObject.SetActive(false);
+		_imageGroup[1].sprite = _newAbility.extraData.HasFlag(ExtraData.makes_contact_with_user) ? abilityInfoIcons[2] : abilityInfoIcons[3]; //.gameObject.SetActive(false);
+		_imageGroup[2].sprite = _newAbility.extraData.HasFlag(ExtraData.nonPiercing) ? abilityInfoIcons[0] : abilityInfoIcons[1]; //.gameObject.SetActive(false);
+
+		for (int i = 3; i < _imageGroup.Length; i++)
+		{
+			_imageGroup[i].gameObject.SetActive(false);
 		}
 	}
 

@@ -84,6 +84,9 @@ public class UIController : MonoBehaviour
     public static Button LevelUpPickAbilityButton1 { get; private set; }
     public static Button LevelUpPickAbilityButton2 { get; private set; }
     public static Button LevelUpPickAbilityButton3 { get; private set; }
+    public static Image[] LevelUpPickAbilityInfoImages1 { get; } = new Image[9];
+    public static Image[] LevelUpPickAbilityInfoImages2 { get; } = new Image[9];
+    public static Image[] LevelUpPickAbilityInfoImages3 { get; } = new Image[9];
     public static Text LevelUpPickAbilityButtonText1 { get; private set; }
     public static Text LevelUpPickAbilityButtonText2 { get; private set; }
     public static Text LevelUpPickAbilityButtonText3 { get; private set; }
@@ -449,12 +452,49 @@ public class UIController : MonoBehaviour
                     break;
                 case "$LevelUpPickAbilityButton1":
                     LevelUpPickAbilityButton1 = child.GetComponent<Button>();
+
+                    var _images1 = child.GetComponentsInChildren<Image>(true); //get all images
+                    int _index1 = 0; //track how many is set (that meet conditions)
+                    for (int j = 0; j < _images1.Length; j++)
+					{
+                        var _curImg = _images1[j]; //shortcut
+                        if (_curImg.name.StartsWith("$PortraitType")) //if the image starts with this
+						{
+                            LevelUpPickAbilityInfoImages1[_index1] = _curImg; //store the current image in the array of images
+                            _index1++; //increment the index
+						}
+					}
+
                     break;
                 case "$LevelUpPickAbilityButton2":
                     LevelUpPickAbilityButton2 = child.GetComponent<Button>();
+
+                    var _images2 = child.GetComponentsInChildren<Image>(true); //get all images
+                    int _index2 = 0; //track how many is set (that meet conditions)
+                    for (int j = 0; j < _images2.Length; j++)
+                    {
+                        var _curImg = _images2[j];
+                        if (_curImg.name.StartsWith("$PortraitType"))
+						{
+                            LevelUpPickAbilityInfoImages2[_index2] = _curImg; //store the current image in the array of images
+                            _index2++;
+						}
+                    }
                     break;
                 case "$LevelUpPickAbilityButton3":
                     LevelUpPickAbilityButton3 = child.GetComponent<Button>();
+
+                    var _images3 = child.GetComponentsInChildren<Image>(true); //get all images
+                    int _index3 = 0; //track how many is set (that meet conditions)
+                    for (int j = 0; j < _images3.Length; j++)
+                    {
+                        var _curImg = _images3[j];
+                        if (_curImg.name.StartsWith("$PortraitType"))
+						{
+                            LevelUpPickAbilityInfoImages3[_index3] = _curImg; //store the current image in the array of images
+                            _index3++;
+						}
+                    }
                     break;
                 case "$LevelUpPickAbilityText1":
                     LevelUpPickAbilityButtonText1 = child.GetComponent<Text>();

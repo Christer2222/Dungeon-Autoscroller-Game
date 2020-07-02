@@ -211,6 +211,9 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		public GameObject gameObject;
 	}
 
+	/// <summary>
+	/// Turns on or off ability buttons, as well as spawns new ones.
+	/// </summary>
 	public void RefreshAbilityList()
 	{
 		//Spawn abilities if they aren't already
@@ -235,10 +238,20 @@ public class CombatController : AbilityScript, IAbilityInterractible
 					UIController.AbilityButtonText.text = _currentAbility.name; //set the name of the button to the ability
 					selectedAbility = MyStats.abilities[_index]; //set ability to this ability
 
-					var _toolTip = _go.GetComponent<ToolTip>();
+					var _toolTip = _go.GetComponentInChildren<ToolTip>();
 					_toolTip.OnPointerExit(null); //hide the current tooltip if it was hovering this
 				});
 
+				var _images = _go.GetComponentsInChildren<Image>(true).Where(x => x.name.StartsWith("$PortraitType")).ToArray();
+				/*
+				var _icons = new Image[_images.Length];
+
+				for (int j = 0; j < _images.Length; j++)
+				{
+					_icons[j] = _images[j];
+				}
+				*/
+				LevelUpScreen.UpdateIconsOnAbilitySelectionButton(MyStats.abilities[i], _images);
 
 				_go.GetComponentInChildren<ToolTip>().SetToolTipText(MyStats.abilities[i].description); //give the spawned game object the correct tooltip
 			}

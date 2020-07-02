@@ -106,7 +106,7 @@ namespace AbilityInfo
 			string _contact = extraData.HasFlag(ExtraData.makes_contact_with_user) ? "makes contact" : "doesn't make contact";
 			string _pierces = extraData.HasFlag(ExtraData.nonPiercing)? ".": ", it pierces defenses.";
 
-			description = $"{_descriptionTextAsset.text}\n\n<color=#FFFF99>This is a {_reality} ability that {_contact}{_pierces}</color>";
+			description = $"{_descriptionTextAsset.text}<color=#FFFF99>\n\nThis is a {_reality} ability that {_contact}{_pierces}</color>";
 			/*
 			description = description.Replace("$none", "<color=#333333>none</color>");
 			description = description.Replace("$physical", "<color=#61737d>physical</color>");
