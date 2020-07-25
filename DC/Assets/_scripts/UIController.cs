@@ -18,7 +18,7 @@ public class UIController : MonoBehaviour
     //-----------------------Inventory------------------------
     #region inventory
     #region general
-    public static Text InventoryButtonText { get; private set; }
+    //public static Text InventoryButtonText { get; private set; }
     public static Transform ItemDropListGameObject { get; private set; }
     public static Button ItemDropListConfirmButton { get; private set; }
     public static Image ItemDropListConfirmButtonImage { get; private set; }
@@ -111,13 +111,15 @@ public class UIController : MonoBehaviour
 
     public static Slider XPSlider { get; private set; }
 
+	public static Slider FleeSlider { get; private set; }
 
     public static Text TurnOrderText { get; private set; }
 
-	public static Slider FleeSlider { get; private set; }
+    public static Image CurrentlySelectedImage { get; private set; }
+    public static Text CurrentlySelectedText { get; private set; }
 
-	#region Buffs
-	public static Transform BuffContent { get; private set; }
+    #region Buffs
+    public static Transform BuffContent { get; private set; }
     public static ScrollRect BuffScrollRect { get; private set; }
     public static Image BuffScrollImage { get; private set; }
 	#endregion
@@ -134,7 +136,7 @@ public class UIController : MonoBehaviour
     #region AbilitySelection
     public static RectTransform AbilityMenuScrollView { get; private set; }
     public static RectTransform AbilityMenuContent { get; private set; }
-    public static Text AbilityButtonText { get; private set; }
+    //public static Text AbilityButtonText { get; private set; }
 #endregion
 
     #region ToolTips
@@ -180,9 +182,9 @@ public class UIController : MonoBehaviour
             switch (child.name)
             {
 				#region inventory
-				case "$InventoryButtonText":
-                    InventoryButtonText = child.GetComponent<Text>();
-                    break;
+				//case "$InventoryButtonText":
+                //    InventoryButtonText = child.GetComponent<Text>();
+                //    break;
                 case "$ItemDropList":
                     ItemDropListGameObject = child;
                     break;
@@ -375,14 +377,19 @@ public class UIController : MonoBehaviour
                     FleeSlider = child.GetComponent<Slider>();
                     //FleeSlider.transform.parent.SetParent(UICanvas.parent);
                     break;
-
-				#region AbilityPicking
-				case "$ButtonMenuScrollView":
+                case "$CurrentlySelectedImage":
+                    CurrentlySelectedImage = child.GetComponent<Image>();
+                    break;
+                case "$CurrentlySelectedText":
+                    CurrentlySelectedText = child.GetComponent<Text>();
+                    break;
+                #region AbilityPicking
+                case "$ButtonMenuScrollView":
                     AbilityMenuScrollView = child.GetComponent<RectTransform>();
                     break;
-                case "$AbilityButtonText":
-                    AbilityButtonText = child.GetComponent<Text>();
-                    break;
+                //case "$AbilityButtonText":
+                //    AbilityButtonText = child.GetComponent<Text>();
+                //    break;
                 case "$AbilityContent":
                     AbilityMenuContent = child.GetComponent<RectTransform>();
                     break;

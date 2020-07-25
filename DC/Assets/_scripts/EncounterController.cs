@@ -227,6 +227,9 @@ public class EncounterController : MonoBehaviour
 
 		ResetEncounterTimer();
 
+		if (currentGameState != GameState.ConfirmingDrops)
+			SetGameState(GameState.Walking);
+
 		//SetGameState(GameState.Walking);
 		//currentGameState = GameState.Walking;
 	}

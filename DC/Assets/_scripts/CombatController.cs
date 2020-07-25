@@ -235,8 +235,11 @@ public class CombatController : AbilityScript, IAbilityInterractible
 				int _index = i; //store the current index
 				_go.GetComponent<Button>().onClick.AddListener(delegate {
 					UIController.SetUIMode(UIController.UIMode.None); //when an ability is selected, hide all UI
-					UIController.AbilityButtonText.text = _currentAbility.name; //set the name of the button to the ability
+					//UIController.AbilityButtonText.text = _currentAbility.name; //set the name of the button to the ability
 					selectedAbility = MyStats.abilities[_index]; //set ability to this ability
+					UIController.CurrentlySelectedImage.gameObject.SetActive(true);
+
+					UIController.CurrentlySelectedText.text = selectedAbility.name;
 
 					var _toolTip = _go.GetComponentInChildren<ToolTip>();
 					_toolTip.OnPointerExit(null); //hide the current tooltip if it was hovering this
@@ -1043,6 +1046,8 @@ public class CombatController : AbilityScript, IAbilityInterractible
 					PlayerInventory.instance.ChangeItemQuantity(_item, -1);
 					PlayerInventory.instance.ResetItemButton();
 
+
+
 					processingAbility = true;
 
 					for (int i = 0; i < _item.item.activeAbilities.Count; i++)
@@ -1215,7 +1220,9 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 	void ResetAbilityPick()
 	{
-		UIController.AbilityButtonText.text = UIController.ABILITIES_BUTTON_STRING;
+		UIController.CurrentlySelectedImage.gameObject.SetActive(false);
+
+		//UIController.AbilityButtonText.text = UIController.ABILITIES_BUTTON_STRING;
 		selectedAbility = null;// string.Empty;
 	}
 

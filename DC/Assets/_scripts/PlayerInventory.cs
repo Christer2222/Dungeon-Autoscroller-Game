@@ -298,7 +298,10 @@ public class PlayerInventory : MonoBehaviour
                 else if ((selectedItem.item.type & Items.ItemType.Targetable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) == 0)) //if item has targetable flag
                 {
                     UIController.SetUIMode(UIController.UIMode.None);
-                    UIController.InventoryButtonText.text = selectedItem.item.name;
+                    //UIController.InventoryButtonText.text = selectedItem.item.name;
+                    UIController.CurrentlySelectedImage.gameObject.SetActive(true);
+                    UIController.CurrentlySelectedText.text = selectedItem.item.name;
+
                     selectedItem.selectionBox.color = Color.clear;
                     UIController.InventoryGeneralContextMenu.gameObject.SetActive(false);
                 }
@@ -519,7 +522,8 @@ public class PlayerInventory : MonoBehaviour
             if (CombatController.turnOrder[0] == CombatController.playerCombatController) //if it is the players turn, they was successful
             {
                 UIController.SetUIMode(UIController.UIMode.None);
-                StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryButtonText, UIController.ITEMS_BUTTON_STRING, "Equip!", 1));
+                print("REMEMBER TO PUT SOUND HERE. ALSO SOME VISUAL FEEDBACK.");
+                //StartCoroutine(EffectTools.ChangeTextAndReturn(UIController.InventoryButtonText, UIController.ITEMS_BUTTON_STRING, "Equip!", 1));
                 StartCoroutine(CombatController.playerCombatController.EndTurn());
             }
     }
@@ -802,6 +806,7 @@ public class PlayerInventory : MonoBehaviour
     public void ResetItemButton()
     {
         instance.selectedItem = null;
-        UIController.InventoryButtonText.text = UIController.ITEMS_BUTTON_STRING;
+        UIController.CurrentlySelectedImage.gameObject.SetActive(false);
+        //UIController.InventoryButtonText.text = UIController.ITEMS_BUTTON_STRING;
     }
 }
