@@ -185,11 +185,9 @@ public class PlayerInventory : MonoBehaviour
 
             new ItemQuantity() { amount = 5, item = Items.Stick },
             
-            */
             new ItemQuantity() { amount = 1, item = Items.SteelSword },
             new ItemQuantity() { amount = 1, item = Items.SteelBroadSword },
             new ItemQuantity() { amount = 1, item = Items.GoldSword },
-            /*
             new ItemQuantity() { amount = 1, item = Items.AdamantineSword },
             new ItemQuantity() { amount = 1, item = Items.AdamantineBroadSword },
             new ItemQuantity() { amount = 1, item = Items.PoisonedDagger },
@@ -197,6 +195,7 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 50, item = Items.GoldCoin },
             new ItemQuantity() { amount = 2, item = Items.Goldbar },
 
+            */
             new ItemQuantity() { amount = 1, item = Items.Headband },
             new ItemQuantity() { amount = 1, item = Items.SteelHelmet },
             new ItemQuantity() { amount = 1, item = Items.GladiatorsHelmet },
@@ -208,6 +207,7 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.LeatherPants },
             new ItemQuantity() { amount = 1, item = Items.SteelLeggings },
             new ItemQuantity() { amount = 1, item = Items.AdamantineLeggings },
+            /*
 
             new ItemQuantity() { amount = 1, item = Items.GoldRing },
             new ItemQuantity() { amount = 1, item = Items.StrikeRing },
@@ -349,7 +349,7 @@ public class PlayerInventory : MonoBehaviour
         });
 
         //---------SPECIAL EQUIP BUTTONS
-        UIController.InventoryEquipInMainHandButton.onClick.AddListener(() => { EquipItem(mainHandSlot.Value); CalculateAndSetInventorySlotTexts(); });
+        UIController.InventoryEquipInMainHandButton.onClick.AddListener(    () => { EquipItem(mainHandSlot.Value); CalculateAndSetInventorySlotTexts(); });
         UIController.InventoryEquipInOffHandButton.onClick.AddListener(     () => { EquipItem(offHandSlot.Value); CalculateAndSetInventorySlotTexts(); });
         UIController.InventoryEquipInAccessory1Button.onClick.AddListener(  () => { EquipItem(accessory1Slot.Value); CalculateAndSetInventorySlotTexts(); });
         UIController.InventoryEquipInAccessory2Button.onClick.AddListener(  () => { EquipItem(accessory2Slot.Value); CalculateAndSetInventorySlotTexts(); });
