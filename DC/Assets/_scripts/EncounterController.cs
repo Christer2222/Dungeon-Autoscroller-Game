@@ -150,13 +150,32 @@ public class EncounterController : MonoBehaviour
 
 					_selectedEncounter = EncounterData.RandomizeEncounter(_selectedEncounter);
 
+					int divider = 0;
+					int GetSpeed(StatBlock encounter)
+					{
+						if (encounter != null)
+						{
+							divider++;
+							return encounter.level;
+						}
+						return 0;
+					}
 
-					SpawnEnemy(_selectedEncounter.monsterBL, 0);
-					SpawnEnemy(_selectedEncounter.monsterBM, 1);
-					SpawnEnemy(_selectedEncounter.monsterBR, 2);
-					SpawnEnemy(_selectedEncounter.monsterTL, 3);
-					SpawnEnemy(_selectedEncounter.monsterTM, 4);
-					SpawnEnemy(_selectedEncounter.monsterTR, 5);
+					int averageSpeed = (
+						GetSpeed(_selectedEncounter.monsterBL) +
+						GetSpeed(_selectedEncounter.monsterBM) +
+						GetSpeed(_selectedEncounter.monsterBR) +
+						GetSpeed(_selectedEncounter.monsterTL) +
+						GetSpeed(_selectedEncounter.monsterTM) +
+						GetSpeed(_selectedEncounter.monsterTR))/divider;
+				
+
+					SpawnEnemy(_selectedEncounter.monsterBL, 0, averageSpeed);
+					SpawnEnemy(_selectedEncounter.monsterBM, 1, averageSpeed);
+					SpawnEnemy(_selectedEncounter.monsterBR, 2, averageSpeed);
+					SpawnEnemy(_selectedEncounter.monsterTL, 3, averageSpeed);
+					SpawnEnemy(_selectedEncounter.monsterTM, 4, averageSpeed);
+					SpawnEnemy(_selectedEncounter.monsterTR, 5, averageSpeed);
 
 					CombatController.turnOrder.OrderBy(x => (x.MyStats.level * 2 + x.MyStats.Luck));
 
@@ -179,7 +198,7 @@ public class EncounterController : MonoBehaviour
 		}
 	}
 
-	void SpawnEnemy(StatBlock _monstarStat, int _pos)
+	void SpawnEnemy(StatBlock _monstarStat, int _pos, float _speed)
 	{
 		if (_monstarStat == null) return;
 
@@ -189,15 +208,37 @@ public class EncounterController : MonoBehaviour
 		var _go = Instantiate(enemyPrefab, _startPos + EncounterData.offsetTable[_pos] * 0.25f, Quaternion.identity);
 
 		var _cc = _go.GetComponent<CombatController>();
+		var _em = _go.GetComponent<EnemyMover>();
 
 		_cc.MyStats = _monstarStat.Clone();
 		_go.name = _monstarStat.name + " " + _pos;
 
 		_go.GetComponentInChildren<ToolTip>().SetToolTipText(_cc.MyStats.GetToolTipStats());
 		
-		StartCoroutine(EffectTools.PingPongSize(_go.transform, Vector3.zero, Vector3.one * 0.5f, APPEAR_SPEED, 0.5f));
-		StartCoroutine(EffectTools.MoveToPoint(_go.transform, _startPos + EncounterData.offsetTable[_pos], APPEAR_SPEED));
-		
+		//StartCoroutine(EffectTools.PingPongSize(_go.transform, Vector3.zero, Vector3.one * 0.5f, APPEAR_SPEED, 0.5f));
+		//StartCoroutine(EffectTools.MoveToPoint(_go.transform, _startPos + EncounterData.offsetTable[_pos], APPEAR_SPEED));
+
+		StartCoroutine(EffectTools.ActivateInOrder(_em, new List<EffectTools.FunctionGroup>() 
+		{
+			new EffectTools.FunctionGroup(new List<IEnumerator>() 
+			{
+				EffectTools.PingPongSize(_go.transform, Vector3.zero, Vector3.one * 0.5f, APPEAR_SPEED, 0.5f),
+				EffectTools.MoveToPoint(_go.transform, _startPos + EncounterData.offsetTable[_pos], APPEAR_SPEED)
+			},0),
+			
+			new EffectTools.FunctionGroup(StartMove(),APPEAR_SPEED) 
+		}
+			
+			));
+
+
+		IEnumerator StartMove()
+		{
+			yield return null;
+			_em.Initialize(_speed);
+			//_em.shouldMove = true;
+		}
+
 		//var _sprite = _monstarStat.name.Replace(" ", "_").ToLower();
 		//_go.GetComponent<SpriteRenderer>().sprite = TryGetEnemySprite(_sprite);
 		CombatController.turnOrder.Add(_cc);

@@ -7,14 +7,17 @@ public class EnemyMover : MonoBehaviour
 
 	//variables for enemy movement
 	private readonly List<Vector3> localEnemyMovePoints = new List<Vector3>();
-	private Vector3 home;
 	private int positionIndex;
 	private float moveSpeed;
-	public bool shouldMove = true;
 
+	private Vector3 home;
+	[HideInInspector]public bool shouldMove = false;
+
+	private Vector3 nextPos = Vector3.zero;
 	// Start is called before the first frame update
-	void Start()
+	public void Initialize(float _moveSpeed)
     {
+
 		//home = transform.position;
 		combatController = GetComponent<CombatController>();
 		home = transform.position;
@@ -28,23 +31,25 @@ public class EnemyMover : MonoBehaviour
 		//int _randomIndex = Random.Range(0,localEnemyMovePoints.Count - 1);
 		//transform.position += localEnemyMovePoints[_randomIndex];
 		positionIndex = 1;// _randomIndex;
-		moveSpeed = (float)combatController.MyStats.Dexterity / 10; // Random.Range(0.2f,2f);
+		moveSpeed = _moveSpeed/10 + 0.1f;//combatController.MyStats.level; //(float)combatController.MyStats.Dexterity / 10; // Random.Range(0.2f,2f);
+
+		nextPos = localEnemyMovePoints[positionIndex] + home;
+		shouldMove = true;
 	}
 
     // Update is called once per frame
     void Update()
     {
-		/*
 		if(!shouldMove)//!CombatController.turnOrder.Contains(combatController))
 			return;
 		
-		if(Vector2.Distance(transform.position,localEnemyMovePoints[positionIndex] + home) < 0.1f)
+		if(Vector2.Distance(transform.position,nextPos) < 0.1f)
 		{
 			positionIndex++;
 			positionIndex %= localEnemyMovePoints.Count;
+			nextPos = localEnemyMovePoints[positionIndex] + home;
 		}
-
+		print(positionIndex);
 		transform.position = Vector3.MoveTowards(transform.position,localEnemyMovePoints[positionIndex] + home,Time.deltaTime * moveSpeed);
-		*/
 	}
 }

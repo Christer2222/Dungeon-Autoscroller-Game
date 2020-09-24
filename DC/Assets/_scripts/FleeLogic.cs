@@ -1,6 +1,5 @@
-﻿using Boo.Lang;
-using System.Collections;
-using System.Security.Cryptography;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 

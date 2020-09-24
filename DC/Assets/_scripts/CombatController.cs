@@ -417,7 +417,10 @@ public class CombatController : AbilityScript, IAbilityInterractible
 				yield return new WaitForEndOfFrame();
 				myEnemyMover.shouldMove = false;
 				if (MyStats.currentHealth > 0)
-					StartCoroutine(TakeEnemyTurn());
+				{
+					yield return StartCoroutine(TakeEnemyTurn());
+					myEnemyMover.shouldMove = true; //if can still move allow doing so
+				}
 			}
 		}
 
@@ -684,10 +687,6 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		yield return StartCoroutine(SimpleInvokeAbility(_targetData,  true, true, 1));// InvokeActiveAbility());
 
 		myToolTip.SetToolTipText(MyStats.GetToolTipStats());
-
-		myEnemyMover.shouldMove = true;
-
-
 	}
 
 	public void AdjustPlayerXP(int _amount)
@@ -874,7 +873,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 					PlayerInventory.instance.ProcessDrops(MyStats.drops);
 				}
 
-				myEnemyMover.shouldMove = false;
+				myEnemyMover.shouldMove = false; //if just took lethal damage, stop moving
 
 				StartCoroutine(RemoveFromTurnOrder(1.0f,this));
 			}
