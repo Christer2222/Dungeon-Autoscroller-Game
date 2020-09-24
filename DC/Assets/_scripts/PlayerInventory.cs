@@ -472,6 +472,9 @@ public class PlayerInventory : MonoBehaviour
 
         _slot.toolTip.OnPointerExit(null);//ChangeToolTipText(string.Empty);
         //ToolTip.currentToolTip.OnPointerExit(null);
+
+        CombatController.playerCombatController.UpdateBuffIcons();
+
     }
 
 
@@ -515,6 +518,8 @@ public class PlayerInventory : MonoBehaviour
 
         AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Physical_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.physicalDefense,null,false), CombatController.playerCombatController.MyStats);
         AbilityScript.AddBuff(new Buff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name, Buff.TraitType.Magic_Defence_Constant, int.MaxValue, null, Buff.StackType.Add_Duplicate, selectedItem.item.magicDefense,null,false), CombatController.playerCombatController.MyStats);
+        CombatController.playerCombatController.UpdateBuffIcons();
+
 
         print(CombatController.playerCombatController.CheckIfHasBuff(_slot.itemEquipped.item.name + _slot.displayImage.gameObject.name));
 

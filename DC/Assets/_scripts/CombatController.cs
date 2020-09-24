@@ -144,7 +144,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 #endregion
 
-			RefreshBuffIcons();
+			UpdateBuffIcons();
 
 #region Stat Reset
 			//get current stats
@@ -473,7 +473,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 		targetCombatController = null;
 
 		if (playerOwned)
-			RefreshBuffIcons();
+			UpdateBuffIcons();
 	}
 
 	/// <summary>
@@ -490,14 +490,14 @@ public class CombatController : AbilityScript, IAbilityInterractible
 	public void RemoveAllBufsWithName(string _buffName)
 	{
 		MyStats.buffList.RemoveAll(x => x.name.ToLower() == _buffName.ToLower());// x.name.Contains(_buffName));
-		RefreshBuffIcons();
+		UpdateBuffIcons();
 	}
 
 
 	/// <summary>
 	/// Refreshes the buff sidebar.
 	/// </summary>
-	void RefreshBuffIcons()
+	public void UpdateBuffIcons()
 	{
 		if (!playerOwned)
 			return;
@@ -1102,7 +1102,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			StartCoroutine(EndTurn());
 		}
 
-		RefreshBuffIcons();
+		UpdateBuffIcons();
 	}
 
 	void AddBusyIfNotInCombat()
@@ -1115,7 +1115,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			//EncounterController.instance.currentGameState = EncounterController.GameState.Busy;
 			EncounterController.instance.SetGameState(EncounterController.GameState.Busy);
 			//EncounterController.shouldMove = false;
-			RefreshBuffIcons();
+			UpdateBuffIcons();
 		}
 	}
 
