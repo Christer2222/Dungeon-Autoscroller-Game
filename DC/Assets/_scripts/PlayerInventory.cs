@@ -418,8 +418,10 @@ public class PlayerInventory : MonoBehaviour
                         AddItemToInventory(itemInfoGameObjects[i].item);
                     }
                 }
+
+                UpdateSlotTexts(inventory.Count, CombatController.playerCombatController.MyStats.CarryingSlots);
                 //addToInventoryAction.Invoke();
-			}
+            }
             else if (confirmDropsButtonBlink == null)
 			{
                 print("TOO MANY ITEMS");
@@ -557,17 +559,24 @@ public class PlayerInventory : MonoBehaviour
 
     public void CalculateAndSetInventorySlotTexts()
     {
-        int _toPickUp = ItemsToPickUp;// 0;
+        //int _toPickUp = ItemsToPickUp;// 0;
         //try { _toPickUp = ItemsToPickUp; }
         //catch { };
-        int _newInvSize = inventory.Count + _toPickUp;
+        int _newInvSize = inventory.Count;
         int _slots = CombatController.playerCombatController.MyStats.CarryingSlots;
 
-        UpdateSlotTexts(_newInvSize, _slots);
+        UpdateSlotTexts(_newInvSize, _slots, ItemsToPickUp);
+    }
+
+    void UpdateSlotTexts(int _currentAmount, int _totalSlots, int _toPickUp)
+	{
+        UIController.InventorySlotText.text = UIController.DropSlotSizeText.text = $"Slots: {_currentAmount} (+{_toPickUp})/{_totalSlots}";
+
+        UIController.InventorySlotText.color = UIController.DropSlotSizeText.color = (_currentAmount + _toPickUp > _totalSlots) ? Color.red : Color.black;
     }
 
     void UpdateSlotTexts(int _currentAmount, int _totalSlots)
-	{
+    {
         UIController.InventorySlotText.text = UIController.DropSlotSizeText.text = $"Slots: {_currentAmount}/{_totalSlots}";
 
         UIController.InventorySlotText.color = UIController.DropSlotSizeText.color = (_currentAmount > _totalSlots) ? Color.red : Color.black;
