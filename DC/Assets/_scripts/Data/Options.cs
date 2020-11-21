@@ -10,6 +10,8 @@ public class Options
 
 	public static KeyCode blockKey = KeyCode.B;
 
+	public static KeyCode mapKey = KeyCode.M;
+
 	public static KeyCode acceptKey = KeyCode.Space;
 
 #if UNITY_EDITOR

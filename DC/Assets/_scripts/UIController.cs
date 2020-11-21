@@ -143,7 +143,15 @@ public class UIController : MonoBehaviour
         public static RectTransform ToolTipBackground {get; private set;}
         public static Image ToolTipBackgroundImage { get; private set; }
         public static Text ToolTipText {get; private set;}
-    #endregion
+	#endregion
+
+	#region WorldMap
+    public static RectTransform WorldLocationPointer { get; private set; }
+    public static RectTransform WorldCanvas { get; private set; }
+    public static RectTransform PathChoiceButtonsHolder { get; private set; }
+    public static Button[] PathChoiceButtons { get; private set; }
+
+	#endregion
 
 	public class MinMax<T>
     {
@@ -535,6 +543,26 @@ public class UIController : MonoBehaviour
                             _childGameOver.GetComponent<Button>().onClick.AddListener(delegate { var a = new GameObject(); a.AddComponent<ResetStaticVariablesManager>(); });
                         }
                     }
+                    break;
+                #region WorldMap
+                case "$WorldLocationPointer":
+                    WorldLocationPointer = child as RectTransform;
+                    break;
+                case "$WorldCanvas":
+                    WorldCanvas = child as RectTransform;
+
+                    var pathNodes = WorldCanvas.GetComponentsInChildren<PathNode>();
+                    for (int j = 0; j < pathNodes.Length; j++)
+					{
+                        pathNodes[j].Initialize();
+					}
+
+                    break;
+                #endregion
+                case "$PathChoiceButtonsHolder":
+                    PathChoiceButtonsHolder = child as RectTransform;
+
+                    PathChoiceButtons = child.GetComponentsInChildren<Button>(true);
                     break;
             }
 		}

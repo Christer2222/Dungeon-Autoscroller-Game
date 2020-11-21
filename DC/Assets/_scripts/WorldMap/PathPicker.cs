@@ -8,46 +8,81 @@ public class PathPicker : MonoBehaviour
     [SerializeField] private PathNode previousNode;
     [SerializeField] private PathNode currentNode;
 
-    private Button[] buts;
-    private GameObject locationPointer;
+    private List<PathNode> selectableNodes = new List<PathNode>();
 
-    // Start is called before the first frame update
     void Start()
     {
-        Debug.LogError("REMEMBER TO PUT MAP DETAILS IN PROPER PLACE");
-        buts = GameObject.Find("PathChoiceButtons").GetComponentsInChildren<Button>();
-        locationPointer = GameObject.Find("LocationPointer");
+        UIController.WorldLocationPointer.position = currentNode.transform.position;
+
+        UpdateSelectableNodes();
         UpdateButs();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(Options.mapKey))
 		{
+            UIController.WorldCanvas.gameObject.SetActive(!UIController.WorldCanvas.gameObject.activeSelf);
+            UIController.PathChoiceButtonsHolder.gameObject.SetActive(!UIController.PathChoiceButtonsHolder.gameObject.activeSelf);
+
             UpdateButs();
-        }
+		}
+
+        if (Input.GetKeyDown(KeyCode.H))
+		{
+            GoToNextNode();
+		}
     }
 
     void UpdateButs()
 	{
-        for (int i = 0; i < buts.Length; i++)
+        for (int i = 0; i < UIController.PathChoiceButtons.Length; i++)
         {
-            buts[i].onClick.RemoveAllListeners();
-            buts[i].gameObject.SetActive(false);
+            UIController.PathChoiceButtons[i].onClick.RemoveAllListeners();
+            UIController.PathChoiceButtons[i].gameObject.SetActive(false);
         }
 
-
-        print(currentNode.transform.name + ": " + currentNode.connectionInfo.connectedNodes.Count);
-        for (int i = 0; i < currentNode.connectionInfo.connectedNodes.Count; i++)
+        //print(currentNode.transform.name + ": " + currentNode.connectionInfo.connectedNodes.Count);
+        for (int i = 0; i < selectableNodes.Count; i++ )//currentNode.connectionInfo.connectedNodes.Count; i++)
         {
-            var curNode = currentNode.connectionInfo.connectedNodes[i];
-            if (curNode == previousNode && (currentNode.connectionInfo.thisType == PathNode.NodeType.Path || currentNode.connectionInfo.thisType == PathNode.NodeType.Secret)) continue;
-            
-            buts[i].GetComponentInChildren<Text>().text = curNode.transform.name;
+            var curNode = selectableNodes[i];
+            //var curNode = currentNode.connectionInfo.connectedNodes[i];
+            //if (curNode == previousNode && (currentNode.connectionInfo.thisType == PathNode.NodeType.Path || currentNode.connectionInfo.thisType == PathNode.NodeType.Secret)) continue;
 
-            buts[i].onClick.AddListener(delegate { previousNode = currentNode; currentNode = curNode; UpdateButs(); locationPointer.transform.position = currentNode.transform.position; });
-            buts[i].gameObject.SetActive(true);
+            UIController.PathChoiceButtons[i].GetComponentInChildren<Text>().text = curNode.transform.name;
+
+            UIController.PathChoiceButtons[i].onClick.AddListener(delegate { 
+                previousNode = currentNode; 
+                currentNode = curNode;
+                UpdateSelectableNodes();
+                UpdateButs(); 
+                UIController.WorldLocationPointer.position = currentNode.transform.position; 
+            });
+
+            UIController.PathChoiceButtons[i].gameObject.SetActive(true);
         }
     }
+
+
+    void UpdateSelectableNodes()
+	{
+        selectableNodes = currentNode.connectionInfo.connectedNodes.FindAll(x =>
+        (x == previousNode && (currentNode.connectionInfo.thisType == PathNode.NodeType.Dungeon || currentNode.connectionInfo.thisType == PathNode.NodeType.Town)) //if node is the previous one, and was a checkpoint
+        || (x != previousNode) //or if node was not the previous one
+        );
+    }
+
+    void GoToNextNode()
+	{
+        print("next node");
+        if (selectableNodes.Count == 1)
+		{
+            previousNode = currentNode;
+            currentNode = selectableNodes[0];
+            UpdateSelectableNodes();
+            UpdateButs();
+            UIController.WorldLocationPointer.position = currentNode.transform.position;
+        }
+	}
 }

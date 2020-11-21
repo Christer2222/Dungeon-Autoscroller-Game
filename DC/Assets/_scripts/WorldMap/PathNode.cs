@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
+[DefaultExecutionOrder(-1000)]
 public class PathNode : MonoBehaviour
 {
     public enum NodeType
@@ -25,13 +26,18 @@ public class PathNode : MonoBehaviour
 
     private Image myImage;
 
-    void Start()
-	{
+    public void Initialize()
+    {
         myImage = GetComponent<Image>();
         myImage.color = (connectionInfo.thisType == NodeType.Path) ? Color.yellow : (connectionInfo.thisType == NodeType.Town) ? Color.cyan : (connectionInfo.thisType == NodeType.Dungeon) ? Color.red : Color.green; //(myImage.color == Color.red) ? Color.yellow : Color.red;
+
+        for (int i = 0; i < connectionInfo.connectedNodes.Count; i++)
+        {
+            UpdateNodeConnections(connectionInfo.connectedNodes[i]);
+        }
     }
 
-#if UNITY_EDITOR
+#if false//UNITY_EDITOR
     private void Update()
 	{
         myImage.color = (connectionInfo.thisType == NodeType.Path) ? Color.yellow : (connectionInfo.thisType == NodeType.Town) ? Color.cyan : (connectionInfo.thisType == NodeType.Dungeon) ? Color.red : Color.green; //(myImage.color == Color.red) ? Color.yellow : Color.red;
@@ -47,5 +53,12 @@ public class PathNode : MonoBehaviour
             Debug.DrawLine(transform.position * 0.999f, connectionInfo.connectedNodes[i].transform.position * 0.999f, Color.red, 0,false);            
 		}
     }
-#endif  
+#endif
+    
+
+    void UpdateNodeConnections(PathNode node)
+	{
+        if (node == null) { return; }
+        if (!node.connectionInfo.connectedNodes.Contains(this)) node.connectionInfo.connectedNodes.Add(this);
+    }
 }
