@@ -169,10 +169,10 @@ public class PlayerInventory : MonoBehaviour
 #if UNITY_EDITOR
         ItemQuantity[] debugItems =
             {
+            /*
             new ItemQuantity() { amount = 5, item = Items.Rock },
 
             new ItemQuantity() { amount = 5, item = Items.Apple },
-            /*
             new ItemQuantity() { amount = 5, item = Items.Orange },
             new ItemQuantity() { amount = 5, item = Items.Banana },
 
@@ -195,7 +195,6 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 50, item = Items.GoldCoin },
             new ItemQuantity() { amount = 2, item = Items.Goldbar },
 
-            */
             new ItemQuantity() { amount = 1, item = Items.Headband },
             new ItemQuantity() { amount = 1, item = Items.SteelHelmet },
             new ItemQuantity() { amount = 1, item = Items.GladiatorsHelmet },
@@ -207,13 +206,14 @@ public class PlayerInventory : MonoBehaviour
             new ItemQuantity() { amount = 1, item = Items.LeatherPants },
             new ItemQuantity() { amount = 1, item = Items.SteelLeggings },
             new ItemQuantity() { amount = 1, item = Items.AdamantineLeggings },
+            */
             /*
 
             new ItemQuantity() { amount = 1, item = Items.GoldRing },
             new ItemQuantity() { amount = 1, item = Items.StrikeRing },
             new ItemQuantity() { amount = 1, item = Items.BoltRing },
-            */
             new ItemQuantity() { amount = 1, item = Items.MeteorRing },
+            */
 
         };
         inventory.AddRange(debugItems);

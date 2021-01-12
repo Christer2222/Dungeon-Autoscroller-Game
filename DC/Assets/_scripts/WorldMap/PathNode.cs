@@ -34,11 +34,13 @@ public class PathNode : MonoBehaviour
         public List<PathNode> connectedNodes = new List<PathNode>();
 	}
 
+    public string description;
     [SerializeField] public ConnectionInfo connectionInfo = new ConnectionInfo();
 
     private Image myImage;
 
     public Accomodies accomodies;
+
 
     public static ConnectionInfo playerHome;
 

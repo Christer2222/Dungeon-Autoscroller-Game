@@ -51,7 +51,7 @@ public class PathPicker : MonoBehaviour
             //var curNode = currentNode.connectionInfo.connectedNodes[i];
             //if (curNode == previousNode && (currentNode.connectionInfo.thisType == PathNode.NodeType.Path || currentNode.connectionInfo.thisType == PathNode.NodeType.Secret)) continue;
 
-            UIController.PathChoiceButtons[i].GetComponentInChildren<Text>().text = curNode.transform.name;
+            UIController.PathChoiceButtons[i].GetComponentInChildren<Text>().text = curNode.description;//.transform.name;
 
             UIController.PathChoiceButtons[i].onClick.AddListener(delegate { 
                 previousNode = currentNode; 

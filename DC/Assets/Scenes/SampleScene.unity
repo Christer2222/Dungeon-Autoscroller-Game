@@ -1168,6 +1168,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (55)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1226,12 +1231,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 9.1
+      value: 3.9
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -221.6
+      value: -216.61
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -2724,6 +2729,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 691184647}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Dungeon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!114 &240901199 stripped
@@ -3566,6 +3576,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1753236320}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Big City
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &289880702 stripped
@@ -3585,6 +3600,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (38)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -3644,12 +3664,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 231.7
+      value: 222.2
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -98.6
+      value: -86
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -3694,7 +3714,7 @@ PrefabInstance:
     - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: connectionInfo.connectedNodes.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -3706,6 +3726,16 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1874085990}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.data[2]
+      value: 
+      objectReference: {fileID: 1287889504}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &291585947 stripped
@@ -5147,6 +5177,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5262,6 +5297,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1266100443}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path Home
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!114 &416798421 stripped
@@ -5886,6 +5926,11 @@ PrefabInstance:
       propertyPath: connectionInfo.thisType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: ???
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &495823237 stripped
@@ -6482,6 +6527,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (23)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -7542,6 +7592,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (24)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7783,6 +7838,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (51)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7841,12 +7901,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 177.3
+      value: 167
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -154.4
+      value: -145.3
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -8175,6 +8235,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8295,6 +8360,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 481074932}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path To Big City
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &650333764 stripped
@@ -8447,6 +8517,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (29)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8572,6 +8647,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[2]
       value: 
       objectReference: {fileID: 765029966}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path To Desert Town
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &658052091 stripped
@@ -9046,6 +9126,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Swamp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &683792896 stripped
@@ -9207,6 +9292,11 @@ PrefabInstance:
         type: 3}
       propertyPath: accomodies
       value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Island Town
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -9459,6 +9549,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 240901199}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: ???
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &691184646 stripped
@@ -10356,6 +10451,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (17)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -10476,6 +10576,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 797383219}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path To Steppes
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &728937187 stripped
@@ -11083,6 +11188,11 @@ PrefabInstance:
         type: 3}
       propertyPath: accomodies
       value: 61
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Desert City
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -11714,6 +11824,21 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.data[0]
+      value: 
+      objectReference: {fileID: 728937188}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.data[1]
+      value: 
+      objectReference: {fileID: 1114725898}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &797383218 stripped
@@ -12055,6 +12180,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (63)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -13283,6 +13423,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1479186151}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Dungeon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &893561081 stripped
@@ -13704,6 +13849,11 @@ PrefabInstance:
         type: 3}
       propertyPath: accomodies
       value: 61
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Mountain City
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -14583,12 +14733,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 94.5
+      value: 81.1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -191.9
+      value: -164.2
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -15073,6 +15223,11 @@ PrefabInstance:
       propertyPath: accomodies
       value: 56
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Port Town
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1000187588 stripped
@@ -15550,6 +15705,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (20)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -15655,6 +15815,26 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path To Big City
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.data[0]
+      value: 
+      objectReference: {fileID: 1114725898}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.data[1]
+      value: 
+      objectReference: {fileID: 1707831375}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1059504679 stripped
@@ -15668,6 +15848,18 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
     type: 3}
   m_PrefabInstance: {fileID: 1059504678}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47f6d0cf2b6103c4aad6a493f4d3470f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1078943907 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+    type: 3}
+  m_PrefabInstance: {fileID: 523141422}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -15745,12 +15937,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 145
+      value: 129.6
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -171.2
+      value: -151.1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -16117,6 +16309,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1812896855}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Tundra City
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1104633910 stripped
@@ -16130,6 +16327,18 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
     type: 3}
   m_PrefabInstance: {fileID: 1104633909}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47f6d0cf2b6103c4aad6a493f4d3470f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1114725898 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+    type: 3}
+  m_PrefabInstance: {fileID: 845094759}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -16553,6 +16762,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 495823238}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Dungeon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1127940502 stripped
@@ -17044,6 +17258,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 495921211}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Big City
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1146144458 stripped
@@ -17645,6 +17864,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[2]
       value: 
       objectReference: {fileID: 240901199}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: ???
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!114 &1174239571 stripped
@@ -18219,6 +18443,11 @@ PrefabInstance:
       propertyPath: connectionInfo.thisType
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Dungeon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1246329584 stripped
@@ -18490,6 +18719,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -18789,6 +19023,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (50)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -18847,12 +19086,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 209.6
+      value: 196.2
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -135
+      value: -119.5
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -18893,6 +19132,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Steppes
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -20093,6 +20337,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1479186151}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Tundra
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1351141604 stripped
@@ -20124,6 +20373,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (25)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -20323,12 +20577,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 120.4
+      value: 130
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -49.4
+      value: -34.2
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -20542,6 +20796,11 @@ PrefabInstance:
       propertyPath: accomodies
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Tundra City
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1372039267 stripped
@@ -20699,6 +20958,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1000187589}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Island
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1377592981 stripped
@@ -21116,6 +21380,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 2107127945}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: ???
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1387331469 stripped
@@ -21315,6 +21584,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -21430,6 +21704,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1542248286}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path To Forest Town
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!114 &1407288642 stripped
@@ -21616,6 +21895,11 @@ PrefabInstance:
         type: 3}
       propertyPath: accomodies
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Big City
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -21977,6 +22261,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 685170726}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Port Town
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1437570946 stripped
@@ -22123,6 +22412,11 @@ PrefabInstance:
         type: 3}
       propertyPath: connectionInfo.thisType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Dungeon
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -22507,6 +22801,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (62)
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -22632,6 +22941,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 821420342}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1472450345 stripped
@@ -22783,6 +23097,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (33)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -22903,6 +23222,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1413201979}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Coast
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1477352663 stripped
@@ -23065,6 +23389,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[2]
       value: 
       objectReference: {fileID: 893561082}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Mountains
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1479186150 stripped
@@ -23635,6 +23964,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -23750,6 +24084,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 4936288234229930702}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path Home
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!114 &1542248286 stripped
@@ -24473,12 +24812,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 59.6
+      value: 36.2
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -204.8
+      value: -185.5
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -24677,6 +25016,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[2]
       value: 
       objectReference: {fileID: 495921211}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Mountains
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1586427070 stripped
@@ -24708,6 +25052,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (22)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -24814,6 +25163,26 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Desert City
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.data[0]
+      value: 
+      objectReference: {fileID: 1707831375}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: connectionInfo.connectedNodes.Array.data[1]
+      value: 
+      objectReference: {fileID: 1078943907}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1587412770 stripped
@@ -25124,6 +25493,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 2052900861}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Tundra
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1612951756 stripped
@@ -25448,6 +25822,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (56)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -25506,7 +25885,7 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -44
+      value: -36.8
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -25568,6 +25947,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1707831375}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Coast
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1651099114 stripped
@@ -25968,6 +26352,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (31)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -26481,6 +26885,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (21)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -26601,6 +27010,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1587412771}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1707831374 stripped
@@ -26832,7 +27246,7 @@ PrefabInstance:
     - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_Name
-      value: SwampHouse
+      value: SwampHut
       objectReference: {fileID: 0}
     - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -26963,6 +27377,11 @@ PrefabInstance:
         type: 3}
       propertyPath: accomodies
       value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Swamp Hut
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -27540,6 +27959,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (15)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -27660,6 +28084,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1413201979}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path To Forest Town
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1787843140 stripped
@@ -28785,6 +29214,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (37)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -28843,12 +29277,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 167
+      value: 175.4
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70.1
+      value: -58.6
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -28905,6 +29339,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 291585948}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Big City
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1874085989 stripped
@@ -29499,6 +29938,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (39)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -29557,7 +30001,7 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 265.3
+      value: 266
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -29607,7 +30051,7 @@ PrefabInstance:
     - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: connectionInfo.connectedNodes.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -29624,6 +30068,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[2]
       value: 
       objectReference: {fileID: 1287889504}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path to Port Town
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1899206396 stripped
@@ -30216,12 +30665,12 @@ PrefabInstance:
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 90.6
+      value: 88.1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -24.8
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -31053,6 +31502,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathNode (26)
       objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -31572,6 +32026,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (28)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -32255,6 +32714,11 @@ PrefabInstance:
       propertyPath: connectionInfo.thisType
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Dungeon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &2040296929 stripped
@@ -32795,6 +33259,11 @@ PrefabInstance:
         type: 3}
       propertyPath: accomodies
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Forest Town
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -33442,6 +33911,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1387331470}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: ???
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &2107127944 stripped
@@ -33473,6 +33947,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PathNode (27)
+      objectReference: {fileID: 0}
+    - target: {fileID: 906632787763078875, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -33599,6 +34078,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[2]
       value: 
       objectReference: {fileID: 2000910225}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Path To Steppes
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &2113753080 stripped
@@ -34286,6 +34770,11 @@ PrefabInstance:
         type: 3}
       propertyPath: accomodies
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: description
+      value: Home
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
