@@ -14,17 +14,33 @@ public class PathNode : MonoBehaviour
         Secret,
     }
 
+    [System.Flags]
+    public enum Accomodies
+	{
+        None     = 0x00,
+        Smith    = 0x01,
+        Academy  = 0x02,
+        Bank     = 0x04,
+        Shop     = 0x08,
+        Inn      = 0x10,
+        Travel   = 0x20,
+        Start    = 0x40, 
+	}
+
     [System.Serializable]
     public class ConnectionInfo
 	{
-
-       public NodeType thisType;
-       public List<PathNode> connectedNodes = new List<PathNode>();
+        public NodeType thisType;
+        public List<PathNode> connectedNodes = new List<PathNode>();
 	}
 
     [SerializeField] public ConnectionInfo connectionInfo = new ConnectionInfo();
 
     private Image myImage;
+
+    public Accomodies accomodies;
+
+    public static ConnectionInfo playerHome;
 
     public void Initialize()
     {
@@ -35,6 +51,9 @@ public class PathNode : MonoBehaviour
         {
             UpdateNodeConnections(connectionInfo.connectedNodes[i]);
         }
+
+        if ((accomodies & Accomodies.Start) != 0) playerHome = connectionInfo; //if the start flag has been set
+
     }
 
 #if false//UNITY_EDITOR

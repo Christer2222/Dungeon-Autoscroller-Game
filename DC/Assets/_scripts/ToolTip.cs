@@ -11,7 +11,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Vector2 outPos;
     private Vector3 lastMousePos;
 
-    private const float MINIMUM_SHOW_TIME = 1.0f;
+    private const float MINIMUM_SHOW_TIME = 0.1f;
     private float timer;
 
     //private readonly Color descriptionOriginalColor = new Color(0.25f,0.25f,0.25f);

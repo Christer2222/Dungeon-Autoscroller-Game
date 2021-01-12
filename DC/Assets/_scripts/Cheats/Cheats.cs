@@ -9,7 +9,7 @@ public class Cheats : MonoBehaviour
     {
         string c = "<color=#AA20AA>";
         string cend = "</color>";
-        print($"{c}2:{cend} speed += 2 | {c}3:{cend} add banana:1 | {c}4:{cend} player -2 hp| {c}5:{cend} traitpoints++ | {c}6:{cend} addDebugAbilities() | {c}7:{cend} kill all enemies | {c}8:{cend} playerXP + some | {c}9:{cend} force encounter");
+        print($"{c}2:{cend} speed += 2 | {c}3:{cend} add banana:1 | {c}4:{cend} player -2 hp| {c}5:{cend} traitpoints++ | {c}6:{cend} addDebugAbilities() | {c}7:{cend} kill all enemies | {c}8:{cend} playerXP + some | {c}9:{cend} force encounter | {c}0:{cend} Next Node");
         if (DebugController.debugAbilities)
             AddDebugAbilities();
 
@@ -57,8 +57,10 @@ public class Cheats : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Keypad9))
             EncounterController.instance.SetGameState(EncounterController.GameState.Starting_Battle);
-            //EncounterController.instance.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
+        //EncounterController.instance.currentGameState = EncounterController.GameState.Starting_Battle;//.encounterTimer = 0;
 
+        if (Input.GetKeyDown(KeyCode.Keypad0))
+            PathPicker.instance.GoToNextNode();
     }
 }
 #endif

@@ -10,12 +10,15 @@ public class PathPicker : MonoBehaviour
 
     private List<PathNode> selectableNodes = new List<PathNode>();
 
+    public static PathPicker instance;
+
     void Start()
     {
+        instance = this;
         UIController.WorldLocationPointer.position = currentNode.transform.position;
 
         UpdateSelectableNodes();
-        UpdateButs();
+        UpdatePathChoiceButtons();
     }
 
     // Update is called once per frame
@@ -26,22 +29,20 @@ public class PathPicker : MonoBehaviour
             UIController.WorldCanvas.gameObject.SetActive(!UIController.WorldCanvas.gameObject.activeSelf);
             UIController.PathChoiceButtonsHolder.gameObject.SetActive(!UIController.PathChoiceButtonsHolder.gameObject.activeSelf);
 
-            UpdateButs();
-		}
-
-        if (Input.GetKeyDown(KeyCode.H))
-		{
-            GoToNextNode();
+            UpdatePathChoiceButtons();
 		}
     }
 
-    void UpdateButs()
+    void UpdatePathChoiceButtons()
 	{
         for (int i = 0; i < UIController.PathChoiceButtons.Length; i++)
         {
             UIController.PathChoiceButtons[i].onClick.RemoveAllListeners();
             UIController.PathChoiceButtons[i].gameObject.SetActive(false);
         }
+
+        if (selectableNodes.Count == 1)
+            return;
 
         //print(currentNode.transform.name + ": " + currentNode.connectionInfo.connectedNodes.Count);
         for (int i = 0; i < selectableNodes.Count; i++ )//currentNode.connectionInfo.connectedNodes.Count; i++)
@@ -56,8 +57,10 @@ public class PathPicker : MonoBehaviour
                 previousNode = currentNode; 
                 currentNode = curNode;
                 UpdateSelectableNodes();
-                UpdateButs(); 
-                UIController.WorldLocationPointer.position = currentNode.transform.position; 
+                UpdatePathChoiceButtons(); 
+                UIController.WorldLocationPointer.position = currentNode.transform.position;
+
+                EncounterController.instance.RemoveFlagFromGameState(EncounterController.GameState.Waiting_For_Path); //remove the waiting for path flag
             });
 
             UIController.PathChoiceButtons[i].gameObject.SetActive(true);
@@ -73,16 +76,24 @@ public class PathPicker : MonoBehaviour
         );
     }
 
-    void GoToNextNode()
+    /// <summary>
+    /// Move map to next node.
+    /// Returns true if only 1 next node exists.
+    /// </summary>
+    public int GoToNextNode()
 	{
         print("next node");
         if (selectableNodes.Count == 1)
-		{
+        {
             previousNode = currentNode;
             currentNode = selectableNodes[0];
             UpdateSelectableNodes();
-            UpdateButs();
+            UpdatePathChoiceButtons();
             UIController.WorldLocationPointer.position = currentNode.transform.position;
         }
+        else
+            EncounterController.instance.AddFlagFromGameState(EncounterController.GameState.Waiting_For_Path);
+
+        return selectableNodes.Count;
 	}
 }

@@ -2594,6 +2594,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ForestDungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5740,6 +5745,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SecretPathToTundraDungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -9058,6 +9078,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: IslandTown
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9167,6 +9202,11 @@ PrefabInstance:
         type: 3}
       propertyPath: connectionInfo.thisType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 24
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -9278,6 +9318,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SecretPathToForwestDungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -10218,8 +10273,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 400, y: 190}
-  m_SizeDelta: {x: 750, y: 500}
+  m_AnchoredPosition: {x: 405, y: 190}
+  m_SizeDelta: {x: 770, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &728547421
 MonoBehaviour:
@@ -10245,7 +10300,7 @@ MonoBehaviour:
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 918215904}
   m_HorizontalScrollbarVisibility: 2
-  m_VerticalScrollbarVisibility: 2
+  m_VerticalScrollbarVisibility: 1
   m_HorizontalScrollbarSpacing: -3
   m_VerticalScrollbarSpacing: -3
   m_OnValueChanged:
@@ -10271,7 +10326,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10899,6 +10954,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertCity
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11008,6 +11078,11 @@ PrefabInstance:
         type: 3}
       propertyPath: connectionInfo.thisType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 61
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -13083,6 +13158,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MountainDungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13485,6 +13565,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MountainCity
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13605,6 +13700,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1479186151}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 61
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &915811924 stripped
@@ -13661,8 +13761,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: 0}
+  m_AnchoredPosition: {x: -7.5, y: 0}
+  m_SizeDelta: {x: 15, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &918215904
 MonoBehaviour:
@@ -13732,7 +13832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14828,6 +14928,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: PortTown
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -14953,6 +15068,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 1899206397}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 56
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1000187588 stripped
@@ -16308,6 +16428,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TundraDungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17370,6 +17495,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: SecretPathToForwestDungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17963,6 +18103,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: IslandDungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -20257,6 +20402,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: TundraCity
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20377,6 +20537,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[0]
       value: 
       objectReference: {fileID: 1777605621}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 60
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1372039267 stripped
@@ -20639,7 +20804,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1386593795
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20810,6 +20975,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SecretPathToIslandDungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -21282,6 +21462,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigCity
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -21417,6 +21612,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[3]
       value: 
       objectReference: {fileID: 683792897}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: -1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &1413201978 stripped
@@ -21808,6 +22008,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SwampDungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -25059,7 +25264,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -25701,8 +25906,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -150, y: -110}
-  m_SizeDelta: {x: 250, y: 200}
+  m_AnchoredPosition: {x: -440, y: -140}
+  m_SizeDelta: {x: 800, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1684354679
 MonoBehaviour:
@@ -25741,7 +25946,9 @@ MonoBehaviour:
 
     fps: 999
 
-    fps: 999'
+    fps: 999
+
+    GameState: AAAAAA'
 --- !u!222 &1684354680
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -26627,6 +26834,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwampHouse
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -26736,6 +26958,11 @@ PrefabInstance:
         type: 3}
       propertyPath: connectionInfo.thisType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 18
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
@@ -31913,6 +32140,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertDungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -32419,6 +32651,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: ForestTown
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -32544,6 +32791,11 @@ PrefabInstance:
       propertyPath: connectionInfo.connectedNodes.Array.data[1]
       value: 
       objectReference: {fileID: 650333765}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}
 --- !u!224 &2060417515 stripped
@@ -33049,6 +33301,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SecretPathToIslandDungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
@@ -33890,6 +34157,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719051818408018404, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2078561461062527728, guid: 224e1d47f365d514397967a32809838a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -33999,6 +34281,11 @@ PrefabInstance:
         type: 3}
       propertyPath: connectionInfo.thisType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5940407693898491872, guid: 224e1d47f365d514397967a32809838a,
+        type: 3}
+      propertyPath: accomodies
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 224e1d47f365d514397967a32809838a, type: 3}

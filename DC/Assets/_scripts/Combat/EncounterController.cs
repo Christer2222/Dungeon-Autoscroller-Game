@@ -30,13 +30,14 @@ public class EncounterController : MonoBehaviour
 	public GameState currentGameState = GameState.Walking;
 	public enum GameState
 	{
-		None = 0x01,
+		None = 0x00,
 		Walking = 0x02,
 		Starting_Battle = 0x04,
 		Battling = 0x8,
 		//Finishing_Combat = 0x10,
 		Busy = 0x20,
-		ConfirmingDrops = 0x40,
+		Confirming_Drops = 0x40,
+		Waiting_For_Path = 0x80,
 		Realtime = Walking | Busy,
 		In_Battle = Starting_Battle | Battling,
 	}
@@ -85,7 +86,7 @@ public class EncounterController : MonoBehaviour
     {
 		//print("t: " + (encounterTimer/2).ToString("0") + currentGameState);
 		//print("gs: " + currentGameState);
-		if ((currentGameState & GameState.Realtime) != 0 && !UIController.IsFullscreenUI())
+		if ((currentGameState & GameState.Realtime) != 0 && !UIController.IsFullscreenUI() && ((currentGameState & GameState.Waiting_For_Path) == 0)) //if it is realtime, not fullscreen, and not waiting for path
 		{
 			encounterTimer -= Time.deltaTime; //count down for the next encounter
 
@@ -111,7 +112,7 @@ public class EncounterController : MonoBehaviour
 		{
 			case (GameState.Walking)://encounterTimer > 0)
 			{
-				if ((UIController.currentUIMode & (UIController.UIMode.FullScreen)) == 0) //if the current uimode doesn't have the inventory or levelup flag set
+				if (!UIController.IsFullscreenUI())//(UIController.currentUIMode & (UIController.UIMode.FullScreen)) == 0) //if the current uimode doesn't have the inventory or levelup flag set
 				{
 					transform.position += Vector3.forward * Time.deltaTime * (5 + speedBoost * 10);
 
@@ -123,6 +124,8 @@ public class EncounterController : MonoBehaviour
 			{
 				if (CombatController.turnOrder.Count == 0)// && !finnishingCombat)
 				{
+					ResetEncounterTimer();
+
 					CombatController.turnOrder.Add(CombatController.playerCombatController);
 
 					CombatController.playerCombatController.RemoveAllBufsWithName("busy");
@@ -137,7 +140,7 @@ public class EncounterController : MonoBehaviour
 						_possibles = EncounterData.encounterTable.Where(x => x.level == _lower).ToArray(); //find encounters
 						if (_lower <= 0) //if checking below 0, end search
 						{
-							ResetEncounterTimer();
+							//ResetEncounterTimer();
 							//encounterTimer = 5;
 							return;
 						}
@@ -188,7 +191,7 @@ public class EncounterController : MonoBehaviour
 			break;
 			case (GameState.Busy):
 			{
-				if (!CombatController.playerCombatController.CheckIfHasBuff("Busy") && currentGameState != GameState.ConfirmingDrops)
+				if (!CombatController.playerCombatController.CheckIfHasBuff("Busy"))// && currentGameState != GameState.ConfirmingPrompt)
 				{
 					SetGameState(GameState.Walking);
 					//currentGameState = GameState.Walking;
@@ -266,20 +269,43 @@ public class EncounterController : MonoBehaviour
 
 		CombatController.UpdateTurnOrderDisplay();
 
-		ResetEncounterTimer();
+		//ResetEncounterTimer();
 
-		if (currentGameState != GameState.ConfirmingDrops)
+		if (currentGameState != GameState.Confirming_Drops)
 			SetGameState(GameState.Walking);
 
 		//SetGameState(GameState.Walking);
 		//currentGameState = GameState.Walking;
 	}
 
+	public void RemoveFlagFromGameState(GameState gameState)
+	{
+		currentGameState &= ~gameState;
+
+		if (currentGameState == GameState.None)
+			SetGameState(GameState.Walking);
+		//currentGameState &= ~GameState.Waiting_For_Path; //remove the waiting for path flag
+	}
+
+	public void AddFlagFromGameState(GameState gameState)
+	{
+		currentGameState |= gameState;
+	}
+
 	private void OnTriggerEnter(Collider _trig)
 	{
 		if (_trig.CompareTag("Segment"))
 		{
-			
+			int paths = PathPicker.instance.GoToNextNode();
+			if (paths != 1)
+				RemoveFlagFromGameState(GameState.Walking);
+
+			/*
+			bool canContinue = PathPicker.instance.GoToNextNode();
+			if (!canContinue && ((currentGameState & GameState.Confirming_Drops) == 0))
+				SetGameState(GameState.Waiting_For_Path);
+			*/
+
 			var _enviromentInteractibles = _trig.GetComponentsInChildren<TerrainInterractible>();
 			foreach (var v in _enviromentInteractibles)
 			{

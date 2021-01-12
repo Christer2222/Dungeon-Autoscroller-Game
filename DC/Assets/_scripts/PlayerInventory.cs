@@ -251,7 +251,7 @@ public class PlayerInventory : MonoBehaviour
             if (selectedItem != null)
             {
 
-                if ((selectedItem.item.type & Items.ItemType.Consumable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) == 0)) //if item has consumable flag
+                if ((selectedItem.item.type & Items.ItemType.Consumable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.Confirming_Drops) == 0)) //if item has consumable flag
                 {
                     if (CombatController.turnOrder.Count > 0)
                     {
@@ -295,7 +295,7 @@ public class PlayerInventory : MonoBehaviour
                     ChangeItemQuantity(selectedItem, -1); //remove an item after it is used
                     selectedItem = null;
                 }
-                else if ((selectedItem.item.type & Items.ItemType.Targetable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) == 0)) //if item has targetable flag
+                else if ((selectedItem.item.type & Items.ItemType.Targetable) != 0 && ((EncounterController.instance.currentGameState & EncounterController.GameState.Confirming_Drops) == 0)) //if item has targetable flag
                 {
                     UIController.SetUIMode(UIController.UIMode.None);
                     //UIController.InventoryButtonText.text = selectedItem.item.name;
@@ -789,7 +789,7 @@ public class PlayerInventory : MonoBehaviour
 
         //UIController.ItemDropListConfirmButton.onClick.AddListener(addToInventoryAction);
 
-        EncounterController.instance.currentGameState = EncounterController.GameState.ConfirmingDrops;
+        EncounterController.instance.SetGameState(EncounterController.GameState.Confirming_Drops);
     }
 
     /// <summary>

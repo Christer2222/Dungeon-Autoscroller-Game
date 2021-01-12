@@ -606,7 +606,7 @@ public class UIController : MonoBehaviour
         max = Math.Max(fps, max);
 
 
-        FpsText.text = "low: " + min.ToString("000") + "\nhi: " + max.ToString("000") + "\navg: " + (totalFps / frames).ToString("000");
+        FpsText.text = "low: " + min.ToString("000") + "\nhi: " + max.ToString("000") + "\navg: " + (totalFps / frames).ToString("000") + "\nGameState: " + EncounterController.instance.currentGameState;
     }
 
     public static void SetUIMode(UIMode targetUIMode)

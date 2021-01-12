@@ -107,7 +107,7 @@ public class CombatController : AbilityScript, IAbilityInterractible
 
 			UIController.AbilityButton.onClick.AddListener(delegate {
 				//if (/*playerCombatController.CheckIfHasBuff("Busy") ||*/ UIController.LevelUpScreen.activeSelf) return;
-				if ((EncounterController.instance.currentGameState & EncounterController.GameState.ConfirmingDrops) != 0)
+				if ((EncounterController.instance.currentGameState & EncounterController.GameState.Confirming_Drops) != 0)
 					UIController.SetUIMode(UIController.UIMode.None);
 
 				//UIController.AbilityMenuScrollView.SetActive(!UIController.AbilityMenuScrollView.activeSelf);
