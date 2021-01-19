@@ -298,7 +298,10 @@ public class EncounterController : MonoBehaviour
 		{
 			int paths = PathPicker.instance.GoToNextNode();
 			if (paths != 1)
+			{
 				RemoveFlagFromGameState(GameState.Walking);
+				UIController.PathChoiceButtonsHolder.gameObject.SetActive(true);//!UIController.PathChoiceButtonsHolder.gameObject.activeSelf);
+			}
 
 			/*
 			bool canContinue = PathPicker.instance.GoToNextNode();

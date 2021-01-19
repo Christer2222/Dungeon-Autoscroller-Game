@@ -27,7 +27,7 @@ public class PathPicker : MonoBehaviour
         if (Input.GetKeyDown(Options.mapKey))
 		{
             UIController.WorldCanvas.gameObject.SetActive(!UIController.WorldCanvas.gameObject.activeSelf);
-            UIController.PathChoiceButtonsHolder.gameObject.SetActive(!UIController.PathChoiceButtonsHolder.gameObject.activeSelf);
+            //UIController.PathChoiceButtonsHolder.gameObject.SetActive(!UIController.PathChoiceButtonsHolder.gameObject.activeSelf);
 
             UpdatePathChoiceButtons();
 		}
@@ -59,6 +59,8 @@ public class PathPicker : MonoBehaviour
                 UpdateSelectableNodes();
                 UpdatePathChoiceButtons(); 
                 UIController.WorldLocationPointer.position = currentNode.transform.position;
+
+                UIController.PathChoiceButtonsHolder.gameObject.SetActive(false);
 
                 EncounterController.instance.RemoveFlagFromGameState(EncounterController.GameState.Waiting_For_Path); //remove the waiting for path flag
             });
