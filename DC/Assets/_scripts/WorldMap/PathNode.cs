@@ -6,6 +6,21 @@ using UnityEngine.UI;
 [DefaultExecutionOrder(-1000)]
 public class PathNode : MonoBehaviour
 {
+    public enum Scenery
+	{
+        Plains,
+        Forest,
+        Steppes,
+        Coast,
+        Desert,
+        Sea,
+        Tropical,
+        Water,
+        Tundra,
+        Mountains,
+        Dungeon
+	}
+
     public enum NodeType
     {
         Path,
@@ -31,6 +46,7 @@ public class PathNode : MonoBehaviour
     public class ConnectionInfo
 	{
         public NodeType thisType;
+        public Scenery sceneryHere;
         public List<PathNode> connectedNodes = new List<PathNode>();
 	}
 

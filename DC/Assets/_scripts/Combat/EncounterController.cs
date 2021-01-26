@@ -8,6 +8,8 @@ public class EncounterController : MonoBehaviour
 {
 	public static EncounterController instance;
 
+	private static GameObject[] plainsSegments, forestSegments, steppesSegments, tundreaSegments, oceanSegments, waterSegments, dungeonSegments, desertSegments;
+
 	private GameObject[] segmentPrefabs;
 	private GameObject segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, segmentPrefabStalagmite;
 	private GameObject enemyPrefab;
@@ -55,12 +57,21 @@ public class EncounterController : MonoBehaviour
 
 		encounterTimer = ENCOUNTER_COOLDOWN;//5;
 
-		segmentPrefabEmpty		= (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Empty");
-		segmentPrefabTorch		= (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Torch");
-		segmentPrefabUrn		= (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Urn");
-		segmentPrefabStalagmite = (GameObject)Resources.Load("Prefabs/Segments/$Segment_Hallway_Stalagmite");
+		//segmentPrefabEmpty		= (GameObject)Resources.Load("$Environment/$DungeonSegments/$Segment_Hallway_Empty");
+		//segmentPrefabTorch		= (GameObject)Resources.Load("$Environment/$DungeonSegments/$Segment_Hallway_Torch");
+		//segmentPrefabUrn		= (GameObject)Resources.Load("$Environment/$DungeonSegments/$Segment_Hallway_Urn");
+		//segmentPrefabStalagmite = (GameObject)Resources.Load("$Environment/$DungeonSegments/$Segment_Hallway_Stalagmite");
+		//segmentPrefabs = new GameObject[] { segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, segmentPrefabStalagmite };
 
-		segmentPrefabs = new GameObject[] { segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, segmentPrefabStalagmite };
+		if (plainsSegments == null)		plainsSegments	= Resources.LoadAll<GameObject>("$Environment/$PlainsSegments");
+		if (desertSegments == null)		desertSegments	= Resources.LoadAll<GameObject>("$Environment/$DesertSegments");
+		if (steppesSegments == null)	steppesSegments = Resources.LoadAll<GameObject>("$Environment/$SteppesSegments");
+		if (forestSegments == null)		forestSegments	= Resources.LoadAll<GameObject>("$Environment/$ForestSegments");
+		if (oceanSegments == null)		oceanSegments	= Resources.LoadAll<GameObject>("$Environment/$OceanSegments");
+		if (tundreaSegments == null)	tundreaSegments	= Resources.LoadAll<GameObject>("$Environment/$TundraSegments");
+		if (waterSegments == null)		waterSegments	= Resources.LoadAll<GameObject>("$Environment/$WaterSegments");
+		if (dungeonSegments == null)	dungeonSegments = Resources.LoadAll<GameObject>("$Environment/$DungeonSegments");
+
 
 		//segments = Resources.LoadAll<GameObject>("Prefabs/Segments/");
 
@@ -318,8 +329,52 @@ public class EncounterController : MonoBehaviour
 
 			_trig.enabled = false;
 
+			GameObject _chosenPrefab = null;
+			switch (PathPicker.instance.currentNode.connectionInfo.sceneryHere)
+			{
+				case PathNode.Scenery.Plains:
+					_chosenPrefab = GetPrefabFromArray(plainsSegments);
+					break;
+				case PathNode.Scenery.Forest:
+					_chosenPrefab = GetPrefabFromArray(forestSegments);
+					break;
+				case PathNode.Scenery.Steppes:
+					_chosenPrefab = GetPrefabFromArray(steppesSegments);
+					break;
+				//case PathNode.Scenery.Coast:
+					break;
+				case PathNode.Scenery.Desert:
+					_chosenPrefab = GetPrefabFromArray(desertSegments);
+					break;
+				case PathNode.Scenery.Sea:
+					_chosenPrefab = GetPrefabFromArray(waterSegments);
+					break;
+				//case PathNode.Scenery.Tropical:
+					break;
+				case PathNode.Scenery.Water:
+					_chosenPrefab = GetPrefabFromArray(waterSegments);
+					break;
+				case PathNode.Scenery.Tundra:
+					_chosenPrefab = GetPrefabFromArray(tundreaSegments);
+					break;
+				//case PathNode.Scenery.Mountains:
+					break;
+				case PathNode.Scenery.Dungeon:
+					_chosenPrefab = GetPrefabFromArray(dungeonSegments);
+					break;
+				default:
+					_chosenPrefab = GetPrefabFromArray(plainsSegments);
+					break;
+			}
+			
+			GameObject GetPrefabFromArray(in GameObject[] array)
+			{
+				print("array: " + array.Length);
+				return array[Random.Range(0, array.Length)];
+			}
+
 			//var _next = Instantiate(segmentPrefabEmpty, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
-			GameObject _chosenPrefab = segmentPrefabs[Random.Range(0, segmentPrefabs.Length)];
+			//_chosenPrefab = segmentPrefabs[Random.Range(0, segmentPrefabs.Length)];
 			var _next = Instantiate(_chosenPrefab, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
 			segmentsInMap.Add(_next);
 

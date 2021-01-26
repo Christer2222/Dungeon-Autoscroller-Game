@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PathPicker : MonoBehaviour
 {
     [SerializeField] private PathNode previousNode;
-    [SerializeField] private PathNode currentNode;
+    [SerializeField] public PathNode currentNode;
 
     private List<PathNode> selectableNodes = new List<PathNode>();
 
