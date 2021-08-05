@@ -10,13 +10,13 @@ public class EncounterController : MonoBehaviour
 
 	private static GameObject[] plainsSegments, forestSegments, steppesSegments, tundreaSegments, oceanSegments, waterSegments, dungeonSegments, desertSegments;
 
-	private GameObject[] segmentPrefabs;
+	//private GameObject[] segmentPrefabs;
 	private GameObject segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, segmentPrefabStalagmite;
 	private GameObject enemyPrefab;
 	//private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
 	private readonly List<GameObject> segmentsInMap = new List<GameObject>();
-	private const float SEGMENT_DISTANCE = 8;
+	private const float PREPLACED_SEGMENTS_FRONT_OF_START = 3;
 
 	private float encounterTimer;
 	public const float ENEMY_SPAWN_DISTANCE = 5;
@@ -307,6 +307,7 @@ public class EncounterController : MonoBehaviour
 	{
 		if (_trig.CompareTag("Segment"))
 		{
+			_trig.tag = "Untagged";
 			int paths = PathPicker.instance.GoToNextNode();
 			if (paths != 1)
 			{
@@ -330,7 +331,15 @@ public class EncounterController : MonoBehaviour
 			_trig.enabled = false;
 
 			GameObject _chosenPrefab = null;
-			switch (PathPicker.instance.currentNode.connectionInfo.sceneryHere)
+
+			var nextNode = PathPicker.instance.testNextNode;
+			if (nextNode == null) nextNode = PathPicker.instance.currentNode;
+			
+
+			var sceneryAtNextNode = nextNode.connectionInfo.sceneryHere;
+
+
+			switch (sceneryAtNextNode)
 			{
 				case PathNode.Scenery.Plains:
 					_chosenPrefab = GetPrefabFromArray(plainsSegments);
@@ -342,7 +351,7 @@ public class EncounterController : MonoBehaviour
 					_chosenPrefab = GetPrefabFromArray(steppesSegments);
 					break;
 				//case PathNode.Scenery.Coast:
-					break;
+					//break;
 				case PathNode.Scenery.Desert:
 					_chosenPrefab = GetPrefabFromArray(desertSegments);
 					break;
@@ -350,7 +359,7 @@ public class EncounterController : MonoBehaviour
 					_chosenPrefab = GetPrefabFromArray(waterSegments);
 					break;
 				//case PathNode.Scenery.Tropical:
-					break;
+					//break;
 				case PathNode.Scenery.Water:
 					_chosenPrefab = GetPrefabFromArray(waterSegments);
 					break;
@@ -358,7 +367,7 @@ public class EncounterController : MonoBehaviour
 					_chosenPrefab = GetPrefabFromArray(tundreaSegments);
 					break;
 				//case PathNode.Scenery.Mountains:
-					break;
+					//break;
 				case PathNode.Scenery.Dungeon:
 					_chosenPrefab = GetPrefabFromArray(dungeonSegments);
 					break;
@@ -373,10 +382,9 @@ public class EncounterController : MonoBehaviour
 				return array[Random.Range(0, array.Length)];
 			}
 
-			//var _next = Instantiate(segmentPrefabEmpty, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
-			//_chosenPrefab = segmentPrefabs[Random.Range(0, segmentPrefabs.Length)];
-			var _next = Instantiate(_chosenPrefab, _trig.transform.position + Vector3.forward * _trig.transform.localScale.z * SEGMENT_DISTANCE, Quaternion.identity);
+			var _next = Instantiate(_chosenPrefab, _trig.transform.position + Vector3.forward * (_trig.transform.localScale.z * PREPLACED_SEGMENTS_FRONT_OF_START ), Quaternion.identity);
 			segmentsInMap.Add(_next);
+			_next.name += Time.timeSinceLevelLoad;
 
 			
 			var _newEnviromentInteractibles = _next.GetComponentsInChildren<TerrainInterractible>();

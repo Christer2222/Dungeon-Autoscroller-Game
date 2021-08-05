@@ -8,6 +8,8 @@ public class PathPicker : MonoBehaviour
     [SerializeField] private PathNode previousNode;
     [SerializeField] public PathNode currentNode;
 
+    [SerializeField] public PathNode testNextNode;
+
     private List<PathNode> selectableNodes = new List<PathNode>();
 
     public static PathPicker instance;
@@ -15,7 +17,7 @@ public class PathPicker : MonoBehaviour
     void Start()
     {
         instance = this;
-        UIController.WorldLocationPointer.position = currentNode.transform.position;
+        UIController.WorldLocationMarker.position = currentNode.transform.position; //places a marker at the current node
 
         UpdateSelectableNodes();
         UpdatePathChoiceButtons();
@@ -35,41 +37,47 @@ public class PathPicker : MonoBehaviour
 
     void UpdatePathChoiceButtons()
 	{
+        //when clicking a choice remove all options
         for (int i = 0; i < UIController.PathChoiceButtons.Length; i++)
         {
             UIController.PathChoiceButtons[i].onClick.RemoveAllListeners();
             UIController.PathChoiceButtons[i].gameObject.SetActive(false);
         }
 
-        if (selectableNodes.Count == 1)
+        //if there are no options for the next node
+        if (selectableNodes.Count == 1) 
+		{
+            testNextNode = selectableNodes[0];
             return;
+		}
 
-        //print(currentNode.transform.name + ": " + currentNode.connectionInfo.connectedNodes.Count);
-        for (int i = 0; i < selectableNodes.Count; i++ )//currentNode.connectionInfo.connectedNodes.Count; i++)
+        for (int i = 0; i < selectableNodes.Count; i++ )
         {
-            var curNode = selectableNodes[i];
-            //var curNode = currentNode.connectionInfo.connectedNodes[i];
-            //if (curNode == previousNode && (currentNode.connectionInfo.thisType == PathNode.NodeType.Path || currentNode.connectionInfo.thisType == PathNode.NodeType.Secret)) continue;
+            var curNode = selectableNodes[i]; //shortcut
 
-            UIController.PathChoiceButtons[i].GetComponentInChildren<Text>().text = curNode.description;//.transform.name;
+            //give the button a name equal to the description it has
+            UIController.PathChoiceButtons[i].GetComponentInChildren<Text>().text = curNode.description;
 
+            //all choice buttons should do this when clicked
             UIController.PathChoiceButtons[i].onClick.AddListener(delegate { 
-                previousNode = currentNode; 
-                currentNode = curNode;
-                UpdateSelectableNodes();
-                UpdatePathChoiceButtons(); 
-                UIController.WorldLocationPointer.position = currentNode.transform.position;
+                previousNode = currentNode; //the node the player is on is now the last one
+                currentNode = curNode; //and the picked one is the current
+                UpdateSelectableNodes(); //update available paths
+                UpdatePathChoiceButtons(); //then deactivate choice buttons (or set to new choices)
+                UIController.WorldLocationMarker.position = currentNode.transform.position; //moves the marker to the new node
 
-                UIController.PathChoiceButtonsHolder.gameObject.SetActive(false);
+                UIController.PathChoiceButtonsHolder.gameObject.SetActive(false); //all choices disables previous options when clicked
 
                 EncounterController.instance.RemoveFlagFromGameState(EncounterController.GameState.Waiting_For_Path); //remove the waiting for path flag
             });
 
-            UIController.PathChoiceButtons[i].gameObject.SetActive(true);
+            UIController.PathChoiceButtons[i].gameObject.SetActive(true); //allow the choice to be made, by activating the button
         }
     }
 
-
+    /// <summary>
+    /// Goes through all nodes connected, and updates the variable
+    /// </summary>
     void UpdateSelectableNodes()
 	{
         selectableNodes = currentNode.connectionInfo.connectedNodes.FindAll(x =>
@@ -91,7 +99,7 @@ public class PathPicker : MonoBehaviour
             currentNode = selectableNodes[0];
             UpdateSelectableNodes();
             UpdatePathChoiceButtons();
-            UIController.WorldLocationPointer.position = currentNode.transform.position;
+            UIController.WorldLocationMarker.position = currentNode.transform.position; //moves the marker to the next node
         }
         else
             EncounterController.instance.AddFlagFromGameState(EncounterController.GameState.Waiting_For_Path);

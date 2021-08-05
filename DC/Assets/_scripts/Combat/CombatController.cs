@@ -857,36 +857,36 @@ public class CombatController : AbilityScript, IAbilityInterractible
 			myToolTip.SetToolTipText(MyStats.GetToolTipStats());
 		}
 
-		if (MyStats.currentHealth <= 0)
+		if (MyStats.currentHealth <= 0) //if this combatant reached 0 health
 		{
-			if (!playerOwned)
+			if (!playerOwned) //if enemy
 			{
-				playerCombatController.xpPoolToaddAfterCombat += MyStats.level * 3;
-				myToolTip.OnPointerExit(null);
+				playerCombatController.xpPoolToaddAfterCombat += MyStats.level * 3; //give xp after combat
+				myToolTip.OnPointerExit(null); //hide tooltip if player is currently looking at it
 
 				if (turnOrder.Count <= 2) //if this was the last enemy, and the player is left
 				{
-					playerCombatController.AdjustPlayerXP(playerCombatController.xpPoolToaddAfterCombat);
-					playerCombatController.xpPoolToaddAfterCombat = 0;
+					playerCombatController.AdjustPlayerXP(playerCombatController.xpPoolToaddAfterCombat); //give accumulated xp
+					playerCombatController.xpPoolToaddAfterCombat = 0; //reset accumulated xp
 
 
-					PlayerInventory.instance.ProcessDrops(MyStats.drops);
+					PlayerInventory.instance.ProcessDrops(MyStats.drops); //then give player the drops of the last enemy slain
 				}
 
 				myEnemyMover.shouldMove = false; //if just took lethal damage, stop moving
 
 				StartCoroutine(RemoveFromTurnOrder(1.0f,this));
 			}
-			else
+			else //if player reached 0 health
 			{
 				
-				foreach(CombatController _cc in turnOrder)
+				foreach(CombatController _cc in turnOrder) //go through all combatants 
 				{
-					RemoveFromTurnOrder(0,_cc);
-					Destroy(_cc.gameObject);
+					StartCoroutine(RemoveFromTurnOrder(0,_cc)); //remove them immediately from combat
+					Destroy(_cc.gameObject); //then destroy them
 				}
 
-				UIController.GameOverHolder.transform.GetChild(0).gameObject.SetActive(true);
+				UIController.GameOverHolder.transform.GetChild(0).gameObject.SetActive(true); //then show the temp game over holder
 			}
 
 		}

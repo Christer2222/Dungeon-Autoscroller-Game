@@ -146,7 +146,7 @@ public class UIController : MonoBehaviour
 	#endregion
 
 	#region WorldMap
-    public static RectTransform WorldLocationPointer { get; private set; }
+    public static RectTransform WorldLocationMarker { get; private set; }
     public static RectTransform WorldCanvas { get; private set; }
     public static RectTransform PathChoiceButtonsHolder { get; private set; }
     public static Button[] PathChoiceButtons { get; private set; }
@@ -545,8 +545,8 @@ public class UIController : MonoBehaviour
                     }
                     break;
                 #region WorldMap
-                case "$WorldLocationPointer":
-                    WorldLocationPointer = child as RectTransform;
+                case "$WorldLocationMarker":
+                    WorldLocationMarker = child as RectTransform;
                     break;
                 case "$WorldCanvas":
                     WorldCanvas = child as RectTransform;
