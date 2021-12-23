@@ -11,12 +11,12 @@ public class EncounterController : MonoBehaviour
 	private static GameObject[] plainsSegments, forestSegments, steppesSegments, tundreaSegments, oceanSegments, waterSegments, dungeonSegments, desertSegments;
 
 	//private GameObject[] segmentPrefabs;
-	private GameObject segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, segmentPrefabStalagmite;
+	private GameObject segmentPrefabStalagmite;// segmentPrefabEmpty, segmentPrefabTorch, segmentPrefabUrn, 
 	private GameObject enemyPrefab;
 	//private readonly Dictionary<string, Sprite> enemySpriteDictionary = new Dictionary<string, Sprite>();
 
 	private readonly List<GameObject> segmentsInMap = new List<GameObject>();
-	private const float PREPLACED_SEGMENTS_FRONT_OF_START = 3;
+	private const float PREPLACED_SEGMENTS_FRONT_OF_START = 1;//3;
 
 	private float encounterTimer;
 	public const float ENEMY_SPAWN_DISTANCE = 5;

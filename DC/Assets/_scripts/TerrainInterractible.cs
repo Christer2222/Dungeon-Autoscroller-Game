@@ -19,6 +19,8 @@ public class TerrainInterractible : MonoBehaviour, IAbilityInterractible
 
 	public int AdjustHealth(int _amount, Elementals _elementals, ExtraData _extraData)
 	{
+		//TODO: Change this ability to activate the first ability in the statblock. Make the target the closest with a raycast.
+		
 		print(transform.name + " was hit by: " + _amount + " damage");
 		MyStats.currentHealth = Mathf.Min(MyStats.currentHealth + _amount, MyStats.maxHealth);
 

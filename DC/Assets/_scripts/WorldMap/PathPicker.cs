@@ -72,7 +72,10 @@ public class PathPicker : MonoBehaviour
             });
 
             UIController.PathChoiceButtons[i].gameObject.SetActive(true); //allow the choice to be made, by activating the button
+
         }
+
+        EncounterController.instance.AddFlagFromGameState(EncounterController.GameState.Waiting_For_Path);
     }
 
     /// <summary>
